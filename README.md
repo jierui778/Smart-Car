@@ -1,5 +1,6 @@
 <font size="8">Smart-Car</font>
 # 硬件选型
+主控芯片RT1064
 
 ## 主控芯片
 主控RT9013,TC264,CH32
