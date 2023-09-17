@@ -154,7 +154,7 @@
 ".\objects\usb_device_ch9.o"
 ".\objects\usb_device_class.o"
 ".\objects\usb_device_descriptor.o"
---library_type=microlib --strict --scatter ".\scf\MIMXRT1064xxxxx_flexspi_nor.scf"
+--library_type=microlib --diag_suppress 6314,6329 --strict --scatter ".\scf\MIMXRT1064xxxxx_flexspi_nor.scf"
 --remove --entry=Reset_Handler --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
 --list ".\Listings\RT1064_CAR.map" -o .\Objects\RT1064_CAR.axf

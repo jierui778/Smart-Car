@@ -376,7 +376,7 @@
             <IncludeLibsPath></IncludeLibsPath>
             <Misc>--remove --entry=Reset_Handler</Misc>
             <LinkerInputFile></LinkerInputFile>
-            <DisabledWarnings></DisabledWarnings>
+            <DisabledWarnings>6314,6329</DisabledWarnings>
           </LDads>
         </TargetArmAds>
       </TargetOption>
