@@ -1,0 +1,45 @@
+<!DOCTYPE CrossStudio_Session_File>
+<session>
+ <Bookmarks/>
+ <Breakpoints groups="Breakpoints" active_group="Breakpoints"/>
+ <ExecutionProfileWindow/>
+ <FrameBuffer/>
+ <Memory1/>
+ <Memory2/>
+ <Memory3/>
+ <Memory4/>
+ <Project>
+  <ProjectSessionItem path="RT1064_CAR"/>
+  <ProjectSessionItem path="RT1064_CAR;RT1064_CAR"/>
+  <ProjectSessionItem path="RT1064_CAR;RT1064_CAR;components_sdmmc"/>
+  <ProjectSessionItem path="RT1064_CAR;RT1064_CAR;user_c"/>
+  <ProjectSessionItem path="RT1064_CAR;RT1064_CAR;user_h"/>
+ </Project>
+ <Register1/>
+ <Register2/>
+ <Register3/>
+ <Register4/>
+ <Threads>
+  <ThreadsWindow showLists=""/>
+ </Threads>
+ <TraceWindow>
+  <Trace enabled="Yes"/>
+ </TraceWindow>
+ <Watch1>
+  <Watches active="1" update="Never"/>
+ </Watch1>
+ <Watch2>
+  <Watches active="0" update="Never"/>
+ </Watch2>
+ <Watch3>
+  <Watches active="0" update="Never"/>
+ </Watch3>
+ <Watch4>
+  <Watches active="0" update="Never"/>
+ </Watch4>
+ <Files>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="77" useTextEdit="1" path="../USER/src/main.c" left="0" top="45" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" path="../../Libraries/components/sdmmc/sdmmc_config.c" left="0" selected="1" top="21" codecName="Default"/>
+ </Files>
+ <EMStudioWindow activeProject="RT1064_CAR" fileDialogDefaultFilter="*.c" autoConnectTarget="J-Link" buildConfiguration="RT1064_CAR External" sessionSettings="" debugSearchFileMap="" fileDialogInitialDirectory="" debugSearchPath="" autoConnectCapabilities="3199"/>
+</session>
