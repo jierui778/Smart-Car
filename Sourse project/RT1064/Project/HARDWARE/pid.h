@@ -14,10 +14,15 @@ typedef struct
 
 // 预采用位置式PID控制舵机，采用增量式PID控制电机
 // pid控制器
+//外部变量声明
+extern PID TraceTurnPdate;
+extern PID SpeedPdate;
+
+//位置式PID控制器
 extern int PositionPID(float deviation, PID pid);
 extern int PositionPID2(float deviation, PID pid);
-// extern int PositionPIDToSpeed(float deviation, PID pid);
-// extern int PositionPIDToSpeed2(float deviation, PID pid);
+
+//增量式PID控制器
 extern int IncrementalPID(float deviation, PID pid);
 extern int IncrementalPID2(float deviation, PID pid);
 

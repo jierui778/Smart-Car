@@ -98,7 +98,7 @@ int PositionPID2(float deviation, PID pid)
 int IncrementPID(float SetValue,float ActualValue,PID pid)
 {
     float Increment_KP = pid.kp, Increment_KI = pid.ki, Increment_KD = pid.kd;
-    static float Current_Bias, Last_Bias,Lastlast_Bias,Result;
+    static float Current_Bias, Last_Bias,Lastlast_Bias,Result;//定义静态变量
     Current_Bias = SetValue - ActualValue;//当前偏差
     // Integral_bias += Bias;
     Result = Increment_KP * (Current_Bias-Last_Bias) + Increment_KI * Current_Bias + Increment_KD * (Current_Bias - 2*Last_Bias+Lastlast_Bias);//增量式PID控制器
