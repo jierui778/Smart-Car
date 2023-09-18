@@ -10,6 +10,8 @@
 #define DIR_2 D1
 
 void Motor_Init(void);
-void Motor_COntrol();
+//void Motor_Control();
+void Motor_SetL();
+void Motor_SetR();
 
 #endif

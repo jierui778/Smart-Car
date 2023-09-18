@@ -1,5 +1,5 @@
 #include "image.h"
-
+#include "common.h"
 /**
  * @brief 截取我们需要的图像大小
  *
@@ -24,7 +24,7 @@ void Image_Get(IN uint8 (*InImg)[IMGW * 2],OUT uint8 (*OutImg)[IMGW])
  * @param Uint8 输出图像的地址
  * @param Threshold 图像阈值(实际上阈值需要进行计算，而不是直接赋值)
  */
-void Image_GetBinaryImage(OSG_IN Uint8 (*InImg)[IMGW], OSG_OUT Uint8 (*OutImg)[IMGW], OSG_IN Uint8 Threshold)
+void Image_GetBinaryImage(IN Uint8 (*InImg)[IMGW], OUT Uint8 (*OutImg)[IMGW], IN Uint8 Threshold)
 {
 
 
@@ -38,7 +38,7 @@ void Image_GetBinaryImage(OSG_IN Uint8 (*InImg)[IMGW], OSG_OUT Uint8 (*OutImg)[I
  * @exception 场地得到的灰度图像一般颜色不一，但是图像里面占的面积最大的灰度肯定只有赛道内的灰度值A1和赛道外的灰度值A2，因此得到的直方图会在A1和A2
  * 出现两个峰值，而所求的阈值就是两个峰值之间的最低值
  */
-unsigned char BMP_GetThreshold(unsigned char *image[CAMERA_HEIGHT][CAMERA_WITH])
+unsigned char BMP_GetThreshold(uint8 *image[CAMERA_HEIGHT][CAMERA_WITH])
 {
     unsigned char i,j;                        //用来遍历灰度直方图
     unsigned int High1=0;                     //第一高峰
