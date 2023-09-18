@@ -408,6 +408,28 @@
         </Group>
         <Group>
           <GroupName>hardware</GroupName>
+          <Files>
+            <File>
+              <FileName>servo.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\servo.c</FilePath>
+            </File>
+            <File>
+              <FileName>servo.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\HARDWARE\servo.h</FilePath>
+            </File>
+            <File>
+              <FileName>motor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\motor.c</FilePath>
+            </File>
+            <File>
+              <FileName>motor.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\HARDWARE\motor.h</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>doc</GroupName>

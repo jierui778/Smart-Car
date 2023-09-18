@@ -4,14 +4,14 @@
 #include "zf_common_headfile.h"
 
 
-#define PWM_1 PWM2_MODULE3_CHA_D2
-#define PWM_2 PWM2_MODULE3_CHB_D3
-#define DIR_1 D0
-#define DIR_2 D1
+#define MOTOR_PWML PWM2_MODULE3_CHA_D2
+#define MOTOR_PWMR PWM2_MODULE3_CHB_D3
+#define MOTOR_DIRL D0
+#define MOTOR_DIRR D1
 
 void Motor_Init(void);
 //void Motor_Control();
-void Motor_SetL();
-void Motor_SetR();
+void Motor_SetL(int16 Speed);
+void Motor_SetR(int16 Speed);
 
 #endif
