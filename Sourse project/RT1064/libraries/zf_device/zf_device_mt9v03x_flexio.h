@@ -1,49 +1,49 @@
 /*********************************************************************************************************************
-* RT1064DVL6A Opensourec Library ¼´£¨RT1064DVL6A ¿ªÔ´¿â£©ÊÇÒ»¸ö»ùÓÚ¹Ù·½ SDK ½Ó¿ÚµÄµÚÈý·½¿ªÔ´¿â
-* Copyright (c) 2022 SEEKFREE Öð·É¿Æ¼¼
-* 
-* ±¾ÎÄ¼þÊÇ RT1064DVL6A ¿ªÔ´¿âµÄÒ»²¿·Ö
-* 
-* RT1064DVL6A ¿ªÔ´¿â ÊÇÃâ·ÑÈí¼þ
-* Äú¿ÉÒÔ¸ù¾Ý×ÔÓÉÈí¼þ»ù½ð»á·¢²¼µÄ GPL£¨GNU General Public License£¬¼´ GNUÍ¨ÓÃ¹«¹²Ðí¿ÉÖ¤£©µÄÌõ¿î
-* ¼´ GPL µÄµÚ3°æ£¨¼´ GPL3.0£©»ò£¨ÄúÑ¡ÔñµÄ£©ÈÎºÎºóÀ´µÄ°æ±¾£¬ÖØÐÂ·¢²¼ºÍ/»òÐÞ¸ÄËü
-* 
-* ±¾¿ªÔ´¿âµÄ·¢²¼ÊÇÏ£ÍûËüÄÜ·¢»Ó×÷ÓÃ£¬µ«²¢Î´¶ÔÆä×÷ÈÎºÎµÄ±£Ö¤
-* ÉõÖÁÃ»ÓÐÒþº¬µÄÊÊÏúÐÔ»òÊÊºÏÌØ¶¨ÓÃÍ¾µÄ±£Ö¤
-* ¸ü¶àÏ¸½ÚÇë²Î¼û GPL
-* 
-* ÄúÓ¦¸ÃÔÚÊÕµ½±¾¿ªÔ´¿âµÄÍ¬Ê±ÊÕµ½Ò»·Ý GPL µÄ¸±±¾
-* Èç¹ûÃ»ÓÐ£¬Çë²ÎÔÄ<https://www.gnu.org/licenses/>
-* 
-* ¶îÍâ×¢Ã÷£º
-* ±¾¿ªÔ´¿âÊ¹ÓÃ GPL3.0 ¿ªÔ´Ðí¿ÉÖ¤Ð­Òé ÒÔÉÏÐí¿ÉÉêÃ÷ÎªÒëÎÄ°æ±¾
-* Ðí¿ÉÉêÃ÷Ó¢ÎÄ°æÔÚ libraries/doc ÎÄ¼þ¼ÐÏÂµÄ GPL3_permission_statement.txt ÎÄ¼þÖÐ
-* Ðí¿ÉÖ¤¸±±¾ÔÚ libraries ÎÄ¼þ¼ÐÏÂ ¼´¸ÃÎÄ¼þ¼ÐÏÂµÄ LICENSE ÎÄ¼þ
-* »¶Ó­¸÷Î»Ê¹ÓÃ²¢´«²¥±¾³ÌÐò µ«ÐÞ¸ÄÄÚÈÝÊ±±ØÐë±£ÁôÖð·É¿Æ¼¼µÄ°æÈ¨ÉùÃ÷£¨¼´±¾ÉùÃ÷£©
-* 
-* ÎÄ¼þÃû³Æ          zf_device_mt9v03x_flexio
-* ¹«Ë¾Ãû³Æ          ³É¶¼Öð·É¿Æ¼¼ÓÐÏÞ¹«Ë¾
-* °æ±¾ÐÅÏ¢          ²é¿´ libraries/doc ÎÄ¼þ¼ÐÄÚ version ÎÄ¼þ °æ±¾ËµÃ÷
-* ¿ª·¢»·¾³          IAR 8.32.4 or MDK 5.33
-* ÊÊÓÃÆ½Ì¨          RT1064DVL6A
-* µêÆÌÁ´½Ó          https://seekfree.taobao.com/
-* 
-* ÐÞ¸Ä¼ÇÂ¼
-* ÈÕÆÚ              ×÷Õß                ±¸×¢
+* RT1064DVL6A Opensourec Library å³ï¼ˆRT1064DVL6A å¼€æºåº“ï¼‰æ˜¯ä¸€ä¸ªåŸºäºŽå®˜æ–¹ SDK æŽ¥å£çš„ç¬¬ä¸‰æ–¹å¼€æºåº“
+* Copyright (c) 2022 SEEKFREE é€é£žç§‘æŠ€
+*
+* æœ¬æ–‡ä»¶æ˜¯ RT1064DVL6A å¼€æºåº“çš„ä¸€éƒ¨åˆ†
+*
+* RT1064DVL6A å¼€æºåº“ æ˜¯å…è´¹è½¯ä»¶
+* æ‚¨å¯ä»¥æ ¹æ®è‡ªç”±è½¯ä»¶åŸºé‡‘ä¼šå‘å¸ƒçš„ GPLï¼ˆGNU General Public Licenseï¼Œå³ GNUé€šç”¨å…¬å…±è®¸å¯è¯ï¼‰çš„æ¡æ¬¾
+* å³ GPL çš„ç¬¬3ç‰ˆï¼ˆå³ GPL3.0ï¼‰æˆ–ï¼ˆæ‚¨é€‰æ‹©çš„ï¼‰ä»»ä½•åŽæ¥çš„ç‰ˆæœ¬ï¼Œé‡æ–°å‘å¸ƒå’Œ/æˆ–ä¿®æ”¹å®ƒ
+*
+* æœ¬å¼€æºåº“çš„å‘å¸ƒæ˜¯å¸Œæœ›å®ƒèƒ½å‘æŒ¥ä½œç”¨ï¼Œä½†å¹¶æœªå¯¹å…¶ä½œä»»ä½•çš„ä¿è¯
+* ç”šè‡³æ²¡æœ‰éšå«çš„é€‚é”€æ€§æˆ–é€‚åˆç‰¹å®šç”¨é€”çš„ä¿è¯
+* æ›´å¤šç»†èŠ‚è¯·å‚è§ GPL
+*
+* æ‚¨åº”è¯¥åœ¨æ”¶åˆ°æœ¬å¼€æºåº“çš„åŒæ—¶æ”¶åˆ°ä¸€ä»½ GPL çš„å‰¯æœ¬
+* å¦‚æžœæ²¡æœ‰ï¼Œè¯·å‚é˜…<https://www.gnu.org/licenses/>
+*
+* é¢å¤–æ³¨æ˜Žï¼š
+* æœ¬å¼€æºåº“ä½¿ç”¨ GPL3.0 å¼€æºè®¸å¯è¯åè®® ä»¥ä¸Šè®¸å¯ç”³æ˜Žä¸ºè¯‘æ–‡ç‰ˆæœ¬
+* è®¸å¯ç”³æ˜Žè‹±æ–‡ç‰ˆåœ¨ libraries/doc æ–‡ä»¶å¤¹ä¸‹çš„ GPL3_permission_statement.txt æ–‡ä»¶ä¸­
+* è®¸å¯è¯å‰¯æœ¬åœ¨ libraries æ–‡ä»¶å¤¹ä¸‹ å³è¯¥æ–‡ä»¶å¤¹ä¸‹çš„ LICENSE æ–‡ä»¶
+* æ¬¢è¿Žå„ä½ä½¿ç”¨å¹¶ä¼ æ’­æœ¬ç¨‹åº ä½†ä¿®æ”¹å†…å®¹æ—¶å¿…é¡»ä¿ç•™é€é£žç§‘æŠ€çš„ç‰ˆæƒå£°æ˜Žï¼ˆå³æœ¬å£°æ˜Žï¼‰
+*
+* æ–‡ä»¶åç§°          zf_device_mt9v03x_flexio
+* å…¬å¸åç§°          æˆéƒ½é€é£žç§‘æŠ€æœ‰é™å…¬å¸
+* ç‰ˆæœ¬ä¿¡æ¯          æŸ¥çœ‹ libraries/doc æ–‡ä»¶å¤¹å†… version æ–‡ä»¶ ç‰ˆæœ¬è¯´æ˜Ž
+* å¼€å‘çŽ¯å¢ƒ          IAR 8.32.4 or MDK 5.33
+* é€‚ç”¨å¹³å°          RT1064DVL6A
+* åº—é“ºé“¾æŽ¥          https://seekfree.taobao.com/
+*
+* ä¿®æ”¹è®°å½•
+* æ—¥æœŸ              ä½œè€…                å¤‡æ³¨
 * 2022-09-21        SeekFree            first version
 ********************************************************************************************************************/
 /*********************************************************************************************************************
-* ½ÓÏß¶¨Òå£º
+* æŽ¥çº¿å®šä¹‰ï¼š
 *                   ------------------------------------
-*                   Ä£¿é¹Ü½Å            µ¥Æ¬»ú¹Ü½Å
-*                   TXD                 ²é¿´ zf_device_mt9v03x_flexio.h ÖÐ MT9V03X_FLEXIO_COF_UART_TX ºê¶¨Òå
-*                   RXD                 ²é¿´ zf_device_mt9v03x_flexio.h ÖÐ MT9V03X_FLEXIO_COF_UART_RX ºê¶¨Òå
-*                   PCLK                ²é¿´ zf_device_mt9v03x_flexio.h ÖÐ MT9V03X_FLEXIO_PCLK_PIN ºê¶¨Òå
-*                   VSY                 ²é¿´ zf_device_mt9v03x_flexio.h ÖÐ MT9V03X_FLEXIO_VSYNC_PIN ºê¶¨Òå
-*                   D0-D7               ²é¿´ zf_device_mt9v03x_flexio.h ÖÐ MT9V03X_FLEXIO_DATA_PIN ºê¶¨Òå ´Ó¸Ã¶¨Òå¿ªÊ¼µÄÁ¬Ðø°Ë¸öÒý½Å
-*                   VCC                 3.3VµçÔ´
-*                   GND                 µçÔ´µØ
-*                   ÆäÓàÒý½ÅÐü¿Õ
+*                   æ¨¡å—ç®¡è„š            å•ç‰‡æœºç®¡è„š
+*                   TXD                 æŸ¥çœ‹ zf_device_mt9v03x_flexio.h ä¸­ MT9V03X_FLEXIO_COF_UART_TX å®å®šä¹‰
+*                   RXD                 æŸ¥çœ‹ zf_device_mt9v03x_flexio.h ä¸­ MT9V03X_FLEXIO_COF_UART_RX å®å®šä¹‰
+*                   PCLK                æŸ¥çœ‹ zf_device_mt9v03x_flexio.h ä¸­ MT9V03X_FLEXIO_PCLK_PIN å®å®šä¹‰
+*                   VSY                 æŸ¥çœ‹ zf_device_mt9v03x_flexio.h ä¸­ MT9V03X_FLEXIO_VSYNC_PIN å®å®šä¹‰
+*                   D0-D7               æŸ¥çœ‹ zf_device_mt9v03x_flexio.h ä¸­ MT9V03X_FLEXIO_DATA_PIN å®å®šä¹‰ ä»Žè¯¥å®šä¹‰å¼€å§‹çš„è¿žç»­å…«ä¸ªå¼•è„š
+*                   VCC                 3.3Vç”µæº
+*                   GND                 ç”µæºåœ°
+*                   å…¶ä½™å¼•è„šæ‚¬ç©º
 *                   ------------------------------------
 ********************************************************************************************************************/
 
@@ -53,92 +53,92 @@
 #include "zf_common_typedef.h"
 
 //--------------------------------------------------------------------------------------------------
-// Òý½ÅÅäÖÃ
+// å¼•è„šé…ç½®
 //--------------------------------------------------------------------------------------------------
-#define MT9V03X_FLEXIO_COF_UART        (UART_4     )                            // ÅäÖÃÉãÏñÍ·ËùÊ¹ÓÃµ½µÄ´®¿Ú
-#define MT9V03X_FLEXIO_COF_BAUR        (9600       )                            // ×Ü×ê·çÅäÖÃ´®¿Ú²¨ÌØÂÊ
-#define MT9V03X_FLEXIO_COF_UART_TX     (UART4_RX_C17)                           // ×Ü×ê·ç UART-TX Òý½Å Òª½ÓÔÚµ¥Æ¬»ú RX ÉÏ
-#define MT9V03X_FLEXIO_COF_UART_RX     (UART4_TX_C16)                           // ×Ü×ê·ç UART-RX Òý½Å Òª½ÓÔÚµ¥Æ¬»ú TX ÉÏ
+#define MT9V03X_FLEXIO_COF_UART        (UART_4     )                            // é…ç½®æ‘„åƒå¤´æ‰€ä½¿ç”¨åˆ°çš„ä¸²å£
+#define MT9V03X_FLEXIO_COF_BAUR        (9600       )                            // æ€»é’»é£Žé…ç½®ä¸²å£æ³¢ç‰¹çŽ‡
+#define MT9V03X_FLEXIO_COF_UART_TX     (UART4_RX_C17)                           // æ€»é’»é£Ž UART-TX å¼•è„š è¦æŽ¥åœ¨å•ç‰‡æœº RX ä¸Š
+#define MT9V03X_FLEXIO_COF_UART_RX     (UART4_TX_C16)                           // æ€»é’»é£Ž UART-RX å¼•è„š è¦æŽ¥åœ¨å•ç‰‡æœº TX ä¸Š
 
-#define MT9V03X_FLEXIO_COF_IIC_DELAY   (800)                                    // ×Ü×ê·ç IIC ÑÓÊ±
-#define MT9V03X_FLEXIO_COF_IIC_SCL     (C17)                                    // ×Ü×ê·ç IIC-SCL Òý½Å
-#define MT9V03X_FLEXIO_COF_IIC_SDA     (C16)                                    // ×Ü×ê·ç IIC-SDA Òý½Å
+#define MT9V03X_FLEXIO_COF_IIC_DELAY   (800)                                    // æ€»é’»é£Ž IIC å»¶æ—¶
+#define MT9V03X_FLEXIO_COF_IIC_SCL     (C17)                                    // æ€»é’»é£Ž IIC-SCL å¼•è„š
+#define MT9V03X_FLEXIO_COF_IIC_SDA     (C16)                                    // æ€»é’»é£Ž IIC-SDA å¼•è„š
 
-#define MT9V03X_FLEXIO_DMA_CH           (DMA_CH0)                               // ¶¨ÒåÉãÏñÍ·µÄDMA²É¼¯Í¨µÀ
+#define MT9V03X_FLEXIO_DMA_CH           (DMA_CH0)                               // å®šä¹‰æ‘„åƒå¤´çš„DMAé‡‡é›†é€šé“
 
-#define MT9V03X_FLEXIO_VSYNC_PIN        C7                                      // ³¡ÖÐ¶ÏÒý½Å
-#define MT9V03X_FLEXIO_VSYNC_IRQN       GPIO2_Combined_0_15_IRQn                // ÖÐ¶ÏºÅ
-    
-    
-#define MT9V03X_FLEXIO_DATA_PIN         FLEXIO2_D08_C8                          // ¶¨ÒåD0Êý¾ÝÒý½Å  ¼ÙÉèD0¶¨ÒåÎªFLEXIO2_D08_C8 ÄÇÃ´D1ËùÊ¹ÓÃµÄÒý½ÅÔòÎªFLEXIO2_D09_C9£¬ÒÀ´ÎÀàÍÆ
-#define MT9V03X_FLEXIO_PCLK_PIN         FLEXIO2_D05_C5                          // ¶¨ÒåÏñËØÊ±ÖÓÒý½Å
-#define MT9V03X_FLEXIO_HREF_PIN         FLEXIO2_D06_C6                          // ¶¨ÒåÐÐÐÅºÅÒý½Å
+#define MT9V03X_FLEXIO_VSYNC_PIN        C7                                      // åœºä¸­æ–­å¼•è„š
+#define MT9V03X_FLEXIO_VSYNC_IRQN       GPIO2_Combined_0_15_IRQn                // ä¸­æ–­å·
 
 
-#define MT9V03X_FLEXIO_INIT_TIMEOUT    (0x0080)                                 // Ä¬ÈÏµÄÉãÏñÍ·³õÊ¼»¯³¬Ê±Ê±¼ä ºÁÃëÎªµ¥Î»
+#define MT9V03X_FLEXIO_DATA_PIN         FLEXIO2_D08_C8                          // å®šä¹‰D0æ•°æ®å¼•è„š  å‡è®¾D0å®šä¹‰ä¸ºFLEXIO2_D08_C8 é‚£ä¹ˆD1æ‰€ä½¿ç”¨çš„å¼•è„šåˆ™ä¸ºFLEXIO2_D09_C9ï¼Œä¾æ¬¡ç±»æŽ¨
+#define MT9V03X_FLEXIO_PCLK_PIN         FLEXIO2_D05_C5                          // å®šä¹‰åƒç´ æ—¶é’Ÿå¼•è„š
+#define MT9V03X_FLEXIO_HREF_PIN         FLEXIO2_D06_C6                          // å®šä¹‰è¡Œä¿¡å·å¼•è„š
+
+
+#define MT9V03X_FLEXIO_INIT_TIMEOUT    (0x0080)                                 // é»˜è®¤çš„æ‘„åƒå¤´åˆå§‹åŒ–è¶…æ—¶æ—¶é—´ æ¯«ç§’ä¸ºå•ä½
 
 //--------------------------------------------------------------------------------------------------
-// ÉãÏñÍ·Ä¬ÈÏ²ÎÊýÅäÖÃ ÔÚ´ËÐÞ¸ÄÉãÏñÍ·ÅäÖÃ
+// æ‘„åƒå¤´é»˜è®¤å‚æ•°é…ç½® åœ¨æ­¤ä¿®æ”¹æ‘„åƒå¤´é…ç½®
 //--------------------------------------------------------------------------------------------------
-#define MT9V03X_FLEXIO_W               (188)                                    // Í¼Ïñ¿í¶È     ·¶Î§ [1-752] 	Ö»ÄÜÊÇ4µÄ±¶Êý
-#define MT9V03X_FLEXIO_H               (120)                                    // Í¼Ïñ¸ß¶È     ·¶Î§ [1-480]	Ö»ÄÜÊÇ4µÄ±¶Êý
-#define MT9V03X_FLEXIO_IMAGE_SIZE      (MT9V03X_W * MT9V03X_H)                  // 
-    
-#define MT9V03X_FLEXIO_AUTO_EXP_DEF    (0  )                                    // ×Ô¶¯ÆØ¹âÉèÖÃ     Ä¬ÈÏ²»¿ªÆô×Ô¶¯ÆØ¹âÉèÖÃ  ·¶Î§ [0-63] 0Îª¹Ø±Õ
-                                                                                //                  Èç¹û×Ô¶¯ÆØ¹â¿ªÆô  EXP_TIMEÃüÁîÉèÖÃ×Ô¶¯ÆØ¹âÊ±¼äµÄÉÏÏÞ
-                                                                                //                  Ò»°ãÇé¿öÊÇ²»ÐèÒª¿ªÆô×Ô¶¯ÆØ¹âÉèÖÃ Èç¹ûÓöµ½¹âÏß·Ç³£²»¾ùÔÈµÄÇé¿ö¿ÉÒÔ³¢ÊÔÉèÖÃ×Ô¶¯ÆØ¹â£¬Ôö¼ÓÍ¼ÏñÎÈ¶¨ÐÔ
-#define MT9V03X_FLEXIO_EXP_TIME_DEF    (512)                                    // ÆØ¹âÊ±¼ä         ÉãÏñÍ·ÊÕµ½ºó»á×Ô¶¯¼ÆËã³ö×î´óÆØ¹âÊ±¼ä£¬Èç¹ûÉèÖÃ¹ý´óÔòÉèÖÃÎª¼ÆËã³öÀ´µÄ×î´óÆØ¹âÖµ
-#define MT9V03X_FLEXIO_FPS_DEF         (50 )                                    // Í¼ÏñÖ¡ÂÊ         ÉãÏñÍ·ÊÕµ½ºó»á×Ô¶¯¼ÆËã³ö×î´óFPS£¬Èç¹û¹ý´óÔòÉèÖÃÎª¼ÆËã³öÀ´µÄ×î´óFPS
-#define MT9V03X_FLEXIO_LR_OFFSET_DEF   (0  )                                    // Í¼Ïñ×óÓÒÆ«ÒÆÁ¿   ÕýÖµ ÓÒÆ«ÒÆ   ¸ºÖµ ×óÆ«ÒÆ  ÁÐÎª188 376 752Ê±ÎÞ·¨ÉèÖÃÆ«ÒÆ
-                                                                                //                  ÉãÏñÍ·ÊÕÆ«ÒÆÊý¾Ýºó»á×Ô¶¯¼ÆËã×î´óÆ«ÒÆ£¬Èç¹û³¬³öÔòÉèÖÃ¼ÆËã³öÀ´µÄ×î´óÆ«ÒÆ
-#define MT9V03X_FLEXIO_UD_OFFSET_DEF   (0  )                                    // Í¼ÏñÉÏÏÂÆ«ÒÆÁ¿   ÕýÖµ ÉÏÆ«ÒÆ   ¸ºÖµ ÏÂÆ«ÒÆ  ÐÐÎª120 240 480Ê±ÎÞ·¨ÉèÖÃÆ«ÒÆ
-                                                                                //                  ÉãÏñÍ·ÊÕÆ«ÒÆÊý¾Ýºó»á×Ô¶¯¼ÆËã×î´óÆ«ÒÆ£¬Èç¹û³¬³öÔòÉèÖÃ¼ÆËã³öÀ´µÄ×î´óÆ«ÒÆ
-#define MT9V03X_FLEXIO_GAIN_DEF        (32 )                                    // Í¼ÏñÔöÒæ         ·¶Î§ [16-64]  ÔöÒæ¿ÉÒÔÔÚÆØ¹âÊ±¼ä¹Ì¶¨µÄÇé¿öÏÂ¸Ä±äÍ¼ÏñÁÁ°µ³Ì¶È
-#define MT9V03X_FLEXIO_PCLK_MODE_DEF   (0  )                                    // ÏñËØÊ±ÖÓÄ£Ê½     ·¶Î§ [0-1]    Ä¬ÈÏ£º0 ¿ÉÑ¡²ÎÊýÎª£º[0£º²»Êä³öÏûÒþÐÅºÅ,1£ºÊä³öÏûÒþÐÅºÅ]
-                                                                                //                  Í¨³£¶¼ÉèÖÃÎª0£¬Èç¹ûÊ¹ÓÃCH32V307µÄDVP½Ó¿Ú»òSTM32µÄDCMI½Ó¿Ú²É¼¯ÐèÒªÉèÖÃÎª1
-                                                                                //                  ½ö×Ü×ê·ç MT9V034 V1.5 ÒÔ¼°ÒÔÉÏ°æ±¾Ö§³Ö¸ÃÃüÁî
+#define MT9V03X_FLEXIO_W               (188)                                    // å›¾åƒå®½åº¦     èŒƒå›´ [1-752] 	åªèƒ½æ˜¯4çš„å€æ•°
+#define MT9V03X_FLEXIO_H               (120)                                    // å›¾åƒé«˜åº¦     èŒƒå›´ [1-480]	åªèƒ½æ˜¯4çš„å€æ•°
+#define MT9V03X_FLEXIO_IMAGE_SIZE      (MT9V03X_W * MT9V03X_H)                  //
 
-// ÉãÏñÍ·ÃüÁîÃ¶¾Ù
+#define MT9V03X_FLEXIO_AUTO_EXP_DEF    (0  )                                    // è‡ªåŠ¨æ›å…‰è®¾ç½®     é»˜è®¤ä¸å¼€å¯è‡ªåŠ¨æ›å…‰è®¾ç½®  èŒƒå›´ [0-63] 0ä¸ºå…³é—­
+                                                                                //                  å¦‚æžœè‡ªåŠ¨æ›å…‰å¼€å¯  EXP_TIMEå‘½ä»¤è®¾ç½®è‡ªåŠ¨æ›å…‰æ—¶é—´çš„ä¸Šé™
+                                                                                //                  ä¸€èˆ¬æƒ…å†µæ˜¯ä¸éœ€è¦å¼€å¯è‡ªåŠ¨æ›å…‰è®¾ç½® å¦‚æžœé‡åˆ°å…‰çº¿éžå¸¸ä¸å‡åŒ€çš„æƒ…å†µå¯ä»¥å°è¯•è®¾ç½®è‡ªåŠ¨æ›å…‰ï¼Œå¢žåŠ å›¾åƒç¨³å®šæ€§
+#define MT9V03X_FLEXIO_EXP_TIME_DEF    (512)                                    // æ›å…‰æ—¶é—´         æ‘„åƒå¤´æ”¶åˆ°åŽä¼šè‡ªåŠ¨è®¡ç®—å‡ºæœ€å¤§æ›å…‰æ—¶é—´ï¼Œå¦‚æžœè®¾ç½®è¿‡å¤§åˆ™è®¾ç½®ä¸ºè®¡ç®—å‡ºæ¥çš„æœ€å¤§æ›å…‰å€¼
+#define MT9V03X_FLEXIO_FPS_DEF         (100 )                                    // å›¾åƒå¸§çŽ‡         æ‘„åƒå¤´æ”¶åˆ°åŽä¼šè‡ªåŠ¨è®¡ç®—å‡ºæœ€å¤§FPSï¼Œå¦‚æžœè¿‡å¤§åˆ™è®¾ç½®ä¸ºè®¡ç®—å‡ºæ¥çš„æœ€å¤§FPS
+#define MT9V03X_FLEXIO_LR_OFFSET_DEF   (0  )                                    // å›¾åƒå·¦å³åç§»é‡   æ­£å€¼ å³åç§»   è´Ÿå€¼ å·¦åç§»  åˆ—ä¸º188 376 752æ—¶æ— æ³•è®¾ç½®åç§»
+                                                                                //                  æ‘„åƒå¤´æ”¶åç§»æ•°æ®åŽä¼šè‡ªåŠ¨è®¡ç®—æœ€å¤§åç§»ï¼Œå¦‚æžœè¶…å‡ºåˆ™è®¾ç½®è®¡ç®—å‡ºæ¥çš„æœ€å¤§åç§»
+#define MT9V03X_FLEXIO_UD_OFFSET_DEF   (0  )                                    // å›¾åƒä¸Šä¸‹åç§»é‡   æ­£å€¼ ä¸Šåç§»   è´Ÿå€¼ ä¸‹åç§»  è¡Œä¸º120 240 480æ—¶æ— æ³•è®¾ç½®åç§»
+                                                                                //                  æ‘„åƒå¤´æ”¶åç§»æ•°æ®åŽä¼šè‡ªåŠ¨è®¡ç®—æœ€å¤§åç§»ï¼Œå¦‚æžœè¶…å‡ºåˆ™è®¾ç½®è®¡ç®—å‡ºæ¥çš„æœ€å¤§åç§»
+#define MT9V03X_FLEXIO_GAIN_DEF        (32 )                                    // å›¾åƒå¢žç›Š         èŒƒå›´ [16-64]  å¢žç›Šå¯ä»¥åœ¨æ›å…‰æ—¶é—´å›ºå®šçš„æƒ…å†µä¸‹æ”¹å˜å›¾åƒäº®æš—ç¨‹åº¦
+#define MT9V03X_FLEXIO_PCLK_MODE_DEF   (0  )                                    // åƒç´ æ—¶é’Ÿæ¨¡å¼     èŒƒå›´ [0-1]    é»˜è®¤ï¼š0 å¯é€‰å‚æ•°ä¸ºï¼š[0ï¼šä¸è¾“å‡ºæ¶ˆéšä¿¡å·,1ï¼šè¾“å‡ºæ¶ˆéšä¿¡å·]
+                                                                                //                  é€šå¸¸éƒ½è®¾ç½®ä¸º0ï¼Œå¦‚æžœä½¿ç”¨CH32V307çš„DVPæŽ¥å£æˆ–STM32çš„DCMIæŽ¥å£é‡‡é›†éœ€è¦è®¾ç½®ä¸º1
+                                                                                //                  ä»…æ€»é’»é£Ž MT9V034 V1.5 ä»¥åŠä»¥ä¸Šç‰ˆæœ¬æ”¯æŒè¯¥å‘½ä»¤
+
+// æ‘„åƒå¤´å‘½ä»¤æžšä¸¾
 typedef enum
 {
-    MT9V03X_FLEXIO_INIT = 0,                                                    // ÉãÏñÍ·³õÊ¼»¯ÃüÁî
-    MT9V03X_FLEXIO_AUTO_EXP,                                                    // ×Ô¶¯ÆØ¹âÃüÁî
-    MT9V03X_FLEXIO_EXP_TIME,                                                    // ÆØ¹âÊ±¼äÃüÁî
-    MT9V03X_FLEXIO_FPS,                                                         // ÉãÏñÍ·Ö¡ÂÊÃüÁî
-    MT9V03X_FLEXIO_SET_COL,                                                     // Í¼ÏñÁÐÃüÁî
-    MT9V03X_FLEXIO_SET_ROW,                                                     // Í¼ÏñÐÐÃüÁî
-    MT9V03X_FLEXIO_LR_OFFSET,                                                   // Í¼Ïñ×óÓÒÆ«ÒÆÃüÁî
-    MT9V03X_FLEXIO_UD_OFFSET,                                                   // Í¼ÏñÉÏÏÂÆ«ÒÆÃüÁî
-    MT9V03X_FLEXIO_GAIN,                                                        // Í¼ÏñÆ«ÒÆÃüÁî
-    MT9V03X_FLEXIO_PCLK_MODE,                                                   // ÏñËØÊ±ÖÓÄ£Ê½ÃüÁî(½ö×Ü×ê·çMT9V034 V1.5ÒÔ¼°ÒÔÉÏ°æ±¾Ö§³Ö¸ÃÃüÁî)
-    MT9V03X_FLEXIO_CONFIG_FINISH,                                               // ·ÇÃüÁîÎ»£¬Ö÷ÒªÓÃÀ´Õ¼Î»¼ÆÊý
-    
-    MT9V03X_FLEXIO_COLOR_GET_WHO_AM_I = 0xEF,   
-    MT9V03X_FLEXIO_SET_EXP_TIME = 0XF0,                                         // µ¥¶ÀÉèÖÃÆØ¹âÊ±¼äÃüÁî
-    MT9V03X_FLEXIO_GET_STATUS,                                                  // »ñÈ¡ÉãÏñÍ·ÅäÖÃÃüÁî
-    MT9V03X_FLEXIO_GET_VERSION,                                                 // ¹Ì¼þ°æ±¾ºÅÃüÁî
-    
-    MT9V03X_FLEXIO_SET_ADDR = 0XFE,                                             // ¼Ä´æÆ÷µØÖ·ÃüÁî
-    MT9V03X_FLEXIO_SET_DATA                                                     // ¼Ä´æÆ÷Êý¾ÝÃüÁî
+    MT9V03X_FLEXIO_INIT = 0,                                                    // æ‘„åƒå¤´åˆå§‹åŒ–å‘½ä»¤
+    MT9V03X_FLEXIO_AUTO_EXP,                                                    // è‡ªåŠ¨æ›å…‰å‘½ä»¤
+    MT9V03X_FLEXIO_EXP_TIME,                                                    // æ›å…‰æ—¶é—´å‘½ä»¤
+    MT9V03X_FLEXIO_FPS,                                                         // æ‘„åƒå¤´å¸§çŽ‡å‘½ä»¤
+    MT9V03X_FLEXIO_SET_COL,                                                     // å›¾åƒåˆ—å‘½ä»¤
+    MT9V03X_FLEXIO_SET_ROW,                                                     // å›¾åƒè¡Œå‘½ä»¤
+    MT9V03X_FLEXIO_LR_OFFSET,                                                   // å›¾åƒå·¦å³åç§»å‘½ä»¤
+    MT9V03X_FLEXIO_UD_OFFSET,                                                   // å›¾åƒä¸Šä¸‹åç§»å‘½ä»¤
+    MT9V03X_FLEXIO_GAIN,                                                        // å›¾åƒåç§»å‘½ä»¤
+    MT9V03X_FLEXIO_PCLK_MODE,                                                   // åƒç´ æ—¶é’Ÿæ¨¡å¼å‘½ä»¤(ä»…æ€»é’»é£ŽMT9V034 V1.5ä»¥åŠä»¥ä¸Šç‰ˆæœ¬æ”¯æŒè¯¥å‘½ä»¤)
+    MT9V03X_FLEXIO_CONFIG_FINISH,                                               // éžå‘½ä»¤ä½ï¼Œä¸»è¦ç”¨æ¥å ä½è®¡æ•°
+
+    MT9V03X_FLEXIO_COLOR_GET_WHO_AM_I = 0xEF,
+    MT9V03X_FLEXIO_SET_EXP_TIME = 0XF0,                                         // å•ç‹¬è®¾ç½®æ›å…‰æ—¶é—´å‘½ä»¤
+    MT9V03X_FLEXIO_GET_STATUS,                                                  // èŽ·å–æ‘„åƒå¤´é…ç½®å‘½ä»¤
+    MT9V03X_FLEXIO_GET_VERSION,                                                 // å›ºä»¶ç‰ˆæœ¬å·å‘½ä»¤
+
+    MT9V03X_FLEXIO_SET_ADDR = 0XFE,                                             // å¯„å­˜å™¨åœ°å€å‘½ä»¤
+    MT9V03X_FLEXIO_SET_DATA                                                     // å¯„å­˜å™¨æ•°æ®å‘½ä»¤
 }m9v03x_flexio_cmd_enum;
 
-// ÉãÏñÍ·½Ó¿ÚÀàÐÍÃ¶¾Ù
+// æ‘„åƒå¤´æŽ¥å£ç±»åž‹æžšä¸¾
 typedef enum
 {
     MT9V03X_FLEXIO_UART,
     MT9V03X_FLEXIO_SCCB,
 }m9v03x_flexio_type_enum;
 
-extern vuint8   mt9v03x_flexio_finish_flag;                                     // Ò»³¡Í¼Ïñ²É¼¯Íê³É±êÖ¾Î»
+extern vuint8   mt9v03x_flexio_finish_flag;                                     // ä¸€åœºå›¾åƒé‡‡é›†å®Œæˆæ ‡å¿—ä½
 extern uint8    mt9v03x_flexio_image[MT9V03X_FLEXIO_H][MT9V03X_FLEXIO_W];
 
 uint16      mt9v03x_flexio_get_version         (void);
 uint8       mt9v03x_flexio_set_exposure_time   (uint16 light);
 uint8       mt9v03x_flexio_set_reg             (uint8 addr, uint16 data);
 
-// ¶ÔÓÚRT1064À´Ëµ£¬ÓÐÁ½¸ö½Ó¿Ú¶¼¿ÉÒÔ²É¼¯ÉãÏñÍ·Ò»¸öÊÇCSI½Ó¿Ú Ò»¸öÊÇFLEXIO½Ó¿Ú
-// µ±Ö»ÐèÒªÊ¹ÓÃÒ»¸öÉãÏñÍ·µÄÊ±ºò£¬ÍÆ¼öÊ¹ÓÃCSI½Ó¿Ú²É¼¯ÉãÏñÍ·£¬Ò²¾ÍÊÇµ÷ÓÃmt9v03x_init³õÊ¼»¯ÉãÏñÍ·¼´¿É
-// µ±ÐèÒª²É¼¯Á½¸öÉãÏñÍ·µÄÊ±ºò¿ÉÒÔ·Ö±ðµ÷ÓÃmt9v03x_init Óë mt9v03x_flexio_init³õÊ¼»¯Á½¸öÉãÏñÍ·
+// å¯¹äºŽRT1064æ¥è¯´ï¼Œæœ‰ä¸¤ä¸ªæŽ¥å£éƒ½å¯ä»¥é‡‡é›†æ‘„åƒå¤´ä¸€ä¸ªæ˜¯CSIæŽ¥å£ ä¸€ä¸ªæ˜¯FLEXIOæŽ¥å£
+// å½“åªéœ€è¦ä½¿ç”¨ä¸€ä¸ªæ‘„åƒå¤´çš„æ—¶å€™ï¼ŒæŽ¨èä½¿ç”¨CSIæŽ¥å£é‡‡é›†æ‘„åƒå¤´ï¼Œä¹Ÿå°±æ˜¯è°ƒç”¨mt9v03x_initåˆå§‹åŒ–æ‘„åƒå¤´å³å¯
+// å½“éœ€è¦é‡‡é›†ä¸¤ä¸ªæ‘„åƒå¤´çš„æ—¶å€™å¯ä»¥åˆ†åˆ«è°ƒç”¨mt9v03x_init ä¸Ž mt9v03x_flexio_initåˆå§‹åŒ–ä¸¤ä¸ªæ‘„åƒå¤´
 uint8       mt9v03x_flexio_init                (void);
 
 #endif

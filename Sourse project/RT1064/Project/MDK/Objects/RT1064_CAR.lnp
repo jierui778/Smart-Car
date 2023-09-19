@@ -3,6 +3,7 @@
 ".\objects\main.o"
 ".\objects\servo.o"
 ".\objects\motor.o"
+".\objects\encoder.o"
 ".\objects\zf_common_clock.o"
 ".\objects\zf_common_debug.o"
 ".\objects\zf_common_fifo.o"
