@@ -121,7 +121,32 @@
       },
       {
         "name": "hardware",
-        "files": [],
+        "files": [
+          {
+            "path": "../HARDWARE/camera.c"
+          },
+          {
+            "path": "../HARDWARE/control.c"
+          },
+          {
+            "path": "../HARDWARE/encoder.c"
+          },
+          {
+            "path": "../HARDWARE/image.c"
+          },
+          {
+            "path": "../HARDWARE/motor.c"
+          },
+          {
+            "path": "../HARDWARE/motor.h"
+          },
+          {
+            "path": "../HARDWARE/pid.c"
+          },
+          {
+            "path": "../HARDWARE/servo.c"
+          }
+        ],
         "folders": []
       },
       {

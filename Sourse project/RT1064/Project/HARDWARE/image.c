@@ -1,5 +1,6 @@
 #include "image.h"
-#include "common.h"
+
+
 /**
  * @brief 截取我们需要的图像大小
  *
@@ -24,7 +25,7 @@ void Image_Get(IN uint8 (*InImg)[IMGW * 2],OUT uint8 (*OutImg)[IMGW])
  * @param Uint8 输出图像的地址
  * @param Threshold 图像阈值(实际上阈值需要进行计算，而不是直接赋值)
  */
-void Image_GetBinaryImage(IN Uint8 (*InImg)[IMGW], OUT Uint8 (*OutImg)[IMGW], IN Uint8 Threshold)
+void Image_GetBinary(IN Uint8 (*InImg)[IMGW], OUT Uint8 (*OutImg)[IMGW], IN Uint8 Threshold)
 {
 
 

@@ -3,6 +3,7 @@
         "headfile.h": "c",
         "zf_common_headfile.h": "c",
         "zf_driver_encoder.h": "c",
-        "zf_driver_gpio.h": "c"
+        "zf_driver_gpio.h": "c",
+        "image.h": "c"
     }
 }
