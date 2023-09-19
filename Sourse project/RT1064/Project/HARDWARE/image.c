@@ -1,5 +1,9 @@
 #include "image.h"
 
+uint16 Image_Use[IMAGE_WITH][IMAGE_HIGHT];//定义一个二维数组存储压缩后的灰度图像
+
+uint16 Threshold;//图像处理后得到的二值化阈值
+uint8 Enter_Straight = 0;
 
 /**
  * @brief 截取我们需要的图像大小

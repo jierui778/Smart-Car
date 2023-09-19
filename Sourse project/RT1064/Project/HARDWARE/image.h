@@ -8,8 +8,8 @@
 #define OUT
 #define IN_OUT
 
-#define CAMERA_WITH 188
-#define CAMERA_HEIGHT 120
+#define IMAGE_WITH 60//用于处理的图像高度
+#define IMAGE_HIGHT 80//用于处理的图像宽度
 
 void Image_Get();//获取图片
 void Image_
