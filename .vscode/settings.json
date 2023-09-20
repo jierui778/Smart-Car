@@ -5,6 +5,10 @@
         "zf_driver_encoder.h": "c",
         "zf_driver_gpio.h": "c",
         "image.h": "c",
-        "key.h": "c"
+        "key.h": "c",
+        "camera.h": "c",
+        "osg_imageconversion.h": "c",
+        "osg_imageprocessing.h": "c",
+        "zf_device_mt9v03x.h": "c"
     }
 }

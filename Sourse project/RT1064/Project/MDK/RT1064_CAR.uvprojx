@@ -439,6 +439,26 @@
               <FileType>5</FileType>
               <FilePath>..\HARDWARE\encoder.h</FilePath>
             </File>
+            <File>
+              <FileName>camera.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\HARDWARE\camera.h</FilePath>
+            </File>
+            <File>
+              <FileName>camera.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\camera.c</FilePath>
+            </File>
+            <File>
+              <FileName>image.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\image.c</FilePath>
+            </File>
+            <File>
+              <FileName>image.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\HARDWARE\image.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
