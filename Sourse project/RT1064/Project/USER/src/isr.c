@@ -46,6 +46,7 @@ void CSI_IRQHandler(void)
 }
 
 extern void pit_handler (void);
+
 void PIT_IRQHandler(void)
 {
     if(pit_flag_get(PIT_CH0))

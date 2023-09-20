@@ -121,7 +121,32 @@
       },
       {
         "name": "hardware",
-        "files": [],
+        "files": [
+          {
+            "path": "../HARDWARE/camera.c"
+          },
+          {
+            "path": "../HARDWARE/control.c"
+          },
+          {
+            "path": "../HARDWARE/encoder.c"
+          },
+          {
+            "path": "../HARDWARE/image.c"
+          },
+          {
+            "path": "../HARDWARE/motor.c"
+          },
+          {
+            "path": "../HARDWARE/motor.h"
+          },
+          {
+            "path": "../HARDWARE/pid.c"
+          },
+          {
+            "path": "../HARDWARE/servo.c"
+          }
+        ],
         "folders": []
       },
       {
@@ -996,19 +1021,26 @@
         },
         "options": "null"
       },
-      "uploader": "JLink",
+      "uploader": "OpenOCD",
       "uploadConfig": {
         "bin": "",
-        "baseAddr": "",
-        "cpuInfo": {
-          "vendor": "null",
-          "cpuName": "null"
-        },
-        "proType": 1,
-        "speed": 8000,
-        "otherCmds": ""
+        "target": "stm32f1x",
+        "interface": "stlink",
+        "baseAddr": "0x08000000"
       },
-      "uploadConfigMap": {},
+      "uploadConfigMap": {
+        "JLink": {
+          "bin": "",
+          "baseAddr": "",
+          "cpuInfo": {
+            "vendor": "null",
+            "cpuName": "null"
+          },
+          "proType": 1,
+          "speed": 8000,
+          "otherCmds": ""
+        }
+      },
       "custom_dep": {
         "name": "default",
         "incList": [

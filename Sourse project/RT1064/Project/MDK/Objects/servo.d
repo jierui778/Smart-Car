@@ -1,4 +1,4 @@
-./objects/main.o: ..\USER\src\main.c \
+./objects/servo.o: ..\HARDWARE\servo.c ..\HARDWARE\servo.h \
   ..\..\libraries\zf_common\zf_common_headfile.h \
   C:\Program\ Files\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdio.h \
   C:\Program\ Files\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdint.h \
@@ -110,5 +110,4 @@
   ..\..\libraries\sdk\drives\fsl_usdhc.h \
   ..\..\libraries\components\sdmmc\common\fsl_sdmmc_spec.h \
   ..\..\libraries\components\sdmmc\sdmmc_config.h \
-  ..\..\libraries\sdk\board\clock_config.h ..\HARDWARE\encoder.h \
-  ..\HARDWARE\camera.h ..\HARDWARE\image.h
+  ..\..\libraries\sdk\board\clock_config.h

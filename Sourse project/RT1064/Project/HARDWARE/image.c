@@ -1,33 +1,14 @@
 #include "image.h"
-#include "stdlib.h"
-//以下是八邻域的寻找边界的算法
-struct Left_Edge
-{
-    unsigned char row;                        //行坐标，省点内存就没设int
-    unsigned char column;                     //列坐标，同上
-    unsigned char flag;                       //判断边界点是否找到
-};
-struct Right_Edge
-{
-    unsigned char row;                        //行坐标，省点内存就没设int
-    unsigned char column;                     //列坐标，同上
-    unsigned char flag;                       //判断边界点是否找到
-};
 
-struct Left_Edge Left[140];                   //左边界结构体
-struct Right_Edge Right[140];                 //右边界结构体
-unsigned char Left_Count,Right_Count;         //记录左右边界点的个数
-unsigned char grow_left,grow_right;           //记录左右边界在八邻域时寻点的相对位置
-unsigned char Left_Max=140,Right_Max=140;     //左右边界搜点时允许最大的搜点量
-unsigned char Boundary_search_end=30;         //搜寻行数的最高行
-unsigned int temp[188];
 /**
- * @brief 获取我们所需要大小的图片
+ * @brief 截取我们需要的图像大小
  *
+ * @param uint8 (*InImg)[IMGW] 输入图像地址
+ * @param uint8 (*OutImg)[IMGW] 输出图像地址
  */
-void BMP_Get()
+void Image_Compress(void)
 {
-
+    static const uint32_t Y_OFFSET = 0;//Y轴偏移量传入原图像的高度
     // 通常我们在一张188*120的图像上截取我们所需大小的图像
     // 这里的Y轴偏移量就是我们截取的图像的高度
     //	// //如果是原图,直接使用拷贝函数即可
@@ -43,7 +24,11 @@ void BMP_Get()
  * @param Uint8 输出图像的地址
  * @param Threshold 图像阈值(实际上阈值需要进行计算，而不是直接赋值)
  */
+void BMP_GetBinaryImage(OSG_IN Uint8 (*InImg)[IMGW], OSG_OUT Uint8 (*OutImg)[IMGW], OSG_IN Uint8 Threshold)
+{
 
+
+}
 
 /**
  * @brief 大津法求阈值（和其他的版本有些出入）
@@ -55,7 +40,7 @@ void BMP_Get()
  */
 unsigned char BMP_GetThreshold(unsigned char *image[CAMERA_HEIGHT][CAMERA_WITH])
 {
-    unsigned int i,j;                        //用来遍历灰度直方图
+    unsigned char i,j;                        //用来遍历灰度直方图
     unsigned int High1=0;                     //第一高峰
     unsigned char High1_Position=0;           //第一高峰对应的灰度值
     unsigned int High2=0;                     //第二高峰

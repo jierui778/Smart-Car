@@ -408,6 +408,58 @@
         </Group>
         <Group>
           <GroupName>hardware</GroupName>
+          <Files>
+            <File>
+              <FileName>servo.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\servo.c</FilePath>
+            </File>
+            <File>
+              <FileName>servo.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\HARDWARE\servo.h</FilePath>
+            </File>
+            <File>
+              <FileName>motor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\motor.c</FilePath>
+            </File>
+            <File>
+              <FileName>motor.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\HARDWARE\motor.h</FilePath>
+            </File>
+            <File>
+              <FileName>encoder.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\encoder.c</FilePath>
+            </File>
+            <File>
+              <FileName>encoder.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\HARDWARE\encoder.h</FilePath>
+            </File>
+            <File>
+              <FileName>camera.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\HARDWARE\camera.h</FilePath>
+            </File>
+            <File>
+              <FileName>camera.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\camera.c</FilePath>
+            </File>
+            <File>
+              <FileName>image.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\image.c</FilePath>
+            </File>
+            <File>
+              <FileName>image.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\HARDWARE\image.h</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>doc</GroupName>
