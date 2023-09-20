@@ -1,0 +1,13 @@
+Removed Pin From Net: NetName=L_PH_IN Pin=P3-1
+Removed Pin From Net: NetName=R_PH_IN Pin=P3-2
+Removed Pin From Net: NetName=GND Pin=P3-3
+Removed Pin From Net: NetName=GND Pin=P3-4
+Removed Pin From Net: NetName=L_EN_IN Pin=P3-5
+Removed Pin From Net: NetName=R_EN_IN Pin=P3-6
+Add Pin To Net: Unknown Pin: Pin *-1
+Add Pin To Net: Unknown Pin: Pin *-2
+Add Pin To Net: Unknown Pin: Pin *-3
+Add Pin To Net: Unknown Pin: Pin *-4
+Add Pin To Net: Unknown Pin: Pin *-5
+Add Pin To Net: Unknown Pin: Pin *-6
+Add Class Member: Failed to add class member : Component * PH

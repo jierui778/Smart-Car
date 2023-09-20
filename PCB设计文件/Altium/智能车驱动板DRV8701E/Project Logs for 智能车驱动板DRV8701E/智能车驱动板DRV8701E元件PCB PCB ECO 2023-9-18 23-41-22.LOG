@@ -1,0 +1,6 @@
+Removed Member From Class: ClassName=智能车驱动板DRV8701E原理图Sheet Member=xt30-M1
+Removed Member From Class: ClassName=智能车驱动板DRV8701E原理图Sheet Member=xt30-M2
+Change Component Designator: OldDesignator=xt30-M1 NewDesignator=M1
+Change Component Designator: OldDesignator=xt30-M2 NewDesignator=M2
+Added Member To Class: ClassName=智能车驱动板DRV8701E原理图Sheet Member=Component M1 MountHole
+Added Member To Class: ClassName=智能车驱动板DRV8701E原理图Sheet Member=Component M2 MountHole
