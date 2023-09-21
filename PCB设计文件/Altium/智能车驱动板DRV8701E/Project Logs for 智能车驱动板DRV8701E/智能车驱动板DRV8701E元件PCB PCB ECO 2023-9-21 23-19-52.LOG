@@ -1,0 +1,14 @@
+Change Component Footprint: Designator=E1 Old Footprint=CE-F(10*10.2) New Footprint=CE-D(6.3*7.7)
+Change Component Footprint: Designator=J? Old Footprint=HT3.96-2P-WI New Footprint=CZ-5.08-L-Z-2P
+Change Footprint: Cannot match pads with new footprint in component :U1 Footprint:QFN24-4*4_M
+Change Footprint: Cannot match pads with new footprint in component :U3 Footprint:QFN24-4*4_M
+Change Component Footprint: Designator=XH1 Old Footprint=XH2.54-6P-LI New Footprint=XH2.54-6P-WI
+Change Component Comment : Designator=E1 Old Comment=10uF/10V New Comment=220uF/25V
+Added Component: Designator=D4(SOD-123-L)
+Add component (AddParameter): Name = "Price(RMB)"; Value = "0.000"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Published"; Value = "8-Jun-2000"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Publisher"; Value = "Altium Limited"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Revision"; Value = "July-2002: Re-released for DXP Platform."; VariantName = "[No Variations]"
+Added Pin To Net: NetName=GND Pin=D4-A
+Added Pin To Net: NetName=3V3 Pin=D4-K
+Added Member To Class: ClassName=智能车驱动板DRV8701E原理图Sheet Member=Component D4 BZT52C3V3
