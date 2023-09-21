@@ -1,0 +1,8 @@
+Added Component: Designator=PH(PH  X6)
+Added Pin To Net: NetName=L_PH_IN Pin=PH-1
+Added Pin To Net: NetName=R_PH_IN Pin=PH-2
+Added Pin To Net: NetName=GND Pin=PH-3
+Added Pin To Net: NetName=GND Pin=PH-4
+Added Pin To Net: NetName=L_EN_IN Pin=PH-5
+Added Pin To Net: NetName=R_EN_IN Pin=PH-6
+Added Member To Class: ClassName=智能车驱动板DRV8701E原理图Sheet Member=Component PH PH  X6

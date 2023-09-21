@@ -1,0 +1,3 @@
+Change Component Designator: OldDesignator=* NewDesignator=xt30-M1
+Change Component Designator: OldDesignator=* NewDesignator=xt30-M2
+Added Member To Class: ClassName=智能车驱动板DRV8701E原理图Sheet Member=Component xt30-M2
