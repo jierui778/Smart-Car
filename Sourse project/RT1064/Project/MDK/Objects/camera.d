@@ -1,51 +1,46 @@
 ./objects/camera.o: ..\HARDWARE\camera.c ..\HARDWARE\camera.h \
   ..\..\libraries\zf_common\zf_common_headfile.h \
-  C:\Program\ Files\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdio.h \
-  C:\Program\ Files\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdint.h \
-  C:\Program\ Files\Keil_v5\ARM\ARMCLANG\Bin\..\include\string.h \
+  D:\keil5\ARM\ARMCLANG\Bin\..\include\stdio.h \
+  D:\keil5\ARM\ARMCLANG\Bin\..\include\stdint.h \
+  D:\keil5\ARM\ARMCLANG\Bin\..\include\string.h \
   ..\..\libraries\sdk\drives\fsl_common.h \
-  C:\Program\ Files\Keil_v5\ARM\ARMCLANG\Bin\..\include\assert.h \
-  C:\Program\ Files\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdbool.h \
-  C:\Program\ Files\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdlib.h \
-  C:\Program\ Files\Keil_v5\ARM\ARMCLANG\Bin\..\include\stddef.h \
+  D:\keil5\ARM\ARMCLANG\Bin\..\include\assert.h \
+  D:\keil5\ARM\ARMCLANG\Bin\..\include\stdbool.h \
+  D:\keil5\ARM\ARMCLANG\Bin\..\include\stdlib.h \
+  D:\keil5\ARM\ARMCLANG\Bin\..\include\stddef.h \
   ..\..\libraries\sdk\deceive\fsl_device_registers.h \
   ..\..\libraries\sdk\deceive\MIMXRT1064.h \
   ..\..\libraries\sdk\CMSIS\Include\core_cm7.h \
   ..\..\libraries\sdk\CMSIS\Include\cmsis_version.h \
   ..\..\libraries\sdk\CMSIS\Include\cmsis_compiler.h \
   ..\..\libraries\sdk\CMSIS\Include\cmsis_armclang.h \
-  C:\Program\ Files\Keil_v5\ARM\ARMCLANG\Bin\..\include\arm_compat.h \
-  C:\Program\ Files\Keil_v5\ARM\ARMCLANG\Bin\..\include\arm_acle.h \
+  D:\keil5\ARM\ARMCLANG\Bin\..\include\arm_compat.h \
+  D:\keil5\ARM\ARMCLANG\Bin\..\include\arm_acle.h \
   ..\..\libraries\sdk\CMSIS\Include\mpu_armv7.h \
   ..\..\libraries\sdk\deceive\system_MIMXRT1064.h \
   ..\..\libraries\sdk\deceive\MIMXRT1064_features.h \
   ..\..\libraries\sdk\drives\fsl_common_arm.h \
   ..\..\libraries\sdk\drives\fsl_clock.h \
-  ..\..\libraries\sdk\drives\fsl_common.h \
   ..\..\libraries\sdk\utilities\debug_console\fsl_debug_console.h \
-  C:\Program\ Files\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdarg.h \
+  D:\keil5\ARM\ARMCLANG\Bin\..\include\stdarg.h \
   ..\..\libraries\sdk\drives\fsl_iomuxc.h \
   ..\..\libraries\sdk\drives\fsl_cache.h \
   ..\..\libraries\sdk\drives\fsl_csi.h \
   ..\..\libraries\zf_common\zf_common_typedef.h \
-  ..\..\libraries\sdk\drives\fsl_common_arm.h \
   ..\..\libraries\zf_common\zf_common_clock.h \
   ..\..\libraries\zf_common\zf_common_debug.h \
   ..\..\libraries\zf_common\zf_common_fifo.h \
   ..\..\libraries\zf_common\zf_common_font.h \
   ..\..\libraries\zf_common\zf_common_function.h \
   ..\..\libraries\zf_common\zf_common_interrupt.h \
-  ..\..\libraries\sdk\deceive\MIMXRT1064.h \
   ..\..\libraries\zf_common\zf_common_vector.h \
   ..\..\libraries\zf_driver\zf_driver_adc.h \
-  ..\..\libraries\zf_common\zf_common_typedef.h \
   ..\..\libraries\zf_driver\zf_driver_delay.h \
   ..\..\libraries\zf_driver\zf_driver_encoder.h \
   ..\..\libraries\zf_driver\zf_driver_exti.h \
   ..\..\libraries\zf_driver\zf_driver_gpio.h \
   ..\..\libraries\sdk\drives\fsl_gpio.h \
   ..\..\libraries\zf_driver\zf_driver_flash.h \
-  ..\..\libraries\zf_driver\zf_driver_gpio.h \
   ..\..\libraries\zf_driver\zf_driver_iic.h \
   ..\..\libraries\zf_driver\zf_driver_pit.h \
   ..\..\libraries\sdk\drives\fsl_pit.h \
@@ -59,7 +54,6 @@
   ..\..\libraries\sdk\drives\fsl_lpuart.h \
   ..\..\libraries\zf_driver\zf_driver_csi.h \
   ..\..\libraries\zf_driver\zf_driver_romapi.h \
-  ..\..\libraries\sdk\drives\fsl_clock.h \
   ..\..\libraries\sdk\xip\EVKMIMXRT1064_FLEXSPI_NOR_CONFIG.h \
   ..\..\libraries\sdk\drives\fsl_rtwdog.h \
   ..\..\libraries\sdk\drives\fsl_wdog.h \
@@ -69,14 +63,12 @@
   ..\..\libraries\zf_device\zf_device_absolute_encoder.h \
   ..\..\libraries\zf_device\zf_device_bluetooth_ch9141.h \
   ..\..\libraries\zf_device\zf_device_camera.h \
-  ..\..\libraries\zf_common\zf_common_fifo.h \
   ..\..\libraries\zf_device\zf_device_gps_tau1201.h \
   ..\..\libraries\zf_device\zf_device_icm20602.h \
   ..\..\libraries\zf_device\zf_device_imu963ra.h \
   ..\..\libraries\zf_device\zf_device_ips114.h \
   ..\..\libraries\zf_device\zf_device_ips200.h \
   ..\..\libraries\zf_device\zf_device_key.h \
-  ..\..\libraries\zf_common\zf_common_debug.h \
   ..\..\libraries\zf_device\zf_device_mpu6050.h \
   ..\..\libraries\zf_device\zf_device_oled.h \
   ..\..\libraries\zf_device\zf_device_mt9v03x.h \
