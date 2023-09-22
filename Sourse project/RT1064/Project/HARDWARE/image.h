@@ -13,8 +13,9 @@
 #define Primeval_With MT9V03X_W  // 原始图像宽度
 
 void Image_Compress();
-
+unsigned char BMP_GetThreshold(void);
 extern uint8 Image_Use[Image_Hight][Image_With]; 
+void Binarization(unsigned char threshold);
 // void Image_Get();//获取图片
 //// void Image_
 // void Image_Binarization(void);//二值化
