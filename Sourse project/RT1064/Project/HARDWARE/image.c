@@ -15,13 +15,13 @@ uint8 Enter_Straight = 0;
  {
      int i, j, row, line;
      const float pro_h = Primeval_Hight / Image_Hight, pro_w = Primeval_With / Image_With; // 120/60=2 188/100=1.88
-     for (i = 0; i < Primeval_Hight; i++)                                                    // 遍历图像的每一行，从第零行到第59行。
+     for (i = 0; i < Image_Hight; i++)                                                     // 遍历图像的每一行，从第零行到第59行。
      {
          row = ((int)i * (int)pro_h) +0.5;
          for (j = 0; j < Primeval_With; j++) // 遍历图像的每一列，从第零列到第79列。
          {
              line = (int)j * (int)pro_w +0.5;
-             Image_Use[i][j] = mt9v03x_image[i][j]; // mt9v03x_image数组里面是原始灰度图像，Image_Use数组存储的是我之后要拿去处理的图像，但依然是灰度图像哦！只是压缩了一下而已。
+             Image_Use[i][j] = mt9v03x_image[row][line]; // mt9v03x_image数组里面是原始灰度图像，Image_Use数组存储的是我之后要拿去处理的图像，但依然是灰度图像哦！只是压缩了一下而已。
          }
      }
      mt9v03x_finish_flag = 0;
