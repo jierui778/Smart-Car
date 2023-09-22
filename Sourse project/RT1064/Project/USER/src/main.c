@@ -2,6 +2,7 @@
 #include "image.h"
 #include "buzzer.h"
 
+unsigned char TH;
 // uint8 test[Image_With][Image_With];MT9V03X_W, MT9V03X_H
 
 int main(void)
@@ -28,15 +29,9 @@ int main(void)
     while (1)
     {
 		Image_Compress();
-       
-        
-        //        Image_Compress(mt9v03x_image, test);
-        // printf("ENCODER_1 counter \t%d .\r\n", encoder_l_data); //
-        // printf("ENCODER_2 counter \t%d .\r\n", encoder_r_data); //
-
-        // camera_send_image(DEBUG_UART_INDEX, (const uint8 *)Image_Use, 6000)
-//		tft180_show_gray_image(0,0,(uint8 *)Image_Use, 188, 120,100,60,0);
-        tft180_displayimage03x((uint8 *)Image_Use, 100, 60); // ��Ҫע�� ֱ����ʾ 188*120 �ֱ�������ʾ���µ� ��ֱ�ӽ�����Ա���
-        // mt9v03x_finish_flag = 0;
+        TH=BMP_GetThreshold();					//大津法求阈值，这个大津法有问题，暂时输入不了
+		Binarization(TH);						//阈值的二值化处理
+		tft180_displayimage03x((uint8 *)Image_Use, 100, 60); // 只用这一个函数即可，不要用输入参数有阈值的函数
+        mt9v03x_finish_flag = 0;
     }
 }
