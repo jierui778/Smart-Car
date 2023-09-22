@@ -26,6 +26,7 @@ uint8 Enter_Straight = 0;
     }
     mt9v03x_finish_flag = 0;
 }
+
 // // void Image_Compress(IN uint8 (*InImg)[Image_With * 2], OUT uint8 (*OutImg)[Image_With])
 // {
 //     int8 i, j, row, line;
