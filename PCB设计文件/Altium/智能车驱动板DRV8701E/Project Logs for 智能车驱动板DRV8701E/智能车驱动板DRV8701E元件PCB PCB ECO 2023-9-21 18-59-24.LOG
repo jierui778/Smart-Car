@@ -1,6 +1,0 @@
-Change Footprint: Cannot match pads with new footprint in component :U1 Footprint:QFN24-4*4_M
-Change Footprint: Cannot match pads with new footprint in component :U3 Footprint:QFN24-4*4_M
-Add Component: Footprint Not Found SOD-123-L
-Add Pin To Net: Unknown Pin: Pin D4-A
-Add Pin To Net: Unknown Pin: Pin D4-K
-Add Class Member: Failed to add class member : Component D4 BZT52C3V3

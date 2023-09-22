@@ -1,4 +1,0 @@
-Change Footprint: Cannot match pads with new footprint in component :U1 Footprint:QFN24-4*4_M
-Change Footprint: Cannot match pads with new footprint in component :U3 Footprint:QFN24-4*4_M
-Added Pin To Net: NetName=DVDD Pin=C12-2
-Added Pin To Net: NetName=DVDD Pin=U3-8
