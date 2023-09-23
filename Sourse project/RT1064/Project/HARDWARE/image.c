@@ -6,10 +6,6 @@
  * @param uint8 (*InImg)[IMGW] 输入图像地址
  * @param uint8 (*OutImg)[IMGW] 输出图像地址
  */
-<<<<<<< HEAD
-
-=======
->>>>>>> c198a7272dc7957701004af60a124df514591a53
  void Image_Compress(void)
 {
     int i, j, row, line;
