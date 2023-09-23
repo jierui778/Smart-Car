@@ -6,7 +6,10 @@
  * @param uint8 (*InImg)[IMGW] 输入图像地址
  * @param uint8 (*OutImg)[IMGW] 输出图像地址
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> c198a7272dc7957701004af60a124df514591a53
  void Image_Compress(void)
 {
     int i, j, row, line;
@@ -22,6 +25,7 @@
     }
     mt9v03x_finish_flag = 0;
 }
+<<<<<<< HEAD
  {
      int i, j, row, line;
      const float pro_h = Primeval_Hight / Image_Hight, pro_w = Primeval_With / Image_With; // 120/60=2 188/100=1.88
@@ -36,6 +40,9 @@
      }
      mt9v03x_finish_flag = 0;
  }
+=======
+
+>>>>>>> c198a7272dc7957701004af60a124df514591a53
 // // void Image_Compress(IN uint8 (*InImg)[Image_With * 2], OUT uint8 (*OutImg)[Image_With])
 // {
 //     int8 i, j, row, line;
@@ -158,6 +165,7 @@
  *                                   而1.0就是在寻找二次高峰出现了bug，2.0的方法相对来说更科学一点
  */
 //uint8 GetThreshold(void)   //注意计算阈值的一定要是原图像
+<<<<<<< HEAD
 //{
 //#define GrayScale 256				          //定义灰度总值
 //	uint8 last_threshold;                     //定义上次的阈值，进行阈值的输出限幅
@@ -327,9 +335,83 @@ uint8 GetThreshold(void)   //注意计算阈值的一定要是原图像
 // * @param Threshold 图像阈值(实际上阈值需要进行计算，而不是直接赋值)
 // */
 // void Image_GetBinary(IN Uint8 (*InImg)[IMGW], OUT Uint8 (*OutImg)[IMGW], IN Uint8 Threshold)
+=======
+>>>>>>> c198a7272dc7957701004af60a124df514591a53
 //{
+//#define GrayScale 256				          //定义灰度总值
+//	uint8 last_threshold;                     //定义上次的阈值，进行阈值的输出限幅
+//    int Pixel_Max=0;                          //定义灰度值的最大值和最小值（0-255）
+//    int Pixel_Min=255;
+//    uint16 width = Image_With;                //定义图像的宽和高
+//    uint16 height = Image_Hight;
+//    int pixelCount[GrayScale];                //记录每个灰度对应的像素值
+//    float pixelPro[GrayScale];                //定义每个像素点在图中的比例的数组
+//    int i, j, pixelSum = width * height/4;    //定义中间变量，定义像素总数（这里只要算1/4的就行）
+//    uint8 threshold = 0;                      //定义返回阈值
+//    uint8* data = *Image_Use;                 //指向像素数据的指针，省内存
+//    for (i = 0; i < GrayScale; i++)           //初始化两个灰度值像素数组
+//    {
+//        pixelCount[i] = 0;
+//        pixelPro[i] = 0;
+//    }                            
+//    uint32 gray_sum=0;                        //定义所有灰度值的总数
+//    //一 统计灰度级中每个像素在整幅图像中的个数
+//    for (i = 0; i < height; i+=2)             
+//    {
+//        for (j = 0; j < width; j+=2)
+//        {
+//            pixelCount[(int)data[i * width + j]]++;                                 //将当前的点的像素值作为计数数组的下标
+//            gray_sum+=(int)data[i * width + j];                                     //求灰度值总和
+//            if(data[i * width + j]>Pixel_Max)   Pixel_Max=data[i * width + j];      //同时记录直方图中灰度值的最高峰和最低峰
+//            if(data[i * width + j]<Pixel_Min)   Pixel_Min=data[i * width + j];
+//        }
+//    }
+//    //二 计算每个像素值的点在整幅图像中的比例
+//    for (i = Pixel_Min; i < Pixel_Max; i++)     
+//    {
+//        pixelPro[i] = (float)pixelCount[i] / pixelSum;
+// 
+//    }
+//    //三 遍历灰度级[0,255]，开始寻找
+//    float w0, w1, u0tmp, u1tmp, u0, u1, u, deltaTmp, deltaMax = 0;
+//    //w0：后景所占总图片的总比例        w1:前景所占总图片的总比例   有关系式：（即阈值以下为w0,阈值以上为w1）w1+w0=1
+//    //u0tmp：背景部分灰度值点的比例*灰度值          u1tmp：前景部分灰度值点的比例*灰度值  （后面有解析）
+//    //u0,u1：背景，前景的平均灰度   u：全局平均灰度 u=(u1+u2)/2
+//    w0 = w1 = u0tmp = u1tmp = u0 = u1 = u = deltaTmp = 0;
+//    for (j = Pixel_Min; j < Pixel_Max; j++)
+//    {
+// 
+//        w0 += pixelPro[j];                    //背景部分每个灰度值的像素点所占比例之和   即背景部分的比例
+//        u0tmp += j * pixelPro[j];             //背景部分每个灰度值的点的比例 *灰度值
+// 
+//        w1=1-w0;
+//        u1tmp=gray_sum/pixelSum-u0tmp;
+// 
+//        u0 = u0tmp / w0;                      //背景平均灰度
+//        u1 = u1tmp / w1;                      //前景平均灰度
+//        u = u0tmp + u1tmp;                    //全局平均灰度
+//        deltaTmp = (float)(w0 *w1* (u0 - u1)* (u0 - u1)) ;
+//        if (deltaTmp > deltaMax)
+//        {
+//            deltaMax = deltaTmp;
+//            threshold = j;
+//        }
+//        if (deltaTmp < deltaMax)
+//        {
+//            break;
+//        }
+// 
+//    }
+//    //四 阈值限幅，如果超过想要的阈值，就会和上次一样
+//    if(threshold>50 && threshold<130)
+//        last_threshold = threshold;
+//    else
+//        threshold = last_threshold;
+//	
+//    return threshold;
 //}
 
+<<<<<<< HEAD
 ///**
 // * @brief 大津法求阈值（和其他的版本有些出入）
 // *
@@ -395,3 +477,93 @@ uint8 GetThreshold(void)   //注意计算阈值的一定要是原图像
 
  
 >>>>>>> c198a72 (增加大津法优化（效果不是很强）)
+=======
+//此函数在原函数的基础上，优化了阈值：在图像出现大面积一个颜色时，此时直方图中只有一个高峰（或者两个高峰很接近），这里就直接选择最高峰对应的灰度值作为灰度值传输阈值
+uint8 GetThreshold(void)   //注意计算阈值的一定要是原图像
+{
+#define GrayScale 256				          //定义灰度总值
+	uint8 last_threshold;                     //定义上次的阈值，进行阈值的输出限幅
+    int Pixel_Max=0;                          //定义灰度值的最大值和最小值（0-255）
+    int Pixel_Min=255;
+	int Pixel_Max_Position;					  //灰度值最高峰对应的灰度值
+    uint16 width = Image_With;                //定义图像的宽和高
+    uint16 height = Image_Hight;
+    int pixelCount[GrayScale];                //记录每个灰度对应的像素值
+    float pixelPro[GrayScale];                //定义每个像素点在图中的比例的数组
+    int i, j, pixelSum = width * height/4;    //定义中间变量，定义像素总数（这里只要算1/4的就行）
+    uint8 threshold = 0;                      //定义返回阈值
+    uint8* data = *Image_Use;                 //指向像素数据的指针，省内存
+    for (i = 0; i < GrayScale; i++)           //初始化两个灰度值像素数组
+    {
+        pixelCount[i] = 0;
+        pixelPro[i] = 0;
+    }                            
+    uint32 gray_sum=0;                        //定义所有灰度值的总数
+    //一 统计灰度级中每个像素在整幅图像中的个数
+    for (i = 0; i < height; i+=2)             
+    {
+        for (j = 0; j < width; j+=2)
+        {
+            pixelCount[(int)data[i * width + j]]++;                                 //将当前的点的像素值作为计数数组的下标
+            gray_sum+=(int)data[i * width + j];                                     //求灰度值总和
+            if(data[i * width + j]>Pixel_Max)   
+			{	
+				Pixel_Max=data[i * width + j]; 										//同时记录直方图中灰度值的最高峰和最低峰
+				Pixel_Max_Position=i * width + j;
+			}				
+            if(data[i * width + j]<Pixel_Min)   Pixel_Min=data[i * width + j];
+        }
+    }
+    //二 计算每个像素值的点在整幅图像中的比例
+    for (i = Pixel_Min; i < Pixel_Max; i++)     
+    {
+        pixelPro[i] = (float)pixelCount[i] / pixelSum;
+ 
+    }
+    //三 遍历灰度级[0,255]，开始寻找
+    float w0, w1, u0tmp, u1tmp, u0, u1, u, deltaTmp, deltaMax = 0;
+    //w0：后景所占总图片的总比例        w1:前景所占总图片的总比例   有关系式：（即阈值以下为w0,阈值以上为w1）w1+w0=1
+    //u0tmp：背景部分灰度值点的比例*灰度值          u1tmp：前景部分灰度值点的比例*灰度值  （后面有解析）
+    //u0,u1：背景，前景的平均灰度   u：全局平均灰度 u=(u1+u2)/2
+    w0 = w1 = u0tmp = u1tmp = u0 = u1 = u = deltaTmp = 0;
+    for (j = Pixel_Min; j < Pixel_Max; j++)
+    {
+ 
+        w0 += pixelPro[j];                    //背景部分每个灰度值的像素点所占比例之和   即背景部分的比例
+        u0tmp += j * pixelPro[j];             //背景部分每个灰度值的点的比例 *灰度值
+ 
+        w1=1-w0;
+        u1tmp=gray_sum/pixelSum-u0tmp;
+ 
+        u0 = u0tmp / w0;                      //背景平均灰度
+        u1 = u1tmp / w1;                      //前景平均灰度
+        u = u0tmp + u1tmp;                    //全局平均灰度
+        deltaTmp = (float)(w0 *w1* (u0 - u1)* (u0 - u1)) ;
+        if (deltaTmp > deltaMax)
+        {
+            deltaMax = deltaTmp;
+            threshold = j;
+        }
+        if (deltaTmp < deltaMax)
+        {
+            break;
+        }
+ 
+    }
+    //四 阈值限幅，如果超过想要的阈值，就会和上次一样
+    if(threshold>80 && threshold<130)
+        last_threshold = threshold;
+    else
+        threshold = last_threshold;
+	
+	//防止强光，出现单高峰时，就选择该单高峰的灰度值作为阈值传输
+	if(threshold==0)
+	{
+		threshold=Pixel_Max_Position;
+	}
+    return threshold;
+}
+
+
+ 
+>>>>>>> c198a7272dc7957701004af60a124df514591a53
