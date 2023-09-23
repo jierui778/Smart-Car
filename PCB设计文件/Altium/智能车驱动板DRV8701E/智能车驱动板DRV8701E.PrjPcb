@@ -223,10 +223,18 @@ DocumentPath=Project Outputs for 智能车驱动板DRV8701E\Design Rule Check - 
 DItemRevisionGUID=
 
 [GeneratedDocument2]
-DocumentPath=BOM\智能车驱动板DRV8701E.xlsx
+DocumentPath=..\..\..\..\..\智能车驱动板DRV8701E 2023-9-23 15-06-59.WAS
 DItemRevisionGUID=
 
 [GeneratedDocument3]
+DocumentPath=..\..\..\..\..\智能车驱动板DRV8701E 2023-9-23 15-12-36.WAS
+DItemRevisionGUID=
+
+[GeneratedDocument4]
+DocumentPath=BOM\智能车驱动板DRV8701E.xlsx
+DItemRevisionGUID=
+
+[GeneratedDocument5]
 DocumentPath=Project Outputs for 智能车驱动板DRV8701E\智能车驱动板DRV8701E.xlsx
 DItemRevisionGUID=
 
