@@ -2,27 +2,29 @@
 #include "image.h"
 #include "buzzer.h"
 #include "zf_common_headfile.h"
-
+#include "servo.h"
+#define SERVO_MOTOR_DUTY(x)         ((float)PWM_DUTY_MAX/(1000.0/(float)50)*(0.5+(float)(x)/90.0))
 unsigned int TH;
-unsigned int i,j;
-// uint8 test[Image_With][Image_With];MT9V03X_W, MT9V03X_H
-	
+//unsigned int i,j;
+
+static float i=0.0;
 int main(void)
 {
     clock_init(SYSTEM_CLOCK_600M); // ï¿½ï¿½ï¿½ï¿½É¾ï¿½ï¿½
 //    Encoder_Init();
     debug_init();
-    gpio_init(B9, GPO, GPIO_HIGH, GPO_PUSH_PULL); // ï¿½ï¿½Ê¼ï¿½ï¿½ LED1 ï¿½ï¿½ï¿? Ä¬ï¿½Ï¸ßµï¿½Æ½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê?
-    tft180_set_dir(TFT180_PORTAIT);             // ï¿½ï¿½Òªï¿½Èºï¿½ï¿½ï¿½ ï¿½ï¿½È»ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
-    tft180_init();
-    Buzzer_Init();
-//    tft180_show_string(0, 0, "mt9v03x init.");
+//    gpio_init(B9, GPO, GPIO_HIGH, GPO_PUSH_PULL); // ï¿½ï¿½Ê¼ï¿½ï¿½ LED1 ï¿½ï¿½ï¿½? Ä¬ï¿½Ï¸ßµï¿½Æ½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£ï¿½?
+//    tft180_set_dir(TFT180_PORTAIT);             // ï¿½ï¿½Òªï¿½Èºï¿½ï¿½ï¿½ ï¿½ï¿½È»ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
+//    tft180_init();
+//    Buzzer_Init();
+////    tft180_show_string(0, 0, "mt9v03x init.");
 
-    Camera_Init();
+//    Camera_Init();
+    Servo_Init();
 //    while (1)
 //    {
 //        if (mt9v03x_init())
-//            gpio_toggle_level(B9); // ï¿½ï¿½×ª LED ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ? ï¿½ï¿½ï¿½ï¿½ LED ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ»ï¿½ï¿½ï¿½ï¿½Äºï¿½ï¿½ï¿?
+//            gpio_toggle_level(B9); // ï¿½ï¿½×ª LED ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½? ï¿½ï¿½ï¿½ï¿½ LED ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ»ï¿½ï¿½ï¿½ï¿½Äºï¿½ï¿½ï¿½?
 //        else
 //            break;
 //        system_delay_ms(1000); // ï¿½ï¿½ï¿½Æ±ï¿½Ê¾ï¿½ì³£
@@ -30,10 +32,72 @@ int main(void)
 
     while (1)
     {
-		Image_Compress();
-        TH=GetThreshold();					//½«ãÐÖµ´«Êä
-		tft180_show_uint(4,80,TH,3);
-		Binarization(TH);
-		tft180_displayimage03x((uint8 *)Image_Use, 100, 60); // ÏÔÊ¾£¬²»ÓÃ¶þÖµ»¯µÄº¯Êý£¬ÄÇ¸ö²»Ì«ÐÐ
+////////		Image_Compress();
+//////        TH=GetThreshold();					//ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½
+//////		tft180_show_uint(4,80,TH,3);
+//////		Binarization(TH);
+//////		tft180_displayimage03x((uint8 *)Image_Use, 100, 60); //
+//        system_delay_ms(10);
+//        pwm_set_duty(SERVO_CH, 800);
+
+//        pwm_set_duty(SERVO_CH, 1000);
+//        pwm_set_duty(PWM4_MODULE2_CHA_C30, (uint32)SERVO_MOTOR_DUTY(i));
+
     }
 }
+
+
+
+
+
+//#define SERVO_MOTOR_PWM             (PWM4_MODULE2_CHA_C30)                          // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½
+//#define SERVO_MOTOR_FREQ            (50 )                                           // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½ï¿½Æµï¿½ï¿½  ï¿½ï¿½ï¿½ï¿½ï¿½×¢ï¿½â·¶Î§ 50-300
+//                                         // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½ï¿½ï¿½î¶¯ï¿½ï¿½Î§ ï¿½Ç¶ï¿½
+
+//#define SERVO_MOTOR_DUTY(x)         ((float)PWM_DUTY_MAX/(1000.0/(float)SERVO_MOTOR_FREQ)*(0.5+(float)(x)/90.0))
+
+
+
+//float servo_motor_duty = 0.0;                                                  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç¶ï¿½
+//float servo_motor_dir = 1;                                                      // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì¬
+
+//int main(void)
+//{
+//    clock_init(SYSTEM_CLOCK_600M);  // ï¿½ï¿½ï¿½ï¿½É¾ï¿½ï¿½
+//    debug_init();                   // ï¿½ï¿½ï¿½Ô¶Ë¿Ú³ï¿½Ê¼ï¿½ï¿½
+//    Servo_Init();
+//
+//
+//
+//
+////    interrupt_global_enable(0);
+//
+//    while(1)
+//    {
+//        pwm_set_duty(SERVO_MOTOR_PWM, (uint32)SERVO_MOTOR_DUTY(servo_motor_duty));
+
+////        if(servo_motor_dir)
+////        {
+//            servo_motor_duty ++;
+////            if(servo_motor_duty >= SERVO_MOTOR_R_MAX)
+////            {
+////                servo_motor_dir = 0x00;
+////            }
+////        }
+////        else
+////        {
+////            servo_motor_duty --;
+////            if(servo_motor_duty <= SERVO_MOTOR_L_MAX)
+////            {
+////                servo_motor_dir = 0x01;
+////            }
+////        }
+//        system_delay_ms(100);
+//        if(servo_motor_duty>180)
+//        {
+//            servo_motor_duty=0;
+//
+//        }
+//
+//    }
+//}
