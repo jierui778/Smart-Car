@@ -1,5 +1,8 @@
 #include "image.h"
 
+uint8 Image_Use[Image_Hight][Image_With];
+
+unsigned int temp[188];
 /**
  * @brief 截取我们需要的图像大小
  *
@@ -220,14 +223,6 @@ uint8 Image_GetThreshold(void)   //注意计算阈值的一定要是原图像
 	}
     return threshold;
 }
-///**
-// * @brief 将输入的灰度图像转化为二值化图像
-// *
-// * @param Uint8 输入图像的地址
-// * @param Uint8 输出图像的地址
-// * @param Threshold 图像阈值(实际上阈值需要进行计算，而不是直接赋值)
-// */
-// void Image_GetBinary(IN Uint8 (*InImg)[IMGW], OUT Uint8 (*OutImg)[IMGW], IN Uint8 Threshold)
 
 /**
  * @brief 图像加框，防止八邻域扫到附近的点，将边界上的点的灰度值设为0
@@ -311,7 +306,7 @@ unsigned char Left_Count,Right_Count;         //记录左右边界点的个数
 unsigned char grow_left,grow_right;           //记录左右边界在八邻域时寻点的相对位置
 unsigned char Left_Max=140,Right_Max=140;     //左右边界搜点时允许最大的搜点量
 unsigned char Boundary_search_end=30;         //搜寻行数的最高行
-unsigned int temp[188];
+
 
 /**
  * @brief 八邻域寻边界
@@ -433,7 +428,7 @@ void Image_Get_neighborhoods(unsigned char *image[Image_Hight][Image_With])
             }
         }
         //开始向右找点，原来的temp还是可以继续用（因为是同一行的）
-        if(Image_Get_RightFlag())                   //如果找到右边的点的话
+        if(Image_Get_Rightflag())                   //如果找到右边的点的话
         {
             Right[0].row=116;                 //第一个点初始行设为3
             Right[0].column=left_point;       //第一个点的列坐标设为right_point
@@ -530,6 +525,285 @@ void Image_Get_neighborhoods(unsigned char *image[Image_Hight][Image_With])
         }
     }
 }
+
+/*-----------------第二版八邻域-------------------*/
+//求绝对值函数
+int my_abs(int value)
+{
+if(value>=0) return value;
+else return -value;
+}
+//限幅函数
+int16 limit_a_b(int16 x, int a, int b)
+{
+    if(x<a) x = a;
+    if(x>b) x = b;
+    return x;
+}
+//求最小值
+int16 limit1(int16 x, int16 y)
+{
+	if (x > y)             return y;
+	else if (x < -y)       return -y;
+	else                return x;
+}
+
+
+//简介：寻找边界起始点，放在图像的二值化之后
+//注意：返回值为1或0，其中1表示左右线都可以找到，0就是找不到
+uint8 start_point_Left[2]={0};                //左边界起点的x,y值
+uint8 start_point_right[2]={0};               //右边界起点的x,y
+uint8 Image_Get_Start_Point(uint8 start_row) 
+{
+    uint8 i=0,Left_found=0,Right_found=0;     //中间变量，左右标志位
+    start_point_Left[0]=0;
+    start_point_Left[1]=0;
+    start_point_right[0]=0;
+    start_point_right[1]=0;                   //清零
+
+    for(i = Image_With / 2; i > 3; i--)               //3为边界
+    {
+        start_point_Left[0]=i;
+        start_point_Left[1]=start_row;        //x,y分别赋值
+        if((Image_Use[start_row][i]==255)&&(Image_Use[start_row][i-1]==0))      //原理和1.0一样
+        {
+            Left_found = 1;
+			break;
+        }
+    }
+
+    for (i = Image_With / 2; i < 97; i++)
+	{
+		start_point_right[0] = i;//x
+		start_point_right[1] = start_row;//y
+		if (Image_Use[start_row][i] == 255 && Image_Use[start_row][i + 1] == 0)
+		{
+			Right_found = 1;
+			break;
+		}
+	}
+
+    if(Left_found&&Right_found)return 1;      //如果左右线均找到了，就返回1
+
+	else
+    {
+		return 0;
+	}
+}
+
+#define USE_num  180                        //定义找点的数组成员个数
+
+
+ //存放点的x，y坐标
+uint16 points_l[(uint16)USE_num][2] = { {  0 } };//左线，其中USE_NUM为左线上点的最大存储值，[2]表示存储的点为x,y坐标
+uint16 points_r[(uint16)USE_num][2] = { {  0 } };//右线，其中USE_NUM为右线上点的最大存储值
+uint16 dir_r[(uint16)USE_num] = { 0 };//用来存储右边每个点的生长方向，在判断十字环岛有很大的用处
+uint16 dir_l[(uint16)USE_num] = { 0 };//用来存储左边每个点生长方向
+uint16 data_stastics_l = 0;//统计左边找到点的个数
+uint16 data_stastics_r = 0;//统计右边找到点的个数
+uint8 hightest = 0;//在图像中左线和右线交汇的点
+//此函数和1.0的区别在于：1.这里使用for循环扫线，上面用的else if扫，这个的效果更好，但是耗时更多
+void search_l_r(uint16 break_flag, uint16 *l_stastic, uint16 *r_stastic, uint8 l_start_x, uint8 l_start_y, uint8 r_start_x, uint8 r_start_y, uint8*hightest)
+{
+
+	uint8 i = 0, j = 0;
+    //采取左右巡线对称，左边用顺时针扫，右边用逆时针扫
+	//左边变量
+	uint8 search_filds_l[8][2] = { {  0 } };//左边八邻域中，中心点四周的8个点的相对坐标（真实坐标=中心坐标+相对坐标）
+	uint8 index_l = 0;//左线索引点的下标
+	uint8 temp_l[8][2] = { {  0 } };//左线八邻域中，中心点周围8个点的相对坐标（中间存储值）
+	uint8 center_point_l[2] = {  0 };//左线生长点的中心坐标
+	uint16 l_data_statics;//统计左边生长点的个数
+	//生长方向
+	static int8 seeds_l[8][2] = { {0,  1},{-1,1},{-1,0},{-1,-1},{0,-1},{1,-1},{1,  0},{1, 1}, };
+	//{-1,-1},{0,-1},{+1,-1},
+	//{-1, 0},	     {+1, 0},
+	//{-1,+1},{0,+1},{+1,+1},
+	//这个是顺时针
+
+	//右边变量
+	uint8 search_filds_r[8][2] = { {  0 } };//右边八邻域中，中心点四周的8个点的相对坐标（真实坐标=中心坐标+相对坐标）
+	uint8 center_point_r[2] = { 0 };//右线生长点的中心坐标
+	uint8 index_r = 0;//右线每个点的索引下标
+	uint8 temp_r[8][2] = { {  0 } };//中间存储变量，相当于存储器
+	uint16 r_data_statics;//统计右边
+	//定义八个邻域
+	static int8 seeds_r[8][2] = { {0,  1},{1,1},{1,0}, {1,-1},{0,-1},{-1,-1}, {-1,  0},{-1, 1}, };
+	//{-1,-1},{0,-1},{+1,-1},
+	//{-1, 0},	     {+1, 0},
+	//{-1,+1},{0,+1},{+1,+1},
+	//这个是逆时针
+
+	l_data_statics = *l_stastic;//统计找到了多少个点，方便后续把点全部画出来
+	r_data_statics = *r_stastic;//统计找到了多少个点，方便后续把点全部画出来
+
+	//第一次更新坐标点  将找到的起点值传进来
+	center_point_l[0] = l_start_x;//起始点的坐标chuan
+	center_point_l[1] = l_start_y;//y
+	center_point_r[0] = r_start_x;//x
+	center_point_r[1] = r_start_y;//y
+
+		//开启邻域循环
+	while (break_flag--)
+	{
+
+		//左边
+		for (i = 0; i < 8; i++)//传递8F坐标
+		{
+			search_filds_l[i][0] = center_point_l[0] + seeds_l[i][0];//x
+			search_filds_l[i][1] = center_point_l[1] + seeds_l[i][1];//y
+		}
+		//中心坐标点填充到已经找到的点内
+		points_l[l_data_statics][0] = center_point_l[0];//x
+		points_l[l_data_statics][1] = center_point_l[1];//y
+		l_data_statics++;//索引加一
+
+		//右边
+		for (i = 0; i < 8; i++)//传递8F坐标
+		{
+			search_filds_r[i][0] = center_point_r[0] + seeds_r[i][0];//x
+			search_filds_r[i][1] = center_point_r[1] + seeds_r[i][1];//y
+		}
+		//中心坐标点填充到已经找到的点内
+		points_r[r_data_statics][0] = center_point_r[0];//x
+		points_r[r_data_statics][1] = center_point_r[1];//y
+
+		index_l = 0;//先清零，后使用
+		for (i = 0; i < 8; i++)
+		{
+			temp_l[i][0] = 0;//先清零，后使用
+			temp_l[i][1] = 0;//先清零，后使用
+		}
+
+		//左边判断
+		for (i = 0; i < 8; i++)
+		{
+			if (Image_Use[search_filds_l[i][1]][search_filds_l[i][0]] == 0
+				&& Image_Use[search_filds_l[(i + 1) & 7][1]][search_filds_l[(i + 1) & 7][0]] == 255)
+			{
+				temp_l[index_l][0] = search_filds_l[(i)][0];
+				temp_l[index_l][1] = search_filds_l[(i)][1];
+				index_l++;
+				dir_l[l_data_statics - 1] = (i);//记录生长方向
+			}
+
+			if (index_l)
+			{
+				//更新坐标点
+				center_point_l[0] = temp_l[0][0];//x
+				center_point_l[1] = temp_l[0][1];//y
+				for (j = 0; j < index_l; j++)
+				{
+					if (center_point_l[1] > temp_l[j][1])
+					{
+						center_point_l[0] = temp_l[j][0];//x
+						center_point_l[1] = temp_l[j][1];//y
+					}
+				}
+			}
+
+		}
+		if ((points_r[r_data_statics][0]== points_r[r_data_statics-1][0]&& points_r[r_data_statics][0] == points_r[r_data_statics - 2][0]
+			&& points_r[r_data_statics][1] == points_r[r_data_statics - 1][1] && points_r[r_data_statics][1] == points_r[r_data_statics - 2][1])
+			||(points_l[l_data_statics-1][0] == points_l[l_data_statics - 2][0] && points_l[l_data_statics-1][0] == points_l[l_data_statics - 3][0]
+				&& points_l[l_data_statics-1][1] == points_l[l_data_statics - 2][1] && points_l[l_data_statics-1][1] == points_l[l_data_statics - 3][1]))
+		{
+			//printf("三次进入同一个点，退出\n");
+			break;
+		}
+		if (my_abs(points_r[r_data_statics][0] - points_l[l_data_statics - 1][0]) < 2
+			&& my_abs(points_r[r_data_statics][1] - points_l[l_data_statics - 1][1] < 2)
+			)
+		{
+			*hightest = (points_r[r_data_statics][1] + points_l[l_data_statics - 1][1]) >> 1;//取出最高点
+			break;
+		}
+		if ((points_r[r_data_statics][1] < points_l[l_data_statics - 1][1]))
+		{
+			continue;//如果左边比右边高了，左边等待右边
+		}
+		if (dir_l[l_data_statics - 1] == 7
+			&& (points_r[r_data_statics][1] > points_l[l_data_statics - 1][1]))//左边比右边高且已经向下生长了
+		{
+			center_point_l[0] = points_l[l_data_statics - 1][0];//x
+			center_point_l[1] = points_l[l_data_statics - 1][1];//y
+			l_data_statics--;
+		}
+		r_data_statics++;//索引加一
+
+		index_r = 0;//先清零，后使用
+		for (i = 0; i < 8; i++)
+		{
+			temp_r[i][0] = 0;//先清零，后使用
+			temp_r[i][1] = 0;//先清零，后使用
+		}
+
+		//右边判断
+		for (i = 0; i < 8; i++)
+		{
+			if (Image_Use[search_filds_r[i][1]][search_filds_r[i][0]] == 0
+				&& Image_Use[search_filds_r[(i + 1) & 7][1]][search_filds_r[(i + 1) & 7][0]] == 255)
+			{
+				temp_r[index_r][0] = search_filds_r[(i)][0];
+				temp_r[index_r][1] = search_filds_r[(i)][1];
+				index_r++;//索引加一
+				dir_r[r_data_statics - 1] = (i);//记录生长方向
+				//printf("dir[%d]:%d\n", r_data_statics - 1, dir_r[r_data_statics - 1]);
+			}
+			if (index_r)
+			{
+
+				//更新坐标点
+				center_point_r[0] = temp_r[0][0];//x
+				center_point_r[1] = temp_r[0][1];//y
+				for (j = 0; j < index_r; j++)
+				{
+					if (center_point_r[1] > temp_r[j][1])
+					{
+						center_point_r[0] = temp_r[j][0];//x
+						center_point_r[1] = temp_r[j][1];//y
+					}
+				}
+
+			}
+		}
+
+
+	}
+
+
+	//取出循环次数
+	*l_stastic = l_data_statics;
+	*r_stastic = r_data_statics;
+
+}
+/*     以下为辅助函数       */
+//简介：求两个数的最小值
+int16 Image_Min(int16 x,int16 y)
+{
+    if(x>y)
+    {
+        return y;
+    }
+    else if(x<-y)
+    {
+        return  -y;
+    }
+    else
+    {
+        return x;
+    }
+}
+
+//简介：限幅函数
+int16 Image_Limit(int16 x,int a,int b)
+{
+    if(x<a) x=a;
+    if(x>b) x=b;
+    return x;
+}
+
+
 /**
  * @brief 大津法求阈值 2.0（由于第一版的bug极其严重，尽力修复也修复不了，暂时就用这版）
  * @param Uint8 输入图像的地址

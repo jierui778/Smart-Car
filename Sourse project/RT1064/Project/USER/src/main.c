@@ -21,7 +21,7 @@ int main(void)
     while (1)
     {
 		Image_Compress();
-        TH=Image_GetThreshold();					//����ֵ����
+		TH=Image_GetThreshold();					//����ֵ����
 		tft180_show_uint(4,80,TH,3);
 		Image_Binarization(TH);
 		tft180_displayimage03x((uint8 *)Image_Use, 100, 60); // ��ʾ�����ö�ֵ���ĺ������Ǹ���̫��
