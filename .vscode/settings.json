@@ -9,6 +9,9 @@
         "camera.h": "c",
         "osg_imageconversion.h": "c",
         "osg_imageprocessing.h": "c",
-        "zf_device_mt9v03x.h": "c"
+        "zf_device_mt9v03x.h": "c",
+        "servo.h": "c",
+        "motor.h": "c",
+        "buzzer.h": "c"
     }
 }

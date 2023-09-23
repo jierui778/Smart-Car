@@ -16,7 +16,7 @@
         <TargetCommonOption>
           <Device>MIMXRT1064DVL6A</Device>
           <Vendor>NXP</Vendor>
-          <PackID>NXP.MIMXRT1064_DFP.17.0.0</PackID>
+          <PackID>NXP.MIMXRT1064_DFP.16.0.0</PackID>
           <PackURL>https://mcuxpresso.nxp.com/cmsis_pack/repo/</PackURL>
           <Cpu>IRAM(0x20000000,0x020000) IRAM2(0x00000000,0x020000) IROM(0x70000000,0x400000) IROM2(0x00200000,0x020000) XRAM(0x20280000,0x040000) XRAM2(0x20200000,0x080000) CPUTYPE("Cortex-M7") FPU3(DFPU) CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -468,6 +468,16 @@
               <FileName>buzzer.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\HARDWARE\buzzer.c</FilePath>
+            </File>
+            <File>
+              <FileName>scheduler.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\scheduler.c</FilePath>
+            </File>
+            <File>
+              <FileName>scheduler.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\HARDWARE\scheduler.h</FilePath>
             </File>
           </Files>
         </Group>

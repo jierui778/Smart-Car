@@ -7,7 +7,7 @@
 
 
 void Servo_Init();
-void Servo_SetPwm(int32 pwm);//设置舵机的PWM值
+
 void Servo_SetAngle(float angle);//设置舵机的角度值
 
 #endif //
