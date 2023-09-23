@@ -115,7 +115,7 @@
  * @brief 将输入的灰度图像转化为二值化图像
  * @param Threshold 图像阈值(实际上阈值需要进行计算，而不是直接赋值)
  */
- void Binarization(unsigned char threshold)
+ void Image_Binarization(unsigned char threshold)
  {
      unsigned char i,j;
      for(i=0;i<Image_Hight;i++)
@@ -131,91 +131,7 @@
          }
      }
  }
-/**
- * @brief 大津法求阈值 2.0（由于第一版的bug极其严重，尽力修复也修复不了，暂时就用这版）
- * @param Uint8 输入图像的地址
- * @param Uint8 输出图像的地址
- * @param Threshold 图像阈值(实际上阈值需要进行计算，而不是直接赋值)
- * @exception 1. 原理和1.0的是一样的
- * 2. 在二值化时，由于有阈值限幅，要避免大面积的同灰度，这样会使得屏幕闪烁频率增加（这个应该是其他原因造成的），且屏幕会大面积白色或者黑色
- * 3. 如果正常拍摄的话是不会出现太大的问题的，但是还是要在跑道上测试一下
- * 4. 2.0的方法相对于1.0的方法区别在于：不用求二次高峰再求出低谷，直接通过最大值的灰度像素点和最小值来求出1.0中想要的低谷（即low1_position）
- *                                   而1.0就是在寻找二次高峰出现了bug，2.0的方法相对来说更科学一点
- */
-//uint8 GetThreshold(void)   //注意计算阈值的一定要是原图像
-//{
-//#define GrayScale 256				          //定义灰度总值
-//	uint8 last_threshold;                     //定义上次的阈值，进行阈值的输出限幅
-//    int Pixel_Max=0;                          //定义灰度值的最大值和最小值（0-255）
-//    int Pixel_Min=255;
-//    uint16 width = Image_With;                //定义图像的宽和高
-//    uint16 height = Image_Hight;
-//    int pixelCount[GrayScale];                //记录每个灰度对应的像素值
-//    float pixelPro[GrayScale];                //定义每个像素点在图中的比例的数组
-//    int i, j, pixelSum = width * height/4;    //定义中间变量，定义像素总数（这里只要算1/4的就行）
-//    uint8 threshold = 0;                      //定义返回阈值
-//    uint8* data = *Image_Use;                 //指向像素数据的指针，省内存
-//    for (i = 0; i < GrayScale; i++)           //初始化两个灰度值像素数组
-//    {
-//        pixelCount[i] = 0;
-//        pixelPro[i] = 0;
-//    }                            
-//    uint32 gray_sum=0;                        //定义所有灰度值的总数
-//    //一 统计灰度级中每个像素在整幅图像中的个数
-//    for (i = 0; i < height; i+=2)             
-//    {
-//        for (j = 0; j < width; j+=2)
-//        {
-//            pixelCount[(int)data[i * width + j]]++;                                 //将当前的点的像素值作为计数数组的下标
-//            gray_sum+=(int)data[i * width + j];                                     //求灰度值总和
-//            if(data[i * width + j]>Pixel_Max)   Pixel_Max=data[i * width + j];      //同时记录直方图中灰度值的最高峰和最低峰
-//            if(data[i * width + j]<Pixel_Min)   Pixel_Min=data[i * width + j];
-//        }
-//    }
-//    //二 计算每个像素值的点在整幅图像中的比例
-//    for (i = Pixel_Min; i < Pixel_Max; i++)     
-//    {
-//        pixelPro[i] = (float)pixelCount[i] / pixelSum;
-// 
-//    }
-//    //三 遍历灰度级[0,255]，开始寻找
-//    float w0, w1, u0tmp, u1tmp, u0, u1, u, deltaTmp, deltaMax = 0;
-//    //w0：后景所占总图片的总比例        w1:前景所占总图片的总比例   有关系式：（即阈值以下为w0,阈值以上为w1）w1+w0=1
-//    //u0tmp：背景部分灰度值点的比例*灰度值          u1tmp：前景部分灰度值点的比例*灰度值  （后面有解析）
-//    //u0,u1：背景，前景的平均灰度   u：全局平均灰度 u=(u1+u2)/2
-//    w0 = w1 = u0tmp = u1tmp = u0 = u1 = u = deltaTmp = 0;
-//    for (j = Pixel_Min; j < Pixel_Max; j++)
-//    {
-// 
-//        w0 += pixelPro[j];                    //背景部分每个灰度值的像素点所占比例之和   即背景部分的比例
-//        u0tmp += j * pixelPro[j];             //背景部分每个灰度值的点的比例 *灰度值
-// 
-//        w1=1-w0;
-//        u1tmp=gray_sum/pixelSum-u0tmp;
-// 
-//        u0 = u0tmp / w0;                      //背景平均灰度
-//        u1 = u1tmp / w1;                      //前景平均灰度
-//        u = u0tmp + u1tmp;                    //全局平均灰度
-//        deltaTmp = (float)(w0 *w1* (u0 - u1)* (u0 - u1)) ;
-//        if (deltaTmp > deltaMax)
-//        {
-//            deltaMax = deltaTmp;
-//            threshold = j;
-//        }
-//        if (deltaTmp < deltaMax)
-//        {
-//            break;
-//        }
-// 
-//    }
-//    //四 阈值限幅，如果超过想要的阈值，就会和上次一样
-//    if(threshold>50 && threshold<130)
-//        last_threshold = threshold;
-//    else
-//        threshold = last_threshold;
-//	
-//    return threshold;
-//}
+
 
 //此函数在原函数的基础上，优化了阈值：在图像出现大面积一个颜色时，此时直方图中只有一个高峰（或者两个高峰很接近），这里就直接选择最高峰对应的灰度值作为灰度值传输阈值
 uint8 Image_GetThreshold(void)   //注意计算阈值的一定要是原图像
@@ -312,7 +228,6 @@ uint8 Image_GetThreshold(void)   //注意计算阈值的一定要是原图像
 // * @param Threshold 图像阈值(实际上阈值需要进行计算，而不是直接赋值)
 // */
 // void Image_GetBinary(IN Uint8 (*InImg)[IMGW], OUT Uint8 (*OutImg)[IMGW], IN Uint8 Threshold)
-?
 
 /**
  * @brief 图像加框，防止八邻域扫到附近的点，将边界上的点的灰度值设为0
@@ -321,7 +236,7 @@ uint8 Image_GetThreshold(void)   //注意计算阈值的一定要是原图像
  * @return 无
  * @exception 无
  */
-void Draw_Frame(unsigned char *picture[Image_Hight][Image_With])
+void Image_Draw_Frame(unsigned char *picture[Image_Hight][Image_With])
 {
     unsigned char i;                          //用来循环的变量
     for(i=0;i<Image_Hight;i++)
@@ -338,35 +253,16 @@ void Draw_Frame(unsigned char *picture[Image_Hight][Image_With])
     }
 }
 
-/**
- * @brief 寻找是否存在左边界（不用，参数问题比较难处理，就换个函数）
- * @param Uint8 *image 二值化处理过后的图像，只扫一行，且扫离图片最下面的没有被清除的那一行，
- * @return 1（找到的话就回1）
- * @exception 1. 从第二行开始扫，因为边界两行都扫没了（但是不知道0从哪开始扫起，这里默认0从左下角开始算了）
- * 2.这里传入的参数也可以简化运行的速度（只传一行的数据，因为只要扫一行）
- * 3.这个函数有个缺陷就是，可能第二行全黑（全白），这样的话就扫不到了——不过一般不可能吧？如果有的话就把行数加1行就行了
- 
-unsigned char left_point;                     //记录第一个关键点的列坐标，定义为全局变量，方便后面的函数调用
-unsigned char Get_LeftFlag(unsigned int *image3[1][CAMERA_WITH])
-{
-    for(left_point=(CAMERA_WITH/2);left_point>0;left_point--)
-    {
-        if((*image3[1][left_point]==1)&&(*image3[1][left_point-1]==0)&&(*image3[1][left_point-2]==0))
-        {
-            break;
-        }
-    }
-    return 1;
-}
+
 //
- * @brief 将输入的灰度图像转化为二值化图像
- *
- * @param Uint8 输入图像的地址
- * @param Uint8 输出图像的地址
- * @param Threshold 图像阈值(实际上阈值需要进行计算，而不是直接赋值)
- */
+//  * @brief 将输入的灰度图像转化为二值化图像
+//  *
+//  * @param Uint8 输入图像的地址
+//  * @param Uint8 输出图像的地址
+//  * @param Threshold 图像阈值(实际上阈值需要进行计算，而不是直接赋值)
+//  */
 unsigned char left_point;                     //记录第一个关键点的列坐标，定义为全局变量，方便后面的函数调用
-unsigned char Get_LeftFlag(void)
+unsigned char Image_Get_LeftFlag(void)
 {
     for(left_point=(188/2);left_point>0;left_point--)
     {
@@ -384,7 +280,7 @@ unsigned char Get_LeftFlag(void)
  * @exception 同上
  *  */
 unsigned char right_point;                     //记录第一个关键点的列坐标
-unsigned char Get_Rightflag(void)
+unsigned char Image_Get_Rightflag(void)
 {
     
     for(right_point=(188/2);right_point>0;right_point++)
@@ -443,7 +339,7 @@ void Image_Get_neighborhoods(unsigned char *image[Image_Hight][Image_With])
         temp[i]=(int)*image[116][i];          //设置一个中间数组，（全局变量），避免参数的传入的问题
     }
 
-    if(Get_LeftFlag())                       //如果找到左边界点的话
+    if(Image_Get_LeftFlag())                       //如果找到左边界点的话
     {
         Left[0].row=116;                 //第一个点初始行设为3
         Left[0].column=left_point;       //第一个点的列坐标设为left_point
@@ -537,7 +433,7 @@ void Image_Get_neighborhoods(unsigned char *image[Image_Hight][Image_With])
             }
         }
         //开始向右找点，原来的temp还是可以继续用（因为是同一行的）
-        if(Get_Rightflag())                   //如果找到右边的点的话
+        if(Image_Get_RightFlag())                   //如果找到右边的点的话
         {
             Right[0].row=116;                 //第一个点初始行设为3
             Right[0].column=left_point;       //第一个点的列坐标设为right_point
@@ -634,3 +530,88 @@ void Image_Get_neighborhoods(unsigned char *image[Image_Hight][Image_With])
         }
     }
 }
+/**
+ * @brief 大津法求阈值 2.0（由于第一版的bug极其严重，尽力修复也修复不了，暂时就用这版）
+ * @param Uint8 输入图像的地址
+ * @param Uint8 输出图像的地址
+ * @param Threshold 图像阈值(实际上阈值需要进行计算，而不是直接赋值)
+ * @exception 1. 原理和1.0的是一样的
+ * 2. 在二值化时，由于有阈值限幅，要避免大面积的同灰度，这样会使得屏幕闪烁频率增加（这个应该是其他原因造成的），且屏幕会大面积白色或者黑色
+ * 3. 如果正常拍摄的话是不会出现太大的问题的，但是还是要在跑道上测试一下
+ * 4. 2.0的方法相对于1.0的方法区别在于：不用求二次高峰再求出低谷，直接通过最大值的灰度像素点和最小值来求出1.0中想要的低谷（即low1_position）
+ *                                   而1.0就是在寻找二次高峰出现了bug，2.0的方法相对来说更科学一点
+ */
+//uint8 GetThreshold(void)   //注意计算阈值的一定要是原图像
+//{
+//#define GrayScale 256				          //定义灰度总值
+//	uint8 last_threshold;                     //定义上次的阈值，进行阈值的输出限幅
+//    int Pixel_Max=0;                          //定义灰度值的最大值和最小值（0-255）
+//    int Pixel_Min=255;
+//    uint16 width = Image_With;                //定义图像的宽和高
+//    uint16 height = Image_Hight;
+//    int pixelCount[GrayScale];                //记录每个灰度对应的像素值
+//    float pixelPro[GrayScale];                //定义每个像素点在图中的比例的数组
+//    int i, j, pixelSum = width * height/4;    //定义中间变量，定义像素总数（这里只要算1/4的就行）
+//    uint8 threshold = 0;                      //定义返回阈值
+//    uint8* data = *Image_Use;                 //指向像素数据的指针，省内存
+//    for (i = 0; i < GrayScale; i++)           //初始化两个灰度值像素数组
+//    {
+//        pixelCount[i] = 0;
+//        pixelPro[i] = 0;
+//    }                            
+//    uint32 gray_sum=0;                        //定义所有灰度值的总数
+//    //一 统计灰度级中每个像素在整幅图像中的个数
+//    for (i = 0; i < height; i+=2)             
+//    {
+//        for (j = 0; j < width; j+=2)
+//        {
+//            pixelCount[(int)data[i * width + j]]++;                                 //将当前的点的像素值作为计数数组的下标
+//            gray_sum+=(int)data[i * width + j];                                     //求灰度值总和
+//            if(data[i * width + j]>Pixel_Max)   Pixel_Max=data[i * width + j];      //同时记录直方图中灰度值的最高峰和最低峰
+//            if(data[i * width + j]<Pixel_Min)   Pixel_Min=data[i * width + j];
+//        }
+//    }
+//    //二 计算每个像素值的点在整幅图像中的比例
+//    for (i = Pixel_Min; i < Pixel_Max; i++)     
+//    {
+//        pixelPro[i] = (float)pixelCount[i] / pixelSum;
+// 
+//    }
+//    //三 遍历灰度级[0,255]，开始寻找
+//    float w0, w1, u0tmp, u1tmp, u0, u1, u, deltaTmp, deltaMax = 0;
+//    //w0：后景所占总图片的总比例        w1:前景所占总图片的总比例   有关系式：（即阈值以下为w0,阈值以上为w1）w1+w0=1
+//    //u0tmp：背景部分灰度值点的比例*灰度值          u1tmp：前景部分灰度值点的比例*灰度值  （后面有解析）
+//    //u0,u1：背景，前景的平均灰度   u：全局平均灰度 u=(u1+u2)/2
+//    w0 = w1 = u0tmp = u1tmp = u0 = u1 = u = deltaTmp = 0;
+//    for (j = Pixel_Min; j < Pixel_Max; j++)
+//    {
+// 
+//        w0 += pixelPro[j];                    //背景部分每个灰度值的像素点所占比例之和   即背景部分的比例
+//        u0tmp += j * pixelPro[j];             //背景部分每个灰度值的点的比例 *灰度值
+// 
+//        w1=1-w0;
+//        u1tmp=gray_sum/pixelSum-u0tmp;
+// 
+//        u0 = u0tmp / w0;                      //背景平均灰度
+//        u1 = u1tmp / w1;                      //前景平均灰度
+//        u = u0tmp + u1tmp;                    //全局平均灰度
+//        deltaTmp = (float)(w0 *w1* (u0 - u1)* (u0 - u1)) ;
+//        if (deltaTmp > deltaMax)
+//        {
+//            deltaMax = deltaTmp;
+//            threshold = j;
+//        }
+//        if (deltaTmp < deltaMax)
+//        {
+//            break;
+//        }
+// 
+//    }
+//    //四 阈值限幅，如果超过想要的阈值，就会和上次一样
+//    if(threshold>50 && threshold<130)
+//        last_threshold = threshold;
+//    else
+//        threshold = last_threshold;
+//	
+//    return threshold;
+//}

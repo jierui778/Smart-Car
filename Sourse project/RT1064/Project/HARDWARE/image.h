@@ -15,13 +15,10 @@
 void Image_Compress();
 unsigned int Image_GetThreshold1(void);
 extern uint8 Image_Use[Image_Hight][Image_With];          //先定义灰度直方图
-void Binarization(unsigned char threshold);
+void Image_Binarization(unsigned char threshold);
 uint8 Image_GetThreshold(void);   //注意计算阈值的一定要是原图像
+void Image_Draw_Frame(unsigned char *picture[Image_Hight][Image_With]);
 
-// void Image_Get();//获取图片
-//// void Image_
-// void Image_Binarization(void);//二值化
 
-// int8 first_image[CAMERA_HEIGHT][CAMERA_WITH];//第一次经过DMA采集得到的图像，灰度值为0-255（0为黑，255为白）
 
 #endif
