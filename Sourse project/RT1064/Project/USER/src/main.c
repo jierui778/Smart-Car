@@ -2,7 +2,6 @@
 #include "image.h"
 #include "buzzer.h"
 #include "zf_common_headfile.h"
-<<<<<<< HEAD
 
 uint8 TH;
 unsigned int i,j;
@@ -26,49 +25,6 @@ int main(void)
 		tft180_show_uint(4,80,TH,3);
 		Image_Binarization(TH);
 		tft180_displayimage03x((uint8 *)Image_Use, 100, 60); // ��ʾ�����ö�ֵ���ĺ������Ǹ���̫��
-=======
-#include "servo.h"
-#define SERVO_MOTOR_DUTY(x)         ((float)PWM_DUTY_MAX/(1000.0/(float)50)*(0.5+(float)(x)/90.0))
-unsigned int TH;
-//unsigned int i,j;
-
-static float i=0.0;
-int main(void)
-{
-    clock_init(SYSTEM_CLOCK_600M); //
-//    Encoder_Init();
-    debug_init();
-//    gpio_init(B9, GPO, GPIO_HIGH, GPO_PUSH_PULL);
-//    tft180_set_dir(TFT180_PORTAIT);
-//    tft180_init();
-//    Buzzer_Init();
-////    tft180_show_string(0, 0, "mt9v03x init.");
-
-//    Camera_Init();
-    Servo_Init();
-//    while (1)
-//    {
-//        if (mt9v03x_init())
-//            gpio_toggle_level(B9);
-//        else
-//            break;
-//        system_delay_ms(1000);
-//    }
-
-    while (1)
-    {
-////////		Image_Compress();
-//////        TH=GetThreshold();					
-//////		tft180_show_uint(4,80,TH,3);
-//////		Binarization(TH);
-//////		tft180_displayimage03x((uint8 *)Image_Use, 100, 60);
-//        system_delay_ms(10);
-//        pwm_set_duty(SERVO_CH, 800);
-
-//        pwm_set_duty(SERVO_CH, 1000);
-//        pwm_set_duty(PWM4_MODULE2_CHA_C30, (uint32)SERVO_MOTOR_DUTY(i));
-
->>>>>>> 3740b6e2345207e30f43e62beeb562557ff0f235
     }
 }
 
