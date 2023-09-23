@@ -24,7 +24,7 @@ static Task_t Task_List[] =
 };
 
 
-#define TASK_NUM (sizeof(Task_list) / sizeof(Task_t))
+#define TASK_NUM (sizeof(Task_List) / sizeof(Task_t))
 //根据数组长度，判断线程数量
 #define TASK_LIST_END \
     {                 \
