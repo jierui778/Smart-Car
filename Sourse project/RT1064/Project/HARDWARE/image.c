@@ -866,11 +866,11 @@ void Image_Filter(void)
 
             if(num>=threshold_max && Image_Use[i][j]==0)    //如果黑点四周的8个点只有2个黑点
             {
-                Image_Use[i][j]==255;
+                Image_Use[i][j]=255;
             }
             if(num<=threshold_min && Image_Use[i][j]==255)//如果白点周围只有2个白点
             {
-                Image_Use[i][j]==0;//过滤成黑
+                Image_Use[i][j]=0;//过滤成黑
             }
         }
     }
@@ -922,6 +922,7 @@ float Imgae_Slope(uint8 begin,uint8 end,uint8 *border)
     return result;
 }
 
+//简介：计算斜率和截距
 void Image_CountKB(uint8 start,uint8 end,uint8 *border, float *slope_rate,float *intercept)
 {
     uint16 i,num=0;
@@ -946,6 +947,65 @@ void Image_CountKB(uint8 start,uint8 end,uint8 *border, float *slope_rate,float 
     }
     *slope_rate =Imgae_Slope(start,end,border);//计算斜率
     *intercept=y_average-(*slope_rate)*x_average;//计算截距
+}
+
+void Image_FillCross(uint8 *l_border,uint8 *r_border,uint16 total_num_l,uint16 total_num_r,
+                        uint16*dir_l,uint16 *dir_r,uint16(*points_l)[2],uint16(*points_r)[2])
+{
+    uint8 i;
+    uint8 break_num_l=0;
+    uint8 break_num_r=0;
+    uint8 start,end;
+    float slope_l_rate=0,intercept_l=0;//左线斜率和截距
+
+    //十字识别一：出十字
+    //情景1：十字路口走到一半的时候，左线是由向上生长到向右生长，此时判断为一半的十字路口元素
+    for(i=1;i<total_num_l;i++)//从左线的第一个点开始往上找
+    {
+        /*
+        生长方向表
+        5   4   3       3   4   5
+        6       2       2       6
+        7   0   1       1   0   7
+        */
+        if(dir_l[i-1]==4&&dir_l[i]==4&&dir_l[i+3]==6&&dir_l[i+5]==6&&dir_l[i+7]==6)
+        {
+            break_num_l=points_l[i][1];//传递y坐标，注意，这个坐标在图像中的点是由正上方向变为正左方向的转折点
+            break;
+        }
+    }
+    for(i=1;i<total_num_r;i++)
+    {
+        if(dir_r[i - 1] == 4 && dir_r[i] == 4 && dir_r[i + 3] == 6 && dir_r[i + 5] == 6 && dir_r[i + 7] == 6)
+        {
+            break_num_r=points_r[i][1];//传递y坐标
+            break;
+        }
+    }
+    //进一步判断是否处于十字之中，如果左下角和右下角的点均为白色那么就确实在10字之中
+    if(break_num_l&&break_num_r&&Image_Use[Image_Hight-1][4]&&Image_Use[Image_Hight-1][Image_With-4])
+    {
+        start =break_num_l-15;//将取得的点前移15个点做起始点
+        start =limit_a_b(start,0,Image_Hight);//限幅
+        end=break_num_l-5;//将取得的点前移5个点做终点
+        Image_CountKB(start,end,l_border,&slope_l_rate,&intercept_l);
+        //线上补点
+        for(i=break_num_l-5;i<Image_Hight-1;i++)
+        {
+            l_border[i]=slope_l_rate*(i)+intercept_l;//把终点往下每一行的全都求直线画点
+            l_border[i]=limit_a_b(l_border[i],4,96);//限幅，这里最多到旁边的4行
+        }
+        //这是求右线的，基本和上面的一样的原理
+        start = break_num_r - 15;//起点
+		start = limit_a_b(start, 0, Image_Hight);//限幅
+		end = break_num_r - 5;//终点
+		Image_CountKB(start, end, r_border, &slope_l_rate, &intercept_l);
+		for (i = break_num_r - 5; i < Image_Hight - 1; i++)
+		{
+			r_border[i] = slope_l_rate * (i)+intercept_l;
+			r_border[i] = limit_a_b(r_border[i], 4, 96);
+		}
+    }
 }
 /**
  * @brief 大津法求阈值 2.0原版（由于第一版的bug极其严重，尽力修复也修复不了，暂时就用这版）
