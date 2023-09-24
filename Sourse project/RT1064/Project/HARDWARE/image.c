@@ -894,6 +894,14 @@ void Image_DrawRectangle(void)
     }
 }
 
+//已知两点求图像的y=kx+b，截距我手动算的，应该没有太大问题
+float two_points_k,two_points_b;//全局变量代替指针传递斜率和截距
+void Image_2points(uint8 x1,uint8 y1,uint8 x2,uint8 y2)
+{
+    two_points_k=(float)((y2-y1)/(x2-x1));
+    two_points_b=(float)((y1*x2-x1*y2)/(x2-x1));
+}
+
 //最小二乘法求斜率
 float Imgae_Slope(uint8 begin,uint8 end,uint8 *border)
 {
@@ -957,21 +965,27 @@ void Image_FillCross(uint8 *l_border,uint8 *r_border,uint16 total_num_l,uint16 t
     uint8 break_num_r=0;
     uint8 start,end;
     float slope_l_rate=0,intercept_l=0;//左线斜率和截距
-
-    //十字识别一：出十字
+    uint8 break_num_l_low;
+    uint8 break_num_r_low;//定义左右相对较低的拐点，只会在未进十字的时候才会出现
+    //十字识别一：出十字（未入十字的情况也写道里面了）
     //情景1：十字路口走到一半的时候，左线是由向上生长到向右生长，此时判断为一半的十字路口元素
     for(i=1;i<total_num_l;i++)//从左线的第一个点开始往上找
     {
         /*
-        生长方向表
+        生长方向表（左边是右线的生长方向表，右边是左线的生长方向表）
         5   4   3       3   4   5
         6       2       2       6
         7   0   1       1   0   7
         */
+       //判断左线的较高拐点（在入十字的时候是唯一拐点）
         if(dir_l[i-1]==4&&dir_l[i]==4&&dir_l[i+3]==6&&dir_l[i+5]==6&&dir_l[i+7]==6)
         {
             break_num_l=points_l[i][1];//传递y坐标，注意，这个坐标在图像中的点是由正上方向变为正左方向的转折点
             break;
+        }
+        if(dir_l[i-1]==2&&dir_l[i-3]==2&&dir_l[i-5]==2&&dir_l[i-7]==2&&dir_l[i]==4&&dir_l[i+1]==4)
+        {
+            break_num_l_low=points_l[i][1];//传递低拐点的坐标
         }
     }
     for(i=1;i<total_num_r;i++)
@@ -981,12 +995,17 @@ void Image_FillCross(uint8 *l_border,uint8 *r_border,uint16 total_num_l,uint16 t
             break_num_r=points_r[i][1];//传递y坐标
             break;
         }
+        //因为左右线完全对称，所以程序不会有太大的改动
+        if(dir_r[i-1]==2&&dir_r[i-3]==2&&dir_r[i-5]==2&&dir_r[i-7]==2&&dir_r[i]==4&&dir_l[i]==4)
+        {
+            break_num_r_low=points_r[i][1];//传递低拐点的y坐标
+        }
     }
     //进一步判断是否处于十字之中，如果左下角和右下角的点均为白色那么就确实在10字之中
     if(break_num_l&&break_num_r&&Image_Use[Image_Hight-1][4]&&Image_Use[Image_Hight-1][Image_With-4])
     {
         start =break_num_l-15;//将取得的点前移15个点做起始点
-        start =limit_a_b(start,0,Image_Hight);//限幅
+        start =limit_a_b(start,0,Image_Hight-1);//限幅
         end=break_num_l-5;//将取得的点前移5个点做终点
         Image_CountKB(start,end,l_border,&slope_l_rate,&intercept_l);
         //线上补点
@@ -994,17 +1013,49 @@ void Image_FillCross(uint8 *l_border,uint8 *r_border,uint16 total_num_l,uint16 t
         {
             l_border[i]=slope_l_rate*(i)+intercept_l;//把终点往下每一行的全都求直线画点
             l_border[i]=limit_a_b(l_border[i],4,96);//限幅，这里最多到旁边的4行
+            l_border[i]=0;//赋值为黑色
         }
         //这是求右线的，基本和上面的一样的原理
         start = break_num_r - 15;//起点
-		start = limit_a_b(start, 0, Image_Hight);//限幅
+		start = limit_a_b(start, 0, Image_Hight-1);//限幅
 		end = break_num_r - 5;//终点
 		Image_CountKB(start, end, r_border, &slope_l_rate, &intercept_l);
 		for (i = break_num_r - 5; i < Image_Hight - 1; i++)
 		{
 			r_border[i] = slope_l_rate * (i)+intercept_l;
 			r_border[i] = limit_a_b(r_border[i], 4, 96);
+            l_border[i]=0;//赋值为黑色
+            //这里可能缺一步：补线，这里只是把线求出来而已
 		}
+    }
+
+    //情景2：如果还没有进入到十字
+    //if ：如果四个拐点全部找到而且左下角和右下角是黑色
+    if(break_num_r_low&&break_num_l_low&&break_num_l&&break_num_r&&(!Image_Use[Image_Hight-1][4])&&(!Image_Use[Image_Hight-1][Image_With-4]))
+    {
+        start=break_num_l_low+3;//懒得转换了，之间取下面的点吧
+        start=limit_a_b(start,0,Image_Hight-1);//限幅
+        end=break_num_l_low+10;//图像下方点更准确，取近一点
+        end=limit_a_b(end,0,Image_Hight-1);//限幅
+        Image_CountKB(start,end,l_border,&slope_l_rate,&intercept_l);//以下方的点写出斜率
+        //开始向上补线，方向向上，故坐标自减
+        for(i=break_num_l_low+10;i>2;i--)
+        {
+            l_border[i]=slope_l_rate * (i)+intercept_l;
+            l_border[i]=limit_a_b(l_border[i],4,96);
+            l_border[i]=0;
+        }
+        start=break_num_r_low+3;//懒得转换了，之间取下面的点吧
+        start=limit_a_b(start,0,Image_Hight-1);//限幅
+        end=break_num_r_low+10;//图像下方点更准确，取近一点
+        end=limit_a_b(end,0,Image_Hight-1);//限幅
+        Image_CountKB(start,end,r_border,&slope_l_rate,&intercept_l);//以下方的点写出斜率
+        for(i=break_num_r_low+10;i>2;i--)
+        {
+            r_border[i]=slope_l_rate * (i)+intercept_l;
+            r_border[i]=limit_a_b(l_border[i],4,96);
+            r_border[i]=0;
+        }
     }
 }
 /**
