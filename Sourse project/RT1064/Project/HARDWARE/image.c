@@ -791,9 +791,164 @@ void search_l_r(uint16 break_flag, uint16 *l_stastic, uint16 *r_stastic, uint8 l
 
 }
 
+//简介：通过已知的点来提取出所需要的边线
+//参数：total_L 需要找到点的数量，一般都是data_statics_left
+uint8 l_border[Image_Hight];//定义左线的数组，下标为行坐标，下标对应的值为列坐标，每行只有一个数组
+uint8 r_border[Image_Hight];//定义右线数组
+uint8 center_line[Image_Hight];//定义中线数组
+void Image_GetLeft(uint16 total_L)
+{
+    uint8 i=0;
+    uint8 h=0;
+    uint16 j=0;
+    //对数组初始化
+    for(i=0;i<Image_Hight;i++)
+    {
+        l_border[i]=2;//边界最小值，后面还会改这个定义
+    }
+    h=Image_Hight-2;//最大找到第58行（从下往上数的）
+    //左线寻找
+    for(j=0;j<total_L;i++)
+    {
+        if(points_l[j][1]==h)//检测对应的纵坐标（行坐标是否和h（）高度相同）
+        {
+            l_border[h]=points_l[j][0]+1;//将points_l点的横坐标（列坐标）存储，这里+1只是为了偏移，待修改
+        }
+        else continue;//每行只取一个点，没到下一行就不记录
+        h--;//从下往上扫，每行扫一个
+        if(h==0)
+        {
+            break;//最后一行退出
+        }
+    }
+}
+//取右线
+void Image_GetRight(uint16 total_r)
+{
+    uint8 i=0;
+    uint16 j=0;
+    uint8 h=0;
+    for(i=0;i<Image_Hight;i++)
+    {
+        r_border[i]=118;//右线所寻边界最大值
+    }
+    h=Image_Hight-2;//最高找到第58行
+    for(j=0;j<total_r;j++)
+    {
+        if(points_r[j][1]==h)
+        {
+            r_border[h]=points_r[j][0]-1;
+        }
+        else continue;
+        h--;
+        if(h==0)
+        {
+            break;
+        }
+    }
+}
 
+#define threshold_max 255*6
+#define threshold_min 255*2
+//简介：滤波函数，将图像中部分噪声去除
+void Image_Filter(void)
+{
+    uint16 i,j;
+    uint32 num=0;
+    for(i=1;i<Image_Hight-1;i++)
+    {
+        for(j=1;j<Image_With-1;j++)
+        {
+            //统计8个方向的像素值
+            num=Image_Use[i-1][j-1]+Image_Use[i-1][j]+Image_Use[i-1][j+1]
+            +Image_Use[i][j-1]+Image_Use[i][j+1]+Image_Use[i+1][j-1]
+            +Image_Use[i+1][j]+Image_Use[i+1][j+1];
+
+            if(num>=threshold_max && Image_Use[i][j]==0)    //如果黑点四周的8个点只有2个黑点
+            {
+                Image_Use[i][j]==255;
+            }
+            if(num<=threshold_min && Image_Use[i][j]==255)//如果白点周围只有2个白点
+            {
+                Image_Use[i][j]==0;//过滤成黑
+            }
+        }
+    }
+}
+
+//给图像绘黑边，不然八邻域会出错
+void Image_DrawRectangle(void)
+{
+    uint8 i=0;
+    for(i=0;i<Image_Hight;i++)
+    {
+        Image_Use[i][0]=0;
+        Image_Use[i][1]=0;//图片左右两列变黑
+        Image_Use[i][Image_With-1]=0;
+        Image_Use[i][Image_With-2]=0;
+    }
+    for(i=0;i<Image_With;i++)
+    {
+        Image_Use[0][i]=0;
+        Image_Use[1][i]=0;//图片底下两层变黑
+    }
+}
+
+//最小二乘法求斜率
+float Imgae_Slope(uint8 begin,uint8 end,uint8 *border)
+{
+    float xsum=0,ysum=0,xysum=0,x2sum=0;
+    int16 i=0;
+    float result =0;
+    static float resultlast=0;//记录上次结果，用来比对
+
+    for(i=begin;i<end;i++)//从起点开始向终点自增（这个应该指的是下标）
+    {
+        xsum +=i;//对x坐标自增（行坐标）
+        ysum +=border[i];//对y坐标自增（列坐标）
+        xysum += i*(border[i]);//xy坐标乘积自增
+        x2sum +=i*i;//x坐标平方自增
+    }
+    if((end-begin)*x2sum-xsum*xsum)//这个在求斜率中会作为分母，因此需要判断是否为0
+    {
+        result = ((end - begin)*xysum - xsum * ysum) / ((end - begin)*x2sum - xsum * xsum);
+        resultlast =result;
+    }
+    else
+    {
+        result = resultlast;
+    }
+
+    return result;
+}
+
+void Image_CountKB(uint8 start,uint8 end,uint8 *border, float *slope_rate,float *intercept)
+{
+    uint16 i,num=0;
+    uint16 xsum=0,ysum=0;
+    float y_average,x_average;
+    num=0;
+    xsum=0;
+    ysum=0;
+    y_average=0;
+    x_average=0;
+    for(i=start;i<end;i++)//计算xy坐标的总值（行列坐标）
+    {
+        xsum +=i;
+        ysum +=border[i];
+        num++;
+    }
+    //计算x,y坐标的平均值
+    if(num)
+    {
+        x_average=(float)(xsum/num);
+        y_average=(float)(ysum/num);
+    }
+    *slope_rate =Imgae_Slope(start,end,border);//计算斜率
+    *intercept=y_average-(*slope_rate)*x_average;//计算截距
+}
 /**
- * @brief 大津法求阈值 2.0（由于第一版的bug极其严重，尽力修复也修复不了，暂时就用这版）
+ * @brief 大津法求阈值 2.0原版（由于第一版的bug极其严重，尽力修复也修复不了，暂时就用这版）
  * @param Uint8 输入图像的地址
  * @param Uint8 输出图像的地址
  * @param Threshold 图像阈值(实际上阈值需要进行计算，而不是直接赋值)
