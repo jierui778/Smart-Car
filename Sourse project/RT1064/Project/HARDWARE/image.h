@@ -13,11 +13,8 @@
 #define Primeval_With MT9V03X_W  // 原始图像宽度
 
 void Image_Compress();
-uint8 OSTU_GetThreshold(uint8 *image,
-                        uint16 width,
-                        uint16 height,
-                        uint32 pixel_threshold);
-extern uint8 Image_Use[Image_Height][Image_Width];          //先定义灰度直方图
+uint8 OSTU_GetThreshold(uint8 *image, uint16 Width, uint16 Height);
+extern uint8 Image_Use[Image_Height][Image_Width]; // 先定义灰度直方图
 void Binarization(uint8 threshold);
 // uint8 GetThreshold(void); // 注意计算阈值的一定要是原图像
 

@@ -26,112 +26,171 @@ void Image_Compress(void)
     mt9v03x_finish_flag = 0;
 }
 
-//  {
-//      int i, j, row, line;
-//      const float pro_h = Primeval_Hight / Image_Hight, pro_w = Primeval_With / Image_Width; // 120/60=2 188/100=1.88
-//      for (i = 0; i < Image_Hight; i++)                                                     // 遍历图像的每一行，从第零行到第59行。
-//      {
-//          row = ((int)i * (int)pro_h) +0.5;
-//          for (j = 0; j < Primeval_With; j++) // 遍历图像的每一列，从第零列到第79列。
-//          {
-//              line = (int)j * (int)pro_w +0.5;
-//              Image_Use[i][j] = mt9v03x_image[row][line]; // mt9v03x_image数组里面是原始灰度图像，Image_Use数组存储的是我之后要拿去处理的图像，但依然是灰度图像哦！只是压缩了一下而已。
-//          }
-//      }
-//      mt9v03x_finish_flag = 0;
-//  }
+ /**
+  * @brief GitHub copilot优化版本
+  *
+  * @param image
+  * @param Width
+  * @param Height
+  * @return uint8
+  */
 
-// // void Image_Compress(IN uint8 (*InImg)[Image_Width * 2], OUT uint8 (*OutImg)[Image_Width])
-// {
-//     int8 i, j, row, line;
-//     const float pro_h = Primeval_Hight / Image_Width, pro_w = Primeval_With / Image_Width; // 根据原始的图像尺寸和你所需要的图像尺寸确定好压缩比例。
-//     for (i = 0; i < Image_Hight; i++)
-//     {
-//         row = i * pro_h + 0.5;
-//         for (j = 0; j < Image_Width; j++)
-//         {
-//             line = j * pro_w + 0.5;
-//             Image_Use[i][j] = InImg[row][line];
-//         }
-//     }
-// }
+ uint8 OSTU_GetThreshold(uint8 *image, uint16 Width, uint16 Height)
+ {
+     uint8 HistGram[257] = {0}; // 将数组大小改为 257
+     uint16 x, y;
+     int16 Y;
+     uint32 Amount = 0;
+     uint32 PixelBack = 0;
+     uint32 PixelIntegralBack = 0;
+     uint32 PixelIntegral = 0;
+     int32 PixelIntegralFore = 0;
+     int32 PixelFore = 0;
+     double OmegaBack, OmegaFore, MicroBack, MicroFore, SigmaB, Sigma;
+     int16 MinValue, MaxValue;
+     uint8 Threshold = 0;
+     uint8 *data = image;
 
-// uint8 HistoGram[256];             //先定义灰度直方图
+     for (y = 0; y < Height; y++)
+     {
+         for (x = 0; x < Width; x++)
+         {
+             HistGram[data[y * Width + x]]++;
+         }
+     }
+     HistGram[255] = 0; // 将像素值为 255 的像素单独处理
+
+     for (MinValue = 0; MinValue < 256 && HistGram[MinValue] == 0; MinValue++)
+         ;
+     for (MaxValue = 255; MaxValue > MinValue && HistGram[MaxValue] == 0; MaxValue--)
+         ;
+
+     if (MaxValue == MinValue)
+     {
+         return MaxValue;
+     }
+     if (MinValue + 1 == MaxValue)
+     {
+         return MinValue;
+     }
+     for (Y = MinValue; Y <= MaxValue; Y++)
+     {
+         Amount += HistGram[Y];
+     }
+
+     PixelIntegral = 0;
+     for (Y = MinValue; Y <= MaxValue; Y++)
+     {
+         PixelIntegral += HistGram[Y] * Y;
+     }
+     SigmaB = -1;
+     for (Y = MinValue; Y < MaxValue; Y++)
+     {
+         PixelBack = PixelBack + HistGram[Y];
+         PixelFore = Amount - PixelBack;
+         OmegaBack = (double)PixelBack / Amount;
+         OmegaFore = (double)PixelFore / Amount;
+         PixelIntegralBack += HistGram[Y] * Y;
+         PixelIntegralFore = PixelIntegral - PixelIntegralBack;
+         MicroBack = (double)PixelIntegralBack / PixelBack;
+         MicroFore = (double)PixelIntegralFore / PixelFore;
+         Sigma = OmegaBack * OmegaFore * (MicroBack - MicroFore) * (MicroBack - MicroFore);
+         if (Sigma > SigmaB)
+         {
+             SigmaB = Sigma;
+             Threshold = Y;
+         }
+     }
+
+     return Threshold;
+ }
+
 /**
- * @brief 大津法求阈值1.0（和其他的版本有些出入）
+ * @brief 手搓版本
  *
- * @param Uint8 *image 第一次原始图像（灰度为0-255，有188*120个像素点的图像）
- * @return 求得的阈值
- * @exception 场地得到的灰度图像一般颜色不一，但是图像里面占的面积最大的灰度肯定只有赛道内的灰度值A1和赛道外的灰度值A2，因此得到的直方图会在A1和A2
- * 出现两个峰值，而所求的阈值就是两个峰值之间的最低值
+ * @param image
+ * @param Width
+ * @param Height
+ * @return uint8
  */
-uint8 OSTU_GetThreshold(uint8 *image,
-                        uint16 width,
-                        uint16 height,
-                        uint32 pixel_threshold)
-{
-#define GrayScale 256
+//uint8 OSTU_GetThreshold(uint8 *image, uint16 Width, uint16 Height)
+//{
+//    uint8 HistGram[256] = {
+//        0,
+//    };
+//    uint16 x, y;
+//    int16 Y;
+//    uint32 Amount = 0;
+//    uint32 PixelBack = 0;
+//    uint32 PixelIntegralBack = 0;
+//    uint32 PixelIntegral = 0;
+//    int32 PixelIntegralFore = 0;
+//    int32 PixelFore = 0;
+//    double OmegaBack, OmegaFore, MicroBack, MicroFore, SigmaB, Sigma; // 类间方差;
+//    int16 MinValue, MaxValue;
+//    uint8 Threshold = 0;
+//    uint8 *data = image;
 
-    int pixelCount[GrayScale];
-    float pixelPro[GrayScale];
-    int i, j, pixelSum = width * height;
-    uint8 threshold = 0;
-    uint8 *data = image; // 指向像素数据的指针
-    for (i = 0; i < GrayScale; i++)
-    {
-        pixelCount[i] = 0;
-        pixelPro[i] = 0;
-    }
+//    for (y = 0; y < 256; y++)
+//    {
+//        HistGram[y] = 0; // 初始化灰度直方图
+//    }
+//    for (y = 0; y < Height; y++)
+//    {
+//        for (x = 0; x < Width; x++)
+//        {
+//            HistGram[(int)data[y * Width + x]]++; // 统计每个灰度值的个数信息
+//        }
+//    }
 
-    uint32 gray_sum = 0;
-    // 统计灰度级中每个像素在整幅图像中的个数
-    for (i = 0; i < height; i += 1)
-    {
-        for (j = 0; j < width; j += 1)
-        {
-            // if((sun_mode&&data[i*width+j]<pixel_threshold)||(!sun_mode))
-            //{
-            pixelCount[(
-                int)data[i * width + j]]++;       // 将当前的点的像素值作为计数数组的下标
-            gray_sum += (int)data[i * width + j]; // 灰度值总和
-            //}
-        }
-    }
+//    for (MinValue = 0; MinValue < 256 && HistGram[MinValue] == 0; MinValue++)
+//        ; // 获取最小灰度的值
+//    for (MaxValue = 255; MaxValue > MinValue && HistGram[MinValue] == 0; MaxValue--)
+//        ; // 获取最大灰度的值
 
-    // 计算每个像素值的点在整幅图像中的比例
-    for (i = 0; i < GrayScale; i++)
-    {
-        pixelPro[i] = (float)pixelCount[i] / pixelSum;
-    }
+//    if (MaxValue == MinValue)
+//    {
+//        return MaxValue; // 图像中只有一个颜色
+//    }
+//    if (MinValue + 1 == MaxValue)
+//    {
+//        return MinValue; // 图像中只有二个颜色
+//    }
 
-    // 遍历灰度级[0,255]
-    float w0, w1, u0tmp, u1tmp, u0, u1, u, deltaTmp, deltaMax = 0;
-    w0 = w1 = u0tmp = u1tmp = u0 = u1 = u = deltaTmp = 0;
-    for (j = 0; j < pixel_threshold; j++)
-    {
-        w0 +=
-            pixelPro[j];          // 背景部分每个灰度值的像素点所占比例之和 即背景部分的比例
-        u0tmp += j * pixelPro[j]; // 背景部分 每个灰度值的点的比例 *灰度值
+//    for (Y = MinValue; Y <= MaxValue; Y++)
+//    {
+//        Amount += HistGram[Y]; //  像素总数
+//    }
 
-        w1 = 1 - w0;
-        u1tmp = gray_sum / pixelSum - u0tmp;
-
-        u0 = u0tmp / w0;   // 背景平均灰度
-        u1 = u1tmp / w1;   // 前景平均灰度
-        u = u0tmp + u1tmp; // 全局平均灰度
-        deltaTmp = w0 * pow((u0 - u), 2) + w1 * pow((u1 - u), 2);
-        if (deltaTmp > deltaMax)
-        {
-            deltaMax = deltaTmp;
-            threshold = j;
-        }
-        if (deltaTmp < deltaMax)
-        {
-            break;
-        }
-    }
-    return threshold;
-}
+//    PixelIntegral = 0;
+//    for (Y = MinValue; Y <= MaxValue; Y++)
+//    {
+//        PixelIntegral += HistGram[Y] * Y; // 灰度值总数
+//    }
+//    SigmaB = -1;
+//    for (Y = MinValue; Y < MaxValue; Y++)
+//    {
+//        PixelBack = PixelBack + HistGram[Y];                                               // 前景像素点数
+//        PixelFore = Amount - PixelBack;                                                    // 背景像素点数
+//        OmegaBack = (double)PixelBack / Amount;                                            // 前景像素百分比
+//        OmegaFore = (double)PixelFore / Amount;                                            // 背景像素百分比
+//        PixelIntegralBack += HistGram[Y] * Y;                                              // 前景灰度值
+//        PixelIntegralFore = PixelIntegral - PixelIntegralBack;                             // 背景灰度值
+//        MicroBack = (double)PixelIntegralBack / PixelBack;                                 // 前景灰度百分比
+//        MicroFore = (double)PixelIntegralFore / PixelFore;                                 // 背景灰度百分比
+//        Sigma = OmegaBack * OmegaFore * (MicroBack - MicroFore) * (MicroBack - MicroFore); // g
+//        if (Sigma > SigmaB)                                                                // 遍历最大的类间方差g
+//        {
+//            SigmaB = Sigma;
+//            Threshold = Y;
+//        }
+//        if (Sigma < SigmaB) // 遍历最大的类间方差g
+//        {
+//            break;
+//        }
+//    }
+//    return Threshold;
+//}
 
 /**
  * @brief 将输入的灰度图像转化为二值化图像

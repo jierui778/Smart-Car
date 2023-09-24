@@ -36,6 +36,15 @@
 #ifndef _zf_common_headfile_h_
 #define _zf_common_headfile_h_
 
+#ifndef TRUE
+#define TRUE 1
+#endif
+
+#ifndef FALSE
+#define FALSE 0
+#endif
+
+
 #include "stdio.h"
 #include "stdint.h"
 #include "string.h"
