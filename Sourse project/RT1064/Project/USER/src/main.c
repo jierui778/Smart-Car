@@ -2,6 +2,7 @@
 #include "image.h"
 #include "buzzer.h"
 #include "zf_common_headfile.h"
+<<<<<<< HEAD
 
 uint8 TH;
 unsigned int i,j;
@@ -26,60 +27,90 @@ int main(void)
 		Image_Binarization(TH);
 		tft180_displayimage03x((uint8 *)Image_Use, 100, 60); // ��ʾ�����ö�ֵ���ĺ������Ǹ���̫��
     }
+=======
+#include "servo.h"
+#include "math.h"
+#include "encoder.h"
+
+#define GrayScale 256
+
+int TH;
+int main(void)
+{
+  clock_init(SYSTEM_CLOCK_600M); //
+  Encoder_Init();
+  debug_init();
+  //    gpio_init(B9, GPO, GPIO_HIGH, GPO_PUSH_PULL);
+  tft180_set_dir(TFT180_PORTAIT);
+  tft180_init();
+  //    Buzzer_Init();
+  tft180_show_string(0, 0, "mt9v03x init.");
+
+  Camera_Init();
+  Servo_Init();
+
+  while (1)
+  {
+    Image_Compress();
+    //    TH = OSTU_GetThreshold(Image_Use[0], Image_Width, Image_Height, 150); // 锟斤拷锟斤拷值锟斤拷锟斤拷
+    TH = OSTU_GetThreshold(Image_Use[0], Image_Width, Image_Height);
+    tft180_show_uint(4, 80, TH, 3);
+    Binarization(TH);
+    tft180_displayimage03x((uint8 *)Image_Use, 100, 60); //
+  }
+>>>>>>> 4f9af65e17217bbcca95ffe5c6252049ca288b59
 }
 
 
 
 
 
-//#define SERVO_MOTOR_PWM             (PWM4_MODULE2_CHA_C30)                          // ���������϶����Ӧ����
-//#define SERVO_MOTOR_FREQ            (50 )                                           // ���������϶��Ƶ��  �����ע�ⷶΧ 50-300
-//                                         // ���������϶�����Χ �Ƕ�
-
-//#define SERVO_MOTOR_DUTY(x)         ((float)PWM_DUTY_MAX/(1000.0/(float)SERVO_MOTOR_FREQ)*(0.5+(float)(x)/90.0))
 
 
 
-//float servo_motor_duty = 0.0;                                                  // ��������Ƕ�
-//float servo_motor_dir = 1;                                                      // �������״̬
 
-//int main(void)
+
+
+
+
+
+//#define LED1                    (B9 )
+
+//#define PIT_CH                  (PIT_CH2 )                                      // 使用的周期中断编号 如果修改 需要同步对应修改周期中断编号与 isr.c 中的调用
+//#define PIT_PRIORITY            (PIT_IRQn)                                      // 对应周期中断的中断编号 
+
+
+
+//int main (void)
 //{
-//    clock_init(SYSTEM_CLOCK_600M);  // ����ɾ��
-//    debug_init();                   // ���Զ˿ڳ�ʼ��
-//    Servo_Init();
-//
-//
-//
-//
-////    interrupt_global_enable(0);
-//
+//    clock_init(SYSTEM_CLOCK_600M);                                              // 初始化芯片时钟 工作频率为 600MHz
+//    debug_init();                                                               // 初始化默认 Debug UART
+
+//    // 此处编写用户代码 例如外设初始化代码等
+//    gpio_init(LED1, GPO, GPIO_HIGH, GPO_PUSH_PULL);                             // 初始化 LED1 输出 默认高电平 推挽输出模式
+
+//    pit_ms_init(PIT_CH, 200);                                                   // 初始化 PIT 为周期中断 200ms 周期
+//    interrupt_set_priority(PIT_PRIORITY, 0);                                    // 设置 PIT 对周期中断的中断优先级为 1 优先级比外部中断低 会被外部中断打断
+//    // 此处编写用户代码 例如外设初始化代码等
+
 //    while(1)
 //    {
-//        pwm_set_duty(SERVO_MOTOR_PWM, (uint32)SERVO_MOTOR_DUTY(servo_motor_duty));
-
-////        if(servo_motor_dir)
-////        {
-//            servo_motor_duty ++;
-////            if(servo_motor_duty >= SERVO_MOTOR_R_MAX)
-////            {
-////                servo_motor_dir = 0x00;
-////            }
-////        }
-////        else
-////        {
-////            servo_motor_duty --;
-////            if(servo_motor_duty <= SERVO_MOTOR_L_MAX)
-////            {
-////                servo_motor_dir = 0x01;
-////            }
-////        }
-//        system_delay_ms(100);
-//        if(servo_motor_duty>180)
-//        {
-//            servo_motor_duty=0;
-//
-//        }
-//
+//        // 此处编写需要循环执行的代码
+//        // 此处编写需要循环执行的代码
+//        
+//        
 //    }
+//}
+
+
+
+////-------------------------------------------------------------------------------------------------------------------
+//// 函数简介     PIT 的周期中断处理函数 这个函数将在 PIT 对应的定时器中断调用 详见 isr.c
+//// 参数说明     void
+//// 返回参数     void
+//// 使用示例     pit_exti_handler();
+////-------------------------------------------------------------------------------------------------------------------
+//void pit_exti_handler (void)
+//{
+//    gpio_toggle_level(LED1);                                                    // 触发 PIT 中断后翻转 LED 状态
 //}

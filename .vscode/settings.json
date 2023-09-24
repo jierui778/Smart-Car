@@ -12,6 +12,7 @@
         "zf_device_mt9v03x.h": "c",
         "servo.h": "c",
         "motor.h": "c",
-        "buzzer.h": "c"
+        "buzzer.h": "c",
+        "scheduler.h": "c"
     }
 }
