@@ -30,12 +30,12 @@ void Encoder_Update(int32 *encoder_l_data, int32 *encoder_r_data)
     encoder_clear_count(ENCODER_L);                                       // 清空编码器计数
     encoder_clear_count(ENCODER_R);                                       // 清空编码器计数
 }
-/**
- * @brief 中断读取编码器计数(100ms)
- *
- */
-void pit_handler (void)
-{
-    Encoder_Update(&encoder_l_data, &encoder_r_data);
-}
+// /**
+//  * @brief 中断读取编码器计数(100ms)
+//  *
+//  */
+// void pit_handler (void)
+// {
+//     Encoder_Update(&encoder_l_data, &encoder_r_data);
+// }
 

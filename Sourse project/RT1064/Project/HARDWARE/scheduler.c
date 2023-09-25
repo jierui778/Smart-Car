@@ -10,11 +10,11 @@
 //    interrupt_global_enable(interrupt_state);
 //}//确保在部分代码块中禁用中断，以确保代码块的原子性
 
-// 根据数组长度，判断线程数量
+
 #define TASK_LIST_END \
     {                 \
         NULL, 0, 0, 0    \
-    }
+    }//任务列表结束标志
 
 //任务执行函数
 static void Scheduler1(void)//task1
@@ -41,11 +41,11 @@ static Task_t Task_List[] =
 };
 
 
-#define TASK_NUM (sizeof(Task_List) / sizeof(Task_t))
+#define TASK_NUM (sizeof(Task_List) / sizeof(Task_t))//任务数量
 
 
 /**
- * @brief 任务框架的时基计数标志位
+ * @brief 任务框架的时基计数标志位(放于中断进行更新)
  *
  */
 void Scheduler_Tick(void)
@@ -106,6 +106,11 @@ void Scheduler_Run(void)
         Task_List[index].task();
     }
 }
-
-
-
+/**
+ * @brief 中断更新任务调度框架的时基计数标志位
+ *
+ */
+void pit_handler (void)
+{
+    Scheduler_Tick();
+}

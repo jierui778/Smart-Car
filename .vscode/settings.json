@@ -13,6 +13,7 @@
         "servo.h": "c",
         "motor.h": "c",
         "buzzer.h": "c",
-        "scheduler.h": "c"
+        "scheduler.h": "c",
+        "control.h": "c"
     }
 }

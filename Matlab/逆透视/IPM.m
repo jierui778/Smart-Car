@@ -59,4 +59,7 @@ for i = 1-delta_y:height-delta_y                        %从变换图像中反�
     end
 end
 figure;
+subplot(1,1,1);
+imshow(img);
+subplot(1,1,2);
 imshow(uint8(imgn));
