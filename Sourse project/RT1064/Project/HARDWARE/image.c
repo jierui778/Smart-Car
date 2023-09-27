@@ -310,6 +310,7 @@ struct Right_Edge
     unsigned char row;                        //行坐标，省点内存就没设int
     unsigned char column;                     //列坐标，同上
     unsigned char flag;                       //判断边界点是否找到
+	uint8 grow;
 };
 
 struct Left_Edge Left[140];                   //左边界结构体
@@ -423,6 +424,113 @@ void Image_Get_neighborhoods(uint8(*Image_Use)[Image_Width])
 				break;
 			}
 			//二 检验越界
+			if(cur_row<=3||cur_row>=57||cur_col<=3||cur_col>=97)
+			{
+				break;
+			}
+		}
+	}
+	//采取左右对称，后面好写
+	/*
+	5	4	3
+	6		2
+	7	0	1
+	*/
+	if(right_point!=97)
+	{
+		Right[0].row=56;
+		Right[0].column=right_point;
+		Right[0].flag=1;
+		Right[0].grow=2;
+		cur_row=56;
+		cur_col=right_point;
+		Right_Count++;
+		while(Right_Max--)
+		{
+			//0黑1白
+			if(Image_Use[cur_row+1][cur_col]==black&&Image_Use[cur_row+1][cur_col+1]==white)
+			{
+				Right[Right_Count].row=cur_row+1;
+				Right[Right_Count].column=cur_col;
+				Right[Right_Count].flag=1;
+				Right[Right_Count].grow=0;
+				cur_row=Right[Right_Count].row;
+				cur_col=Right[Right_Count].column;
+				Right_Count++;
+			}
+			else if(Image_Use[cur_row+1][cur_col+1]==black&&Image_Use[cur_row][cur_col+1]==white)
+			{
+				Right[Right_Count].row=cur_row+1;
+				Right[Right_Count].column=cur_col+1;
+				Right[Right_Count].flag=1;
+				Right[Right_Count].grow=1;
+				cur_row=Right[Right_Count].row;
+				cur_col=Right[Right_Count].column;
+				Right_Count++;
+			}
+			else if(Image_Use[cur_row][cur_col+1]==black&&Image_Use[cur_row-1][cur_col+1]==white)
+			{
+				Right[Right_Count].row=cur_row;
+				Right[Right_Count].column=cur_col+1;
+				Right[Right_Count].flag=1;
+				Right[Right_Count].grow=2;
+				cur_row=Right[Right_Count].row;
+				cur_col=Right[Right_Count].column;
+				Right_Count++;
+			}
+			else if(Image_Use[cur_row-1][cur_col+1]==black&&Image_Use[cur_row-1][cur_col]==white)
+			{
+				Right[Right_Count].row=cur_row-1;
+				Right[Right_Count].column=cur_col+1;
+				Right[Right_Count].flag=1;
+				Right[Right_Count].grow=3;
+				cur_row=Right[Right_Count].row;
+				cur_col=Right[Right_Count].column;
+				Right_Count++;
+			}
+			else if(Image_Use[cur_row-1][cur_col]==black&&Image_Use[cur_row-1][cur_col-1]==white)
+			{
+				Right[Right_Count].row=cur_row-1;
+				Right[Right_Count].column=cur_col;
+				Right[Right_Count].flag=1;
+				Right[Right_Count].grow=4;
+				cur_row=Right[Right_Count].row;
+				cur_col=Right[Right_Count].column;
+				Right_Count++;
+			}
+			else if(Image_Use[cur_row-1][cur_col-1]==black&&Image_Use[cur_row][cur_col-1]==white)
+			{
+				Right[Right_Count].row=cur_row-1;
+				Right[Right_Count].column=cur_col-1;
+				Right[Right_Count].flag=1;
+				Right[Right_Count].grow=5;
+				cur_row=Right[Right_Count].row;
+				cur_col=Right[Right_Count].column;
+				Right_Count++;
+			}
+			else if(Image_Use[cur_row][cur_col-1]==black&&Image_Use[cur_row+1][cur_col-1]==white)
+			{
+				Right[Right_Count].row=cur_row;
+				Right[Right_Count].column=cur_col-1;
+				Right[Right_Count].flag=1;
+				Right[Right_Count].grow=6;
+				cur_row=Right[Right_Count].row;
+				cur_col=Right[Right_Count].column;
+				Right_Count++;
+			}
+			else if(Image_Use[cur_row+1][cur_col-1]==black&&Image_Use[cur_row+1][cur_col]==white)
+			{
+				Right[Right_Count].row=cur_row+1;
+				Right[Right_Count].column=cur_col-1;
+				Right[Right_Count].flag=1;
+				Right[Right_Count].grow=7;
+				cur_row=Right[Right_Count].row;
+				cur_col=Right[Right_Count].column;
+				Right_Count++;
+			}
+			else
+				break;
+			
 			if(cur_row<=3||cur_row>=57||cur_col<=3||cur_col>=97)
 			{
 				break;
