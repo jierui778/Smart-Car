@@ -539,6 +539,28 @@ void Image_Get_neighborhoods(uint8(*Image_Use)[Image_Width])
 	}
 }
 
+//定义中线结构体
+struct Mid_Line
+{
+    unsigned char row;                        //行坐标，省点内存就没设int
+    unsigned char column;                     //列坐标，同上
+};
+struct Mid_Line mid[140];
+uint8 Mid_Count;
+//取中线函数
+void Get_Midpoint(void)
+{
+	uint8 left_c,right_c;
+	uint8 i;//中间值
+	left_c=Left_Count;
+	right_c=Right_Count;//存入左右计数值
+	for(i=0;i<left_c;i--)
+	{
+		mid[i].row=(Left[i].row+Right[i].row)/2;
+		mid[i].column=(Left[i].column+Right[i].column)/2;
+	}
+	
+}
 void Image_FillCross(uint8 *l_border,uint8 *r_border,uint16 total_num_l,uint16 total_num_r,
                         uint16*dir_l,uint16 *dir_r,uint16(*points_l)[2],uint16(*points_r)[2])
 {
@@ -655,7 +677,15 @@ void Image_Run(void)
 //	tft180_show_int(3,120,points_l[l_count-1][0],3);
 //	Image_Get_neighborhoods(100,Image_Use);
 	tft180_draw_line(0,0,cur_col,cur_row,RGB565_RED);//行坐标l_countl_count
-	tft180_show_int(3,100,Left_Count,3);
+//	Get_Midpoint();
+	for(i=0;i<Left_Count;i++)
+	{
+		tft180_draw_point(Left[i].column,Left[i].row,RGB565_YELLOW);
+	}
+	for(i=0;i<Right_Count;i++)
+	{
+		tft180_draw_point(Right[i].column,Right[i].row,RGB565_GREEN);
+	}
 }
 
 
