@@ -470,14 +470,14 @@
               <FilePath>..\HARDWARE\buzzer.c</FilePath>
             </File>
             <File>
-              <FileName>scheduler.c</FileName>
+              <FileName>schedule.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\HARDWARE\scheduler.c</FilePath>
+              <FilePath>..\HARDWARE\schedule.c</FilePath>
             </File>
             <File>
-              <FileName>scheduler.h</FileName>
+              <FileName>schedule.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\HARDWARE\scheduler.h</FilePath>
+              <FilePath>..\HARDWARE\schedule.h</FilePath>
             </File>
           </Files>
         </Group>
