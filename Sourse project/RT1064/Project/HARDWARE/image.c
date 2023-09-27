@@ -320,7 +320,13 @@ unsigned char grow_left,grow_right;           //记录左右边界在八邻域�
 unsigned char Left_Max=140,Right_Max=140;     //左右边界搜点时允许最大的搜点量
 unsigned char Boundary_search_end=30;         //搜寻行数的最高行
 uint16 cur_row,cur_col;//当前行列
-//Destination
+/**
+ * @brief 八邻域巡线
+ *
+ * @param uint8 输入值为二值化处理后的数组
+ * @example Image_Get_neighborhoods(Image_Use)
+ */
+
 void Image_Get_neighborhoods(uint8(*Image_Use)[Image_Width])
 {
 	Left_Count=0;
