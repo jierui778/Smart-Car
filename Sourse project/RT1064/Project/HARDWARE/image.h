@@ -6,6 +6,8 @@
 #define OUT
 #define IN_OUT
 
+#define white 255
+#define black 0
 #define Image_Width 100            // 用于处理的图像高度
 #define Image_Height 60           //用于处理的图像宽度\
 
@@ -18,12 +20,7 @@ extern uint8 Image_Use[Image_Height][Image_Width]; // 先定义灰度直方图
 void Image_Binarization(unsigned char threshold,uint8(*Image_Use)[Image_Width]);
 void Image_FillCross(uint8 *l_border,uint8 *r_border,uint16 total_num_l,uint16 total_num_r,
                         uint16*dir_l,uint16 *dir_r,uint16(*points_l)[2],uint16(*points_r)[2]);
-void Image_DrawRectangle(uint8(*Image_Use)[Image_Width]);
-void Image_Filter(void);
-void Image_GetRight(uint16 total_r);
-void Image_GetLeft(uint16 total_L);
-void search_l_r(uint8(*Image_Use)[Image_Width],uint16 break_flag,uint8*hightest);
-void Image_GetMid(uint16 total_m);
-uint8 Image_Get_Start_Point(uint8 start_row,uint8(*Image_Use)[Image_Width]);
+void Image_DrawRectangle(void);
 void Image_Run(void);
+void Image_Get_neighborhoods(uint8(*Image_Use)[Image_Width]);
 #endif

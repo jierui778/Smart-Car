@@ -178,296 +178,18 @@ unsigned char Image_Get_Rightflag(void)
     return 1;
 }
 
-#define USE_num  180                        //定义找点的数组成员个数
 
 
- //存放点的x，y坐标
-uint16 points_l[(uint16)USE_num][2] = { {  0 } };//左线，其中USE_NUM为左线上点的最大存储值，[2]表示存储的点为x,y坐标
-uint16 points_r[(uint16)USE_num][2] = { {  0 } };//右线，其中USE_NUM为右线上点的最大存储值
-uint16 dir_r[(uint16)USE_num] = { 0 };//用来存储右边每个点的生长方向，在判断十字环岛有很大的用处
-uint16 dir_l[(uint16)USE_num] = { 0 };//用来存储左边每个点生长方向
-uint16 data_stastics_l = 0;//统计左边找到点的个数
-uint16 data_stastics_r = 0;//统计右边找到点的个数
-uint8 hightest = 0;//在图像中左线和右线交汇的点
-uint16 left_count=0;
-uint16 Right_count=0;
-uint16 l_data_statics;//统计左边生长点的个数
-uint16 r_data_statics;//统计右边
-uint8 center_point_r[2] = { 0 };//右线生长点的中心坐标
-//此函数和1.0的区别在于：1.这里使用for循环扫线，上面用的else if扫，这个的效果更好，但是耗时更多
-void search_l_r(uint8(*Image_Use)[Image_Width],uint16 break_flag,uint8*hightest)
-{
-
-	uint8 i = 0, j = 0;
-    //采取左右巡线对称，左边用顺时针扫，右边用逆时针扫
-	//左边变量
-	uint8 search_filds_l[8][2] = { {  0 } };//左边八邻域中，中心点四周的8个点的真实坐标（真实坐标=中心坐标+相对坐标）
-	uint8 index_l = 0;//左线索引点的下标
-	uint8 temp_l[8][2] = { {  0 } };//左线八邻域中，中心点周围8个点的相对坐标（中间存储值）
-	uint8 center_point_l[2] = {  0 };//左线生长点的中心坐标
-	
-	//生长方向
-	static int8 seeds_l[8][2] = { {0,  1},{-1,1},{-1,0},{-1,-1},{0,-1},{1,-1},{1,  0},{1, 1}, };
-	//{-1,-1},{0,-1},{+1,-1},
-	//{-1, 0},	     {+1, 0},
-	//{-1,+1},{0,+1},{+1,+1},
-	//这个是顺时针
-
-	//右边变量
-	uint8 search_filds_r[8][2] = { {  0 } };//右边八邻域中，中心点四周的8个点的真实坐标（真实坐标=中心坐标+相对坐标）
-	uint8 index_r = 0;//右线每个点的索引下标
-	uint8 temp_r[8][2] = { {  0 } };//中间存储变量，相当于存储器
-	
-	//定义八个邻域
-	static int8 seeds_r[8][2] = { {0,  1},{1,1},{1,0}, {1,-1},{0,-1},{-1,-1}, {-1,  0},{-1, 1}, };
-	//{-1,-1},{0,-1},{+1,-1},
-	//{-1, 0},	     {+1, 0},
-	//{-1,+1},{0,+1},{+1,+1},
-	//这个是逆时针
-
-	l_data_statics = left_count;//统计找到了多少个点，方便后续把点全部画出来
-	r_data_statics = Right_count;//统计找到了多少个点，方便后续把点全部画出来
-
-	//第一次更新坐标点  将找到的起点值传进来
-	center_point_r[0] = 55;
-	center_point_r[1] = right_point;
-
-		//开启邻域循环
-	while (break_flag--)//当已经找完目标的点就不再寻扎奥
-	{
-        //坐标填充，将相对坐标放在邻域里，得到左线每个点的起始坐标（第一步存的是八邻域数组，第二步存的是每个左线点的中心坐标值）
-		//左边
-		for (i = 0; i < 8; i++)//传递8F坐标
-		{
-			search_filds_l[i][0] = center_point_l[0] + seeds_l[i][0];//x
-			search_filds_l[i][1] = center_point_l[1] + seeds_l[i][1];//y
-		}
-		//中心坐标点填充到已经找到的点内
-		points_l[l_data_statics][0] = center_point_l[0];//x
-		points_l[l_data_statics][1] = center_point_l[1];//y
-		l_data_statics++;//索引加一
-
-		//右边，道理同上
-		for (i = 0; i < 8; i++)//传递8F坐标
-		{
-			search_filds_r[i][0] = center_point_r[0] + seeds_r[i][0];//x
-			search_filds_r[i][1] = center_point_r[1] + seeds_r[i][1];//y
-		}
-		//中心坐标点填充到已经找到的点内
-		points_r[r_data_statics][0] = center_point_r[0];//x
-		points_r[r_data_statics][1] = center_point_r[1];//y
-        //存储左右线数组下标初始化
-		index_l = 0;//先清零，后使用
-		for (i = 0; i < 8; i++)
-		{
-			temp_l[i][0] = 0;//先清零，后使用
-			temp_l[i][1] = 0;//先清零，后使用
-		}
-        //二 开始进入for的循环邻域，从中心点的正下方开始扫，左线是顺时针开始扫的
-		//左边判断
-		for (i = 0; i < 8; i++)
-		{
-			if (Image_Use[search_filds_l[i][1]][search_filds_l[i][0]] == 0//注意区分横坐标和纵坐标，以及行坐标和列坐标，如果扫到为黑
-				&& Image_Use[search_filds_l[(i + 1) & 7][1]][search_filds_l[(i + 1) & 7][0]] == 255)//&7是取余操作，防止i溢出，如果扫到为黑，且沿着顺时针下一个扫到的的点是白
-			{
-				temp_l[index_l][0] = search_filds_l[(i)][0];    //对先扫到的黑点进行存储，一般选择沿着黑点进行生长
-				temp_l[index_l][1] = search_filds_l[(i)][1];    //同时存储x,y点的坐标
-				index_l++;//左线记录坐标数组的下标自增
-				dir_l[l_data_statics - 1] = (i);//记录生长方向，在0-7里面选择黑点到白点的交界点的黑点的相对方位作为生长方向
-                //3     4      5
-                //2            6
-                //1     0      7
-			}
-            //如果找不到，下标不会自增，就不会更新坐标点，但是if里面的其实可以试一下放到上面的if里面去
-            //如果找到了（因为单次只会找一个点）
-			if (index_l)
-			{
-				//更新坐标点，更新新的中心坐标点
-				center_point_l[0] = temp_l[0][0];//x
-				center_point_l[1] = temp_l[0][1];//y
-                //这个for循环目前看来没有什么必要，因为一般index_r只会在0，1之间发生变化，而且每次执行扫点的时候都会对index_r归零
-				for (j = 0; j < index_l; j++)
-				{
-					if (center_point_l[1] > temp_l[j][1])//如果中心点的横坐标比原来的大，也就是右线点向上生长时
-					{
-						center_point_l[0] = temp_l[j][0];//x
-						center_point_l[1] = temp_l[j][1];//y
-					}
-				}
-			}
-			
-		}
-	
-        //三 检验所得的点是否符合条件
-        //以下各行的意思如下：
-        //3.1当检测到该线上的点，上次点，上上次点是同一个x,y坐标时，停止检测（左右线用或来表示）
-		if ((points_r[r_data_statics][0]== points_r[r_data_statics-1][0]&& points_r[r_data_statics][0] == points_r[r_data_statics - 2][0]
-			&& points_r[r_data_statics][1] == points_r[r_data_statics - 1][1] && points_r[r_data_statics][1] == points_r[r_data_statics - 2][1])
-			||(points_l[l_data_statics-1][0] == points_l[l_data_statics - 2][0] && points_l[l_data_statics-1][0] == points_l[l_data_statics - 3][0]
-				&& points_l[l_data_statics-1][1] == points_l[l_data_statics - 2][1] && points_l[l_data_statics-1][1] == points_l[l_data_statics - 3][1]))
-		{
-			break;//当连续检测到同一个点的时候就退出for循环
-		}
-        //3.2当检测到左线和右线的坐标间隔在2之间时，默认两者相交，此时记录相交时对应的最高点
-		if (my_abs(points_r[r_data_statics][0] - points_l[l_data_statics - 1][0]) < 2
-			&& my_abs(points_r[r_data_statics][1] - points_l[l_data_statics - 1][1] < 2)
-			)
-		{
-			*hightest = (points_r[r_data_statics][1] + points_l[l_data_statics - 1][1]) >> 1;//取出最高点对应的纵坐标（即行数）
-			break;//检测到两线相交的时候就没有必要继续扫了
-		}
-        //3.3当检测到左线的纵坐标比右线的高（也就是右线比左线高的时候），或者右线比左线高——待改进
-		if ((points_r[r_data_statics][1] < points_l[l_data_statics - 1][1]))
-		{
-			continue;//如果左边比右边高了，左边等待右边
-		}
-        //3.4这个判断向下生长为什么不是1 0 7呢？待改进
-		if (dir_l[l_data_statics - 1] == 7
-			&& (points_r[r_data_statics][1] > points_l[l_data_statics - 1][1]))//左边比右边高且已经向下生长了
-		{
-			center_point_l[0] = points_l[l_data_statics - 1][0];//重置所取点的坐标到上一个，回退操作
-			center_point_l[1] = points_l[l_data_statics - 1][1];//y
-			l_data_statics--;//索引减小
-		}
-        //当左线数组的存储数和存储下标减小的时候，这个时候右数组的索引增加，为的是他们能同时寻一个点
-		r_data_statics++;//索引加一
 
 
-        //右线扫描，注意：每当左边扫完一个点，右边会接着扫一个点，而不是左边全部扫完以后右边再扫
-        //一 初始化八邻域中间数组坐标
-		index_r = 0;//先清零，后使用
-		for (i = 0; i < 8; i++)
-		{
-			temp_r[i][0] = 0;//先清零，后使用
-			temp_r[i][1] = 0;//先清零，后使用
-		}
-
-		//二 开启八邻域扫第一个点，这是逆时针扫
-		for (i = 0; i < 8; i++)
-		{
-			if (Image_Use[search_filds_r[i][1]][search_filds_r[i][0]] == 0
-				&& Image_Use[search_filds_r[(i + 1) & 7][1]][search_filds_r[(i + 1) & 7][0]] == 255)
-			{
-				temp_r[index_r][0] = search_filds_r[(i)][0];//原理和上面一样，虽然写法判断都一样，但是这里逆时针扫，差不多
-				temp_r[index_r][1] = search_filds_r[(i)][1];
-				index_r++;//索引加一
-				dir_r[r_data_statics - 1] = (i);//记录生长方向
-				//printf("dir[%d]:%d\n", r_data_statics - 1, dir_r[r_data_statics - 1]);
-			}
-            //如果找到了（因为单次只会找一个点）
-			if (index_r)
-			{
-				//更新右线的坐标点
-				center_point_r[0] = temp_r[0][0];//x
-				center_point_r[1] = temp_r[0][1];//y
-                //这个for循环目前看来没有什么必要，因为一般index_r只会在0，1之间发生变化，而且每次执行扫点的时候都会对index_r归零
-				for (j = 0; j < index_r; j++)
-				{
-					if (center_point_r[1] > temp_r[j][1])//如果中心点的横坐标比原来的大，也就是右线点向上生长时
-					{
-						center_point_r[0] = temp_r[j][0];//x
-						center_point_r[1] = temp_r[j][1];//y
-					}
-				}
-
-			}
-		}
-		
-		
-	}
-	
-
-
-	//取出循环次数，这里也可以通过用全局变量来代替指针
-	
-}
 
 //简介：通过已知的点来提取出所需要的边线
 //参数：total_L 需要找到点的数量，一般都是data_statics_left
 uint8 l_border[Image_Height];//定义左线的数组，下标为行坐标，下标对应的值为列坐标，每行只有一个数组
 uint8 r_border[Image_Height];//定义右线数组
 uint8 center_line[Image_Height];//定义中线数组
-void Image_GetLeft(uint16 total_l)
-{
-    uint8 i=0;
-    uint16 j=0;
-    uint8 h=0;
-    for(i=0;i<Image_Height;i++)
-    {
-        l_border[i]=118;//右线所寻边界最大值
-    }
-    h=Image_Height-2;//最高找到第58行
-    for(j=0;j<total_l;j++)
-    {
-        if(points_l[j][1]==h)
-        {
-            l_border[h]=points_l[j][0]+1;
-        }
-        else continue;
-        h--;
-        if(h==0)
-        {
-            break;
-        }
-    }
-}
-//从八邻域边界里提取需要的边线
-void Image_GetRight(uint16 total_r)
-{
-    uint8 i=0;
-    uint16 j=0;
-    uint8 h=0;
-    for(i=0;i<Image_Height;i++)
-    {
-        r_border[i]=50;//右线所寻边界最大值
-    }
-    h=Image_Height-2;//最高找到第58行
-	//下面的程序不会执行
-    for(j=0;j<total_r;j++)
-    {
-        if(points_r[j][1]==h)
-        {
-            r_border[h]=points_r[j][0]-1;
-        }
-        else continue;
-        h--;
-        if(h==0)
-        {
-            break;
-        }
-    }
-}
 
-//从左右边界中提取中线，这里用最简单的左右边界相加取平均，但是不能直接取左右边界，遇到不同元素时还是要先补线，再重新取左右边界后再取中线
-void Image_GetMid(uint16 total_m)
-{
-	uint8 i=0;
-	uint16 j=0;
-	uint8 h=0;
-	for(i=0;i<Image_Height;i++)
-	{
-		center_line[i]=0;//初始化
-	}
-	h=Image_Height-2;//最高找到第58行
-	for(j=0;j<total_m;j++)
-	{
-		if(points_r[j][1]==h&&points_l[j][1]==h)//确定是在同一行
-		{
-			center_line[h]=(int)((points_r[j][0]+points_l[j][0])/2);
-			/*以下是调试代码，为了显示中线而已*/
-			Image_Use[h][center_line[h]]=0;
-		}
-		else continue;
-		h--;
-		if(h==0)
-		{
-			break;
-		}
-	}
-	
-	
-	
-}
+
 
 #define threshold_max 255*6
 #define threshold_min 255*2
@@ -497,8 +219,8 @@ void Image_Filter(void)
     }
 }
 
-//给图像绘黑边，不然八邻域会出错
-void Image_DrawRectangle(uint8(*Image_Use)[Image_Width])
+//给图像绘黑边，不然八邻域会出错，位置一定要放在显示的前面
+void Image_DrawRectangle(void)
 {
     uint8 i=0;
     for(i=0;i<Image_Height;i++)
@@ -575,6 +297,138 @@ void Image_CountKB(uint8 start,uint8 end,uint8 *border, float *slope_rate,float 
     }
     *slope_rate =Imgae_Slope(start,end,border);//计算斜率
     *intercept=y_average-(*slope_rate)*x_average;//计算截距
+}
+struct Left_Edge
+{
+    unsigned char row;                        //行坐标，省点内存就没设int
+    unsigned char column;                     //列坐标，同上
+    unsigned char flag;                       //判断边界点是否找到
+	uint8 grow;
+};
+struct Right_Edge
+{
+    unsigned char row;                        //行坐标，省点内存就没设int
+    unsigned char column;                     //列坐标，同上
+    unsigned char flag;                       //判断边界点是否找到
+};
+
+struct Left_Edge Left[140];                   //左边界结构体
+struct Right_Edge Right[140];                 //右边界结构体
+unsigned char Left_Count,Right_Count;         //记录左右边界点的个数
+unsigned char grow_left,grow_right;           //记录左右边界在八邻域时寻点的相对位置
+unsigned char Left_Max=140,Right_Max=140;     //左右边界搜点时允许最大的搜点量
+unsigned char Boundary_search_end=30;         //搜寻行数的最高行
+uint16 cur_row,cur_col;//当前行列
+//Destination
+void Image_Get_neighborhoods(uint8(*Image_Use)[Image_Width])
+{
+	Left_Count=0;
+	Right_Count=0;
+	
+	if(left_point!=3)
+	{
+		Left[0].row=56;
+		Left[0].column=left_point;
+		Left[0].flag=1;
+		Left[0].grow=2;//初始生长方向为2
+		cur_row=56;
+		cur_col=left_point;
+		Left_Count++;
+		while(Left_Max--)//找140个
+		{
+			//一 寻点生长
+			//0白1黑
+			if(Image_Use[cur_row+1][cur_col]==black&&Image_Use[cur_row+1][cur_col-1]==white)
+			{
+				Left[Left_Count].row=cur_row+1;
+				Left[Left_Count].column=cur_col;
+				Left[Left_Count].flag=1;
+				Left[Left_Count].grow=0;
+				cur_row =Left[Left_Count].row;
+				cur_col=Left[Left_Count].column;//更新中心坐标点
+				Left_Count++;
+			}
+			else if(Image_Use[cur_row+1][cur_col-1]==black&&Image_Use[cur_row][cur_col-1]==white)
+			{
+				Left[Left_Count].row=cur_row+1;
+				Left[Left_Count].column=cur_col-1;
+				Left[Left_Count].flag=1;
+				Left[Left_Count].grow=1;
+				cur_row =Left[Left_Count].row;
+				cur_col=Left[Left_Count].column;//更新中心坐标点
+				Left_Count++;
+			}
+			else if(Image_Use[cur_row][cur_col-1]==black&&Image_Use[cur_row-1][cur_col-1]==white)
+			{
+				Left[Left_Count].row=cur_row;
+				Left[Left_Count].column=cur_col-1;
+				Left[Left_Count].flag=1;
+				Left[Left_Count].grow=2;
+				cur_row =Left[Left_Count].row;
+				cur_col=Left[Left_Count].column;//更新中心坐标点
+				Left_Count++;
+			}
+			else if(Image_Use[cur_row-1][cur_col-1]==black&&Image_Use[cur_row-1][cur_col]==white)
+			{
+				Left[Left_Count].row=cur_row-1;
+				Left[Left_Count].column=cur_col-1;
+				Left[Left_Count].flag=1;
+				Left[Left_Count].grow=3;
+				cur_row =Left[Left_Count].row;
+				cur_col=Left[Left_Count].column;//更新中心坐标点
+				Left_Count++;
+			}
+			else if(Image_Use[cur_row-1][cur_col]==black&&Image_Use[cur_row-1][cur_col+1]==white)
+			{
+				Left[Left_Count].row=cur_row-1;
+				Left[Left_Count].column=cur_col;
+				Left[Left_Count].flag=1;
+				Left[Left_Count].grow=4;
+				cur_row =Left[Left_Count].row;
+				cur_col=Left[Left_Count].column;//更新中心坐标点
+				Left_Count++;
+			}
+			else if(Image_Use[cur_row-1][cur_col+1]==black&&Image_Use[cur_row][cur_col+1]==white)
+			{
+				Left[Left_Count].row=cur_row-1;
+				Left[Left_Count].column=cur_col+1;
+				Left[Left_Count].flag=1;
+				Left[Left_Count].grow=5;
+				cur_row =Left[Left_Count].row;
+				cur_col=Left[Left_Count].column;//更新中心坐标点
+				Left_Count++;
+			}
+			else if(Image_Use[cur_row][cur_col+1]==black&&Image_Use[cur_row+1][cur_col+1]==white)
+			{
+				Left[Left_Count].row=cur_row;
+				Left[Left_Count].column=cur_col+1;
+				Left[Left_Count].flag=1;
+				Left[Left_Count].grow=6;
+				cur_row =Left[Left_Count].row;
+				cur_col=Left[Left_Count].column;//更新中心坐标点
+				Left_Count++;
+			}
+			else if(Image_Use[cur_row+1][cur_col+1]==black&&Image_Use[cur_row+1][cur_col]==white)
+			{
+				Left[Left_Count].row=cur_row+1;
+				Left[Left_Count].column=cur_col+1;
+				Left[Left_Count].flag=1;
+				Left[Left_Count].grow=7;
+				cur_row =Left[Left_Count].row;
+				cur_col=Left[Left_Count].column;//更新中心坐标点
+				Left_Count++;
+			}
+			else
+			{
+				break;
+			}
+			//二 检验越界
+			if(cur_row<=3||cur_row>=57||cur_col<=3||cur_col>=97)
+			{
+				break;
+			}
+		}
+	}
 }
 
 void Image_FillCross(uint8 *l_border,uint8 *r_border,uint16 total_num_l,uint16 total_num_r,
@@ -684,20 +538,16 @@ void Image_FillCross(uint8 *l_border,uint8 *r_border,uint16 total_num_l,uint16 t
 void Image_Run(void)
 {
 	uint8 i;
-	Image_DrawRectangle(Image_Use);
+
 	i=Image_Get_LeftFlag();
 	i=Image_Get_Rightflag();
-	search_l_r(Image_Use,56,&hightest);
-	Image_GetLeft(l_data_statics);
-	Image_GetRight(r_data_statics);
-//	tft180_draw_line(0,0,start_point_Left[0],start_point_Left[1],RGB565_RED);//行坐标
-	tft180_show_int(3,80,center_point_r[0],3);
-	tft180_show_int(3,100,center_point_r[1],3);
-	
-	for(i=0;i<56;i++)
-	{
-		tft180_draw_point(points_r[i][0],points_r[i][1],RGB565_BLUE);
-	}
+//	tft180_draw_line(0,0,start_point_Left[0],start_point_Left[1],RGB565_RED);//行坐标l_countl_count
+	tft180_show_int(3,80,left_point,3);
+	Image_Get_neighborhoods(Image_Use);
+//	tft180_show_int(3,120,points_l[l_count-1][0],3);
+//	Image_Get_neighborhoods(100,Image_Use);
+	tft180_draw_line(0,0,cur_col,cur_row,RGB565_RED);//行坐标l_countl_count
+	tft180_show_int(3,100,Left_Count,3);
 }
 
 

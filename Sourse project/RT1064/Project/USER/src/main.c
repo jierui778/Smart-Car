@@ -6,7 +6,7 @@
 #include "math.h"
 #include "encoder.h"
 
-#define GrayScale 256
+#define GrayScale 257
 
 int TH;
 int main(void)
@@ -28,8 +28,10 @@ int main(void)
     Image_Compress();
     TH = OSTU_GetThreshold(Image_Use[0], Image_Width, Image_Height);
     Image_Binarization(TH,Image_Use);
-	Image_Run();
+	  Image_DrawRectangle();
     tft180_displayimage03x((uint8 *)Image_Use, 100, 60); //
+	  
+	  Image_Run();
   }
 }
 
