@@ -686,11 +686,19 @@ void Image_Run(void)
 //	Get_Midpoint();
 	for(i=0;i<Left_Count;i++)
 	{
-		tft180_draw_point(Left[i].column,Left[i].row,RGB565_YELLOW);
+		tft180_draw_point(Left[i].column,Left[i].row,RGB565_BLUE);
+	}
+	for(i=0;i<Left_Count;i++)
+	{
+		tft180_draw_point(Left[i].column+1,Left[i].row,RGB565_BLUE);
+	}
+	for(i=0;i<Left_Count;i++)
+	{
+		tft180_draw_point(Left[i].column-1,Left[i].row,RGB565_BLUE);
 	}
 	for(i=0;i<Right_Count;i++)
 	{
-		tft180_draw_point(Right[i].column,Right[i].row,RGB565_GREEN);
+		tft180_draw_point(Right[i].column,Right[i].row,RGB565_RED);
 	}
 }
 
