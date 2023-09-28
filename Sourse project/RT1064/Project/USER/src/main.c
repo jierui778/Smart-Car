@@ -32,6 +32,10 @@ int main(void)
     tft180_displayimage03x((uint8 *)Image_Use, 100, 60); //
 	  
 	  Image_Run();
+
+
+
+    
   }
 }
 

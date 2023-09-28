@@ -106,3 +106,29 @@ int IncrementPID(float SetValue,float ActualValue,PID pid)
     Last_Bias = Current_Bias;//上一次偏差保存
     return Result;//返回结果
 }
+
+/*@brief:位置式PID控制器（用于舵机控制转向）
+ *        [in] deviation:偏差角度
+ * @return:调节舵机的PWM_result
+ */
+int PositionPID_Servo(float deviation, PID pid)
+{
+    float Position_KP = pid.kp, Position_KI = pid.ki, Position_KD = pid.kd;
+    int Result;
+    static float Bias, Integral_bias, Last_Bias;
+    Bias = deviation;
+    Integral_bias += Bias;
+    Result = Servo_Mid+Position_KP * Bias + Position_KI * Integral_bias + Position_KD * (Bias - Last_Bias);
+    Last_Bias = Bias; // 上一次偏差保存
+
+    //舵机限幅（防止转向过大）
+    if(Result>Servo_Max)
+    {
+        Result=Servo_Max;
+    }
+    if(Result<=Servo_Min)
+    {
+        Result=Servo_Min;
+    }
+    return Result;
+}
