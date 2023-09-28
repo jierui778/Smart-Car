@@ -3,10 +3,4 @@
 #define _CIRCLE_H_
 
 
-
-
-
-
-
-
 #endif

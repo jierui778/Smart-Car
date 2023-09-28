@@ -479,6 +479,16 @@
               <FileType>5</FileType>
               <FilePath>..\HARDWARE\schedule.h</FilePath>
             </File>
+            <File>
+              <FileName>display.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\HARDWARE\display.h</FilePath>
+            </File>
+            <File>
+              <FileName>display.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\display.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

@@ -1,6 +1,5 @@
 #include "image.h"
 
-#include "math.h"
 
 uint8 Image_Use[Image_Height][Image_Width];
 /**

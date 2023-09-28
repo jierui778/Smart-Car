@@ -16,6 +16,9 @@ void Image_Compress();
 uint8 OSTU_GetThreshold(uint8 *image, uint16 Width, uint16 Height);
 extern uint8 Image_Use[Image_Height][Image_Width]; // 先定义灰度直方图
 void Binarization(uint8 threshold);
+
+
+void Image_Process(void); // 图像处理总函数
 // uint8 GetThreshold(void); // 注意计算阈值的一定要是原图像
 
 // void Image_Get();//获取图片

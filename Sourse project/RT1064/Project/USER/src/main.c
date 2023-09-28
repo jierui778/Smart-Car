@@ -9,15 +9,17 @@
 
 #define GrayScale 256
 
-int TH;
+
+
 int main(void)
 {
+  uint16 data = 8;
   clock_init(SYSTEM_CLOCK_600M); //
                                  //  Encoder_Init();
   debug_init();
   gpio_init(B9, GPO, GPIO_HIGH, GPO_PUSH_PULL);
-  //  tft180_set_dir(TFT180_PORTAIT);
-  //  tft180_init();
+  tft180_set_dir(TFT180_PORTAIT_180);
+  tft180_init();
   //  //    Buzzer_Init();
   //  tft180_show_string(0, 0, "mt9v03x init.");
 
@@ -35,6 +37,8 @@ int main(void)
     //    Binarization(TH);
     //    tft180_displayimage03x((uint8 *)Image_Use, 100, 60); //
     Schedule_Run();
+//    tft180_show_string(0, 0, "THIS IS A TEST");
+    tft180_show_wave(32, 64, &data, 64, 32, 64, 32);
   }
 }
 void pit_exti_handler(void)
@@ -79,3 +83,5 @@ void pit_exti_handler(void)
 //{
 //    gpio_toggle_level(B9);                                                    // 触发 PIT 中断后翻转 LED 状态
 //}
+
+

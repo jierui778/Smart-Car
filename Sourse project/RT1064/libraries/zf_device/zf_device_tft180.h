@@ -1,50 +1,50 @@
 /*********************************************************************************************************************
-* RT1064DVL6A Opensourec Library ����RT1064DVL6A ��Դ�⣩��һ�����ڹٷ� SDK �ӿڵĵ�������Դ��
-* Copyright (c) 2022 SEEKFREE ��ɿƼ�
+* RT1064DVL6A Opensourec Library 即（RT1064DVL6A 开源库）是一个基于官方 SDK 接口的第三方开源库
+* Copyright (c) 2022 SEEKFREE 逐飞科技
 * 
-* ���ļ��� RT1064DVL6A ��Դ���һ����
+* 本文件是 RT1064DVL6A 开源库的一部分
 * 
-* RT1064DVL6A ��Դ�� ���������
-* �����Ը���������������ᷢ���� GPL��GNU General Public License���� GNUͨ�ù�������֤��������
-* �� GPL �ĵ�3�棨�� GPL3.0������ѡ��ģ��κκ����İ汾�����·�����/���޸���
+* RT1064DVL6A 开源库 是免费软件
+* 您可以根据自由软件基金会发布的 GPL（GNU General Public License，即 GNU通用公共许可证）的条款
+* 即 GPL 的第3版（即 GPL3.0）或（您选择的）任何后来的版本，重新发布和/或修改它
 * 
-* ����Դ��ķ�����ϣ�����ܷ������ã�����δ�������κεı�֤
-* ����û�������������Ի��ʺ��ض���;�ı�֤
-* ����ϸ����μ� GPL
+* 本开源库的发布是希望它能发挥作用，但并未对其作任何的保证
+* 甚至没有隐含的适销性或适合特定用途的保证
+* 更多细节请参见 GPL
 * 
-* ��Ӧ�����յ�����Դ���ͬʱ�յ�һ�� GPL �ĸ���
-* ���û�У������<https://www.gnu.org/licenses/>
+* 您应该在收到本开源库的同时收到一份 GPL 的副本
+* 如果没有，请参阅<https://www.gnu.org/licenses/>
 * 
-* ����ע����
-* ����Դ��ʹ�� GPL3.0 ��Դ����֤Э�� ������������Ϊ���İ汾
-* ��������Ӣ�İ��� libraries/doc �ļ����µ� GPL3_permission_statement.txt �ļ���
-* ����֤������ libraries �ļ����� �����ļ����µ� LICENSE �ļ�
-* ��ӭ��λʹ�ò����������� ���޸�����ʱ���뱣����ɿƼ��İ�Ȩ����������������
+* 额外注明：
+* 本开源库使用 GPL3.0 开源许可证协议 以上许可申明为译文版本
+* 许可申明英文版在 libraries/doc 文件夹下的 GPL3_permission_statement.txt 文件中
+* 许可证副本在 libraries 文件夹下 即该文件夹下的 LICENSE 文件
+* 欢迎各位使用并传播本程序 但修改内容时必须保留逐飞科技的版权声明（即本声明）
 * 
-* �ļ�����          zf_device_tft180
-* ��˾����          �ɶ���ɿƼ����޹�˾
-* �汾��Ϣ          �鿴 libraries/doc �ļ����� version �ļ� �汾˵��
-* ��������          IAR 8.32.4 or MDK 5.33
-* ����ƽ̨          RT1064DVL6A
-* ��������          https://seekfree.taobao.com/
+* 文件名称          zf_device_tft180
+* 公司名称          成都逐飞科技有限公司
+* 版本信息          查看 libraries/doc 文件夹内 version 文件 版本说明
+* 开发环境          IAR 8.32.4 or MDK 5.33
+* 适用平台          RT1064DVL6A
+* 店铺链接          https://seekfree.taobao.com/
 * 
-* �޸ļ�¼
-* ����              ����                ��ע
+* 修改记录
+* 日期              作者                备注
 * 2022-09-21        SeekFree            first version
 ********************************************************************************************************************/
 /*********************************************************************************************************************
-* ���߶��壺
+* 接线定义：
 *                   ------------------------------------
-*                   ģ��ܽ�             ��Ƭ���ܽ�
-*                   SCL                  �鿴 zf_device_tft180.h �� TFT180_SCL_PIN �궨��
-*                   SDA                  �鿴 zf_device_tft180.h �� TFT180_SDA_PIN �궨��
-*                   RES                  �鿴 zf_device_tft180.h �� TFT180_RES_PIN �궨��
-*                   DC                   �鿴 zf_device_tft180.h �� TFT180_DC_PIN �궨��
-*                   CS                   �鿴 zf_device_tft180.h �� TFT180_CS_PIN �궨��
-*                   BL                   �鿴 zf_device_tft180.h �� TFT180_BL_PIN �궨��
-*                   VCC                 3.3V��Դ
-*                   GND                 ��Դ��
-*                   ���ֱ���160*128
+*                   模块管脚             单片机管脚
+*                   SCL                  查看 zf_device_tft180.h 中 TFT180_SCL_PIN 宏定义
+*                   SDA                  查看 zf_device_tft180.h 中 TFT180_SDA_PIN 宏定义
+*                   RES                  查看 zf_device_tft180.h 中 TFT180_RES_PIN 宏定义
+*                   DC                   查看 zf_device_tft180.h 中 TFT180_DC_PIN 宏定义
+*                   CS                   查看 zf_device_tft180.h 中 TFT180_CS_PIN 宏定义
+*                   BL                   查看 zf_device_tft180.h 中 TFT180_BL_PIN 宏定义
+*                   VCC                 3.3V电源
+*                   GND                 电源地
+*                   最大分辨率160*128
 *                   ------------------------------------
 ********************************************************************************************************************/
 
@@ -53,31 +53,31 @@
 
 #include "zf_common_typedef.h"
 
-#define TFT180_USE_SOFT_SPI             (0)                                     // Ĭ��ʹ��Ӳ�� SPI ��ʽ���� ����ʹ��Ӳ�� SPI ��ʽ����
-#if TFT180_USE_SOFT_SPI                                                         // ������ ��ɫ�����Ĳ�����ȷ�� ��ɫ�ҵľ���û���õ�
-//====================================================���� SPI ����====================================================
-#define TFT180_SOFT_SPI_DELAY           (1 )                                    // ���� SPI ��ʱ����ʱ���� ��ֵԽС SPI ͨ������Խ��
-#define TFT180_SCL_PIN                  (B0)                                    // ���� SPI SCK ����
-#define TFT180_SDA_PIN                  (B1)                                    // ���� SPI MOSI ����
-//====================================================���� SPI ����====================================================
+#define TFT180_USE_SOFT_SPI             (0)                                     // 默认使用硬件 SPI 方式驱动 建议使用硬件 SPI 方式驱动
+#if TFT180_USE_SOFT_SPI                                                         // 这两段 颜色正常的才是正确的 颜色灰的就是没有用的
+//====================================================软件 SPI 驱动====================================================
+#define TFT180_SOFT_SPI_DELAY           (1 )                                    // 软件 SPI 的时钟延时周期 数值越小 SPI 通信速率越快
+#define TFT180_SCL_PIN                  (B0)                                    // 软件 SPI SCK 引脚
+#define TFT180_SDA_PIN                  (B1)                                    // 软件 SPI MOSI 引脚
+//====================================================软件 SPI 驱动====================================================
 #else
-//====================================================Ӳ�� SPI ����====================================================
-#define TFT180_SPI_SPEED                (40 * 1000 * 1000)                      // Ӳ�� SPI ����
-#define TFT180_SPI                      (SPI_3)                                 // Ӳ�� SPI ��
-#define TFT180_SCL_PIN                  (SPI3_SCK_B0 )                          // Ӳ�� SPI SCK ����
-#define TFT180_SDA_PIN                  (SPI3_MOSI_B1)                          // Ӳ�� SPI MOSI ����
-//====================================================Ӳ�� SPI ����====================================================
+//====================================================硬件 SPI 驱动====================================================
+#define TFT180_SPI_SPEED                (40 * 1000 * 1000)                      // 硬件 SPI 速率
+#define TFT180_SPI                      (SPI_3)                                 // 硬件 SPI 号
+#define TFT180_SCL_PIN                  (SPI3_SCK_B0 )                          // 硬件 SPI SCK 引脚
+#define TFT180_SDA_PIN                  (SPI3_MOSI_B1)                          // 硬件 SPI MOSI 引脚
+//====================================================硬件 SPI 驱动====================================================
 #endif
 
-#define TFT180_RES_PIN                  (B2 )                                   // Һ����λ���Ŷ���
-#define TFT180_DC_PIN                   (C19)                                   // Һ������λ���Ŷ���
-#define TFT180_CS_PIN                   (B3 )                                   // CS Ƭѡ����
-#define TFT180_BL_PIN                   (C18)                                   // Һ���������Ŷ���
+#define TFT180_RES_PIN                  (B2 )                                   // 液晶复位引脚定义
+#define TFT180_DC_PIN                   (C19)                                   // 液晶命令位引脚定义
+#define TFT180_CS_PIN                   (B3 )                                   // CS 片选引脚
+#define TFT180_BL_PIN                   (C18)                                   // 液晶背光引脚定义
 
-#define TFT180_DEFAULT_DISPLAY_DIR      (TFT180_PORTAIT)                        // Ĭ�ϵ���ʾ����
-#define TFT180_DEFAULT_PENCOLOR         (RGB565_RED)                            // Ĭ�ϵĻ�����ɫ
-#define TFT180_DEFAULT_BGCOLOR          (RGB565_WHITE)                          // Ĭ�ϵı�����ɫ
-#define TFT180_DEFAULT_DISPLAY_FONT     (TFT180_8X16_FONT)                      // Ĭ�ϵ�����ģʽ
+#define TFT180_DEFAULT_DISPLAY_DIR      (TFT180_PORTAIT)                        // 默认的显示方向
+#define TFT180_DEFAULT_PENCOLOR         (RGB565_RED)                            // 默认的画笔颜色
+#define TFT180_DEFAULT_BGCOLOR          (RGB565_WHITE)                          // 默认的背景颜色
+#define TFT180_DEFAULT_DISPLAY_FONT     (TFT180_8X16_FONT)                      // 默认的字体模式
 
 #define TFT180_DC(x)                    ((x) ? (gpio_high(TFT180_DC_PIN)) : (gpio_low(TFT180_DC_PIN)))
 #define TFT180_RST(x)                   ((x) ? (gpio_high(TFT180_RES_PIN)) : (gpio_low(TFT180_RES_PIN)))
@@ -86,17 +86,17 @@
 
 typedef enum
 {
-    TFT180_PORTAIT                      = 0,                                    // ����ģʽ
-    TFT180_PORTAIT_180                  = 1,                                    // ����ģʽ  ��ת180
-    TFT180_CROSSWISE                    = 2,                                    // ����ģʽ
-    TFT180_CROSSWISE_180                = 3,                                    // ����ģʽ  ��ת180
+    TFT180_PORTAIT                      = 0,                                    // 竖屏模式
+    TFT180_PORTAIT_180                  = 1,                                    // 竖屏模式  旋转180
+    TFT180_CROSSWISE                    = 2,                                    // 横屏模式
+    TFT180_CROSSWISE_180                = 3,                                    // 横屏模式  旋转180
 }tft180_dir_enum;
 
 typedef enum
 {
-    TFT180_6X8_FONT                     = 0,                                    // 6x8      ����
-    TFT180_8X16_FONT                    = 1,                                    // 8x16     ����
-    TFT180_16X16_FONT                   = 2,                                    // 16x16    ���� Ŀǰ��֧��
+    TFT180_6X8_FONT                     = 0,                                    // 6x8      字体
+    TFT180_8X16_FONT                    = 1,                                    // 8x16     字体
+    TFT180_16X16_FONT                   = 2,                                    // 16x16    字体 目前不支持
 }tft180_font_size_enum;
 
 void    tft180_clear                    (void);
@@ -121,35 +121,35 @@ void    tft180_show_wave                (uint16 x, uint16 y, const uint16 *wave,
 void    tft180_show_chinese             (uint16 x, uint16 y, uint8 size, const uint8 *chinese_buffer, uint8 number, const uint16 color);
 
 //-------------------------------------------------------------------------------------------------------------------
-// �������     TFT180 ��ʾС���ͼ��
-// ����˵��     p               ͼ������
-// ����˵��     width           ��ʾ����
-// ����˵��     height          ��ʾ�߶�
-// ���ز���     void
-// ʹ��ʾ��     tft180_displayimage7725(ov7725_image_binary[0], 80, 60);
-// ��ע��Ϣ     
+// 函数简介     TFT180 显示小钻风图像
+// 参数说明     p               图像数组
+// 参数说明     width           显示宽度
+// 参数说明     height          显示高度
+// 返回参数     void
+// 使用示例     tft180_displayimage7725(ov7725_image_binary[0], 80, 60);
+// 备注信息     
 //-------------------------------------------------------------------------------------------------------------------
 #define tft180_displayimage7725(p, width, height)       (tft180_show_binary_image(0, 0, (p), OV7725_W, OV7725_H, (width), (height)))
 
 //-------------------------------------------------------------------------------------------------------------------
-// �������     TFT180 ��ʾ�����ͼ�� ������ֵ�� ��ʾ�Ҷ�ͼ��
-// ����˵��     p               ͼ������
-// ����˵��     width           ��ʾ����
-// ����˵��     height          ��ʾ�߶�
-// ���ز���     void
-// ʹ��ʾ��     tft180_displayimage03x(mt9v03x_image[0], 94, 60);
-// ��ע��Ϣ     ���Ҫ��ʾ��ֵ��ͼ���ȥ���� tft180_show_gray_image ����
+// 函数简介     TFT180 显示总钻风图像 不带二值化 显示灰度图像
+// 参数说明     p               图像数组
+// 参数说明     width           显示宽度
+// 参数说明     height          显示高度
+// 返回参数     void
+// 使用示例     tft180_displayimage03x(mt9v03x_image[0], 94, 60);
+// 备注信息     如果要显示二值化图像就去调用 tft180_show_gray_image 函数
 //-------------------------------------------------------------------------------------------------------------------
 #define tft180_displayimage03x(p, width, height)        (tft180_show_gray_image(0, 0, (p), MT9V03X_W, MT9V03X_H, (width), (height), 0))
 
 //-------------------------------------------------------------------------------------------------------------------
-// �������     TFT180 ��ʾ��ͫͼ��
-// ����˵��     p               ͼ������
-// ����˵��     width           ��ʾ����
-// ����˵��     height          ��ʾ�߶�
-// ���ز���     void
-// ʹ��ʾ��     tft180_displayimage8660(scc8660_image[0], 80, 60);
-// ��ע��Ϣ     
+// 函数简介     TFT180 显示凌瞳图像
+// 参数说明     p               图像数组
+// 参数说明     width           显示宽度
+// 参数说明     height          显示高度
+// 返回参数     void
+// 使用示例     tft180_displayimage8660(scc8660_image[0], 80, 60);
+// 备注信息     
 //-------------------------------------------------------------------------------------------------------------------
 #define tft180_displayimage8660(p, width, height)       (tft180_show_rgb565_image(0, 0, (p), SCC8660_W, SCC8660_H, (width), (height), 1))
 
