@@ -7,7 +7,7 @@
 #include "encoder.h"
 #include "schedule.h"
 
-#define GrayScale 256
+#define GrayScale 257
 
 
 
@@ -39,6 +39,13 @@ int main(void)
     Schedule_Run();
 //    tft180_show_string(0, 0, "THIS IS A TEST");
     tft180_show_wave(32, 64, &data, 64, 32, 64, 32);
+    Image_Compress();
+    TH = OSTU_GetThreshold(Image_Use[0], Image_Width, Image_Height);
+    Image_Binarization(TH,Image_Use);
+	  Image_DrawRectangle();
+    tft180_displayimage03x((uint8 *)Image_Use, 100, 60); //
+
+	  Image_Run();
   }
 }
 void pit_exti_handler(void)

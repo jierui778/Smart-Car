@@ -6,6 +6,8 @@
 #define OUT
 #define IN_OUT
 
+#define white 255
+#define black 0
 #define Image_Width 100            // 用于处理的图像高度
 #define Image_Height 60           //用于处理的图像宽度\
 
@@ -15,16 +17,10 @@
 void Image_Compress();
 uint8 OSTU_GetThreshold(uint8 *image, uint16 Width, uint16 Height);
 extern uint8 Image_Use[Image_Height][Image_Width]; // 先定义灰度直方图
-void Binarization(uint8 threshold);
-
-
-void Image_Process(void); // 图像处理总函数
-// uint8 GetThreshold(void); // 注意计算阈值的一定要是原图像
-
-// void Image_Get();//获取图片
-//// void Image_
-// void Image_Binarization(void);//二值化
-
-// int8 first_image[CAMERA_HEIGHT][CAMERA_WITH];//第一次经过DMA采集得到的图像，灰度值为0-255（0为黑，255为白）
-
+void Image_Binarization(unsigned char threshold,uint8(*Image_Use)[Image_Width]);
+void Image_FillCross(uint8 *l_border,uint8 *r_border,uint16 total_num_l,uint16 total_num_r,
+                        uint16*dir_l,uint16 *dir_r,uint16(*points_l)[2],uint16(*points_r)[2]);
+void Image_DrawRectangle(void);
+void Image_Run(void);
+void Image_Get_neighborhoods(uint8(*Image_Use)[Image_Width]);
 #endif

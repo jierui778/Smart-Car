@@ -104,98 +104,12 @@ void Image_Compress(void)
      return Threshold;
  }
 
-/**
- * @brief 手搓版本
- *
- * @param image
- * @param Width
- * @param Height
- * @return uint8
- */
-//uint8 OSTU_GetThreshold(uint8 *image, uint16 Width, uint16 Height)
-//{
-//    uint8 HistGram[256] = {
-//        0,
-//    };
-//    uint16 x, y;
-//    int16 Y;
-//    uint32 Amount = 0;
-//    uint32 PixelBack = 0;
-//    uint32 PixelIntegralBack = 0;
-//    uint32 PixelIntegral = 0;
-//    int32 PixelIntegralFore = 0;
-//    int32 PixelFore = 0;
-//    double OmegaBack, OmegaFore, MicroBack, MicroFore, SigmaB, Sigma; // 类间方差;
-//    int16 MinValue, MaxValue;
-//    uint8 Threshold = 0;
-//    uint8 *data = image;
-
-//    for (y = 0; y < 256; y++)
-//    {
-//        HistGram[y] = 0; // 初始化灰度直方图
-//    }
-//    for (y = 0; y < Height; y++)
-//    {
-//        for (x = 0; x < Width; x++)
-//        {
-//            HistGram[(int)data[y * Width + x]]++; // 统计每个灰度值的个数信息
-//        }
-//    }
-
-//    for (MinValue = 0; MinValue < 256 && HistGram[MinValue] == 0; MinValue++)
-//        ; // 获取最小灰度的值
-//    for (MaxValue = 255; MaxValue > MinValue && HistGram[MinValue] == 0; MaxValue--)
-//        ; // 获取最大灰度的值
-
-//    if (MaxValue == MinValue)
-//    {
-//        return MaxValue; // 图像中只有一个颜色
-//    }
-//    if (MinValue + 1 == MaxValue)
-//    {
-//        return MinValue; // 图像中只有二个颜色
-//    }
-
-//    for (Y = MinValue; Y <= MaxValue; Y++)
-//    {
-//        Amount += HistGram[Y]; //  像素总数
-//    }
-
-//    PixelIntegral = 0;
-//    for (Y = MinValue; Y <= MaxValue; Y++)
-//    {
-//        PixelIntegral += HistGram[Y] * Y; // 灰度值总数
-//    }
-//    SigmaB = -1;
-//    for (Y = MinValue; Y < MaxValue; Y++)
-//    {
-//        PixelBack = PixelBack + HistGram[Y];                                               // 前景像素点数
-//        PixelFore = Amount - PixelBack;                                                    // 背景像素点数
-//        OmegaBack = (double)PixelBack / Amount;                                            // 前景像素百分比
-//        OmegaFore = (double)PixelFore / Amount;                                            // 背景像素百分比
-//        PixelIntegralBack += HistGram[Y] * Y;                                              // 前景灰度值
-//        PixelIntegralFore = PixelIntegral - PixelIntegralBack;                             // 背景灰度值
-//        MicroBack = (double)PixelIntegralBack / PixelBack;                                 // 前景灰度百分比
-//        MicroFore = (double)PixelIntegralFore / PixelFore;                                 // 背景灰度百分比
-//        Sigma = OmegaBack * OmegaFore * (MicroBack - MicroFore) * (MicroBack - MicroFore); // g
-//        if (Sigma > SigmaB)                                                                // 遍历最大的类间方差g
-//        {
-//            SigmaB = Sigma;
-//            Threshold = Y;
-//        }
-//        if (Sigma < SigmaB) // 遍历最大的类间方差g
-//        {
-//            break;
-//        }
-//    }
-//    return Threshold;
-//}
 
 /**
  * @brief 将输入的灰度图像转化为二值化图像
  * @param Threshold 图像阈值(实际上阈值需要进行计算，而不是直接赋值)
  */
-void Binarization(uint8 threshold)
+void Image_Binarization(uint8 threshold,uint8(*Image_Use)[Image_Width])
 {
     unsigned char i, j;
     for (i = 0; i < Image_Height; i++)
@@ -211,389 +125,858 @@ void Binarization(uint8 threshold)
         }
     }
 }
-/**
- * @brief 大津法求阈值 2.0（由于第一版的bug极其严重，尽力修复也修复不了，暂时就用这版）
- * @param Uint8 输入图像的地址
- * @param Uint8 输出图像的地址
- * @param Threshold 图像阈值(实际上阈值需要进行计算，而不是直接赋值)
- * @exception 1. 原理和1.0的是一样的
- * 2. 在二值化时，由于有阈值限幅，要避免大面积的同灰度，这样会使得屏幕闪烁频率增加（这个应该是其他原因造成的），且屏幕会大面积白色或者黑色
- * 3. 如果正常拍摄的话是不会出现太大的问题的，但是还是要在跑道上测试一下
- * 4. 2.0的方法相对于1.0的方法区别在于：不用求二次高峰再求出低谷，直接通过最大值的灰度像素点和最小值来求出1.0中想要的低谷（即low1_position）
- *                                   而1.0就是在寻找二次高峰出现了bug，2.0的方法相对来说更科学一点
- */
-// uint8 GetThreshold(void)   //注意计算阈值的一定要是原图像
+/*-----------------第二版八邻域-------------------*/
+//求绝对值函数
+int my_abs(int value)
+{
+if(value>=0) return value;
+else return -value;
+}
+//限幅函数
+int16 limit_a_b(int16 x, int a, int b)
+{
+    if(x<a) x = a;
+    if(x>b) x = b;
+    return x;
+}
+//求最小值
+int16 limit1(int16 x, int16 y)
+{
+	if (x > y)             return y;
+	else if (x < -y)       return -y;
+	else                return x;
+}
 
+
+
+//寻找起始点函数，从第56行开始数
+unsigned char left_point;                     //记录第一个关键点的列坐标，定义为全局变量，方便后面的函数调用
+unsigned char Image_Get_LeftFlag(void)
+{
+    for(left_point=(Image_Width/2);left_point>3;left_point--)
+    {
+        if((Image_Use[56][left_point]==255)&&(Image_Use[56][left_point-1]==0)&&(Image_Use[56][left_point-2]==0))
+        {
+            break;
+        }
+    }
+    return 1;
+}
+
+unsigned char right_point;                     //记录第一个关键点的列坐标
+unsigned char Image_Get_Rightflag(void)
+{
+    
+    for(right_point=(Image_Width/2);right_point<(Image_Width-2);right_point++)
+    {
+        if((Image_Use[56][right_point]==255)&&(Image_Use[56][right_point+1]==0)&&(Image_Use[56][right_point+2]==0)) //这里指针变量不能直接和值比较，需要解地址
+        {
+            break;                            //这里不能直接return 会有报错，就用break跳出循环，然后在最外面return即可
+        }
+    }
+    return 1;
+}
+
+
+
+
+
+
+//简介：通过已知的点来提取出所需要的边线
+//参数：total_L 需要找到点的数量，一般都是data_statics_left
+uint8 l_border[Image_Height];//定义左线的数组，下标为行坐标，下标对应的值为列坐标，每行只有一个数组
+uint8 r_border[Image_Height];//定义右线数组
+uint8 center_line[Image_Height];//定义中线数组
+
+
+
+#define threshold_max 255*6
+#define threshold_min 255*2
+//简介：滤波函数，将图像中部分噪声去除
+void Image_Filter(void)
+{
+    uint16 i,j;
+    uint32 num=0;
+    for(i=1;i<Image_Height-1;i++)
+    {
+        for(j=1;j<Image_Width-1;j++)
+        {
+            //统计8个方向的像素值
+            num=Image_Use[i-1][j-1]+Image_Use[i-1][j]+Image_Use[i-1][j+1]
+            +Image_Use[i][j-1]+Image_Use[i][j+1]+Image_Use[i+1][j-1]
+            +Image_Use[i+1][j]+Image_Use[i+1][j+1];
+
+            if(num>=threshold_max && Image_Use[i][j]==0)    //如果黑点四周的8个点只有2个黑点
+            {
+                Image_Use[i][j]=255;
+            }
+            if(num<=threshold_min && Image_Use[i][j]==255)//如果白点周围只有2个白点
+            {
+                Image_Use[i][j]=0;//过滤成黑
+            }
+        }
+    }
+}
+
+//给图像绘黑边，不然八邻域会出错，位置一定要放在显示的前面
+void Image_DrawRectangle(void)
+{
+    uint8 i=0;
+    for(i=0;i<Image_Height;i++)
+    {
+        Image_Use[i][0]=0;
+        Image_Use[i][Image_Width-1]=0;
+        Image_Use[i][Image_Width-2]=0;
+    }
+    for(i=0;i<Image_Width;i++)
+    {
+        Image_Use[0][i]=0;
+        Image_Use[1][i]=0;//图片底下两层变黑
+    }
+}
+
+//已知两点求图像的y=kx+b，截距我手动算的，应该没有太大问题
+float two_points_k,two_points_b;//全局变量代替指针传递斜率和截距
+void Image_2points(uint8 x1,uint8 y1,uint8 x2,uint8 y2)
+{
+    two_points_k=(float)((y2-y1)/(x2-x1));
+    two_points_b=(float)((y1*x2-x1*y2)/(x2-x1));
+}
+
+//最小二乘法求斜率
+float Imgae_Slope(uint8 begin,uint8 end,uint8 *border)
+{
+    float xsum=0,ysum=0,xysum=0,x2sum=0;
+    int16 i=0;
+    float result =0;
+    static float resultlast=0;//记录上次结果，用来比对
+
+    for(i=begin;i<end;i++)//从起点开始向终点自增（这个应该指的是下标）
+    {
+        xsum +=i;//对x坐标自增（行坐标）
+        ysum +=border[i];//对y坐标自增（列坐标）
+        xysum += i*(border[i]);//xy坐标乘积自增
+        x2sum +=i*i;//x坐标平方自增
+    }
+    if((end-begin)*x2sum-xsum*xsum)//这个在求斜率中会作为分母，因此需要判断是否为0
+    {
+        result = ((end - begin)*xysum - xsum * ysum) / ((end - begin)*x2sum - xsum * xsum);
+        resultlast =result;
+    }
+    else
+    {
+        result = resultlast;
+    }
+
+    return result;
+}
+
+//简介：计算斜率和截距
+void Image_CountKB(uint8 start,uint8 end,uint8 *border, float *slope_rate,float *intercept)
+{
+    uint16 i,num=0;
+    uint16 xsum=0,ysum=0;
+    float y_average,x_average;
+    num=0;
+    xsum=0;
+    ysum=0;
+    y_average=0;
+    x_average=0;
+    for(i=start;i<end;i++)//计算xy坐标的总值（行列坐标）
+    {
+        xsum +=i;
+        ysum +=border[i];
+        num++;
+    }
+    //计算x,y坐标的平均值
+    if(num)
+    {
+        x_average=(float)(xsum/num);
+        y_average=(float)(ysum/num);
+    }
+    *slope_rate =Imgae_Slope(start,end,border);//计算斜率
+    *intercept=y_average-(*slope_rate)*x_average;//计算截距
+}
+struct Left_Edge
+{
+    unsigned char row;                        //行坐标，省点内存就没设int
+    unsigned char column;                     //列坐标，同上
+    unsigned char flag;                       //判断边界点是否找到
+	uint8 grow;
+};
+struct Right_Edge
+{
+    unsigned char row;                        //行坐标，省点内存就没设int
+    unsigned char column;                     //列坐标，同上
+    unsigned char flag;                       //判断边界点是否找到
+	uint8 grow;
+};
+
+struct Left_Edge Left[140];                   //左边界结构体
+struct Right_Edge Right[140];                 //右边界结构体
+unsigned char Left_Count,Right_Count;         //记录左右边界点的个数
+unsigned char grow_left,grow_right;           //记录左右边界在八邻域时寻点的相对位置
+unsigned char Left_Max=140,Right_Max=140;     //左右边界搜点时允许最大的搜点量
+unsigned char Boundary_search_end=30;         //搜寻行数的最高行
+uint16 cur_row,cur_col;//当前行列
+/**
+ * @brief 八邻域巡线
+ *
+ * @param uint8 输入值为二值化处理后的数组
+ * @example Image_Get_neighborhoods(Image_Use)
+ */
+
+void Image_Get_neighborhoods(uint8(*Image_Use)[Image_Width])
+{
+	Left_Count=0;
+	Right_Count=0;
+	
+	if(left_point!=3)
+	{
+		Left[0].row=56;
+		Left[0].column=left_point;
+		Left[0].flag=1;
+		Left[0].grow=2;//初始生长方向为2
+		cur_row=56;
+		cur_col=left_point;
+		Left_Count++;
+		while(Left_Max--)//找140个
+		{
+			//一 寻点生长
+			//0白1黑
+			if(Image_Use[cur_row+1][cur_col]==black&&Image_Use[cur_row+1][cur_col-1]==white)
+			{
+				Left[Left_Count].row=cur_row+1;
+				Left[Left_Count].column=cur_col;
+				Left[Left_Count].flag=1;
+				Left[Left_Count].grow=0;
+				cur_row =Left[Left_Count].row;
+				cur_col=Left[Left_Count].column;//更新中心坐标点
+				Left_Count++;
+			}
+			else if(Image_Use[cur_row+1][cur_col-1]==black&&Image_Use[cur_row][cur_col-1]==white)
+			{
+				Left[Left_Count].row=cur_row+1;
+				Left[Left_Count].column=cur_col-1;
+				Left[Left_Count].flag=1;
+				Left[Left_Count].grow=1;
+				cur_row =Left[Left_Count].row;
+				cur_col=Left[Left_Count].column;//更新中心坐标点
+				Left_Count++;
+			}
+			else if(Image_Use[cur_row][cur_col-1]==black&&Image_Use[cur_row-1][cur_col-1]==white)
+			{
+				Left[Left_Count].row=cur_row;
+				Left[Left_Count].column=cur_col-1;
+				Left[Left_Count].flag=1;
+				Left[Left_Count].grow=2;
+				cur_row =Left[Left_Count].row;
+				cur_col=Left[Left_Count].column;//更新中心坐标点
+				Left_Count++;
+			}
+			else if(Image_Use[cur_row-1][cur_col-1]==black&&Image_Use[cur_row-1][cur_col]==white)
+			{
+				Left[Left_Count].row=cur_row-1;
+				Left[Left_Count].column=cur_col-1;
+				Left[Left_Count].flag=1;
+				Left[Left_Count].grow=3;
+				cur_row =Left[Left_Count].row;
+				cur_col=Left[Left_Count].column;//更新中心坐标点
+				Left_Count++;
+			}
+			else if(Image_Use[cur_row-1][cur_col]==black&&Image_Use[cur_row-1][cur_col+1]==white)
+			{
+				Left[Left_Count].row=cur_row-1;
+				Left[Left_Count].column=cur_col;
+				Left[Left_Count].flag=1;
+				Left[Left_Count].grow=4;
+				cur_row =Left[Left_Count].row;
+				cur_col=Left[Left_Count].column;//更新中心坐标点
+				Left_Count++;
+			}
+			else if(Image_Use[cur_row-1][cur_col+1]==black&&Image_Use[cur_row][cur_col+1]==white)
+			{
+				Left[Left_Count].row=cur_row-1;
+				Left[Left_Count].column=cur_col+1;
+				Left[Left_Count].flag=1;
+				Left[Left_Count].grow=5;
+				cur_row =Left[Left_Count].row;
+				cur_col=Left[Left_Count].column;//更新中心坐标点
+				Left_Count++;
+			}
+			else if(Image_Use[cur_row][cur_col+1]==black&&Image_Use[cur_row+1][cur_col+1]==white)
+			{
+				Left[Left_Count].row=cur_row;
+				Left[Left_Count].column=cur_col+1;
+				Left[Left_Count].flag=1;
+				Left[Left_Count].grow=6;
+				cur_row =Left[Left_Count].row;
+				cur_col=Left[Left_Count].column;//更新中心坐标点
+				Left_Count++;
+			}
+			else if(Image_Use[cur_row+1][cur_col+1]==black&&Image_Use[cur_row+1][cur_col]==white)
+			{
+				Left[Left_Count].row=cur_row+1;
+				Left[Left_Count].column=cur_col+1;
+				Left[Left_Count].flag=1;
+				Left[Left_Count].grow=7;
+				cur_row =Left[Left_Count].row;
+				cur_col=Left[Left_Count].column;//更新中心坐标点
+				Left_Count++;
+			}
+			else
+			{
+				break;
+			}
+			//二 检验越界
+			if(cur_row<=3||cur_row>=57||cur_col<=3||cur_col>=97)
+			{
+				break;
+			}
+		}
+	}
+	//采取左右对称，后面好写
+	/*
+	5	4	3
+	6		2
+	7	0	1
+	*/
+	if(right_point!=97)
+	{
+		Right[0].row=56;
+		Right[0].column=right_point;
+		Right[0].flag=1;
+		Right[0].grow=2;
+		cur_row=56;
+		cur_col=right_point;
+		Right_Count++;
+		while(Right_Max--)
+		{
+			//0黑1白
+			if(Image_Use[cur_row+1][cur_col]==black&&Image_Use[cur_row+1][cur_col+1]==white)
+			{
+				Right[Right_Count].row=cur_row+1;
+				Right[Right_Count].column=cur_col;
+				Right[Right_Count].flag=1;
+				Right[Right_Count].grow=0;
+				cur_row=Right[Right_Count].row;
+				cur_col=Right[Right_Count].column;
+				Right_Count++;
+			}
+			else if(Image_Use[cur_row+1][cur_col+1]==black&&Image_Use[cur_row][cur_col+1]==white)
+			{
+				Right[Right_Count].row=cur_row+1;
+				Right[Right_Count].column=cur_col+1;
+				Right[Right_Count].flag=1;
+				Right[Right_Count].grow=1;
+				cur_row=Right[Right_Count].row;
+				cur_col=Right[Right_Count].column;
+				Right_Count++;
+			}
+			else if(Image_Use[cur_row][cur_col+1]==black&&Image_Use[cur_row-1][cur_col+1]==white)
+			{
+				Right[Right_Count].row=cur_row;
+				Right[Right_Count].column=cur_col+1;
+				Right[Right_Count].flag=1;
+				Right[Right_Count].grow=2;
+				cur_row=Right[Right_Count].row;
+				cur_col=Right[Right_Count].column;
+				Right_Count++;
+			}
+			else if(Image_Use[cur_row-1][cur_col+1]==black&&Image_Use[cur_row-1][cur_col]==white)
+			{
+				Right[Right_Count].row=cur_row-1;
+				Right[Right_Count].column=cur_col+1;
+				Right[Right_Count].flag=1;
+				Right[Right_Count].grow=3;
+				cur_row=Right[Right_Count].row;
+				cur_col=Right[Right_Count].column;
+				Right_Count++;
+			}
+			else if(Image_Use[cur_row-1][cur_col]==black&&Image_Use[cur_row-1][cur_col-1]==white)
+			{
+				Right[Right_Count].row=cur_row-1;
+				Right[Right_Count].column=cur_col;
+				Right[Right_Count].flag=1;
+				Right[Right_Count].grow=4;
+				cur_row=Right[Right_Count].row;
+				cur_col=Right[Right_Count].column;
+				Right_Count++;
+			}
+			else if(Image_Use[cur_row-1][cur_col-1]==black&&Image_Use[cur_row][cur_col-1]==white)
+			{
+				Right[Right_Count].row=cur_row-1;
+				Right[Right_Count].column=cur_col-1;
+				Right[Right_Count].flag=1;
+				Right[Right_Count].grow=5;
+				cur_row=Right[Right_Count].row;
+				cur_col=Right[Right_Count].column;
+				Right_Count++;
+			}
+			else if(Image_Use[cur_row][cur_col-1]==black&&Image_Use[cur_row+1][cur_col-1]==white)
+			{
+				Right[Right_Count].row=cur_row;
+				Right[Right_Count].column=cur_col-1;
+				Right[Right_Count].flag=1;
+				Right[Right_Count].grow=6;
+				cur_row=Right[Right_Count].row;
+				cur_col=Right[Right_Count].column;
+				Right_Count++;
+			}
+			else if(Image_Use[cur_row+1][cur_col-1]==black&&Image_Use[cur_row+1][cur_col]==white)
+			{
+				Right[Right_Count].row=cur_row+1;
+				Right[Right_Count].column=cur_col-1;
+				Right[Right_Count].flag=1;
+				Right[Right_Count].grow=7;
+				cur_row=Right[Right_Count].row;
+				cur_col=Right[Right_Count].column;
+				Right_Count++;
+			}
+			else
+				break;
+			
+			if(cur_row<=3||cur_row>=57||cur_col<=3||cur_col>=97)
+			{
+				break;
+			}
+		}
+	}
+}
+
+//定义中线结构体
+struct Mid_Line
+{
+    unsigned char row;                        //行坐标，省点内存就没设int
+    unsigned char column;                     //列坐标，同上
+};
+struct Mid_Line mid[140];
+uint8 Mid_Count;
+//取中线函数
+void Get_Midpoint(void)
+{
+	uint8 left_c,right_c;
+	uint8 i;//中间值
+	left_c=Left_Count;
+	right_c=Right_Count;//存入左右计数值
+	for(i=0;i<left_c;i--)
+	{
+		mid[i].row=(Left[i].row+Right[i].row)/2;
+		mid[i].column=(Left[i].column+Right[i].column)/2;
+	}
+	
+}
+void Image_FillCross(uint8 *l_border,uint8 *r_border,uint16 total_num_l,uint16 total_num_r,
+                        uint16*dir_l,uint16 *dir_r,uint16(*points_l)[2],uint16(*points_r)[2])
+{
+    uint8 i;
+    uint8 break_num_l=0;
+    uint8 break_num_r=0;
+    uint8 start,end;
+    float slope_l_rate=0,intercept_l=0;//左线斜率和截距
+    uint8 break_num_l_low;
+    uint8 break_num_r_low;//定义左右相对较低的拐点，只会在未进十字的时候才会出现
+    //十字识别一：出十字（未入十字的情况也写道里面了）
+    //情景1：十字路口走到一半的时候，左线是由向上生长到向右生长，此时判断为一半的十字路口元素
+    for(i=1;i<total_num_l;i++)//从左线的第一个点开始往上找
+    {
+        /*
+        生长方向表（左边是右线的生长方向表，右边是左线的生长方向表）
+        5   4   3       3   4   5
+        6       2       2       6
+        7   0   1       1   0   7
+        */
+       //判断左线的较高拐点（在入十字的时候是唯一拐点）
+        if(dir_l[i-1]==4&&dir_l[i]==4&&dir_l[i+3]==6&&dir_l[i+5]==6&&dir_l[i+7]==6)
+        {
+            break_num_l=points_l[i][1];//传递y坐标，注意，这个坐标在图像中的点是由正上方向变为正左方向的转折点
+            break;
+        }
+        if(dir_l[i-1]==2&&dir_l[i-3]==2&&dir_l[i-5]==2&&dir_l[i-7]==2&&dir_l[i]==4&&dir_l[i+1]==4)
+        {
+            break_num_l_low=points_l[i][1];//传递低拐点的坐标
+        }
+    }
+    for(i=1;i<total_num_r;i++)
+    {
+        if(dir_r[i - 1] == 4 && dir_r[i] == 4 && dir_r[i + 3] == 6 && dir_r[i + 5] == 6 && dir_r[i + 7] == 6)
+        {
+            break_num_r=points_r[i][1];//传递y坐标
+            break;
+        }
+        //因为左右线完全对称，所以程序不会有太大的改动
+        if(dir_r[i-1]==2&&dir_r[i-3]==2&&dir_r[i-5]==2&&dir_r[i-7]==2&&dir_r[i]==4&&dir_l[i]==4)
+        {
+            break_num_r_low=points_r[i][1];//传递低拐点的y坐标
+        }
+    }
+    //进一步判断是否处于十字之中，如果左下角和右下角的点均为白色那么就确实在10字之中
+    if(break_num_l&&break_num_r&&Image_Use[Image_Height-1][4]&&Image_Use[Image_Height-1][Image_Width-4])
+    {
+        start =break_num_l-15;//将取得的点前移15个点做起始点
+        start =limit_a_b(start,0,Image_Height-1);//限幅
+        end=break_num_l-5;//将取得的点前移5个点做终点
+        Image_CountKB(start,end,l_border,&slope_l_rate,&intercept_l);
+        //线上补点
+        for(i=break_num_l-5;i<Image_Height-1;i++)
+        {
+            l_border[i]=slope_l_rate*(i)+intercept_l;//把终点往下每一行的全都求直线画点
+            l_border[i]=limit_a_b(l_border[i],4,96);//限幅，这里最多到旁边的4行
+            l_border[i]=0;//赋值为黑色
+        }
+        //这是求右线的，基本和上面的一样的原理
+        start = break_num_r - 15;//起点
+		start = limit_a_b(start, 0, Image_Height-1);//限幅
+		end = break_num_r - 5;//终点
+		Image_CountKB(start, end, r_border, &slope_l_rate, &intercept_l);
+		for (i = break_num_r - 5; i < Image_Height - 1; i++)
+		{
+			r_border[i] = slope_l_rate * (i)+intercept_l;
+			r_border[i] = limit_a_b(r_border[i], 4, 96);
+            l_border[i]=0;//赋值为黑色
+            //这里可能缺一步：补线，这里只是把线求出来而已
+		}
+    }
+
+    //情景2：如果还没有进入到十字
+    //if ：如果四个拐点全部找到而且左下角和右下角是黑色
+    if(break_num_r_low&&break_num_l_low&&break_num_l&&break_num_r&&(!Image_Use[Image_Height-1][4])&&(!Image_Use[Image_Height-1][Image_Width-4]))
+    {
+        start=break_num_l_low+3;//懒得转换了，之间取下面的点吧
+        start=limit_a_b(start,0,Image_Height-1);//限幅
+        end=break_num_l_low+10;//图像下方点更准确，取近一点
+        end=limit_a_b(end,0,Image_Height-1);//限幅
+        Image_CountKB(start,end,l_border,&slope_l_rate,&intercept_l);//以下方的点写出斜率
+        //开始向上补线，方向向上，故坐标自减
+        for(i=break_num_l_low+10;i>2;i--)
+        {
+            l_border[i]=slope_l_rate * (i)+intercept_l;
+            l_border[i]=limit_a_b(l_border[i],4,96);
+            l_border[i]=0;
+        }
+        start=break_num_r_low+3;//懒得转换了，之间取下面的点吧
+        start=limit_a_b(start,0,Image_Height-1);//限幅
+        end=break_num_r_low+10;//图像下方点更准确，取近一点
+        end=limit_a_b(end,0,Image_Height-1);//限幅
+        Image_CountKB(start,end,r_border,&slope_l_rate,&intercept_l);//以下方的点写出斜率
+        for(i=break_num_r_low+10;i>2;i--)
+        {
+            r_border[i]=slope_l_rate * (i)+intercept_l;
+            r_border[i]=limit_a_b(l_border[i],4,96);
+            r_border[i]=0;
+        }
+    }
+}
+
+
+//图像处理的函数都放在这里，这样就避免了定义问题
+void Image_Run(void)
+{
+	uint8 i;
+
+	i=Image_Get_LeftFlag();
+	i=Image_Get_Rightflag();
+//	tft180_draw_line(0,0,start_point_Left[0],start_point_Left[1],RGB565_RED);//行坐标l_countl_count
+	tft180_show_int(3,80,left_point,3);
+	Image_Get_neighborhoods(Image_Use);
+//	tft180_show_int(3,120,points_l[l_count-1][0],3);
+//	Image_Get_neighborhoods(100,Image_Use);
+	tft180_draw_line(0,0,cur_col,cur_row,RGB565_RED);//行坐标l_countl_count
+//	Get_Midpoint();
+	for(i=0;i<Left_Count;i++)
+	{
+		tft180_draw_point(Left[i].column,Left[i].row,RGB565_BLUE);
+	}
+	for(i=0;i<Left_Count;i++)
+	{
+		tft180_draw_point(Left[i].column+1,Left[i].row,RGB565_BLUE);
+	}
+	for(i=0;i<Left_Count;i++)
+	{
+		tft180_draw_point(Left[i].column-1,Left[i].row,RGB565_BLUE);
+	}
+	for(i=0;i<Right_Count;i++)
+	{
+		tft180_draw_point(Right[i].column,Right[i].row,RGB565_RED);
+	}
+}
+
+
+
+////一个函数的定义
+//struct Left_Edge
 //{
-// #define GrayScale 256				          //定义灰度总值
-//	uint8 last_threshold;                     //定义上次的阈值，进行阈值的输出限幅
-//    int Pixel_Max=0;                          //定义灰度值的最大值和最小值（0-255）
-//    int Pixel_Min=255;
-//    uint16 width = Image_Width;                //定义图像的宽和高
-//    uint16 height = Image_Hight;
-//    int pixelCount[GrayScale];                //记录每个灰度对应的像素值
-//    float pixelPro[GrayScale];                //定义每个像素点在图中的比例的数组
-//    int i, j, pixelSum = width * height/4;    //定义中间变量，定义像素总数（这里只要算1/4的就行）
-//    uint8 threshold = 0;                      //定义返回阈值
-//    uint8* data = *Image_Use;                 //指向像素数据的指针，省内存
-//    for (i = 0; i < GrayScale; i++)           //初始化两个灰度值像素数组
+//    unsigned char row;                        //行坐标，省点内存就没设int
+//    unsigned char column;                     //列坐标，同上
+//    unsigned char flag;                       //判断边界点是否找到
+//};
+//struct Right_Edge
+//{
+//    unsigned char row;                        //行坐标，省点内存就没设int
+//    unsigned char column;                     //列坐标，同上
+//    unsigned char flag;                       //判断边界点是否找到
+//};
+
+//struct Left_Edge Left[140];                   //左边界结构体
+//struct Right_Edge Right[140];                 //右边界结构体
+//unsigned char Left_Count,Right_Count;         //记录左右边界点的个数
+//unsigned char grow_left,grow_right;           //记录左右边界在八邻域时寻点的相对位置
+//unsigned char Left_Max=140,Right_Max=140;     //左右边界搜点时允许最大的搜点量
+//unsigned char Boundary_search_end=50;         //搜寻行数的最高行
+//unsigned int temp[Image_Width];
+////  * @brief 将输入的灰度图像转化为二值化图像
+////  *
+////  * @param Uint8 输入图像的地址
+////  * @param Uint8 输出图像的地址
+////  * @param Threshold 图像阈值(实际上阈值需要进行计算，而不是直接赋值)
+////  */
+//unsigned char left_point;                     //记录第一个关键点的列坐标，定义为全局变量，方便后面的函数调用
+//unsigned char Image_Get_LeftFlag(void)
+//{
+//    for(left_point=(Image_Width/2);left_point>0;left_point--)
 //    {
-//        pixelCount[i] = 0;
-//        pixelPro[i] = 0;
-//    }
-//    uint32 gray_sum=0;                        //定义所有灰度值的总数
-//    //一 统计灰度级中每个像素在整幅图像中的个数
-//    for (i = 0; i < height; i+=2)
-//    {
-//        for (j = 0; j < width; j+=2)
-//        {
-//            pixelCount[(int)data[i * width + j]]++;                                 //将当前的点的像素值作为计数数组的下标
-//            gray_sum+=(int)data[i * width + j];                                     //求灰度值总和
-//            if(data[i * width + j]>Pixel_Max)   Pixel_Max=data[i * width + j];      //同时记录直方图中灰度值的最高峰和最低峰
-//            if(data[i * width + j]<Pixel_Min)   Pixel_Min=data[i * width + j];
-//        }
-//    }
-//    //二 计算每个像素值的点在整幅图像中的比例
-//    for (i = Pixel_Min; i < Pixel_Max; i++)
-//    {
-//        pixelPro[i] = (float)pixelCount[i] / pixelSum;
-//
-//    }
-//    //三 遍历灰度级[0,255]，开始寻找
-//    float w0, w1, u0tmp, u1tmp, u0, u1, u, deltaTmp, deltaMax = 0;
-//    //w0：后景所占总图片的总比例        w1:前景所占总图片的总比例   有关系式：（即阈值以下为w0,阈值以上为w1）w1+w0=1
-//    //u0tmp：背景部分灰度值点的比例*灰度值          u1tmp：前景部分灰度值点的比例*灰度值  （后面有解析）
-//    //u0,u1：背景，前景的平均灰度   u：全局平均灰度 u=(u1+u2)/2
-//    w0 = w1 = u0tmp = u1tmp = u0 = u1 = u = deltaTmp = 0;
-//    for (j = Pixel_Min; j < Pixel_Max; j++)
-//    {
-//
-//        w0 += pixelPro[j];                    //背景部分每个灰度值的像素点所占比例之和   即背景部分的比例
-//        u0tmp += j * pixelPro[j];             //背景部分每个灰度值的点的比例 *灰度值
-//
-//        w1=1-w0;
-//        u1tmp=gray_sum/pixelSum-u0tmp;
-//
-//        u0 = u0tmp / w0;                      //背景平均灰度
-//        u1 = u1tmp / w1;                      //前景平均灰度
-//        u = u0tmp + u1tmp;                    //全局平均灰度
-//        deltaTmp = (float)(w0 *w1* (u0 - u1)* (u0 - u1)) ;
-//        if (deltaTmp > deltaMax)
-//        {
-//            deltaMax = deltaTmp;
-//            threshold = j;
-//        }
-//        if (deltaTmp < deltaMax)
+//        if((temp[left_point]==1)&&(temp[left_point-1]==0)&&(temp[left_point-2]==0))
 //        {
 //            break;
 //        }
-//
 //    }
-//    //四 阈值限幅，如果超过想要的阈值，就会和上次一样
-//    if(threshold>50 && threshold<130)
-//        last_threshold = threshold;
-//    else
-//        threshold = last_threshold;
-//
-//    return threshold;
+//    return 1;
+//}
+///**
+// * @brief 寻找是否存在有边界，无输入参数，参数选择全局变量，方便调用
+// * @param 同上
+// * @return 同上
+// * @exception 同上
+// *  */
+//unsigned char right_point;                     //记录第一个关键点的列坐标
+//unsigned char Image_Get_Rightflag(void)
+//{
+//    
+//    for(right_point=(Image_Width/2);right_point>0;right_point++)
+//    {
+//        if((temp[right_point]==1)&&(temp[right_point+1]==0)&&(temp[right_point+2]==0)) //这里指针变量不能直接和值比较，需要解地址
+//        {
+//            break;                            //这里不能直接return 会有报错，就用break跳出循环，然后在最外面return即可
+//        }
+//    }
+//    return 1;
 //}
 
-// 此函数在原函数的基础上，优化了阈值：在图像出现大面积一个颜色时，此时直方图中只有一个高峰（或者两个高峰很接近），这里就直接选择最高峰对应的灰度值作为灰度值传输阈值
-// uint8 OSTU_GetThreshold(uint8 *image,
-//                         uint16 width,
-//                         uint16 height,
-//                         uint32 pixel_threshold) // 注意计算阈值的一定要是原图像
-// {
-// #define GrayScale 256
-//     //  uint16 width = col;
-//     //  uint16 height = row;
-//     int pixelCount[GrayScale];
-//     float pixelPro[GrayScale];
-//     int i, j, pixelSum = width * height;
-//     uint8 threshold = 0;
-//     uint8 *data = image; // 指向像素数据的指针
-//     for (i = 0; i < GrayScale; i++)
-//     {
-//         pixelCount[i] = 0;
-//         pixelPro[i] = 0;
-//     }
 
-//     uint32 gray_sum = 0;
-//     // 统计灰度级中每个像素在整幅图像中的个数
-//     for (i = 0; i < height; i += 1)
-//     {
-//         for (j = 0; j < width; j += 1)
-//         {
-//             // if((sun_mode&&data[i*width+j]<pixel_threshold)||(!sun_mode))
-//             //{
-//             pixelCount[(
-//                 int)data[i * width + j]]++;       // 将当前的点的像素值作为计数数组的下标
-//             gray_sum += (int)data[i * width + j]; // 灰度值总和
-//             //}
-//         }
-//     }
+///**
+// * @brief 八邻域寻边界
+// *
+// * @param unchar 必须为经过边框处理Draw_Frame后的图像才可以进行八领域扫线
+// * @return 无
+// * @exception 1.我默认左下角为（0，0）
+// * 2.巡线原理就是找到第一个点，然后找附近的8个点，再选择下一个点来作为衍生，将得到的点记录即可得到边界
+// * 3.这里是从第4行的点开始寻找，因为要留一行做起始八邻域点，还有边界两行已经改成黑了
+// * 4.生长方向表和坐标表（可以随便定，这里也是一种方法）
+// * row-1 col-1      row-1 col       row-1 col+1         7   0   6
+// * row   col-1      row   col       row   col+1         4   *   5
+// * row+1 col-1      row+1 col       row+1 col+1         3   1   2
+// * 5.有些判断会存在grow_left!=是因为这种情况基本不会存在，而且出现的话就难以判断生长的方向
+// */
+//void Image_Get_neighborhoods(void)
+//{
+//    unsigned char i;                          //中间变量
+//    Left_Count=0;                             //左右线最大计数值清0
+//    Right_Count=0;
 
-//     // 计算每个像素值的点在整幅图像中的比例
-//     for (i = 0; i < GrayScale; i++)
-//     {
-//         pixelPro[i] = (float)pixelCount[i] / pixelSum;
-//     }
 
-//     // 遍历灰度级[0,255]
-//     float w0, w1, u0tmp, u1tmp, u0, u1, u, deltaTmp, deltaMax = 0;
-//     w0 = w1 = u0tmp = u1tmp = u0 = u1 = u = deltaTmp = 0;
-//     for (j = 0; j < pixel_threshold; j++)
-//     {
-//         w0 +=
-//             pixelPro[j];          // 背景部分每个灰度值的像素点所占比例之和 即背景部分的比例
-//         u0tmp += j * pixelPro[j]; // 背景部分 每个灰度值的点的比例 *灰度值
+//    for(i=0;i<Image_Width;i++)
+//    {
+//        temp[i]=Image_Use[57][i];          //设置一个中间数组，（全局变量），避免参数的传入的问题
+//    }
 
-//         w1 = 1 - w0;
-//         u1tmp = gray_sum / pixelSum - u0tmp;
-
-//         u0 = u0tmp / w0;   // 背景平均灰度
-//         u1 = u1tmp / w1;   // 前景平均灰度
-//         u = u0tmp + u1tmp; // 全局平均灰度
-//         deltaTmp = w0 * pow((u0 - u), 2) + w1 * pow((u1 - u), 2);
-//         if (deltaTmp > deltaMax)
-//         {
-//             deltaMax = deltaTmp;
-//             threshold = j;
-//         }
-//         if (deltaTmp < deltaMax)
-//         {
-//             break;
-//         }
-//     }
-//     return threshold;
-// }
-
-// ///**
-// // * @brief 将输入的灰度图像转化为二值化图像
-// // *
-// // * @param Uint8 输入图像的地址
-// // * @param Uint8 输出图像的地址
-// // * @param Threshold 图像阈值(实际上阈值需要进行计算，而不是直接赋值)
-// // */
-// // void Image_GetBinary(IN Uint8 (*InImg)[IMGW], OUT Uint8 (*OutImg)[IMGW], IN Uint8 Threshold)
-
-// //{
-// // #define GrayScale 256				          //定义灰度总值
-// //	uint8 last_threshold;                     //定义上次的阈值，进行阈值的输出限幅
-// //    int Pixel_Max=0;                          //定义灰度值的最大值和最小值（0-255）
-// //    int Pixel_Min=255;
-// //    uint16 width = Image_Width;                //定义图像的宽和高
-// //    uint16 height = Image_Hight;
-// //    int pixelCount[GrayScale];                //记录每个灰度对应的像素值
-// //    float pixelPro[GrayScale];                //定义每个像素点在图中的比例的数组
-// //    int i, j, pixelSum = width * height/4;    //定义中间变量，定义像素总数（这里只要算1/4的就行）
-// //    uint8 threshold = 0;                      //定义返回阈值
-// //    uint8* data = *Image_Use;                 //指向像素数据的指针，省内存
-// //    for (i = 0; i < GrayScale; i++)           //初始化两个灰度值像素数组
-// //    {
-// //        pixelCount[i] = 0;
-// //        pixelPro[i] = 0;
-// //    }
-// //    uint32 gray_sum=0;                        //定义所有灰度值的总数
-// //    //一 统计灰度级中每个像素在整幅图像中的个数
-// //    for (i = 0; i < height; i+=2)
-// //    {
-// //        for (j = 0; j < width; j+=2)
-// //        {
-// //            pixelCount[(int)data[i * width + j]]++;                                 //将当前的点的像素值作为计数数组的下标
-// //            gray_sum+=(int)data[i * width + j];                                     //求灰度值总和
-// //            if(data[i * width + j]>Pixel_Max)   Pixel_Max=data[i * width + j];      //同时记录直方图中灰度值的最高峰和最低峰
-// //            if(data[i * width + j]<Pixel_Min)   Pixel_Min=data[i * width + j];
-// //        }
-// //    }
-// //    //二 计算每个像素值的点在整幅图像中的比例
-// //    for (i = Pixel_Min; i < Pixel_Max; i++)
-// //    {
-// //        pixelPro[i] = (float)pixelCount[i] / pixelSum;
-// //
-// //    }
-// //    //三 遍历灰度级[0,255]，开始寻找
-// //    float w0, w1, u0tmp, u1tmp, u0, u1, u, deltaTmp, deltaMax = 0;
-// //    //w0：后景所占总图片的总比例        w1:前景所占总图片的总比例   有关系式：（即阈值以下为w0,阈值以上为w1）w1+w0=1
-// //    //u0tmp：背景部分灰度值点的比例*灰度值          u1tmp：前景部分灰度值点的比例*灰度值  （后面有解析）
-// //    //u0,u1：背景，前景的平均灰度   u：全局平均灰度 u=(u1+u2)/2
-// //    w0 = w1 = u0tmp = u1tmp = u0 = u1 = u = deltaTmp = 0;
-// //    for (j = Pixel_Min; j < Pixel_Max; j++)
-// //    {
-// //
-// //        w0 += pixelPro[j];                    //背景部分每个灰度值的像素点所占比例之和   即背景部分的比例
-// //        u0tmp += j * pixelPro[j];             //背景部分每个灰度值的点的比例 *灰度值
-// //
-// //        w1=1-w0;
-// //        u1tmp=gray_sum/pixelSum-u0tmp;
-// //
-// //        u0 = u0tmp / w0;                      //背景平均灰度
-// //        u1 = u1tmp / w1;                      //前景平均灰度
-// //        u = u0tmp + u1tmp;                    //全局平均灰度
-// //        deltaTmp = (float)(w0 *w1* (u0 - u1)* (u0 - u1)) ;
-// //        if (deltaTmp > deltaMax)
-// //        {
-// //            deltaMax = deltaTmp;
-// //            threshold = j;
-// //        }
-// //        if (deltaTmp < deltaMax)
-// //        {
-// //            break;
-// //        }
-// //
-// //    }
-// //    //四 阈值限幅，如果超过想要的阈值，就会和上次一样
-// //    if(threshold>50 && threshold<130)
-// //        last_threshold = threshold;
-// //    else
-// //        threshold = last_threshold;
-// //
-// //    return threshold;
-// //}
-
-// ///**
-// // * @brief 大津法求阈值（和其他的版本有些出入）
-// // *
-// // * @param Uint8 *image 第一次原始图像（灰度为0-255，有188*120个像素点的图像）
-// // * @return 求得的阈值
-// // * @exception 场地得到的灰度图像一般颜色不一，但是图像里面占的面积最大的灰度肯定只有赛道内的灰度值A1和赛道外的灰度值A2，因此得到的直方图会在A1和A2
-// // * 出现两个峰值，而所求的阈值就是两个峰值之间的最低值
-// // */
-// // unsigned char BMP_GetThreshold(uint8 *image[CAMERA_HEIGHT][CAMERA_WITH])
-// //{
-// //    unsigned char i,j;                        //用来遍历灰度直方图
-// //    uint8 High1=0;                     //第一高峰
-// //    unsigned char High1_Position=0;           //第一高峰对应的灰度值
-// //    uint8 High2=0;                     //第二高峰
-// //    unsigned char High2_Position=0;           //第二高峰对应的灰度值
-// //    unsigned char HistoGram[256];             //先定义灰度直方图
-// //    unsigned char *gray;                      //灰度值（中间值）
-// //    uint8 High_temp;                   //高度中间值
-// //    uint8 Low1=20000;                  //定义低谷1
-// //    unsigned char Low1_Position;              //定义低谷1的灰度值位置，即所求的阈值
-// //    for(i=0;i<CAMERA_HEIGHT;i++)              //先遍历灰度值第一高峰
-// //    {
-// //        for(j=0;j<CAMERA_WITH;j++)
-// //        {
-// //            gray=image[i][j];                 //指针传递
-// //            HistoGram[*gray]++;               //gray解码传值，得到的HistoGram[256]即为灰度直方图
-// //        }
-// //    }
-// //    for(i=0;i<256;i++)
-// //    {
-// //        if(HistoGram[i]>High1)
-// //        {
-// //            High1=HistoGram[i];               //遍历所有点，存储最高峰的值
-// //            High1_Position=i;                 //存储当前最高峰值的灰度值
-// //        }
-// //    }
-// //    for(High_temp=High1-5;High_temp>0;High_temp-=5)//从第一高峰开始向下寻找第二高峰
-// //    {
-// //        for(i=0;i<256;i++)                    //在高度值固定时，对灰度值进行遍历
-// //        {
-// //            if((HistoGram[i]>High_temp)&&(i-High1_Position)>30)    //防止找到最高峰旁边的点
-// //            {
-// //                High2=HistoGram[i];           //记录次高峰峰值（会有0-5内的误差）
-// //                High2_Position=i;             //记录次高峰峰值对应的灰度值
-// //            }
-// //        }
-// //    }
-// //    if(High1_Position>High2_Position)         //如果最高峰对应的灰度值大于次高峰
-// //    {
-// //        for(i=High2_Position;i<High1_Position;i++)
-// //        {
-// //            if(HistoGram[i]<Low1)             //遍历，求最小值
-// //            {
-// //                Low1=HistoGram[i];            //刷新谷底高度
-// //                Low1_Position=i;              //求出谷底位置
-// //            }
-// //        }
-// //    }
-// //    return Low1_Position;                     //返回谷底位置，即阈值
-// //}
-
-// // 此函数在原函数的基础上，优化了阈值：在图像出现大面积一个颜色时，此时直方图中只有一个高峰（或者两个高峰很接近），这里就直接选择最高峰对应的灰度值作为灰度值传输阈值
-// // uint8 GetThreshold(void)   //注意计算阈值的一定要是原图像
-// //{
-// // #define GrayScale 256				          //定义灰度总值
-// //	uint8 last_threshold;                     //定义上次的阈值，进行阈值的输出限幅
-// //     int Pixel_Max=0;                          //定义灰度值的最大值和最小值（0-255）
-// //     int Pixel_Min=255;
-// //	int Pixel_Max_Position;					  //灰度值最高峰对应的灰度值
-// //     uint16 width = Image_Width;                //定义图像的宽和高
-// //     uint16 height = Image_Hight;
-// //     int pixelCount[GrayScale];                //记录每个灰度对应的像素值
-// //     float pixelPro[GrayScale];                //定义每个像素点在图中的比例的数组
-// //     int i, j, pixelSum = width * height/4;    //定义中间变量，定义像素总数（这里只要算1/4的就行）
-// //     uint8 threshold = 0;                      //定义返回阈值
-// //     uint8* data = *Image_Use;                 //指向像素数据的指针，省内存
-// //     for (i = 0; i < GrayScale; i++)           //初始化两个灰度值像素数组
-// //     {
-// //         pixelCount[i] = 0;
-// //         pixelPro[i] = 0;
-// //     }
-// //     uint32 gray_sum=0;                        //定义所有灰度值的总数
-// //     //一 统计灰度级中每个像素在整幅图像中的个数
-// //     for (i = 0; i < height; i+=2)
-// //     {
-// //         for (j = 0; j < width; j+=2)
-// //         {
-// //             pixelCount[(int)data[i * width + j]]++;                                 //将当前的点的像素值作为计数数组的下标
-// //             gray_sum+=(int)data[i * width + j];                                     //求灰度值总和
-// //             if(data[i * width + j]>Pixel_Max)
-// //			{
-// //				Pixel_Max=data[i * width + j]; 										//同时记录直方图中灰度值的最高峰和最低峰
-// //				Pixel_Max_Position=i * width + j;
-// //			}
-// //             if(data[i * width + j]<Pixel_Min)   Pixel_Min=data[i * width + j];
-// //         }
-// //     }
-// //     //二 计算每个像素值的点在整幅图像中的比例
-// //     for (i = Pixel_Min; i < Pixel_Max; i++)
-// //     {
-// //         pixelPro[i] = (float)pixelCount[i] / pixelSum;
-
-// //    }
-// //    //三 遍历灰度级[0,255]，开始寻找
-// //    float w0, w1, u0tmp, u1tmp, u0, u1, u, deltaTmp, deltaMax = 0;
-// //    //w0：后景所占总图片的总比例        w1:前景所占总图片的总比例   有关系式：（即阈值以下为w0,阈值以上为w1）w1+w0=1
-// //    //u0tmp：背景部分灰度值点的比例*灰度值          u1tmp：前景部分灰度值点的比例*灰度值  （后面有解析）
-// //    //u0,u1：背景，前景的平均灰度   u：全局平均灰度 u=(u1+u2)/2
-// //    w0 = w1 = u0tmp = u1tmp = u0 = u1 = u = deltaTmp = 0;
-// //    for (j = Pixel_Min; j < Pixel_Max; j++)
-// //    {
-
-// //        w0 += pixelPro[j];                    //背景部分每个灰度值的像素点所占比例之和   即背景部分的比例
-// //        u0tmp += j * pixelPro[j];             //背景部分每个灰度值的点的比例 *灰度值
-
-// //        w1=1-w0;
-// //        u1tmp=gray_sum/pixelSum-u0tmp;
-
-// //        u0 = u0tmp / w0;                      //背景平均灰度
-// //        u1 = u1tmp / w1;                      //前景平均灰度
-// //        u = u0tmp + u1tmp;                    //全局平均灰度
-// //        deltaTmp = (float)(w0 *w1* (u0 - u1)* (u0 - u1)) ;
-// //        if (deltaTmp > deltaMax)
-// //        {
-// //            deltaMax = deltaTmp;
-// //            threshold = j;
-// //        }
-// //        if (deltaTmp < deltaMax)
-// //        {
-// //            break;
-// //        }
-
-// //    }
-// //    //四 阈值限幅，如果超过想要的阈值，就会和上次一样
-// //    if(threshold>80 && threshold<130)
-// //        last_threshold = threshold;
-// //    else
-// //        threshold = last_threshold;
-
-// //	//防止强光，出现单高峰时，就选择该单高峰的灰度值作为阈值传输
-// //	if(threshold==0)
-// //	{
-// //		threshold=Pixel_Max_Position;
-// //	}
-// //    return threshold;
-// //}
+//    if(Image_Get_LeftFlag())                       //如果找到左边界点的话
+//    {
+//        Left[0].row=56;                 //第一个点初始行设为3
+//        Left[0].column=left_point;       //第一个点的列坐标设为left_point
+//        Left[0].flag=1;                  //第一个点已经找到
+//        unsigned char current_row=56;        //初始化当前的行和列坐标
+//        unsigned char current_column=left_point;  
+//        grow_left=8;                          //记录上一个生长点相对于现在的生长点的位置，这里设为8不干扰其他点
+//        for(i=1;i<Left_Max;i++)               //开始找点，最多140个（已经有一个了）
+//        {
+//            if((current_row+1<Boundary_search_end)||(current_row>Image_Height-1))
+//            {
+//                break;                        //防止找点找到太高（因为用不上）或者防止出现点又回到原来的最大行（图片最下面那一行），即拐角
+//            }
+//            //一 左上黑，正上白，原生长正右（这个不一定），选择向左上方向生长
+//            if((grow_left!=2)&&(Image_Use[current_row-1][current_column-1]==0)&&(Image_Use[current_row-1][current_column]==1))
+//            {
+//                current_row -=1;              //当前的行列坐标全部替换为新的坐标
+//                current_column -=1;
+//                Left_Count +=1;               //左边点的计数+1
+//                grow_left=7;                  //更换为新生长点后，旧生长点相对于原生长点的位置（右下）
+//                Left[i].row=current_row;
+//                Left[i].column=current_column;
+//                Left[i].flag=1;          //已经找到下一个生长点
+//            }
+//            //二 右上黑，正右白，向右上方向生长
+//            else if((grow_left!=3)&&(Image_Use[current_row-1][current_column+1]==0)&&(Image_Use[current_row][current_column+1]==1))
+//            {
+//                current_row -=1;
+//                current_column +=1;
+//                Left_Count +=1;
+//                grow_left=6;                  //旧生长点相对于新生长点的左下
+//                Left[i].row=current_row;
+//                Left[i].column=current_column;
+//                Left[i].flag=1;          //已经找到下一个生长点
+//            }
+//            //三 正上黑，右上白，向正上生长
+//            else if((Image_Use[current_row-1][current_column]==0)&&(Image_Use[current_row-1][current_column+1])==1)
+//            {
+//                current_row -=1;
+//                Left_Count +=1;               //没有current_column的改变就说明不变
+//                grow_left=0;                  //旧生长点相对于新生长点的正下
+//                Left[i].row=current_row;
+//                Left[i].column=current_column;
+//                Left[i].flag=1;          //已经找到下一个生长点
+//            }
+//            //四 正左黑，左上白，向左生长
+//            else if((grow_left!=5)&&(Image_Use[current_row][current_column-1])==0&&(Image_Use[current_row-1][current_column-1]==1))
+//            {
+//                current_column -=1;           //向左生长，列坐标-1
+//                Left_Count +=1;
+//                grow_left=4;
+//                Left[i].row=current_row;
+//                Left[i].column=current_column;
+//                Left[i].flag=1;   
+//            }
+//            //五 正右黑，右下白，向正右生长
+//            else if((grow_left!=4)&&(Image_Use[current_row][current_column+1]==0)&&(Image_Use[current_row+1][current_column+1]==1))
+//            {
+//                current_column +=1;
+//                Left_Count +=1;
+//                grow_left=5;
+//                Left[i].row=current_row;
+//                Left[i].column=current_column;
+//                Left[i].flag=1;  
+//            }
+//            //六 左下黑，正左白，向左下生长
+//            else if((grow_left!=6)&&(Image_Use[current_row+1][current_column-1]==0)&&(Image_Use[current_row][current_column-1]==1))
+//            {
+//                current_row +=1;
+//                current_column -=1;
+//                Left_Count +=1;
+//                grow_left =3;
+//                Left[i].row=current_row;
+//                Left[i].column=current_column;
+//                Left[i].flag=1;  
+//            }
+//            //七 右下黑，正下白，向右下生长
+//            else if((grow_left!=7)&&(Image_Use[current_row+1][current_column+1]==0)&&(Image_Use[current_row+1][current_column]==1))
+//            {
+//                current_row +=1;
+//                current_column +=1;
+//                Left_Count +=1;
+//                grow_left =2;
+//                Left[i].row=current_row;
+//                Left[i].column=current_column;
+//                Left[i].flag=1; 
+//            }
+//            else//其他情况不会出现，出现的话就是断线了，就不找了
+//            {
+//                break;
+//            }
+//        }
+//        //开始向右找点，原来的temp还是可以继续用（因为是同一行的）
+//        if(Image_Get_Rightflag())                   //如果找到右边的点的话
+//        {
+//            Right[0].row=116;                 //第一个点初始行设为3
+//            Right[0].column=left_point;       //第一个点的列坐标设为right_point
+//            Right[0].flag=1;                  //第一个点已经找到
+//            current_row=116;                  //初始化当前的行和列坐标
+//            current_column=right_point;  
+//            grow_right=8;                     //生长起始点为原点
+//            for(i=0;i<Right_Max;i++)          //开始生长
+//            {
+//                if((current_row<Boundary_search_end)||(current_row>(Image_Height-1))||(current_row+1<Boundary_search_end))
+//                //防越界
+//                {
+//                    break;
+//                }
+//                //一 右上黑，正上白（左白右黑），向右上生长
+//                if((current_column<Image_Width)&&(grow_right!=3)&&(Image_Use[current_row-1][current_column+1])&&(Image_Use[current_row-1][current_column]==1))
+//                {
+//                    current_row -=1;
+//                    current_column +=1;
+//                    Right_Count +=1;
+//                    grow_right=6;
+//                    Right[i].row=current_row;
+//                    Right[i].column=current_column;
+//                    Right[i].flag=1;
+//                }
+//                //二 左上黑，正左白（上黑下白）
+//                else if((grow_right!=2)&&(Image_Use[current_row-1][current_column-1]==0)&&(Image_Use[current_row][current_column-1]==1))
+//                {
+//                    current_row -=1;
+//                    current_column -=1;
+//                    Right_Count +=1;
+//                    grow_right=7;
+//                    Right[i].row=current_row;
+//                    Right[i].column=current_column;
+//                    Right[i].flag=1;
+//                }
+//                //三 正上黑，左上白（上黑下白）
+//                else if((Image_Use[current_row-1][current_column]==0)&&(Image_Use[current_row-1][current_column-1]==1))
+//                {
+//                    current_row -=1;
+//                    Right_Count +=1;
+//                    grow_right=0;
+//                    Right[i].row=current_row;
+//                    Right[i].column=current_column;
+//                    Right[i].flag=1;
+//                }
+//                //四 正右黑，右上白，
+//                else if((Image_Use[current_row][current_column+1]==0)&&(Image_Use[current_row-1][current_column+1]==1))
+//                {
+//                    current_column +=1;
+//                    Right_Count +=1;
+//                    grow_right=5;
+//                    Right[i].row=current_row;
+//                    Right[i].column=current_column;
+//                    Right[i].flag=1;
+//                }
+//                //五 正左黑，左下白
+//                else if((grow_right!=5)&&(Image_Use[current_row][current_column-1]==0)&&(Image_Use[current_row+1][current_column-1]==1))
+//                {
+//                    current_column -=1;
+//                    Right_Count +=1;
+//                    grow_right=4;
+//                    Right[i].row=current_row;
+//                    Right[i].column=current_column;
+//                    Right[i].flag=1;
+//                }
+//                //六 左下黑，正下白
+//                else if((grow_right!=6)&&(Image_Use[current_row+1][current_column-1]==0)&&(Image_Use[current_row+1][current_column])==1)
+//                {
+//                    current_row +=1;
+//                    current_column -=1;
+//                    Right_Count +=1;
+//                    grow_right=3;
+//                    Right[i].row=current_row;
+//                    Right[i].column=current_column;
+//                    Right[i].flag=1;
+//                }
+//                //七 右下黑，正右白
+//                else if((grow_right!=7)&&(Image_Use[current_row+1][current_column+1]==0)&&(Image_Use[current_row][current_column+1]==1))
+//                {
+//                    current_row +=1;
+//                    current_column +=1;
+//                    Right_Count +=1;
+//                    grow_right=2;
+//                    Right[i].row=current_row;
+//                    Right[i].column=current_column;
+//                    Right[i].flag=1;
+//                }
+//                else
+//                {
+//                    break;
+//                }
+//            }
+//        }
+//    }
+//}
