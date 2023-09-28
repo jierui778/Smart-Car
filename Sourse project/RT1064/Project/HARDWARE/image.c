@@ -1,5 +1,5 @@
 #include "image.h"
-
+#include "mymath.h"
 uint8 Image_Use[Image_Height][Image_Width];
 /**
  * @brief 截取我们需要的图像大小
@@ -242,11 +242,130 @@ void Image_Sobel(uint8 Image_in[Image_Height][Image_Width], uint8_t Image_out[Im
     }
 }
 
+
+
+
+// canny测试代码，未进行修改维护
+uint8 Sector[Image_Height][Image_Width]; // 像素梯度所在扇区
+uint8 A[Image_Height][Image_Width];      // 梯度幅值
+// uint8 ImgEdge[UROW][UCOL];//输出二值化图像
+
+void CannyEdgeTest(uint8 org[Image_Height][Image_Width], uint8 lowThr)
+{
+    // wrh:这个标志位不能定义在函数内部，因为是一个大数组，百度 大数组，局部变量，会出bug。 你注意下，我当时这个问题困扰了三天。
+    //    uint8 Sector[70][120]; //像素梯度所在扇区
+    //    uint8 A[70][120];//幅值
+    //    uint8 ImgEdge[70][120];
+    float Temp[9] = {0};
+    // 双阈值检测临时数组
+    float TemMax = 0; // 临时最大值
+    float theta = 0;  // 梯度方向
+    int Xg = 0;       // X方向梯度
+    int Yg = 0;       // Y方向梯度
+
+    uint8 x, y;
+
+    uint8 ratio = 2 / 1;            // 高低阈值检测比例
+    uint8 highThr = ratio * lowThr; // 高阈值 50
+    uint8 loss = 2;                 // 非极大值抑制补偿,增加边缘
+
+    //==========求解梯度，幅度和方向===========
+    for (y = 0; y < Image_Height; y++) // 最下面一行不处理
+    {
+        for (x = 0; x < Image_Width; x++) // 最上一列不处理
+        {
+            Xg = org[y][x] + org[y + 1][x] - org[y][x + 1] - org[y + 1][x + 1];  // 计算X方向梯度
+            Yg = -org[y][x] + org[y + 1][x] - org[y][x + 1] + org[y + 1][x + 1]; // 计算Y方向梯度
+            A[y][x] = Fsqrt(Xg * Xg + Yg * Yg);                                  // 求幅值，快速开平方算法
+            Sector[y][x] = Atan2(Yg, Xg);                                        // 求梯度方向分区
+        }                                                                        // end of for(i)
+    }                                                                            // end of for(j)
+
+    //===============非极大值抑制================
+    for (y = 0; y < Image_Height; y++)
+    {
+        for (x = 0; x < Image_Width; x++)
+        {
+            if (0 == Sector[y][x]) // 水平方向
+            {
+                if (!((A[y][x] > A[y][x + 1] - loss) && A[y][x] > (A[y][x - 1] - loss)))
+                {
+                    A[y][x] = 0;
+                }
+            }                      // end of 0
+            if (1 == Sector[y][x]) // 右上、左下
+            {
+                if (!(A[y][x] > (A[y - 1][x + 1] - loss) && A[y][x] > (A[y + 1][x - 1] - loss)))
+                {
+                    A[y][x] = 0;
+                }
+            }                      // end of 1
+            if (2 == Sector[y][x]) // 竖直方向
+            {
+                if (!(A[y][x] > (A[y - 1][x] - loss) && A[y][x] > (A[y + 1][x] - loss)))
+                {
+                    A[y][x] = 0;
+                }
+            }                      // end of 2
+            if (3 == Sector[y][x]) // 左上、右下
+            {
+                if (!(A[y][x] > (A[y - 1][x - 1] - loss) && A[y][x] > (A[y + 1][x + 1] - loss)))
+                {
+                    A[y][x] = 0;
+                }
+            } // end of 3
+        }     // end of for(x)
+    }         // end of for(y)
+
+    //=============双阈值检测=================
+    //    双阀值：
+    //    一般的边缘检测算法用一个阀值来滤除噪声或颜色变化引起的小的梯度值，而保留大的梯度值。
+    //    Canny算法应用双阀值，即一个高阀值和一个低阀值来区分边缘像素。如果边缘像素点梯度值大于高阀值，则被认为是强边缘点。
+    //    如果边缘梯度值小于高阀值，大于低阀值，则标记为弱边缘点。小于低阀值的点则被抑制掉。这一步算法很简单。
+    for (y = 0; y < Image_Height; y++)
+    {
+        for (x = 0; x < Image_Width; x++)
+        {
+            if (A[y][x] < lowThr) // 低于低阈值
+            {
+                Image_Use[y][x] = 255;
+            }
+            else if (A[y][x] > highThr) // 高于高阈值
+            {
+                Image_Use[y][x] = 0;
+            }
+            else
+            {
+                Temp[0] = A[y + 1][x - 1];
+                Temp[1] = A[y + 1][x];
+                Temp[2] = A[y + 1][x + 1];
+                Temp[3] = A[y][x - 1];
+                Temp[4] = A[y][x];
+                Temp[5] = A[y][x + 1];
+                Temp[6] = A[y - 1][x - 1];
+                Temp[7] = A[y - 1][x];
+                Temp[8] = A[y - 1][x + 1]; // 3x3区域内点
+                QuickSort(Temp, 0, 8);     // 快速排序,低到高
+                if (Temp[8] > highThr)
+                {
+                    Image_Use[y][x] = 0;
+                    A[y][x] = 1;
+                } // end of if
+                else
+                {
+                    Image_Use[y][x] = 255;
+
+                    A[y][x] = 0;
+                } // end of if else
+            }     // end of if else
+        }         // end of for(x)
+    }             // end of for(y)
+} // end of
+
 //------------------------------------------------------------------------------------------------------------------
 //  @brief     动态阈值
 //  @since      v1.0
 //------------------------------------------------------------------------------------------------------------------
-#define GrayScale 256
 // uint8 OSTU_GetThreshold(uint8 *image, uint16 col, uint16 row)
 // {
 

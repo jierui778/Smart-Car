@@ -37,14 +37,15 @@ int main(void)
     //    tft180_show_uint(4, 80, TH, 3);
     //    Binarization(TH);
     //    tft180_displayimage03x((uint8 *)Image_Use, 100, 60); //
-//    Schedule_Run();
+    Schedule_Run();
 //    tft180_show_string(0, 0, "THIS IS A TEST");
     Image_Compress();
     TH = OSTU_GetThreshold(Image_Use[0], Image_Width, Image_Height);
     Image_Binarization(TH,Image_Use);
     Image_Sobel( Image_Use, Image_Use_Robert ,TH);//全局Sobel得二值图(方案二) 2.8ms
+    CannyEdgeTest( Image_Use, TH+10 );
 //	  Image_DrawRectangle();
-    tft180_displayimage03x((uint8 *)Image_Use_Robert, 100, 60); //
+    tft180_displayimage03x((uint8 *)Image_Use, 100, 60); //
 
 //	  Image_Run();
   }

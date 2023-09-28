@@ -112,11 +112,11 @@
           <SimDllName>SARMCM3.DLL</SimDllName>
           <SimDllArguments> -REMAP -MPU</SimDllArguments>
           <SimDlgDll>DCM.DLL</SimDlgDll>
-          <SimDlgDllArguments>-pCM7</SimDlgDllArguments>
+          <SimDlgDllArguments>-pMIMXRT1064D</SimDlgDllArguments>
           <TargetDllName>SARMCM3.DLL</TargetDllName>
           <TargetDllArguments> -MPU</TargetDllArguments>
           <TargetDlgDll>TCM.DLL</TargetDlgDll>
-          <TargetDlgDllArguments>-pCM7</TargetDlgDllArguments>
+          <TargetDlgDllArguments>-pMIMXRT1064D</TargetDlgDllArguments>
         </DllOption>
         <DebugOption>
           <OPTHX>
@@ -488,6 +488,16 @@
               <FileName>display.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\HARDWARE\display.c</FilePath>
+            </File>
+            <File>
+              <FileName>mymath.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\mymath.c</FilePath>
+            </File>
+            <File>
+              <FileName>mymath.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\HARDWARE\mymath.h</FilePath>
             </File>
           </Files>
         </Group>
