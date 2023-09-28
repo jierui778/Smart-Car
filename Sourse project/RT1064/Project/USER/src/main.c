@@ -9,7 +9,7 @@
 
 #define GrayScale 257
 
-
+uint8_t  Image_Use_Robert[60][100];//二值化图像
 
 int main(void)
 {
@@ -23,29 +23,30 @@ int main(void)
   //  //    Buzzer_Init();
   //  tft180_show_string(0, 0, "mt9v03x init.");
 
-  //  Camera_Init();
+  Camera_Init();
   //  Servo_Init();
   pit_ms_init(PIT_CH0, 200);
   interrupt_set_priority(PIT_IRQn, 0);
 
   while (1)
   {
+      int TH;
     //    Image_Compress();
     //    //    TH = OSTU_GetThreshold(Image_Use[0], Image_Width, Image_Height, 150); // 锟斤拷锟斤拷值锟斤拷锟斤拷
     //    TH = OSTU_GetThreshold(Image_Use[0], Image_Width, Image_Height);
     //    tft180_show_uint(4, 80, TH, 3);
     //    Binarization(TH);
     //    tft180_displayimage03x((uint8 *)Image_Use, 100, 60); //
-    Schedule_Run();
+//    Schedule_Run();
 //    tft180_show_string(0, 0, "THIS IS A TEST");
-    tft180_show_wave(32, 64, &data, 64, 32, 64, 32);
     Image_Compress();
     TH = OSTU_GetThreshold(Image_Use[0], Image_Width, Image_Height);
     Image_Binarization(TH,Image_Use);
-	  Image_DrawRectangle();
-    tft180_displayimage03x((uint8 *)Image_Use, 100, 60); //
+    Image_Sobel( Image_Use, Image_Use_Robert ,TH);//全局Sobel得二值图(方案二) 2.8ms
+//	  Image_DrawRectangle();
+    tft180_displayimage03x((uint8 *)Image_Use_Robert, 100, 60); //
 
-	  Image_Run();
+//	  Image_Run();
   }
 }
 void pit_exti_handler(void)
