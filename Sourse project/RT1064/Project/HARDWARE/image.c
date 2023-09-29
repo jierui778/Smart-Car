@@ -406,6 +406,9 @@ unsigned char grow_left,grow_right;           //记录左右边界在八邻域�
 unsigned char Left_Max=140,Right_Max=140;     //左右边界搜点时允许最大的搜点量
 unsigned char Boundary_search_end=30;         //搜寻行数的最高行
 uint16 cur_row,cur_col;//当前行列
+uint8 Gather_flag;
+uint8 Gather_row[50];//两线会聚数组，用来存储行坐标
+uint8 Gather_Count;//计数
 /**
  * @brief 八邻域巡线
  *
@@ -636,6 +639,19 @@ void Image_Get_neighborhoods(uint8(*Image_Use)[Image_Width])
                 break;
             }
             //三 当扫到的点多个在同一行时，只保留最后一个点（这个目前不写，因为处理的是压缩后的图像，点多一点也没关系，如果需要的话后期再改进）
+            //四 当左右线会聚时退出循环，并记录此时的行数（判断坡道）
+            if((Left[Left_Count-1].row==Right[Right_Count-1].row)&&(Left[Left_Count-1].column==Right[Right_Count-1].column||
+            Right[Right_Count-1].column-Left[Left_Count-1].column<=3))
+            //判断条件：行相等，列也相等or列相差在3以内
+            {
+                Gather_row[Gather_Count]=Left[Left_Count-1].row;
+                Gather_flag=1;
+                break;
+            }
+            else
+            {
+                Gather_flag=0;
+            }
 		}
 	}
 }
@@ -663,32 +679,7 @@ void Get_Midpoint(void)
 	
 }
 
-// uint8 Left_Line[150];
-// uint8 Right_Line[150];//用来作最小二乘法的
-// void Image_GetLine(void)
-// {
-//     uint8 i;
-//     uint8 row_count=56;
-//     for(i=0;i<56;i++)
-//     {
-//         if(Left[i].row==row_count)//如果行相等
-//         {
-//             Left_Line[56-i]=Left[i].column;//就将对应的列坐标存入，56-i是为了符合行坐标的形式
-//             row_count--;
-//         }
-//         else if(Left[i].row>row_count)//点的行坐标大于扫行的坐标
-//         {
-//             i--;//后退，看看还有没有点扫
-//         }
-//         else //扫的行的坐标大于点的行坐标
-//         {
-//             while((row_count-Left[i].row)==1&&Left[i].grow!=2&&Left[i].grow!=6)//保证下一个点能接上，
-//             {
-//                 i++;//前进
-//             }
-//         }
-//     }
-// }
+
 /**
  * @brief 十字补线函数
  *
@@ -861,7 +852,7 @@ float Image_ab_value(float a,float b)
 float k_buff[5];//存放5个斜率值
 /**
 @brief 判断左直道函数，如果为直道，会通过返回值用来判断是否为直道
-@param 二值化后的图像
+@param 二值化后的图像，实际上用不上
 @return 1，则存在左直道，0就没有
 @example Image_Stretch(Image_Use)
 @note 将直线分为2个地方，看上下斜率相差是否相近，近的话就判断为直道
@@ -980,3 +971,43 @@ void Image_Run(void)
 	}
 }
 
+/**
+ * @brief 坡道判断函数
+ *
+ * @param void
+ * @example Image_Run()
+ * @explanation  判断左右线相交的行坐标不断增加，从而判断出为坡道
+ * （想过用坡道的拐点左右的斜率来判断坡道，但是应该找不到）
+ */
+void Image_Ramp(void)
+{
+    uint8 i;//中间变量
+    uint8 Ramp_flag,Last_Rampflag;//坡道标志位，以及上一个状态标志位
+    if(Gather_flag==1)//找到坡道
+    {
+        for(i=0;i<Gather_Count;i++)
+        {
+            if((Gather_row[i]>Gather_row[i+1])&&(Gather_row[i+1]>Gather_row[i+2]))//表示正在靠近坡道，最高行不断上升
+            {
+                Last_Rampflag=Ramp_flag;//记录上一个状态
+                Ramp_flag=1;//标志位为1，表示还没上坡道，还在坡道附近的直道
+            }
+            else if((Gather_row[i]<Gather_row[i+1])&&(Gather_row[i+1]<Gather_row[i+2]))//最高行变小，表示已经上坡道了
+            {
+                Last_Rampflag=Ramp_flag;
+                Ramp_flag=2;//标志位为2，表示已经上坡道了，此时需要加速
+                //加速的代码
+            }
+            else
+            {
+                Last_Rampflag=Ramp_flag;
+                Ramp_flag=0;
+            }
+        }
+    }
+    if(!Gather_flag&&!Ramp_flag&&Last_Rampflag==2)//判断为下坡状态
+    {
+        //减速的代码
+    }
+    
+}
