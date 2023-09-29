@@ -662,6 +662,33 @@ void Get_Midpoint(void)
 	}
 	
 }
+
+// uint8 Left_Line[150];
+// uint8 Right_Line[150];//用来作最小二乘法的
+// void Image_GetLine(void)
+// {
+//     uint8 i;
+//     uint8 row_count=56;
+//     for(i=0;i<56;i++)
+//     {
+//         if(Left[i].row==row_count)//如果行相等
+//         {
+//             Left_Line[56-i]=Left[i].column;//就将对应的列坐标存入，56-i是为了符合行坐标的形式
+//             row_count--;
+//         }
+//         else if(Left[i].row>row_count)//点的行坐标大于扫行的坐标
+//         {
+//             i--;//后退，看看还有没有点扫
+//         }
+//         else //扫的行的坐标大于点的行坐标
+//         {
+//             while((row_count-Left[i].row)==1&&Left[i].grow!=2&&Left[i].grow!=6)//保证下一个点能接上，
+//             {
+//                 i++;//前进
+//             }
+//         }
+//     }
+// }
 /**
  * @brief 十字补线函数
  *
@@ -800,8 +827,120 @@ void Image_FillCross_1(uint8(*Image_Use)[Image_Width])
     }
 }
 
+/*下面是直道函数的辅助函数*/
+/**
+ * @brief 获取图像的k值
+ * 
+ * @param start_y 起始y坐标
+ * @param end_y 结束y坐标
+ * @param interval y坐标间隔
+ * @return float k值
+ */
+float Image_Getk(uint8 start_y,uint8 end_y,uint8 interval)
+{
+    return (float)((end_y-start_y)/interval);
+}
+/**
+ * @brief 计算两个浮点数之间的绝对值差
+ * 
+ * @param a 第一个浮点数
+ * @param b 第二个浮点数
+ * @return float 两个浮点数之间的绝对值差
+ */
+float Image_ab_value(float a,float b)
+{
+    if(a>b)
+    {
+        return a-b;
+    }
+    else
+    {
+        return b-a;
+    }
+}
+float k_buff[5];//存放5个斜率值
+/**
+@brief 判断左直道函数，如果为直道，会通过返回值用来判断是否为直道
+@param 二值化后的图像
+@return 1，则存在左直道，0就没有
+@example Image_Stretch(Image_Use)
+@note 将直线分为2个地方，看上下斜率相差是否相近，近的话就判断为直道
+*/
+uint8 Image_Stretch_Left(uint8(*Image_Use)[Image_Width])
+{
+    uint8 i;
+    float k_left_low,k_left_high;//左下线斜率，左上线斜率
+    float k_all;//多断小斜率叠加
+    k_all=0.0;
+    for(i=0;i<5;i++)//求左线下10个点的平均斜率
+    {
+        k_buff[i]=Image_Getk(Left[i].column,Left[i+5].column,(Left[i+5].row-Left[i].row));//x是行坐标,y是列坐标
+    }
+    for(i=0;i<5;i++)
+    {
+        k_all+=k_buff[i];
+    }
+    k_left_low=k_all/5;
+    k_all=0.0;
+    for(i=0;i<5;i++)//求左线上10个点的平均斜率
+    {
+        k_buff[i]=Image_Getk(Left[40+i].column,Left[i+45].column,(Left[i+45].row-Left[i+40].row));//x是行坐标,y是列坐标
+    }
+    for(i=0;i<5;i++)
+    {
+        k_all+=k_buff[i];
+    }
+    k_left_high=k_all/5;
+    if(Image_ab_value(k_left_high,k_left_low)<Line_k)//看直线的斜率是否符合要求
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
 
-
+/**
+@brief 判断右直道函数，如果为直道，通过返回值用来判断是否为直道
+@param 二值化后的图像
+@return 1，则存在右直道，0就没有
+@example Image_Stretch_Right(Image_Use)
+@note 将直线分为2个地方，看上下斜率相差是否相近，近的话就判断为直道
+*/
+uint8 Image_Stretch_Right(uint8(*Image_Use)[Image_Width])
+{
+    uint8 i;
+    float k_right_low,k_right_high,k_all;
+    k_all=0.0;
+    for(i=0;i<5;i++)//求右线下10个点的平均斜率
+    {
+        k_buff[i]=Image_Getk(Right[i].column,Right[i+5].column,(Right[i+5].row-Right[i].row));//x是行坐标,y是列坐标
+    }
+    for(i=0;i<5;i++)
+    {
+        k_all+=k_buff[i];
+    }
+    k_right_low=k_all/5;
+    k_all=0.0;
+    for(i=0;i<5;i++)//求右线上10个点的平均斜率
+    {
+        k_buff[i]=Image_Getk(Right[40+i].column,Right[i+45].column,(Right[i+45].row-Right[i+40].row));//x是行坐标,y是列坐标
+    }
+    for(i=0;i<5;i++)
+    {
+        k_all+=k_buff[i];
+    }
+    k_right_high=k_all/5;
+    if(Image_ab_value(k_right_high,k_right_low)<Line_k)//看直线的斜率是否符合要求
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
 /**
  * @brief 图像运行函数
  *

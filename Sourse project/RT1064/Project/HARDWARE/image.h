@@ -17,6 +17,7 @@
 #define threshold_max 255*6         //滤波阈值
 #define threshold_min 255*2
 
+#define Line_k 0.5 //斜率，判断是否为直道
 
 void Image_Compress();
 uint8 OSTU_GetThreshold(uint8 *image, uint16 Width, uint16 Height);
