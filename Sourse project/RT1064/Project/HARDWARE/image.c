@@ -1,7 +1,41 @@
 #include "image.h"
-
 #include "math.h"
+//八邻域扫的左线的结构体
+struct Left_Edge
+{
+    unsigned char row;                        //行坐标，省点内存就没设int
+    unsigned char column;                     //列坐标，同上
+    unsigned char flag;                       //判断边界点是否找到
+	uint8 grow;
+};
+//八邻域扫的右线的结构体
+struct Right_Edge
+{
+    unsigned char row;                        //行坐标，省点内存就没设int
+    unsigned char column;                     //列坐标，同上
+    unsigned char flag;                       //判断边界点是否找到
+	uint8 grow;
+};
 
+struct Left_Edge Left[140];                   //左边界结构体
+struct Right_Edge Right[140];                 //右边界结构体
+
+//定义坐标结构体
+struct coordinate
+{
+    unsigned char row;                        //行坐标，省点内存就没设int
+    unsigned char column;                     //列坐标，同上
+};
+struct coordinate mid[140];//中线坐标结构体
+
+//直线结构体
+struct Line
+{
+    float k;
+    float b;
+};//定义直线方程
+struct Line left_line;
+struct Line right_line;//定义左右线方程
 uint8 Image_Use[Image_Height][Image_Width];
 /**
  * @brief 截取我们需要的图像大小
@@ -126,31 +160,54 @@ void Image_Binarization(uint8 threshold,uint8(*Image_Use)[Image_Width])
         }
     }
 }
-/*-----------------第二版八邻域-------------------*/
-//求绝对值函数
+
+/**
+ * @brief 计算一个整数的绝对值
+ * 
+ * @param value 需要计算绝对值的整数
+ * @return int 返回value的绝对值
+ */
 int my_abs(int value)
 {
-if(value>=0) return value;
-else return -value;
+    if(value>=0) return value;
+    else return -value;
 }
-//限幅函数
+
+/**
+ * @brief 限制一个整数的范围在 [a, b] 之间
+ * 
+ * @param x 待限制的整数
+ * @param a 范围下限
+ * @param b 范围上限
+ * @return int16 限制后的整数
+ */
 int16 limit_a_b(int16 x, int a, int b)
 {
     if(x<a) x = a;
     if(x>b) x = b;
     return x;
 }
-//求最小值
-int16 limit1(int16 x, int16 y)
+
+/**
+ * @brief 比较两个整数的大小，返回其中较小的一个
+ * 
+ * @param a 整数a
+ * @param b 整数b
+ * @return int 返回a和b中较小的一个
+ */
+int min(int a, int b)
 {
-	if (x > y)             return y;
-	else if (x < -y)       return -y;
-	else                return x;
+    return a < b ? a : b;
 }
 
 
 
-//寻找起始点函数，从第56行开始数
+/**
+ * @brief 获取图像左侧起始生长点--寻找起始点函数，从第56行开始数
+ * 
+ * 
+ * @return unsigned char 返回1表示获取成功，返回0表示获取失败
+ */
 unsigned char left_point;                     //记录第一个关键点的列坐标，定义为全局变量，方便后面的函数调用
 unsigned char Image_Get_LeftFlag(void)
 {
@@ -164,6 +221,12 @@ unsigned char Image_Get_LeftFlag(void)
     return 1;
 }
 
+/**
+ * @brief 获取图像右侧起始生长点--寻找起始点函数，从第56行开始数
+ * 
+ * 
+ * @return unsigned char 返回1表示获取成功，返回0表示获取失败
+ */
 unsigned char right_point;                     //记录第一个关键点的列坐标
 unsigned char Image_Get_Rightflag(void)
 {
@@ -179,21 +242,12 @@ unsigned char Image_Get_Rightflag(void)
 }
 
 
-
-
-
-
-//简介：通过已知的点来提取出所需要的边线
-//参数：total_L 需要找到点的数量，一般都是data_statics_left
-uint8 l_border[Image_Height];//定义左线的数组，下标为行坐标，下标对应的值为列坐标，每行只有一个数组
-uint8 r_border[Image_Height];//定义右线数组
-uint8 center_line[Image_Height];//定义中线数组
-
-
-
-#define threshold_max 255*6
-#define threshold_min 255*2
-//简介：滤波函数，将图像中部分噪声去除
+/**
+ * @brief 滤波函数，将图像中部分噪声去除
+ * 
+ * 
+ * @return 无
+ */
 void Image_Filter(void)
 {
     uint16 i,j;
@@ -219,7 +273,13 @@ void Image_Filter(void)
     }
 }
 
-//给图像绘黑边，不然八邻域会出错，位置一定要放在显示的前面
+
+/**
+ * @brief 绘制一个矩形，将图片的边缘变为黑色
+ * @example Image_DrawRectangle();
+ * @explain 该函数将图片的边缘变为黑色，以便后面的边缘提取,
+ * 给图像绘黑边，不然八邻域会出错，位置一定要放在显示的前面
+ */
 void Image_DrawRectangle(void)
 {
     uint8 i=0;
@@ -236,15 +296,49 @@ void Image_DrawRectangle(void)
     }
 }
 
-//已知两点求图像的y=kx+b，截距我手动算的，应该没有太大问题
-float two_points_k,two_points_b;//全局变量代替指针传递斜率和截距
-void Image_2points(uint8 x1,uint8 y1,uint8 x2,uint8 y2)
+/**
+ * @brief 通过两个点的坐标计算直线斜率和截距，并将结果存储在全局变量left_line中
+ * 
+ * @param x1 第一个点的x坐标
+ * @param y1 第一个点的y坐标
+ * @param x2 第二个点的x坐标
+ * @param y2 第二个点的y坐标
+ */
+void Image_pointsleft(uint8 x1,uint8 y1,uint8 x2,uint8 y2)
 {
+    float two_points_k,two_points_b;
     two_points_k=(float)((y2-y1)/(x2-x1));
     two_points_b=(float)((y1*x2-x1*y2)/(x2-x1));
+    left_line.k=two_points_k;
+    left_line.b=two_points_b;
+}
+/**
+ * @brief 通过两个点的坐标计算直线斜率和截距，并将结果存储在全局变量right_line中
+ * 
+ * @param x1 第一个点的x坐标
+ * @param y1 第一个点的y坐标
+ * @param x2 第二个点的x坐标
+ * @param y2 第二个点的y坐标
+ */
+void Image_pointsright(uint8 x1,uint8 y1,uint8 x2,uint8 y2)
+{
+    float two_points_k,two_points_b;
+    two_points_k=(float)((y2-y1)/(x2-x1));
+    two_points_b=(float)((y1*x2-x1*y2)/(x2-x1));
+    right_line.k=two_points_k;
+    right_line.b=two_points_b;
 }
 
-//最小二乘法求斜率
+/**
+ * @brief 计算通过一组点的直线的斜率
+ * 
+ * 此函数计算通过一组点的直线的斜率,接受线的起点和终点以及线上点的y坐标数组作为输入,返回直线的斜率
+ * 
+ * @param begin 线的起点
+ * @param end 线的终点
+ * @param border 线上点的y坐标数组
+ * @return 通过一组点的直线的斜率
+ */
 float Imgae_Slope(uint8 begin,uint8 end,uint8 *border)
 {
     float xsum=0,ysum=0,xysum=0,x2sum=0;
@@ -272,7 +366,15 @@ float Imgae_Slope(uint8 begin,uint8 end,uint8 *border)
     return result;
 }
 
-//简介：计算斜率和截距
+/**
+ * @brief 计算斜率和截距,配合上面的最小二乘法使用
+ * 
+ * 
+ * @param begin 线的起点
+ * @param end 线的终点
+ * @param border 线上点的y坐标数组
+ * @return 通过一组点的直线的斜率,通过指针来返回斜率和截距
+ */
 void Image_CountKB(uint8 start,uint8 end,uint8 *border, float *slope_rate,float *intercept)
 {
     uint16 i,num=0;
@@ -298,23 +400,7 @@ void Image_CountKB(uint8 start,uint8 end,uint8 *border, float *slope_rate,float 
     *slope_rate =Imgae_Slope(start,end,border);//计算斜率
     *intercept=y_average-(*slope_rate)*x_average;//计算截距
 }
-struct Left_Edge
-{
-    unsigned char row;                        //行坐标，省点内存就没设int
-    unsigned char column;                     //列坐标，同上
-    unsigned char flag;                       //判断边界点是否找到
-	uint8 grow;
-};
-struct Right_Edge
-{
-    unsigned char row;                        //行坐标，省点内存就没设int
-    unsigned char column;                     //列坐标，同上
-    unsigned char flag;                       //判断边界点是否找到
-	uint8 grow;
-};
 
-struct Left_Edge Left[140];                   //左边界结构体
-struct Right_Edge Right[140];                 //右边界结构体
 unsigned char Left_Count,Right_Count;         //记录左右边界点的个数
 unsigned char grow_left,grow_right;           //记录左右边界在八邻域时寻点的相对位置
 unsigned char Left_Max=140,Right_Max=140;     //左右边界搜点时允许最大的搜点量
@@ -536,24 +622,33 @@ void Image_Get_neighborhoods(uint8(*Image_Use)[Image_Width])
 			}
 			else
 				break;
-			
+			//下面是巡线以后其他的处理
+            //一 越界处理
 			if(cur_row<=3||cur_row>=57||cur_col<=3||cur_col>=97)
 			{
 				break;
 			}
+            //以下是待测试的代码
+            //二 连续3次都是同一个点就不再寻找
+            if(Right[Right_Count].row==Right[Right_Count-1].row&&Right[Right_Count].column==Right[Right_Count-1].column&&
+                Right[Right_Count-1].row==Right[Right_Count-2].row&&Right[Right_Count-1].column==Right[Right_Count-2].column)
+            {
+                break;
+            }
+            //三 当扫到的点多个在同一行时，只保留最后一个点（这个目前不写，因为处理的是压缩后的图像，点多一点也没关系，如果需要的话后期再改进）
 		}
 	}
 }
 
-//定义中线结构体
-struct Mid_Line
-{
-    unsigned char row;                        //行坐标，省点内存就没设int
-    unsigned char column;                     //列坐标，同上
-};
-struct Mid_Line mid[140];
+
 uint8 Mid_Count;
-//取中线函数
+uint16 cur_row,cur_col;//当前行列
+/**
+ * @brief 取中线函数（有bug，待验证）
+ *
+ * @param uint8 无
+ * @example Get_Midpoint(void)
+ */
 void Get_Midpoint(void)
 {
 	uint8 left_c,right_c;
@@ -567,109 +662,153 @@ void Get_Midpoint(void)
 	}
 	
 }
-void Image_FillCross(uint8 *l_border,uint8 *r_border,uint16 total_num_l,uint16 total_num_r,
-                        uint16*dir_l,uint16 *dir_r,uint16(*points_l)[2],uint16(*points_r)[2])
+/**
+ * @brief 十字补线函数
+ *
+ * @param uint8 已经经过八邻域扫线的图像Image_Use
+ * @example Image_FillCross(Image_Use)
+ * @explanation  处理十字不难，只需要找到4个拐点，然后补线即可，找到4个拐点的处理方法：1.判断多个点的生长方向 2.多个点构成的斜率的急剧变化 这里用方法1
+ */
+//分别设置左上，左下，右上，右下四个拐点坐标
+struct coordinate left_high;
+struct coordinate left_low;
+struct coordinate right_high;
+struct coordinate right_low;
+void Image_FillCross_1(uint8(*Image_Use)[Image_Width])
 {
-    uint8 i;
-    uint8 break_num_l=0;
-    uint8 break_num_r=0;
-    uint8 start,end;
-    float slope_l_rate=0,intercept_l=0;//左线斜率和截距
-    uint8 break_num_l_low;
-    uint8 break_num_r_low;//定义左右相对较低的拐点，只会在未进十字的时候才会出现
-    //十字识别一：出十字（未入十字的情况也写道里面了）
-    //情景1：十字路口走到一半的时候，左线是由向上生长到向右生长，此时判断为一半的十字路口元素
-    for(i=1;i<total_num_l;i++)//从左线的第一个点开始往上找
-    {
-        /*
-        生长方向表（左边是右线的生长方向表，右边是左线的生长方向表）
-        5   4   3       3   4   5
-        6       2       2       6
-        7   0   1       1   0   7
-        */
-       //判断左线的较高拐点（在入十字的时候是唯一拐点）
-        if(dir_l[i-1]==4&&dir_l[i]==4&&dir_l[i+3]==6&&dir_l[i+5]==6&&dir_l[i+7]==6)
-        {
-            break_num_l=points_l[i][1];//传递y坐标，注意，这个坐标在图像中的点是由正上方向变为正左方向的转折点
-            break;
-        }
-        if(dir_l[i-1]==2&&dir_l[i-3]==2&&dir_l[i-5]==2&&dir_l[i-7]==2&&dir_l[i]==4&&dir_l[i+1]==4)
-        {
-            break_num_l_low=points_l[i][1];//传递低拐点的坐标
-        }
-    }
-    for(i=1;i<total_num_r;i++)
-    {
-        if(dir_r[i - 1] == 4 && dir_r[i] == 4 && dir_r[i + 3] == 6 && dir_r[i + 5] == 6 && dir_r[i + 7] == 6)
-        {
-            break_num_r=points_r[i][1];//传递y坐标
-            break;
-        }
-        //因为左右线完全对称，所以程序不会有太大的改动
-        if(dir_r[i-1]==2&&dir_r[i-3]==2&&dir_r[i-5]==2&&dir_r[i-7]==2&&dir_r[i]==4&&dir_l[i]==4)
-        {
-            break_num_r_low=points_r[i][1];//传递低拐点的y坐标
-        }
-    }
-    //进一步判断是否处于十字之中，如果左下角和右下角的点均为白色那么就确实在10字之中
-    if(break_num_l&&break_num_r&&Image_Use[Image_Height-1][4]&&Image_Use[Image_Height-1][Image_Width-4])
-    {
-        start =break_num_l-15;//将取得的点前移15个点做起始点
-        start =limit_a_b(start,0,Image_Height-1);//限幅
-        end=break_num_l-5;//将取得的点前移5个点做终点
-        Image_CountKB(start,end,l_border,&slope_l_rate,&intercept_l);
-        //线上补点
-        for(i=break_num_l-5;i<Image_Height-1;i++)
-        {
-            l_border[i]=slope_l_rate*(i)+intercept_l;//把终点往下每一行的全都求直线画点
-            l_border[i]=limit_a_b(l_border[i],4,96);//限幅，这里最多到旁边的4行
-            l_border[i]=0;//赋值为黑色
-        }
-        //这是求右线的，基本和上面的一样的原理
-        start = break_num_r - 15;//起点
-		start = limit_a_b(start, 0, Image_Height-1);//限幅
-		end = break_num_r - 5;//终点
-		Image_CountKB(start, end, r_border, &slope_l_rate, &intercept_l);
-		for (i = break_num_r - 5; i < Image_Height - 1; i++)
-		{
-			r_border[i] = slope_l_rate * (i)+intercept_l;
-			r_border[i] = limit_a_b(r_border[i], 4, 96);
-            l_border[i]=0;//赋值为黑色
-            //这里可能缺一步：补线，这里只是把线求出来而已
-		}
-    }
+    uint8 i,j;//中间变量
+    uint8 l_ready,r_ready;//定义左右线扫完的标志位
 
-    //情景2：如果还没有进入到十字
-    //if ：如果四个拐点全部找到而且左下角和右下角是黑色
-    if(break_num_r_low&&break_num_l_low&&break_num_l&&break_num_r&&(!Image_Use[Image_Height-1][4])&&(!Image_Use[Image_Height-1][Image_Width-4]))
+    //先扫左拐点，从左下角开始扫，左右线的计数值不一定相等
+    //两种写法，一种生长方向由5-->2，另外一种直接判断多个2（因为不能保证斜线一直是5），这里用方法一，后面可能会改，觉得这个不太行
+    //判断是否进入十字，或者未进入十字
+    if(Image_Use[56][4]==black&&Image_Use[56][6]==black&&Image_Use[56][94]==black&&Image_Use[56][96]==black)
     {
-        start=break_num_l_low+3;//懒得转换了，之间取下面的点吧
-        start=limit_a_b(start,0,Image_Height-1);//限幅
-        end=break_num_l_low+10;//图像下方点更准确，取近一点
-        end=limit_a_b(end,0,Image_Height-1);//限幅
-        Image_CountKB(start,end,l_border,&slope_l_rate,&intercept_l);//以下方的点写出斜率
-        //开始向上补线，方向向上，故坐标自减
-        for(i=break_num_l_low+10;i>2;i--)
+        for(i=0;i<Left_Count;i++)//实际上理想情况下是i不会=left_count，因为找到左下拐点时肯定还有很多点没找
         {
-            l_border[i]=slope_l_rate * (i)+intercept_l;
-            l_border[i]=limit_a_b(l_border[i],4,96);
-            l_border[i]=0;
+            //这里判断写越多越好，找的拐点就越符合条件，但是也有可能找不到，所以要权衡
+            if(Left[i].grow==5&&Left[i-2].grow==5&&Left[i+2].grow==2&&Left[i+3].grow==2&&Left[i+5].grow==2
+                &&Left[i+7].grow==2&&Left[i-5].grow==5)
+            {
+                left_low.row=Left[i].row;
+                left_low.column=Left[i].column;
+                break;
+            }
         }
-        start=break_num_r_low+3;//懒得转换了，之间取下面的点吧
-        start=limit_a_b(start,0,Image_Height-1);//限幅
-        end=break_num_r_low+10;//图像下方点更准确，取近一点
-        end=limit_a_b(end,0,Image_Height-1);//限幅
-        Image_CountKB(start,end,r_border,&slope_l_rate,&intercept_l);//以下方的点写出斜率
-        for(i=break_num_r_low+10;i>2;i--)
+        //找的是左上拐点，这里可以不放在同一个for循环，因为肯定是先找到左下拐点，然后才能找到左拐点
+        for(i=0;i<Left_Count;i++)
         {
-            r_border[i]=slope_l_rate * (i)+intercept_l;
-            r_border[i]=limit_a_b(l_border[i],4,96);
-            r_border[i]=0;
+            //图片上方的有效点比较少，判断就简单一点，不然找不到，注意生长方向就行
+            if(Left[i].grow==5&&Left[i-2].grow==5&&Left[i-5].grow==5
+            &&Left[i-2].grow==6&&Left[i-4].grow==6&&Left[i-6].grow==6)
+            {
+                left_high.row=Left[i].row;
+                left_high.column=Left[i].column;
+                break;
+            }
+        }
+        //左右对称，生长方向一样，就不用改了
+        for(i=0;i<Right_Count;i++)
+        {
+            if(Right[i].grow==5&&Right[i-2].grow==5&&Right[i+2].grow==2&&Right[i+3].grow==2&&Right[i+5].grow==2
+                &&Right[i+7].grow==2&&Right[i-5].grow==5)
+            {
+                right_low.row=Right[i].row;
+                right_low.column=Right[i].column;
+                break;
+            }
+        }
+        for(i=0;i<Right_Count;i++)
+        {
+            if(Right[i].grow==5&&Right[i-2].grow==5&&Right[i-5].grow==5
+            &&Right[i-2].grow==6&&Right[i-4].grow==6&&Right[i-6].grow==6)
+            {
+                right_high.row=Right[i].row;
+                right_high.column=Right[i].column;
+                break;
+            }
+        }
+        //找完点开始补线，先求左线
+        Image_pointsleft(left_high.row,left_high.column,left_low.row,left_low.column);//求出左线的斜率和截距
+        //补线有两种方法：一种把全部的点都补上，一种只补两个拐点拐点，这里用第二种，后面再用基础扫线，扫出补线后的边线
+        for(i=left_low.row;i<Image_Height-1;i++)//从左下拐点开始补线
+        {
+            Image_Use[i][(int)(left_line.k)*i+(int)(left_line.b)]=black;//补线,这里传入的k是浮点型,后面要换
+            if(i>=Image_Height-4)
+            {
+                l_ready=1;//左线补完了
+                break;
+            }
+            
+        }
+        Image_pointsright(right_high.row,right_high.column,right_low.row,right_low.column);//求出右线的斜率和截距
+        for(i=right_low.row;i<Image_Height-1;i++)//从右下拐点开始补线
+        {
+            Image_Use[i][(int)(right_line.k)*i+(int)(right_line.b)]=black;//补线
+            if(i>=Image_Height-4)
+            {
+                r_ready=1;//右线补完了
+                break;
+            }
+        }
+    }
+    /*如果未进十字的补线判断完成，那么接下来就要进入十字中途的补线，这里和前面的最大区别就是左下角和右下角是不是白色*/
+    if(l_ready&&r_ready&&Image_Use[56][4]==white&&Image_Use[56][6]==white&&Image_Use[56][94]==white&&Image_Use[56][96]==white)//等左右线补完，只要补完就说明有过，那么就顺便看左下角和右小角是否为白色
+    {
+        //此时只有左上拐点和右上拐点，因为左下角和右下角都是白色，所以只需要找左上拐点和右上拐点，取直线就往拐点往上扫
+        for(i=0;i<Left_Count;i++)
+        {
+            if(Left[i].grow==5&&Left[i-2].grow==5&&Left[i-5].grow==5
+            &&Left[i-2].grow==6&&Left[i-4].grow==6&&Left[i-6].grow==6)
+            {
+                left_high.row=Left[i].row;
+                left_high.column=Left[i].column;
+                break;
+            }
+        }
+        for(i=0;i<Right_Count;i++)
+        {
+            if(Right[i].grow==5&&Right[i-2].grow==5&&Right[i-5].grow==5
+            &&Right[i-2].grow==6&&Right[i-4].grow==6&&Right[i-6].grow==6)
+            {
+                right_high.row=Right[i].row;
+                right_high.column=Right[i].column;
+                break;
+            }
+        }
+        //求出拐点后开始补线,这里求斜率有三种方法:1.直接用两点(拐点和左下角)求斜率 2.用最小二乘法求斜率(用拐点往上的点) 3.用最小二乘法求斜率，但是只用拐点附近的点
+        Image_pointsleft(left_high.row,left_high.column,56,4);//求出左线的斜率和截距
+        for(i=56;i>4;i--)
+        {
+            Image_Use[i][(int)(left_line.k)*i+(int)(left_line.b)]=black;//补线
+            if(i<=left_high.row-1)
+            {
+                l_ready=1;//左线补完了
+                break;
+            }
+        }
+        Image_pointsright(right_high.row,right_high.column,56,96);//求出右线的斜率和截距
+        for(i=56;i>4;i--)
+        {
+            Image_Use[i][(int)(right_line.k)*i+(int)(right_line.b)]=black;//补线
+            if(i<=right_high.row-1)
+            {
+                r_ready=1;//右线补完了
+                break;
+            }
         }
     }
 }
 
 
+
+/**
+ * @brief 图像运行函数
+ *
+ * @param void
+ * @example Image_Run(Image_Use)
+ * @explanation  无
+ */
 //图像处理的函数都放在这里，这样就避免了定义问题
 void Image_Run(void)
 {
@@ -702,282 +841,3 @@ void Image_Run(void)
 	}
 }
 
-
-
-////一个函数的定义
-//struct Left_Edge
-//{
-//    unsigned char row;                        //行坐标，省点内存就没设int
-//    unsigned char column;                     //列坐标，同上
-//    unsigned char flag;                       //判断边界点是否找到
-//};
-//struct Right_Edge
-//{
-//    unsigned char row;                        //行坐标，省点内存就没设int
-//    unsigned char column;                     //列坐标，同上
-//    unsigned char flag;                       //判断边界点是否找到
-//};
-
-//struct Left_Edge Left[140];                   //左边界结构体
-//struct Right_Edge Right[140];                 //右边界结构体
-//unsigned char Left_Count,Right_Count;         //记录左右边界点的个数
-//unsigned char grow_left,grow_right;           //记录左右边界在八邻域时寻点的相对位置
-//unsigned char Left_Max=140,Right_Max=140;     //左右边界搜点时允许最大的搜点量
-//unsigned char Boundary_search_end=50;         //搜寻行数的最高行
-//unsigned int temp[Image_Width];
-////  * @brief 将输入的灰度图像转化为二值化图像
-////  *
-////  * @param Uint8 输入图像的地址
-////  * @param Uint8 输出图像的地址
-////  * @param Threshold 图像阈值(实际上阈值需要进行计算，而不是直接赋值)
-////  */
-//unsigned char left_point;                     //记录第一个关键点的列坐标，定义为全局变量，方便后面的函数调用
-//unsigned char Image_Get_LeftFlag(void)
-//{
-//    for(left_point=(Image_Width/2);left_point>0;left_point--)
-//    {
-//        if((temp[left_point]==1)&&(temp[left_point-1]==0)&&(temp[left_point-2]==0))
-//        {
-//            break;
-//        }
-//    }
-//    return 1;
-//}
-///**
-// * @brief 寻找是否存在有边界，无输入参数，参数选择全局变量，方便调用
-// * @param 同上
-// * @return 同上
-// * @exception 同上
-// *  */
-//unsigned char right_point;                     //记录第一个关键点的列坐标
-//unsigned char Image_Get_Rightflag(void)
-//{
-//    
-//    for(right_point=(Image_Width/2);right_point>0;right_point++)
-//    {
-//        if((temp[right_point]==1)&&(temp[right_point+1]==0)&&(temp[right_point+2]==0)) //这里指针变量不能直接和值比较，需要解地址
-//        {
-//            break;                            //这里不能直接return 会有报错，就用break跳出循环，然后在最外面return即可
-//        }
-//    }
-//    return 1;
-//}
-
-
-///**
-// * @brief 八邻域寻边界
-// *
-// * @param unchar 必须为经过边框处理Draw_Frame后的图像才可以进行八领域扫线
-// * @return 无
-// * @exception 1.我默认左下角为（0，0）
-// * 2.巡线原理就是找到第一个点，然后找附近的8个点，再选择下一个点来作为衍生，将得到的点记录即可得到边界
-// * 3.这里是从第4行的点开始寻找，因为要留一行做起始八邻域点，还有边界两行已经改成黑了
-// * 4.生长方向表和坐标表（可以随便定，这里也是一种方法）
-// * row-1 col-1      row-1 col       row-1 col+1         7   0   6
-// * row   col-1      row   col       row   col+1         4   *   5
-// * row+1 col-1      row+1 col       row+1 col+1         3   1   2
-// * 5.有些判断会存在grow_left!=是因为这种情况基本不会存在，而且出现的话就难以判断生长的方向
-// */
-//void Image_Get_neighborhoods(void)
-//{
-//    unsigned char i;                          //中间变量
-//    Left_Count=0;                             //左右线最大计数值清0
-//    Right_Count=0;
-
-
-//    for(i=0;i<Image_Width;i++)
-//    {
-//        temp[i]=Image_Use[57][i];          //设置一个中间数组，（全局变量），避免参数的传入的问题
-//    }
-
-//    if(Image_Get_LeftFlag())                       //如果找到左边界点的话
-//    {
-//        Left[0].row=56;                 //第一个点初始行设为3
-//        Left[0].column=left_point;       //第一个点的列坐标设为left_point
-//        Left[0].flag=1;                  //第一个点已经找到
-//        unsigned char current_row=56;        //初始化当前的行和列坐标
-//        unsigned char current_column=left_point;  
-//        grow_left=8;                          //记录上一个生长点相对于现在的生长点的位置，这里设为8不干扰其他点
-//        for(i=1;i<Left_Max;i++)               //开始找点，最多140个（已经有一个了）
-//        {
-//            if((current_row+1<Boundary_search_end)||(current_row>Image_Height-1))
-//            {
-//                break;                        //防止找点找到太高（因为用不上）或者防止出现点又回到原来的最大行（图片最下面那一行），即拐角
-//            }
-//            //一 左上黑，正上白，原生长正右（这个不一定），选择向左上方向生长
-//            if((grow_left!=2)&&(Image_Use[current_row-1][current_column-1]==0)&&(Image_Use[current_row-1][current_column]==1))
-//            {
-//                current_row -=1;              //当前的行列坐标全部替换为新的坐标
-//                current_column -=1;
-//                Left_Count +=1;               //左边点的计数+1
-//                grow_left=7;                  //更换为新生长点后，旧生长点相对于原生长点的位置（右下）
-//                Left[i].row=current_row;
-//                Left[i].column=current_column;
-//                Left[i].flag=1;          //已经找到下一个生长点
-//            }
-//            //二 右上黑，正右白，向右上方向生长
-//            else if((grow_left!=3)&&(Image_Use[current_row-1][current_column+1]==0)&&(Image_Use[current_row][current_column+1]==1))
-//            {
-//                current_row -=1;
-//                current_column +=1;
-//                Left_Count +=1;
-//                grow_left=6;                  //旧生长点相对于新生长点的左下
-//                Left[i].row=current_row;
-//                Left[i].column=current_column;
-//                Left[i].flag=1;          //已经找到下一个生长点
-//            }
-//            //三 正上黑，右上白，向正上生长
-//            else if((Image_Use[current_row-1][current_column]==0)&&(Image_Use[current_row-1][current_column+1])==1)
-//            {
-//                current_row -=1;
-//                Left_Count +=1;               //没有current_column的改变就说明不变
-//                grow_left=0;                  //旧生长点相对于新生长点的正下
-//                Left[i].row=current_row;
-//                Left[i].column=current_column;
-//                Left[i].flag=1;          //已经找到下一个生长点
-//            }
-//            //四 正左黑，左上白，向左生长
-//            else if((grow_left!=5)&&(Image_Use[current_row][current_column-1])==0&&(Image_Use[current_row-1][current_column-1]==1))
-//            {
-//                current_column -=1;           //向左生长，列坐标-1
-//                Left_Count +=1;
-//                grow_left=4;
-//                Left[i].row=current_row;
-//                Left[i].column=current_column;
-//                Left[i].flag=1;   
-//            }
-//            //五 正右黑，右下白，向正右生长
-//            else if((grow_left!=4)&&(Image_Use[current_row][current_column+1]==0)&&(Image_Use[current_row+1][current_column+1]==1))
-//            {
-//                current_column +=1;
-//                Left_Count +=1;
-//                grow_left=5;
-//                Left[i].row=current_row;
-//                Left[i].column=current_column;
-//                Left[i].flag=1;  
-//            }
-//            //六 左下黑，正左白，向左下生长
-//            else if((grow_left!=6)&&(Image_Use[current_row+1][current_column-1]==0)&&(Image_Use[current_row][current_column-1]==1))
-//            {
-//                current_row +=1;
-//                current_column -=1;
-//                Left_Count +=1;
-//                grow_left =3;
-//                Left[i].row=current_row;
-//                Left[i].column=current_column;
-//                Left[i].flag=1;  
-//            }
-//            //七 右下黑，正下白，向右下生长
-//            else if((grow_left!=7)&&(Image_Use[current_row+1][current_column+1]==0)&&(Image_Use[current_row+1][current_column]==1))
-//            {
-//                current_row +=1;
-//                current_column +=1;
-//                Left_Count +=1;
-//                grow_left =2;
-//                Left[i].row=current_row;
-//                Left[i].column=current_column;
-//                Left[i].flag=1; 
-//            }
-//            else//其他情况不会出现，出现的话就是断线了，就不找了
-//            {
-//                break;
-//            }
-//        }
-//        //开始向右找点，原来的temp还是可以继续用（因为是同一行的）
-//        if(Image_Get_Rightflag())                   //如果找到右边的点的话
-//        {
-//            Right[0].row=116;                 //第一个点初始行设为3
-//            Right[0].column=left_point;       //第一个点的列坐标设为right_point
-//            Right[0].flag=1;                  //第一个点已经找到
-//            current_row=116;                  //初始化当前的行和列坐标
-//            current_column=right_point;  
-//            grow_right=8;                     //生长起始点为原点
-//            for(i=0;i<Right_Max;i++)          //开始生长
-//            {
-//                if((current_row<Boundary_search_end)||(current_row>(Image_Height-1))||(current_row+1<Boundary_search_end))
-//                //防越界
-//                {
-//                    break;
-//                }
-//                //一 右上黑，正上白（左白右黑），向右上生长
-//                if((current_column<Image_Width)&&(grow_right!=3)&&(Image_Use[current_row-1][current_column+1])&&(Image_Use[current_row-1][current_column]==1))
-//                {
-//                    current_row -=1;
-//                    current_column +=1;
-//                    Right_Count +=1;
-//                    grow_right=6;
-//                    Right[i].row=current_row;
-//                    Right[i].column=current_column;
-//                    Right[i].flag=1;
-//                }
-//                //二 左上黑，正左白（上黑下白）
-//                else if((grow_right!=2)&&(Image_Use[current_row-1][current_column-1]==0)&&(Image_Use[current_row][current_column-1]==1))
-//                {
-//                    current_row -=1;
-//                    current_column -=1;
-//                    Right_Count +=1;
-//                    grow_right=7;
-//                    Right[i].row=current_row;
-//                    Right[i].column=current_column;
-//                    Right[i].flag=1;
-//                }
-//                //三 正上黑，左上白（上黑下白）
-//                else if((Image_Use[current_row-1][current_column]==0)&&(Image_Use[current_row-1][current_column-1]==1))
-//                {
-//                    current_row -=1;
-//                    Right_Count +=1;
-//                    grow_right=0;
-//                    Right[i].row=current_row;
-//                    Right[i].column=current_column;
-//                    Right[i].flag=1;
-//                }
-//                //四 正右黑，右上白，
-//                else if((Image_Use[current_row][current_column+1]==0)&&(Image_Use[current_row-1][current_column+1]==1))
-//                {
-//                    current_column +=1;
-//                    Right_Count +=1;
-//                    grow_right=5;
-//                    Right[i].row=current_row;
-//                    Right[i].column=current_column;
-//                    Right[i].flag=1;
-//                }
-//                //五 正左黑，左下白
-//                else if((grow_right!=5)&&(Image_Use[current_row][current_column-1]==0)&&(Image_Use[current_row+1][current_column-1]==1))
-//                {
-//                    current_column -=1;
-//                    Right_Count +=1;
-//                    grow_right=4;
-//                    Right[i].row=current_row;
-//                    Right[i].column=current_column;
-//                    Right[i].flag=1;
-//                }
-//                //六 左下黑，正下白
-//                else if((grow_right!=6)&&(Image_Use[current_row+1][current_column-1]==0)&&(Image_Use[current_row+1][current_column])==1)
-//                {
-//                    current_row +=1;
-//                    current_column -=1;
-//                    Right_Count +=1;
-//                    grow_right=3;
-//                    Right[i].row=current_row;
-//                    Right[i].column=current_column;
-//                    Right[i].flag=1;
-//                }
-//                //七 右下黑，正右白
-//                else if((grow_right!=7)&&(Image_Use[current_row+1][current_column+1]==0)&&(Image_Use[current_row][current_column+1]==1))
-//                {
-//                    current_row +=1;
-//                    current_column +=1;
-//                    Right_Count +=1;
-//                    grow_right=2;
-//                    Right[i].row=current_row;
-//                    Right[i].column=current_column;
-//                    Right[i].flag=1;
-//                }
-//                else
-//                {
-//                    break;
-//                }
-//            }
-//        }
-//    }
-//}
