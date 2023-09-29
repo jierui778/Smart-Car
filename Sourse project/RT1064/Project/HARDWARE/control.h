@@ -3,6 +3,6 @@
 
 void Motor_Control();
 void Direction_Control();
-
+void Control_Setspeed(float left_speed,float right_speed);
 
 #endif

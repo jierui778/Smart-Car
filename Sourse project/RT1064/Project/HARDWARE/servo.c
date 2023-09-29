@@ -1,6 +1,7 @@
 #include "servo.h"
 #include "zf_common_headfile.h"
 #include "pid.h"
+
 /**
  * @brief 设置舵机角度
  *
@@ -23,11 +24,3 @@ void Servo_Init()
     pwm_init(SERVO_CH, SERVO_FRE, 0);
 }
 
-/**
- * @brief 根据摄像头给的中线误差值进行转向，调节角度
- * @param current_err 与中线的误差值
- */
-void Servo_Turn(float current_err)
-{
-    PositionPID_Servo(current_err,TraceTurnPdate);
-}

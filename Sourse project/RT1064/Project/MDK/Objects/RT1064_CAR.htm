@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\RT1064_CAR.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\RT1064_CAR.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6190004: Last Updated: Thu Sep 28 19:58:09 2023
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6190004: Last Updated: Fri Sep 29 16:23:38 2023
 <BR><P>
 <H3>Maximum Stack Usage =       1104 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -1686,8 +1686,8 @@ Global Symbols
 <LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ENET_1588_Timer_DriverIRQHandler
 </UL>
 
-<P><STRONG><a name="[171]"></a>Encoder_Init</STRONG> (Thumb, 70 bytes, Stack size 16 bytes, encoder.o(.text.Encoder_Init))
-<BR><BR>[Stack]<UL><LI>Max Depth = 784<LI>Call Chain = Encoder_Init &rArr; encoder_quad_init &rArr; qtimer_iomuxc &rArr; debug_assert_handler &rArr; debug_protective_handler &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
+<P><STRONG><a name="[171]"></a>Encoder_Init</STRONG> (Thumb, 142 bytes, Stack size 32 bytes, encoder.o(.text.Encoder_Init))
+<BR><BR>[Stack]<UL><LI>Max Depth = 800<LI>Call Chain = Encoder_Init &rArr; encoder_quad_init &rArr; qtimer_iomuxc &rArr; debug_assert_handler &rArr; debug_protective_handler &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[174]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;interrupt_set_priority
 <LI><a href="#[173]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pit_init
@@ -1697,7 +1697,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[a9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[175]"></a>Encoder_Update</STRONG> (Thumb, 50 bytes, Stack size 24 bytes, encoder.o(.text.Encoder_Update))
+<P><STRONG><a name="[175]"></a>Encoder_Update</STRONG> (Thumb, 124 bytes, Stack size 24 bytes, encoder.o(.text.Encoder_Update))
 <BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = Encoder_Update &rArr; encoder_get_count &rArr; QTMR_GetCurrentTimerCount
 </UL>
 <BR>[Calls]<UL><LI><a href="#[177]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;encoder_clear_count
@@ -1852,7 +1852,7 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[194]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Run
 </UL>
 
-<P><STRONG><a name="[198]"></a>Image_Get_neighborhoods</STRONG> (Thumb, 3504 bytes, Stack size 76 bytes, image.o(.text.Image_Get_neighborhoods))
+<P><STRONG><a name="[198]"></a>Image_Get_neighborhoods</STRONG> (Thumb, 3648 bytes, Stack size 76 bytes, image.o(.text.Image_Get_neighborhoods))
 <BR><BR>[Stack]<UL><LI>Max Depth = 76<LI>Call Chain = Image_Get_neighborhoods
 </UL>
 <BR>[Called By]<UL><LI><a href="#[194]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Run
@@ -2242,8 +2242,8 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[173]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pit_init
 </UL>
 
-<P><STRONG><a name="[84]"></a>PIT_IRQHandler</STRONG> (Thumb, 156 bytes, Stack size 8 bytes, isr.o(.text.PIT_IRQHandler))
-<BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = PIT_IRQHandler &rArr; pit_handler &rArr; Encoder_Update &rArr; encoder_get_count &rArr; QTMR_GetCurrentTimerCount
+<P><STRONG><a name="[84]"></a>PIT_IRQHandler</STRONG> (Thumb, 188 bytes, Stack size 16 bytes, isr.o(.text.PIT_IRQHandler))
+<BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = PIT_IRQHandler &rArr; pit_handler &rArr; Encoder_Update &rArr; encoder_get_count &rArr; QTMR_GetCurrentTimerCount
 </UL>
 <BR>[Calls]<UL><LI><a href="#[1c6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pit_handler
 <LI><a href="#[1c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PIT_ClearStatusFlags

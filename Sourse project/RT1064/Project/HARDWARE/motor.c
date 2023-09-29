@@ -57,3 +57,32 @@ void Motor_SetR(int16 Speed)
         pwm_set_duty(MOTOR_PWMR, -Speed);
     }
 }
+
+/**
+ * @brief 设置左右电机的速度
+ * 
+ * @param left_speed 左电机速度，范围为-1000到1000
+ * @param right_speed 右电机速度，范围为-1000到1000
+ */
+void Motor_SetAll(int16 left_speed,int16 right_speed)
+{
+    if(left_speed>1000)
+    {
+        left_speed=1000;
+    }
+    else if(left_speed<-1000)
+    {
+        left_speed=-1000;
+    }
+    if(right_speed>1000)
+    {
+        right_speed=1000;
+    }
+    else if(right_speed<-1000)
+    {
+        right_speed=-1000;
+    }
+    
+    Motor_SetL(left_speed);
+    Motor_SetR(right_speed);
+}
