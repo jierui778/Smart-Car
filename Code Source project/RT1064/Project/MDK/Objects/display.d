@@ -1,4 +1,4 @@
-./objects/main.o: ..\USER\src\main.c ..\HARDWARE\camera.h \
+./objects/display.o: ..\HARDWARE\display.c ..\HARDWARE\display.h \
   ..\..\libraries\zf_common\zf_common_headfile.h \
   D:\keil5\ARM\ARMCLANG\Bin\..\include\stdio.h \
   D:\keil5\ARM\ARMCLANG\Bin\..\include\stdint.h \
@@ -102,7 +102,4 @@
   ..\..\libraries\sdk\drives\fsl_usdhc.h \
   ..\..\libraries\components\sdmmc\common\fsl_sdmmc_spec.h \
   ..\..\libraries\components\sdmmc\sdmmc_config.h \
-  ..\..\libraries\sdk\board\clock_config.h ..\HARDWARE\image.h \
-  ..\HARDWARE\buzzer.h ..\HARDWARE\servo.h \
-  D:\keil5\ARM\ARMCLANG\Bin\..\include\math.h ..\HARDWARE\encoder.h \
-  ..\HARDWARE\schedule.h
+  ..\..\libraries\sdk\board\clock_config.h
