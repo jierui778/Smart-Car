@@ -1295,3 +1295,43 @@ void Image_LeftRound(uint8(*Image_Use)[Image_Width])
     }
 
 }
+
+/**
+ * @brief 扫描60行中的某一行的黑白跳变的函数（检测斑马线）
+ * 
+ * @param uint8(*Image_Use)[Image_Width] 二值化后的图像 target_row：目标行
+ * @return uint8 返回黑白跳变的次数
+ */
+uint8 Image_Scan_Row(uint8(*Image_Use)[Image_Width],uint8 target_row)
+{
+    uint8 i;//中间变量
+    uint8 black_white_count=0;//黑白跳变的计数
+    for(i=0;i<Image_Width-1;i++)
+    {
+        if(Image_Use[target_row][i]!=Image_Use[target_row][i+1])//如果不相等的话，就说明是黑白跳变
+        {
+            black_white_count++;
+        }
+    }
+    return black_white_count;
+}
+
+/**
+ * @brief 扫描100行中的某一行的黑白跳变的函数（检测斑马线）
+ * 
+ * @param uint8(*Image_Use)[Image_Width] 二值化后的图像 target_row：目标行
+ * @return uint8 返回黑白跳变的次数
+ */
+uint8 Image_Scan_Column(uint8(*Image_Use)[Image_Width],uint8 target_column)
+{
+    uint8 i;
+    uint8 black_white_count=0;//黑白跳变的计数
+    for(i=0;i<Image_Height;i++)
+    {
+        if(Image_Use[i][target_column]!=Image_Use[i+1][target_column])//如果不相等的话，就说明是黑白跳变
+        {
+            black_white_count++;
+        }
+    }
+    return black_white_count;
+}
