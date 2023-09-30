@@ -140,7 +140,7 @@ void    tft180_show_chinese             (uint16 x, uint16 y, uint8 size, const u
 // 使用示例     tft180_displayimage03x(mt9v03x_image[0], 94, 60);
 // 备注信息     如果要显示二值化图像就去调用 tft180_show_gray_image 函数
 //-------------------------------------------------------------------------------------------------------------------
-#define tft180_displayimage03x(p, width, height)        (tft180_show_gray_image(0, 0, (p), MT9V03X_W, MT9V03X_H, (width), (height), 0))
+#define tft180_displayimage03x(p, width, height)        (tft180_show_gray_image(30, 30, (p), MT9V03X_W, MT9V03X_H, (width), (height), 0))
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     TFT180 显示凌瞳图像

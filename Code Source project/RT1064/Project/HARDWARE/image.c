@@ -8,21 +8,40 @@ uint8 Image_Use[Image_Height][Image_Width];
  * @param uint8 (*OutImg)[IMGW] 输出图像地址
  */
 
-void Image_Compress(void)
+//void Image_Compress(void)
+//{
+//    int i, j, row, line;
+//    const float pro_h = Primeval_Hight / Image_Height, pro_w = Primeval_With / Image_Width; // 根据原始的图像尺寸和你所需要的图像尺寸确定好压缩比例。
+//    for (i = 0; i < Image_Height; i++)                                                      // 遍历图像的每一行，从第零行到第59行。
+//    {
+//        row = i * pro_h + 0.5;
+//        for (j = 0; j < Image_Width; j++) // 遍历图像的每一列，从第零列到第79列。
+//        {
+//            line = j * pro_w + 0.5;
+//            Image_Use[i][j] = mt9v03x_image[row][line]; // mt9v03x_image数组里面是原始灰度图像，Image_Use数组存储的是我之后要拿去处理的图像，但依然是灰度图像哦！只是压缩了一下而已。
+//        }
+//    }
+//    mt9v03x_finish_flag = 0;
+//}
+
+#define UROW 60
+#define UCOL 80
+void compressimage(void)
 {
     int i, j, row, line;
-    const float pro_h = Primeval_Hight / Image_Height, pro_w = Primeval_With / Image_Width; // 根据原始的图像尺寸和你所需要的图像尺寸确定好压缩比例。
-    for (i = 0; i < Image_Height; i++)                                                      // 遍历图像的每一行，从第零行到第59行。
-    {
-        row = (int)i * pro_h + 0.5;
-        for (j = 0; j < Image_Width; j++) // 遍历图像的每一列，从第零列到第79列。
-        {
-            line = (int)j * pro_w + 0.5;
-            Image_Use[i][j] = mt9v03x_image[row][line]; // mt9v03x_image数组里面是原始灰度图像，Image_Use数组存储的是我之后要拿去处理的图像，但依然是灰度图像哦！只是压缩了一下而已。
+      const float div_h = MT9V03X_H / UROW, div_w = MT9V03X_W / UCOL;
+      for (i = 0; i < UROW; i++) {
+        row = i * div_h + 0.5;
+        for (j = 0; j < UCOL; j++) {
+          line = j * div_w + 0.5;
+          Image_Use[i][j] = mt9v03x_image[row][line];
         }
-    }
-    mt9v03x_finish_flag = 0;
+      }
+      tft180_displayimage03x(Image_Use[0], 80, 60);
+      mt9v03x_finish_flag = 0;  //使用完一帧DMA传输的图像图像  可以开始传输下一帧
 }
+    
+    
 
 /**
  * @brief 解压图像，主要是为了显示

@@ -8,14 +8,16 @@
 
 #define white 255
 #define black 0
-#define Image_Width 100          // 用于处理的图像高度
+#define Image_Width 80          // 用于处理的图像高度
 #define Image_Height 60          //用于处理的图像宽度\
 
 #define Primeval_Hight MT9V03X_H // 原始图像高度
 #define Primeval_With MT9V03X_W  // 原始图像宽度
 
-extern uint8 Image_Use[Image_Height][Image_Width]; // 全局声明用于处理的图像数组
+//extern uint8 Image_Use[Image_Height][Image_Width]; // 全局声明用于处理的图像数组
 void Image_Compress();                             // 对原始图像进行压缩
+void compressimage();
+void halve_image(unsigned char *p_in,unsigned char  *p_out,unsigned char row,unsigned char col);
 uint8 OSTU_GetThreshold(uint8 *image, uint16 Width, uint16 Height);//优化大津贴法获取阈值
 
 void Image_Sobel(uint8 Image_in[Image_Height][Image_Width], uint8_t Image_out[Image_Height][Image_Width], uint16 Threshold); // 全局sobel方案
