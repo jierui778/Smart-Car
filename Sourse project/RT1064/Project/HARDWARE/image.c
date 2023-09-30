@@ -1,5 +1,6 @@
 #include "image.h"
 #include "math.h"
+#include "control.h"
 //八邻域扫的左线的结构体
 struct Left_Edge
 {
@@ -997,7 +998,7 @@ void Image_Ramp(void)
             {
                 Last_Rampflag=Ramp_flag;
                 Ramp_flag=2;//标志位为2，表示已经上坡道了，此时需要加速
-                //加速的代码
+                Control_SpeedUp();//小车加速（电控的代码）
             }
             else
             {
@@ -1008,7 +1009,7 @@ void Image_Ramp(void)
     }
     if(!Gather_flag&&!Ramp_flag&&Last_Rampflag==2)//判断为下坡状态
     {
-        //减速的代码
+        Control_SpeedDown();//小车减速（电控的代码）
     }
     
 }
