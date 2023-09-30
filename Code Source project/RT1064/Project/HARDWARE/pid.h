@@ -28,7 +28,8 @@ typedef struct
 //外部变量声明
 extern PID TraceTurnPdate;
 extern PID SpeedPdate;
-
+extern tPid pidMotor1Speed;//电机1速度PID闭环参数
+extern tPid pidMotor2Speed;//电机2速度PID闭环参数
 //位置式PID控制器
 extern int PositionPID(float deviation, PID pid);
 extern int PositionPID2(float deviation, PID pid);
@@ -38,4 +39,5 @@ extern int IncrementalPID(float deviation, PID pid);
 extern int IncrementalPID2(float deviation, PID pid);
 extern int IncrementPID_PWM(float *setspeed,float *actualspeed,PID pid);
 float IncrementPID_Speed(tPid * pid,float actual_val);
+void PID_init(void);
 #endif

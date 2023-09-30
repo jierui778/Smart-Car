@@ -16,25 +16,26 @@ tPid pidMotor2Speed;//电机2速度PID闭环参数
  * 将比例、积分和微分增益设置为0。
  * 
  */
-void PID_init()
+ //第一次 200 5 -1
+void PID_init(void)
 {
     pidMotor1Speed.actual_val=0.0;
     pidMotor1Speed.target_val=0.00;
     pidMotor1Speed.err=0.0;
     pidMotor1Speed.err_last=0.0;
-    pidMotor1Speed.err_sum=0.0;
-    pidMotor1Speed.Kp=0;
-    pidMotor1Speed.Ki=0;
-    pidMotor1Speed.Kd=0;
+    pidMotor1Speed.err_sum=.0;
+    pidMotor1Speed.Kp=50;
+    pidMotor1Speed.Ki=5;
+    pidMotor1Speed.Kd=-1;
     
     pidMotor2Speed.actual_val=0.0;
     pidMotor2Speed.target_val=0.00;
     pidMotor2Speed.err=0.0;
     pidMotor2Speed.err_last=0.0;
     pidMotor2Speed.err_sum=0.0;
-    pidMotor2Speed.Kp=0;
-    pidMotor2Speed.Ki=0;
-    pidMotor2Speed.Kd=0;
+    pidMotor2Speed.Kp=50;
+    pidMotor2Speed.Ki=5;
+    pidMotor2Speed.Kd=-1;
 }
 // 速度PID参数
 PID SpeedDate =
@@ -174,7 +175,7 @@ float IncrementPID_Speed(tPid * pid,float actual_val)
     pid->actual_val = pid->Kp*pid->err + pid->Ki*pid->err_sum + pid->Kd*(pid->err - pid->err_last);
     //保存上次误差: 这次误差赋值给上次误差
     pid->err_last = pid->err;
-    
+	
     return pid->actual_val;
 }
 /*@brief:位置式PID控制器（用于舵机控制转向）

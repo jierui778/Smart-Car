@@ -14,6 +14,10 @@
 #define Primeval_Hight MT9V03X_H // 原始图像高度
 #define Primeval_With MT9V03X_W  // 原始图像宽度
 
+#define threshold_max 255*6         //滤波阈值
+#define threshold_min 255*2
+
+#define Line_k 0.5 //斜率，判断是否为直道
 extern uint8 Image_Use[Image_Height][Image_Width]; // 全局声明用于处理的图像数组
 void Image_Compress();                             // 对原始图像进行压缩
 uint8 OSTU_GetThreshold(uint8 *image, uint16 Width, uint16 Height);//优化大津贴法获取阈值
@@ -28,4 +32,5 @@ void Image_DrawRectangle(void);
 void Image_Get_neighborhoods(uint8 (*Image_Use)[Image_Width]);
 void Image_Run(void);//图像处理主函数
 void CannyEdgeTest(uint8 org[Image_Height][Image_Width], uint8 lowThr);//CANNY边缘检测代码，目前不准备使用
+float Image_ab_value(float a,float b);
 #endif

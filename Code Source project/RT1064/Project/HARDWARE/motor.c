@@ -17,8 +17,8 @@ void Motor_Init(void)
     pwm_init(MOTOR_PWMR, 10000, 0);
     pwm_init(MOTOR_PWML, 10000, 0);
 
-    // pwm_set_duty(MOTOR_PWML, 0);
-    // pwm_set_duty(MOTOR_PWMR, 0); // 两电机先不动
+    pwm_set_duty(MOTOR_PWML, 0);
+    pwm_set_duty(MOTOR_PWMR, 0); // 两电机先不动
 }
 
 /**
@@ -26,8 +26,9 @@ void Motor_Init(void)
  *
  * @param Speed 速度值，范围-1000~1000
  */
-void Motor_SetL(int16 Speed)
+void Motor_SetR(int16 Speed)
 {
+	Speed=-Speed;
     if (Speed > 0)
     {
         gpio_set_level(MOTOR_DIRL, 0);
@@ -44,8 +45,9 @@ void Motor_SetL(int16 Speed)
  *
  * @param Speed 速度值，范围-1000~1000
  */
-void Motor_SetR(int16 Speed)
+void Motor_SetL(int16 Speed)
 {
+	Speed=-Speed;
     if (Speed > 0)
     {
         gpio_set_level(MOTOR_DIRR, 0);

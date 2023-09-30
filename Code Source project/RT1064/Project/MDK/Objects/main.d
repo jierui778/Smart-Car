@@ -105,4 +105,5 @@
   ..\..\libraries\sdk\board\clock_config.h ..\HARDWARE\image.h \
   ..\HARDWARE\buzzer.h ..\HARDWARE\servo.h \
   D:\keil5\ARM\ARMCLANG\Bin\..\include\math.h ..\HARDWARE\encoder.h \
-  ..\HARDWARE\schedule.h
+  ..\HARDWARE\schedule.h ..\HARDWARE\control.h ..\HARDWARE\motor.h \
+  ..\HARDWARE\pid.h ..\USER\inc\isr.h

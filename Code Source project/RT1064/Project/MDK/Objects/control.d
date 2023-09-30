@@ -1,4 +1,4 @@
-./objects/image.o: ..\HARDWARE\image.c ..\HARDWARE\image.h \
+./objects/control.o: ..\HARDWARE\control.c ..\HARDWARE\control.h \
   ..\..\libraries\zf_common\zf_common_headfile.h \
   D:\keil5\ARM\ARMCLANG\Bin\..\include\stdio.h \
   D:\keil5\ARM\ARMCLANG\Bin\..\include\stdint.h \
@@ -102,5 +102,6 @@
   ..\..\libraries\sdk\drives\fsl_usdhc.h \
   ..\..\libraries\components\sdmmc\common\fsl_sdmmc_spec.h \
   ..\..\libraries\components\sdmmc\sdmmc_config.h \
-  ..\..\libraries\sdk\board\clock_config.h \
-  D:\keil5\ARM\ARMCLANG\Bin\..\include\math.h ..\HARDWARE\control.h
+  ..\..\libraries\sdk\board\clock_config.h ..\HARDWARE\pid.h \
+  ..\HARDWARE\motor.h ..\HARDWARE\servo.h ..\USER\inc\isr.h \
+  ..\HARDWARE\encoder.h
