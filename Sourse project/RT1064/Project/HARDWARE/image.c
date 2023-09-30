@@ -854,10 +854,10 @@ float k_buff[5];//存放5个斜率值
 @brief 判断左直道函数，如果为直道，会通过返回值用来判断是否为直道
 @param 二值化后的图像，实际上用不上
 @return 1，则存在左直道，0就没有
-@example Image_Stretch(Image_Use)
+@example Image_Stretch(void)
 @note 将直线分为2个地方，看上下斜率相差是否相近，近的话就判断为直道
 */
-uint8 Image_Stretch_Left(uint8(*Image_Use)[Image_Width])
+uint8 Image_Stretch_Left(void)
 {
     uint8 i;
     float k_left_low,k_left_high;//左下线斜率，左上线斜率
@@ -896,10 +896,10 @@ uint8 Image_Stretch_Left(uint8(*Image_Use)[Image_Width])
 @brief 判断右直道函数，如果为直道，通过返回值用来判断是否为直道
 @param 二值化后的图像
 @return 1，则存在右直道，0就没有
-@example Image_Stretch_Right(Image_Use)
+@example Image_Stretch_Right(void)
 @note 将直线分为2个地方，看上下斜率相差是否相近，近的话就判断为直道
 */
-uint8 Image_Stretch_Right(uint8(*Image_Use)[Image_Width])
+uint8 Image_Stretch_Right(void)
 {
     uint8 i;
     float k_right_low,k_right_high,k_all;
@@ -971,6 +971,7 @@ void Image_Run(void)
 	}
 }
 
+
 /**
  * @brief 坡道判断函数
  *
@@ -1010,4 +1011,286 @@ void Image_Ramp(void)
         //减速的代码
     }
     
+}
+
+/**
+ * @brief 计算两个整数的绝对值之差
+ * 
+ * @param a 整数a
+ * @param b 整数b
+ * @return int 返回a和b的绝对值之差
+ */
+int abs_int(int a, int b)
+{
+    int diff = a - b;
+    if (diff < 0) 
+    {
+        return -diff;
+    } 
+    else 
+    {
+        return diff;
+    }
+}
+
+/**
+ * @brief 计算左侧图像中左边线生长方向与给定方向相同的数量
+ * 
+ * @param Direction 给定的生长方向
+ * @return uint8 相同方向的数量
+ */
+int Image_LeftGrowDirection(uint8 Direction)
+{
+    uint8 i,direction_count;
+    for(i=0;i<Left_Count;i++)
+    {
+        if(Left[i].grow==Direction)//如果方向一致的话，就计数自增
+        {
+            direction_count++;
+        }
+    }
+    return direction_count;
+}
+/**
+ * @brief 计算右侧图像中右边线生长方向与给定方向相同的数量
+ * 
+ * @param Direction 给定的生长方向
+ * @return uint8 相同方向的数量
+ */
+int Image_RightGrowDirection(uint8 Direction)
+{
+    uint8 i,direction_count;
+    for(i=0;i<Right_Count;i++)
+    {
+        if(Right[i].grow==Direction)//如果方向一致的话，就计数自增
+        {
+            direction_count++;
+        }
+    }
+    return direction_count;
+}
+/**
+ * @brief 左环岛判断并补线函数
+ *
+ * @param Image_Use
+ * @example Image_LeftRound(Image_Use)
+ * @explanation  右边线为直线，左边线较为弯曲，将整个环岛分为几个状态，所以搞个状态机
+ * 1. 未进环岛，左边补线：直走
+ * 2. 未进环岛，前面补线：左转
+ * 3. 进入环岛，不用补线：一直左转
+ * 4. 离开环岛，右边需要补线：左转
+ * 5. 离开环岛，不用补线：一直左转
+ * 6. 离开环岛，左边需要补线：直走（和状态1一样）
+ */
+struct coordinate Left_first_point;//左环岛的第一个拐点
+struct coordinate Left_second_point;//左环岛的第二个拐点
+struct coordinate Right_first_point;//右拐点
+void Image_LeftRound(uint8(*Image_Use)[Image_Width])
+{
+    uint8  LeftRound_State=0;//左环岛状态1-5
+    uint8 Last_LeftRound_State=0;//上一个状态
+    uint8 i;//中间变量
+    uint8 Left_first_point_index;//记录左拐点在左边线数组的下标
+    uint8 Left_second_point_index;
+    uint8 Right_first_point_index;
+    uint8 Left_third_point_index;
+    uint8 index_temp;//中间变量
+    left_line.k=0.0;left_line.b=0.0;//清零
+    uint8 black_count;//计算黑点值
+    if(Image_Stretch_Right())//先看右边是不是直道，右边直道只能判断1，2，5，6
+    {
+        for(i=0;i<Left_Count;i++)
+        {
+            if(Left[i].grow==5&&Left[i-2].grow==5&&Left[i-5].grow==5&&Left[i+2].grow!=5&&Left[i+3].grow!=5&&Left[i+4].grow!=5&&Left[i+5].grow!=5)
+            //通过判断生长方向是否还是为右上来判断
+            {
+                Left_first_point.row=Left[i].row;
+                Left_first_point.column=Left[i].column;//记录左环岛第一个拐点坐标
+                Left_first_point_index=i;
+                Last_LeftRound_State=LeftRound_State;
+                LeftRound_State=1;
+                break;
+            }
+            //状态2的标志判断
+            if(LeftRound_State==1&&Last_LeftRound_State==0&&Left[i].grow==4&&Left[i+1].grow==4&&Left[i+3].grow==4)//只是用来判断是否进入状态2的函数
+            {
+                Last_LeftRound_State=LeftRound_State;
+                LeftRound_State=2;//进入状态2
+            }
+            //状态2的拐点判断
+            if(LeftRound_State==2&&Last_LeftRound_State==1&&Left[i].grow==5&&Left[i+2].grow==5
+            &&Left[i-2].grow!=5&&Left[i-2].grow!=4)//找到左边第二个拐点
+            {
+                Left_second_point_index=i;//记录下标，其实只需要记录下标就行？
+                break;
+            }
+            //状态5的标志判断：1.右侧拐点消失（或右侧拐点太低了） 2. 左线生长方向向上 3.右线基本生长方向左上5
+            //4. 左右线相交  5.和状态3差不多，唯一不同的就是右线的生长方向为直线（可以求斜率来判断） 
+            //这里来的做法是统计5方向的个数，如果大于3/4就认为是状态5（也可以判断斜率的直线）
+            if(LeftRound_State==4&&Last_LeftRound_State==3&&(Image_RightGrowDirection(5)>=((Right_Count/4)*3)))
+            {
+                Last_LeftRound_State=LeftRound_State;
+                LeftRound_State=5;//进入状态5
+            }
+        }
+        //状态1的补线
+        if(Last_LeftRound_State==0&&LeftRound_State==1)//通过状态机进行不同的补线，这里因为LeftRound_State取值，就要==1，不能直接写LeftRound_State
+        {
+            left_line.k=0.0;left_line.b=0.0;//清零
+            Image_pointsleft(Left[Left_first_point_index-2].row,Left[Left_first_point_index-2].column,Left[Left_first_point_index-5].row,Left[Left_first_point_index-5].column);
+            //求出左补线的斜率和截距
+            for(i=Left[Left_first_point_index-2].row;i>Image_Height-10;i--)//从左下拐点，向上开始补线
+            {
+                if(Image_Use[i][(int)(left_line.k)*i+(int)(left_line.b)]==black)//如果要变黑的点本来就是黑点
+                {
+                    black_count++;
+                }
+                else
+                {
+                    Image_Use[i][(int)(left_line.k)*i+(int)(left_line.b)]=black;//column=k*row+b，这里补线方程和下面不一样
+                }
+                if(i<=Image_Height-13||black_count>=3)
+                {
+                    Left_first_point_index=0;//补完下标索引清零
+                    black_count=0;
+                    break;//左线补完了
+                }
+            }
+        }
+        //状态2的补线
+        if(Last_LeftRound_State==1&&LeftRound_State==2&&Left_second_point_index!=0)//补线
+        {
+            left_line.k=0.0;left_line.b=0.0;//补线前先清零
+            Image_pointsleft(Left[Left_second_point_index].column,Left[Left_second_point_index].row,
+            Left[Left_second_point_index-3].column,Left[Left_second_point_index-3].row);//这里补线是要跨过宽度的，因此需要变换直线
+            for(i=Left[Left_second_point_index].column;i<96;i++)//从左上拐点开始补线，向右补
+            {
+                if(Image_Use[(int)(left_line.k)*i+(int)(left_line.b)][i]==black)//如果要变黑的点本来就是黑点
+                {
+                    black_count++;//是黑点的话就说明补超过右边线了，这里就不补了
+                }
+                else
+                {
+                    Image_Use[(int)(left_line.k)*i+(int)(left_line.b)][i]=black;//如果是白色的话就变为黑点
+                }
+                //这里的直线方程为:row=k*column+b
+                if((i>=Image_Width-4)||(black_count>=3))//防止赛道上出现噪点
+                {
+                    Left_second_point_index=0;//补完下标索引清零
+                    black_count=0;//记得清零
+                    break;//左线补完了
+                }
+            }
+        }
+    }
+    /*状态3不用补线*/
+    //状态3的标志判断：1. 左边线和右边线会相交 2.左右边线起始点的列坐标相差较大 3.左线的生长方向基本都是正上（4）
+    //4.右线的列坐标的起始和终点相差较大
+    else if(LeftRound_State==2&&Last_LeftRound_State==1&&(abs_int(Right[0].column,Left[0].column)>80)
+            &&(Image_LeftGrowDirection(4)>=(Left_Count/2))&&(abs_int(Right[0].column,Right[Right_Count-1].column)>80))
+    {
+        Last_LeftRound_State=LeftRound_State;
+        LeftRound_State=3;//进入状态3，状态3就不用补线了，拐点也不用搞了
+    }
+    //状态4的标志判断
+    //标志判断：1.左线的生长方向正上占比较少 2.右线的起点和终点列坐标相差较小 3.右线起始的列坐标和和终点的列坐标相差较小
+    else if(LeftRound_State==3&&Last_LeftRound_State==2&&(Image_LeftGrowDirection(4)<=(Left_Count/4))
+    &&(abs_int(Right[0].column,Right[Right_Count-1].column)<20))
+    {
+        Last_LeftRound_State=LeftRound_State;
+        LeftRound_State=4;//进入状态4
+    }
+    //状态6的标志判断
+    //1. 右线的起始点和终止点的列坐标间隔较小   2. 左线向上生长方向的比例下降 3.左线的起点和终止点的列坐标间隔较大
+    else if(LeftRound_State==5&&Last_LeftRound_State==4&&(abs_int(Left[0].column,Left[Left_Count-1].column)>80)
+    &&(abs_int(Right[0].column,Right[Right_Count-1].column)<20)&&(Image_LeftGrowDirection(4)<=(Left_Count/4)))
+    {
+        Last_LeftRound_State=LeftRound_State;
+        LeftRound_State=6;//进入状态6
+    }
+    /*下面是补线操作*/
+    //状态4的补线：先找右拐点，然后取拐点后退做线来补线
+    if(LeftRound_State==4&&Last_LeftRound_State==3)
+    {
+        for(i=0;i<Right_Count;i++)
+        {
+            if(Left[i].grow==5&&(Left[i-3].grow==5||Left[i-2].grow==5)&&(Left[i-4].grow==5||Left[i-5].grow==5)
+            &&(Left[i+1].grow==3||Left[i+2].grow==3)&&(Left[i+3].grow==3||Left[i+4].grow==3))
+            //这里判断条件放松了，避免找不到，后期可以再改
+            {
+                Right_first_point_index=i;//记录下标
+                break;
+            }
+        }
+        //状态4补线：从右拐点向左补线，直线方程要变换
+        if(Right_first_point_index!=0)//确认一下找没找到拐点
+        {
+            right_line.k=0.0;right_line.b=0.0;//清零
+            Image_pointsright(Right[Right_first_point_index].column,Right[Right_first_point_index].row,
+            Right[Right_first_point_index-3].column,Right[Right_first_point_index-3].row);//这里补线是要跨过宽度的，因此需要变换直线
+            for(i=Right[Right_first_point_index].column;i>0;i--)//从右下拐点开始补线，向左补
+            {
+                if(Image_Use[(int)(right_line.k)*i+(int)(right_line.b)][i]==black)//如果要变黑的点本来就是黑点
+                {
+                    black_count++;//是黑点的话就说明补超过右边线了，这里就不补了
+                }
+                else
+                {
+                    Image_Use[(int)(right_line.k)*i+(int)(right_line.b)][i]=black;//如果是白色的话就变为黑点
+                }
+                //这里的直线方程为:row=k*column+b，列的点比较多
+                if((i<=Image_Width-4)||(black_count>=3))//防止赛道上出现噪点
+                {
+                    Right_first_point_index=0;//补完下标索引清零
+                    black_count=0;//记得清零
+                    break;//右线补完了
+                }
+            }
+        }
+    }
+    //下面是状态5的补线：
+    if(LeftRound_State==5&&Last_LeftRound_State==4)
+    {
+        //好像不用补，直接扫线就行
+    }
+    //下面是状态6的补线：先找左拐点，然后取左拐点的右上点补线
+    if(LeftRound_State==6&&Last_LeftRound_State==5)
+    {
+        for(i=0;i<Left_Count;i++)
+        {
+            if(Image_ab_value((Image_Getk(Left[i].column,Left[i-3].column,abs_int(Left[i-3].row,Left[i].row))),
+            Image_Getk(Left[i].column,Left[i+3].column,abs_int(Left[i+3].row,Left[i].row)))>0.4)
+            {
+                Left_third_point_index=i;//记录下标
+                break;
+            }
+        }
+        //补线是沿着行向下补，故直线方程为column=row*k+b
+        if(Left_third_point_index!=0)
+        {
+            left_line.k=0.0;left_line.b=0.0;//清零
+            Image_pointsleft(Left[Left_third_point_index].row,Left[Left_third_point_index].column,
+            Left[Left_third_point_index+3].row,Left[Left_third_point_index+3].column);//向下补线
+            for(i=Left[Left_third_point_index].row;i<56;i++)//从左下拐点开始补线，向左下补
+            {
+                if(Image_Use[i][(int)(left_line.k)*i+(int)(left_line.b)]==black)//如果要变黑的点本来就是黑点
+                {
+                    black_count++;//是黑点的话就说明补超过右边线了，这里就不补了
+                }
+                else
+                {
+                    Image_Use[i][(int)(left_line.k)*i+(int)(left_line.b)]=black;//如果是白色的话就变为黑点
+                }
+                //这里的直线方程为:row=k*column+b，列的点比较多
+                if((i>=Image_Height-4)||(black_count>=3))//防止赛道上出现噪点
+                {
+                    Left_third_point_index=0;//补完下标索引清零
+                    black_count=0;//记得清零
+                    break;//左线补完了
+                }
+            }
+        }
+        
+    }
+
 }
