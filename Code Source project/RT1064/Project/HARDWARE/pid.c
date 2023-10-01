@@ -16,7 +16,7 @@ tPid pidMotor2Speed;//电机2速度PID闭环参数
  * 将比例、积分和微分增益设置为0。
  * 
  */
- //第一次 200 5 -1
+ //第一次 200 5 -1   50 5 -1
 void PID_init(void)
 {
     pidMotor1Speed.actual_val=0.0;
@@ -24,18 +24,18 @@ void PID_init(void)
     pidMotor1Speed.err=0.0;
     pidMotor1Speed.err_last=0.0;
     pidMotor1Speed.err_sum=.0;
-    pidMotor1Speed.Kp=50;
-    pidMotor1Speed.Ki=5;
-    pidMotor1Speed.Kd=-1;
+    pidMotor1Speed.Kp=150;
+    pidMotor1Speed.Ki=8;
+    pidMotor1Speed.Kd=0;
     
     pidMotor2Speed.actual_val=0.0;
     pidMotor2Speed.target_val=0.00;
     pidMotor2Speed.err=0.0;
     pidMotor2Speed.err_last=0.0;
     pidMotor2Speed.err_sum=0.0;
-    pidMotor2Speed.Kp=50;
-    pidMotor2Speed.Ki=5;
-    pidMotor2Speed.Kd=-1;
+    pidMotor2Speed.Kp=150;
+    pidMotor2Speed.Ki=8;
+    pidMotor2Speed.Kd=0;
 }
 // 速度PID参数
 PID SpeedDate =

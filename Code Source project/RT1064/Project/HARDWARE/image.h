@@ -54,7 +54,7 @@ typedef struct img
     {                                                                              \
         .data = &AT_IMAGE(img, x1, y1), .width = w, .height = h, .step = img.width \
     }
-
+extern image_t img_raw;
 void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x, int y, int pts[][2], int *num);
 void Right_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x, int y, int pts[][2], int *num);
 void Find_Borderline(void);
