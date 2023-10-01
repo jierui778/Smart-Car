@@ -47,8 +47,8 @@ void Speed_Control(float left_speed,float right_speed)
     float Deviation_L = left_speed - Encoder_L_Data;
     float Deviation_R = right_speed - Encoder_R_Data;//需要根据轮子半径进行转换
 
-    Motor_SetPwmL(IncrementPID(left_speed, SpeedData));
-    Motor_SetPwmR(IncrementPID2(left_speed, SpeedData));
+    Motor_SetPwmL(IncrementPID(left_speed, SpeedParam));
+    Motor_SetPwmR(IncrementPID2(left_speed, SpeedParam));/////
     // Motor_SetR(IncrementPID_Speed(&pidMotor2Speed,speed_right));
 }
 

@@ -26,8 +26,8 @@ typedef struct
 // 预采用位置式PID控制舵机，采用增量式PID控制电机
 // pid控制器
 //外部变量声明
-extern PID TraceTurnData;
-extern PID SpeedData;
+extern PID TraceTurnParam;
+extern PID SpeedParam;
 // extern tPid pidMotor1Speed;//电机1速度PID闭环参数
 // extern tPid pidMotor2Speed;//电机2速度PID闭环参数
 //位置式PID控制器

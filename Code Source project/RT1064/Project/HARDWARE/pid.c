@@ -7,8 +7,8 @@
 // #include "motor.h"
 // tPid pidMotor1Speed;//电机1速度PID闭环参数
 // tPid pidMotor2Speed;//电机2速度PID闭环参数
-PID SpeedData;
-PID TraceTurnData;
+PID SpeedParam;
+PID TraceTurnParam;
 /**
  * @brief 初始化两个电机的PID控制器。
  *
@@ -19,13 +19,13 @@ PID TraceTurnData;
  */
 void PID_init(void)
 {
-    SpeedData.kd = -40;
-    SpeedData.ki = -5;
-    SpeedData.kp = 0;
+    SpeedParam.kd = -40;
+    SpeedParam.ki = -5;
+    SpeedParam.kp = 0;
 
-    TraceTurnData.kd = 2;
-    TraceTurnData.ki = 0;
-    TraceTurnData.kp = 0.6;
+    TraceTurnParam.kd = 2;
+    TraceTurnParam.ki = 0;
+    TraceTurnParam.kp = 0.6;
     // pidMotor1Speed.actual_val=0.0;
     // pidMotor1Speed.target_val=0.00;
     // pidMotor1Speed.err=0.0;
