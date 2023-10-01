@@ -98,11 +98,22 @@ int PositionPID2(float deviation, PID pid)
  * @param pid PID参数
  * @return int 调节电机的Result
  */
-int IncrementPID(float SetValue, float ActualValue, PID pid)
+int IncrementPID(float Deviation, PID pid)
 {
     float Increment_KP = pid.kp, Increment_KI = pid.ki, Increment_KD = pid.kd;
     static float Current_Bias, Last_Bias, Lastlast_Bias, Result; // 定义静态变量
-    Current_Bias = SetValue - ActualValue;                       // 当前偏差
+    Current_Bias = Deviation;                                    // 当前偏差
+    // Integral_bias += Bias;
+    Result = Increment_KP * (Current_Bias - Last_Bias) + Increment_KI * Current_Bias + Increment_KD * (Current_Bias - 2 * Last_Bias + Lastlast_Bias); // 增量式PID控制器
+    Lastlast_Bias = Last_Bias;                                                                                                                        // 上上一次偏差保存
+    Last_Bias = Current_Bias;                                                                                                                         // 上一次偏差保存
+    return Result;                                                                                                                                    // 返回结果
+}
+int IncrementPID2(float Deviation, PID pid)
+{
+    float Increment_KP = pid.kp, Increment_KI = pid.ki, Increment_KD = pid.kd;
+    static float Current_Bias, Last_Bias, Lastlast_Bias, Result; // 定义静态变量
+    Current_Bias = Deviation;                                    // 当前偏差
     // Integral_bias += Bias;
     Result = Increment_KP * (Current_Bias - Last_Bias) + Increment_KI * Current_Bias + Increment_KD * (Current_Bias - 2 * Last_Bias + Lastlast_Bias); // 增量式PID控制器
     Lastlast_Bias = Last_Bias;                                                                                                                        // 上上一次偏差保存

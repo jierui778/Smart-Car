@@ -31,12 +31,12 @@ extern PID SpeedData;
 // extern tPid pidMotor1Speed;//电机1速度PID闭环参数
 // extern tPid pidMotor2Speed;//电机2速度PID闭环参数
 //位置式PID控制器
-extern int PositionPID(float deviation, PID pid);
-extern int PositionPID2(float deviation, PID pid);
-extern int PositionPID_Servo(float deviation, PID pid);
+extern int PositionPID(float Deviation, PID pid);
+extern int PositionPID2(float Deviation, PID pid);
+// extern int PositionPID_Servo(float deviation, PID pid);
 //增量式PID控制器
-extern int IncrementalPID(float deviation, PID pid);
-extern int IncrementalPID2(float deviation, PID pid);
+extern int IncrementPID(float Deviation, PID pid);
+extern int IncrementPID2(float Deviation, PID pid);
 // extern int IncrementPID_PWM(float *setspeed,float *actualspeed,PID pid);
 // float IncrementPID_Speed(tPid * pid,float actual_val);
 void PID_init(void);

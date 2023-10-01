@@ -111,11 +111,11 @@ void Schedule_Run(void)
  * @brief 中断更新任务调度框架的时基计数标志位
  *
  */
-// void pit_handler (void)
-// {
-//     Schedule_Tick();
-// //    gpio_toggle_level(B9);
-// }
+void pit_handler (void)
+{
+    Schedule_Tick();
+//    gpio_toggle_level(B9);
+}
 // //void pit_handler(void)
 // //{
 // //    gpio_toggle_level(B9);                                                    // 触发 PIT 中断后翻转 LED 状态

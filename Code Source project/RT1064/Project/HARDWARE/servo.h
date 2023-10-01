@@ -8,6 +8,6 @@
 
 void Servo_Init();
 
-void Servo_SetAngle(float angle);//设置舵机的角度值，舵机角度范围-90~90
+void Servo_SetAngle(float Angle);//设置舵机的角度值，舵机角度范围-90~90
 
 #endif

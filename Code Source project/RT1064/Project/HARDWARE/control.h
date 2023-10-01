@@ -4,6 +4,11 @@
 
 #define SPEED_MAX 3
 #define SPEED_MIN 0.5
+
+enum motor_mode
+{
+    MOTOR_NORMAL,MOTORSOFT,MODE_STOP
+};
 void Motor_Control();
 // void Direction_Control();
 void Speed_control(float left_speed,float right_speed);//速度控制

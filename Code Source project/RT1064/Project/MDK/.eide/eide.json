@@ -123,16 +123,28 @@
         "name": "hardware",
         "files": [
           {
-            "path": "../HARDWARE/servo.c"
+            "path": "../HARDWARE/buzzer.c"
           },
           {
-            "path": "../HARDWARE/servo.h"
+            "path": "../HARDWARE/buzzer.h"
           },
           {
-            "path": "../HARDWARE/motor.c"
+            "path": "../HARDWARE/camera.c"
           },
           {
-            "path": "../HARDWARE/motor.h"
+            "path": "../HARDWARE/camera.h"
+          },
+          {
+            "path": "../HARDWARE/control.c"
+          },
+          {
+            "path": "../HARDWARE/control.h"
+          },
+          {
+            "path": "../HARDWARE/display.c"
+          },
+          {
+            "path": "../HARDWARE/display.h"
           },
           {
             "path": "../HARDWARE/encoder.c"
@@ -141,34 +153,16 @@
             "path": "../HARDWARE/encoder.h"
           },
           {
-            "path": "../HARDWARE/camera.h"
-          },
-          {
-            "path": "../HARDWARE/camera.c"
-          },
-          {
             "path": "../HARDWARE/image.c"
           },
           {
             "path": "../HARDWARE/image.h"
           },
           {
-            "path": "../HARDWARE/buzzer.h"
+            "path": "../HARDWARE/motor.c"
           },
           {
-            "path": "../HARDWARE/buzzer.c"
-          },
-          {
-            "path": "../HARDWARE/schedule.c"
-          },
-          {
-            "path": "../HARDWARE/schedule.h"
-          },
-          {
-            "path": "../HARDWARE/display.h"
-          },
-          {
-            "path": "../HARDWARE/display.c"
+            "path": "../HARDWARE/motor.h"
           },
           {
             "path": "../HARDWARE/mymath.c"
@@ -183,10 +177,16 @@
             "path": "../HARDWARE/pid.h"
           },
           {
-            "path": "../HARDWARE/control.c"
+            "path": "../HARDWARE/schedule.c"
           },
           {
-            "path": "../HARDWARE/control.h"
+            "path": "../HARDWARE/schedule.h"
+          },
+          {
+            "path": "../HARDWARE/servo.c"
+          },
+          {
+            "path": "../HARDWARE/servo.h"
           }
         ],
         "folders": []
