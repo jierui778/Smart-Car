@@ -41,7 +41,8 @@ int main(void)
 //        Image_Binarization(TH,Image_Use);
 		tft180_show_int(3,80,TH,3);//最后有一点点
         Image_Sobel( Image_Use, Image_Use_Robert ,TH);//全局Sobel得二值图(方案二) 2.8ms
-        tft180_displayimage03x((uint8 *)Image_Use_Robert, 100, 60); //pidMotor1Speed
+        Find_Borderline();
+//        tft180_displayimage03x((uint8 *)Image_Use_Robert, 100, 60); //pidMotor1Speed
 //		Image_Run();
 //		tft180_show_float(3,80,IncrementPID_Speed(&pidMotor1Speed,speed_left),4,4);//750
 //		tft180_show_float(3,100,speed_right,4,4);//5
