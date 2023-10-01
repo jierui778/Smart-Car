@@ -37,8 +37,8 @@
 #include "isr.h"
 
 
-uint8 Servo_Flag = 0;//舵机控制标志位，间隔为200ms
-uint8 Motor_Flag=0;//电机控制标志位，间隔为250ms
+// uint8 Servo_Flag = 0;//舵机控制标志位，间隔为200ms
+// uint8 Motor_Flag=0;//电机控制标志位，间隔为250ms
 
 void CSI_IRQHandler(void)
 {
@@ -59,20 +59,17 @@ void PIT_IRQHandler(void)
     if(pit_flag_get(PIT_CH1))
     {
         pit_flag_clear(PIT_CH1);
-        Servo_Flag=1;
     }
 
     if(pit_flag_get(PIT_CH2))
     {
         pit_flag_clear(PIT_CH2);
-		Motor_Flag=1;
     }
 
     if(pit_flag_get(PIT_CH3))
     {
         pit_flag_clear(PIT_CH3);
     }
-
     __DSB();
 }
 

@@ -13,7 +13,7 @@ void Motor_Init(void)
 
     gpio_init(MOTOR_DIRL, GPO, GPIO_HIGH, GPO_PUSH_PULL);
     gpio_init(MOTOR_DIRR, GPO, GPIO_HIGH, GPO_PUSH_PULL);
-    
+
     pwm_init(MOTOR_PWMR, 10000, 0);
     pwm_init(MOTOR_PWML, 10000, 0);
 
@@ -26,17 +26,16 @@ void Motor_Init(void)
  *
  * @param Speed 速度值，范围-1000~1000
  */
-void Motor_SetR(int16 Speed)
+void Motor_SetPwmR(int16 Speed)
 {
-	Speed=-Speed;
     if (Speed > 0)
     {
-        gpio_set_level(MOTOR_DIRL, 0);
+        gpio_set_level(MOTOR_DIRL, 1);
         pwm_set_duty(MOTOR_PWML, Speed); //
     }
     else
     {
-        gpio_set_level(MOTOR_DIRL, 1);
+        gpio_set_level(MOTOR_DIRL, 0);
         pwm_set_duty(MOTOR_PWML, -Speed);
     }
 }
@@ -45,28 +44,27 @@ void Motor_SetR(int16 Speed)
  *
  * @param Speed 速度值，范围-1000~1000
  */
-void Motor_SetL(int16 Speed)
+void Motor_SetPwmL(int16 Speed)
 {
-	Speed=-Speed;
     if (Speed > 0)
     {
-        gpio_set_level(MOTOR_DIRR, 0);
+        gpio_set_level(MOTOR_DIRR, 1);
         pwm_set_duty(MOTOR_PWMR, Speed);
     }
     else
     {
-        gpio_set_level(MOTOR_DIRR, 1);
+        gpio_set_level(MOTOR_DIRR, 0);
         pwm_set_duty(MOTOR_PWMR, -Speed);
     }
 }
 
 /**
  * @brief 设置左右电机的速度
- * 
+ *
  * @param left_speed 左电机速度，范围为-1000到1000
  * @param right_speed 右电机速度，范围为-1000到1000
  */
-void Motor_SetAll(int16 left_speed,int16 right_speed)
+void Motor_SetPwmAll(int16 left_speed,int16 right_speed)
 {
     if(left_speed>1000)
     {
@@ -84,7 +82,7 @@ void Motor_SetAll(int16 left_speed,int16 right_speed)
     {
         right_speed=-1000;
     }
-    
-    Motor_SetL(left_speed);
-    Motor_SetR(right_speed);
+
+    Motor_SetPwmL(left_speed);
+    Motor_SetPwmR(right_speed);
 }
