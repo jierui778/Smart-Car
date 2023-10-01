@@ -519,6 +519,16 @@
               <FileType>5</FileType>
               <FilePath>..\HARDWARE\control.h</FilePath>
             </File>
+            <File>
+              <FileName>labyrinth.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\labyrinth.c</FilePath>
+            </File>
+            <File>
+              <FileName>labyrinth.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\HARDWARE\labyrinth.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

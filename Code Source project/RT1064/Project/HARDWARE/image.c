@@ -1,6 +1,13 @@
 #include "image.h"
 #include "math.h"
 #include "control.h"
+void check()
+{
+	while(1)
+	{
+		tft180_clear();
+	}
+}
 //八邻域扫的左线的结构体
 struct Left_Edge
 {
@@ -268,7 +275,7 @@ unsigned char Image_Get_LeftFlag(void)
 {
     for(left_point=(Image_Width/2);left_point>3;left_point--)
     {
-        if((Image_Use[56][left_point]==255)&&(Image_Use[56][left_point-1]==0)&&(Image_Use[56][left_point-2]==0))
+        if((Image_Use[Image_Height-4][left_point]==255)&&(Image_Use[Image_Height-4][left_point-1]==0)&&(Image_Use[Image_Height-4][left_point-2]==0))
         {
 			Left_Find_Flag=1;//
             break;
@@ -276,7 +283,7 @@ unsigned char Image_Get_LeftFlag(void)
     }
 	if(!Left_Find_Flag)
 	{
-		left_point=4;
+		left_point=2;
 	}
     return 1;
 }
@@ -288,16 +295,21 @@ unsigned char Image_Get_LeftFlag(void)
  * @return unsigned char 返回1表示获取成功，返回0表示获取失败
  */
 unsigned char right_point;                     //记录第一个关键点的列坐标
+uint8 Right_Find_Flag;//右线起始点找到标志
 unsigned char Image_Get_Rightflag(void)
 {
-    
     for(right_point=(Image_Width/2);right_point<(Image_Width-2);right_point++)
     {
-        if((Image_Use[56][right_point]==255)&&(Image_Use[56][right_point+1]==0)&&(Image_Use[56][right_point+2]==0)) //这里指针变量不能直接和值比较，需要解地址
+        if((Image_Use[Image_Height-4][right_point]==255)&&(Image_Use[Image_Height-4][right_point+1]==0)&&(Image_Use[Image_Height-4][right_point+2]==0)) //这里指针变量不能直接和值比较，需要解地址
         {
+			Right_Find_Flag=1;
             break;                            //这里不能直接return 会有报错，就用break跳出循环，然后在最外面return即可
         }
     }
+	if(!Right_Find_Flag)//如果找不到
+	{
+		right_point=Image_Width-3;//取边界点
+	}
     return 1;
 }
 
@@ -346,6 +358,7 @@ void Image_DrawRectangle(void)
     for(i=0;i<Image_Height;i++)
     {
         Image_Use[i][0]=0;
+		Image_Use[i][1]=0;
         Image_Use[i][Image_Width-1]=0;
         Image_Use[i][Image_Width-2]=0;
     }
@@ -481,13 +494,13 @@ void Image_Get_neighborhoods(uint8(*Image_Use)[Image_Width])
 	Left_Count=0;
 	Right_Count=0;
 	
-	if(left_point!=3)
+	if(left_point)
 	{
-		Left[0].row=56;
+		Left[0].row=Image_Height-4;
 		Left[0].column=left_point;
 		Left[0].flag=1;
 		Left[0].grow=2;//初始生长方向为2
-		cur_row=56;
+		cur_row=Image_Height-4;
 		cur_col=left_point;
 		Left_Count++;
 		while(Left_Max--)//找140个
@@ -591,14 +604,15 @@ void Image_Get_neighborhoods(uint8(*Image_Use)[Image_Width])
 	6		2
 	7	0	1
 	*/
-	if(right_point!=97)
+	if(right_point)
 	{
-		Right[0].row=56;
+		Right[0].row=116;
 		Right[0].column=right_point;
 		Right[0].flag=1;
 		Right[0].grow=2;
-		cur_row=56;
+		cur_row=Image_Width-3;
 		cur_col=right_point;
+		
 		Right_Count++;
 		while(Right_Max--)
 		{
@@ -642,6 +656,7 @@ void Image_Get_neighborhoods(uint8(*Image_Use)[Image_Width])
 				cur_row=Right[Right_Count].row;
 				cur_col=Right[Right_Count].column;
 				Right_Count++;
+
 			}
 			else if(Image_Use[cur_row-1][cur_col]==black&&Image_Use[cur_row-1][cur_col-1]==white)
 			{
@@ -685,40 +700,39 @@ void Image_Get_neighborhoods(uint8(*Image_Use)[Image_Width])
 			}
 			else
 				break;
-			//下面是巡线以后其他的处理
-            //一 越界处理
-			if(cur_row<=3||cur_row>=57||cur_col<=3||cur_col>=97)
-			{
-				break;
-			}
-            //以下是待测试的代码
-            //二 连续3次都是同一个点就不再寻找
-            if(Right[Right_Count].row==Right[Right_Count-1].row&&Right[Right_Count].column==Right[Right_Count-1].column&&
-                Right[Right_Count-1].row==Right[Right_Count-2].row&&Right[Right_Count-1].column==Right[Right_Count-2].column)
-            {
-                break;
-            }
-            //三 当扫到的点多个在同一行时，只保留最后一个点（这个目前不写，因为处理的是压缩后的图像，点多一点也没关系，如果需要的话后期再改进）
-            //四 当左右线会聚时退出循环，并记录此时的行数（判断坡道）
-            if((Left[Left_Count-1].row==Right[Right_Count-1].row)&&(Left[Left_Count-1].column==Right[Right_Count-1].column||
-            Right[Right_Count-1].column-Left[Left_Count-1].column<=3))
-            //判断条件：行相等，列也相等or列相差在3以内
-            {
-                Gather_row[Gather_Count]=Left[Left_Count-1].row;
-                Gather_flag=1;
-                break;
-            }
-            else
-            {
-                Gather_flag=0;
-            }
+//			//下面是巡线以后其他的处理
+//            //一 越界处理
+//			if(cur_row<=2||cur_row>=(Image_Width-3)||cur_col<=2||cur_col>=(Image_Width-3))
+//			{
+//				break;
+//			}
+//            //以下是待测试的代码
+//            //二 连续3次都是同一个点就不再寻找
+//            if(Right[Right_Count].row==Right[Right_Count-1].row&&Right[Right_Count].column==Right[Right_Count-1].column&&
+//                Right[Right_Count-1].row==Right[Right_Count-2].row&&Right[Right_Count-1].column==Right[Right_Count-2].column)
+//            {
+//                break;
+//            }
+//            //三 当扫到的点多个在同一行时，只保留最后一个点（这个目前不写，因为处理的是压缩后的图像，点多一点也没关系，如果需要的话后期再改进）
+//            //四 当左右线会聚时退出循环，并记录此时的行数（判断坡道）
+//            if((Left[Left_Count-1].row==Right[Right_Count-1].row)&&(Left[Left_Count-1].column==Right[Right_Count-1].column||
+//            Right[Right_Count-1].column-Left[Left_Count-1].column<=3))
+//            //判断条件：行相等，列也相等or列相差在3以内
+//            {
+//                Gather_row[Gather_Count]=Left[Left_Count-1].row;
+//                Gather_flag=1;
+//                break;
+//            }
+//            else
+//            {
+//                Gather_flag=0;
+//            }
 		}
 	}
 }
 
 
 uint8 Mid_Count;
-uint16 cur_row,cur_col;//当前行列
 /**
  * @brief 取中线函数（有bug，待验证）
  *
@@ -855,8 +869,8 @@ void Image_FillCross_1(uint8(*Image_Use)[Image_Width])
             }
         }
         //求出拐点后开始补线,这里求斜率有三种方法:1.直接用两点(拐点和左下角)求斜率 2.用最小二乘法求斜率(用拐点往上的点) 3.用最小二乘法求斜率，但是只用拐点附近的点
-        Image_pointsleft(left_high.row,left_high.column,56,4);//求出左线的斜率和截距
-        for(i=56;i>4;i--)
+        Image_pointsleft(left_high.row,left_high.column,Image_Height-4,4);//求出左线的斜率和截距
+        for(i=Image_Height-4;i>4;i--)
         {
             Image_Use[i][(int)(left_line.k)*i+(int)(left_line.b)]=black;//补线
             if(i<=left_high.row-1)
@@ -865,8 +879,8 @@ void Image_FillCross_1(uint8(*Image_Use)[Image_Width])
                 break;
             }
         }
-        Image_pointsright(right_high.row,right_high.column,56,96);//求出右线的斜率和截距
-        for(i=56;i>4;i--)
+        Image_pointsright(right_high.row,right_high.column,Image_Height-4,Image_Width-4);//求出右线的斜率和截距
+        for(i=Image_Height-4;i>4;i--)
         {
             Image_Use[i][(int)(right_line.k)*i+(int)(right_line.b)]=black;//补线
             if(i<=right_high.row-1)
@@ -1002,34 +1016,38 @@ uint8 Image_Stretch_Right(void)
 //图像处理的函数都放在这里，这样就避免了定义问题
 void Image_Run(void)
 {
-	uint8 i;
+	uint8 i,j;
 
 	i=Image_Get_LeftFlag();
-	i=Image_Get_Rightflag();
-	Image_DrawRectangle();
+	j=Image_Get_Rightflag();
+	
 //	tft180_draw_line(0,0,start_point_Left[0],start_point_Left[1],RGB565_RED);//行坐标l_countl_count
-	tft180_show_int(3,80,left_point,3);
 	Image_Get_neighborhoods(Image_Use);
 //	tft180_show_int(3,120,points_l[l_count-1][0],3);
 //	Image_Get_neighborhoods(100,Image_Use);
-//	tft180_draw_line(0,0,cur_col,cur_row,RGB565_RED);//行坐标l_countl_count
+//	tft180_draw_line(0,0,cur_col/2,cur_row/2,RGB565_RED);//行坐标l_countl_count
+	
+	tft180_show_int(3,80,cur_row,3);
+	tft180_show_int(3,100,cur_col,3);
+	tft180_show_int(3,120,Left[2].row,3);
+	tft180_show_int(3,140,Right_Count,3);
 //	Get_Midpoint();
-	for(i=0;i<Left_Count;i++)
-	{
-		tft180_draw_point(Left[i].column,Left[i].row,RGB565_BLUE);
-	}
-	for(i=0;i<Left_Count;i++)
-	{
-		tft180_draw_point(Left[i].column+1,Left[i].row,RGB565_BLUE);
-	}
-	for(i=0;i<Left_Count;i++)
-	{
-		tft180_draw_point(Left[i].column-1,Left[i].row,RGB565_BLUE);
-	}
-	for(i=0;i<Right_Count;i++)
-	{
-		tft180_draw_point(Right[i].column,Right[i].row,RGB565_RED);
-	}
+//	for(i=0;i<Left_Count;i++)
+//	{
+//		tft180_draw_point(Left[i].column/2,Left[i].row/2,RGB565_BLUE);
+//	}
+//	for(i=0;i<Left_Count;i++)
+//	{
+//		tft180_draw_point((Left[i].column+1)/2,Left[i].row/2,RGB565_BLUE);
+//	}
+//	for(i=0;i<Left_Count;i++)
+//	{
+//		tft180_draw_point((Left[i].column-1)/2,Left[i].row/2,RGB565_BLUE);
+//	}
+//	for(i=0;i<Right_Count;i++)
+//	{
+//		tft180_draw_point(Right[i].column,Right[i].row,RGB565_RED);
+//	}
 }
 
 

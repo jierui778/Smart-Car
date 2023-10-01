@@ -1,5 +1,5 @@
 #include "camera.h"
-
+#include "image.h"
 
 
 /**
@@ -14,3 +14,4 @@ uint8 Camera_Init(void)
     interrupt_global_enable(0);
     return init_finishflag;
 }
+

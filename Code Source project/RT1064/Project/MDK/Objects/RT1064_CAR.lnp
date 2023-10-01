@@ -12,6 +12,7 @@
 ".\objects\mymath.o"
 ".\objects\pid.o"
 ".\objects\control.o"
+".\objects\labyrinth.o"
 ".\objects\zf_common_clock.o"
 ".\objects\zf_common_debug.o"
 ".\objects\zf_common_fifo.o"
