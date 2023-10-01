@@ -1,21 +1,4 @@
 {
-  "files.associations": {
-    "headfile.h": "c",
-    "zf_common_headfile.h": "c",
-    "zf_driver_encoder.h": "c",
-    "zf_driver_gpio.h": "c",
-    "image.h": "c",
-    "key.h": "c",
-    "camera.h": "c",
-    "osg_imageconversion.h": "c",
-    "osg_imageprocessing.h": "c",
-    "zf_device_mt9v03x.h": "c",
-    "servo.h": "c",
-    "motor.h": "c",
-    "buzzer.h": "c",
-    "scheduler.h": "c",
-    "control.h": "c"
-  },
   "C_Cpp_Runner.msvcBatchPath": "",
   "C_Cpp_Runner.cCompilerPath": "gcc",
   "C_Cpp_Runner.cppCompilerPath": "g++",

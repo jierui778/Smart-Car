@@ -1,0 +1,52 @@
+Change Component Footprint: Designator=S1 Old Footprint=SS-12D10 New Footprint=MSK-12C01-07
+Change Component Comment : Designator=R1 Old Comment=1K New Comment=2.2K
+Change Component Comment : Designator=R3 Old Comment=1K New Comment=10K
+Change Component Comment : Designator=R4 Old Comment=1K New Comment=10K
+Change Component Comment : Designator=R6 Old Comment=1K New Comment=10K
+Change Component Comment : Designator=R7 Old Comment=1K New Comment=10K
+Change Component Comment : Designator=C1 Old Comment=100nF New Comment=1uF
+Change Component Comment : Designator=C5 Old Comment=100nF New Comment=1uF
+Change Component Comment : Designator=C6 Old Comment=100nF New Comment=1uF
+Change Component Comment : Designator=C9 Old Comment=100nF New Comment=1uF
+Change Component Comment : Designator=C11 Old Comment=100nF New Comment=1uF
+Change Component Comment : Designator=C12 Old Comment=100nF New Comment=1uF
+Change Component Comment : Designator=C2 Old Comment=100nF New Comment=10nF
+Change Component Comment : Designator=C8 Old Comment=100nF New Comment=10uF
+Change Component Designator: OldDesignator=C1 NewDesignator=C2
+Change Component Designator: OldDesignator=C2 NewDesignator=C3
+Change Component Designator: OldDesignator=C3 NewDesignator=C4
+Change Component Designator: OldDesignator=C4 NewDesignator=C1
+Change Component Designator: OldDesignator=C7 NewDesignator=C10
+Change Component Designator: OldDesignator=C8 NewDesignator=C9
+Change Component Designator: OldDesignator=C9 NewDesignator=C11
+Change Component Designator: OldDesignator=C10 NewDesignator=C7
+Change Component Designator: OldDesignator=C11 NewDesignator=C8
+Change Component Designator: OldDesignator=D2 NewDesignator=D5
+Change Component Designator: OldDesignator=D3 NewDesignator=D4
+Change Component Designator: OldDesignator=D4 NewDesignator=D3
+Change Component Designator: OldDesignator=D5 NewDesignator=D2
+Change Component Designator: OldDesignator=J2 NewDesignator=J3
+Change Component Designator: OldDesignator=J3 NewDesignator=J2
+Change Component Designator: OldDesignator=Q1 NewDesignator=Q4
+Change Component Designator: OldDesignator=Q2 NewDesignator=Q3
+Change Component Designator: OldDesignator=Q3 NewDesignator=Q1
+Change Component Designator: OldDesignator=Q4 NewDesignator=Q2
+Change Component Designator: OldDesignator=Q5 NewDesignator=Q6
+Change Component Designator: OldDesignator=Q6 NewDesignator=Q5
+Change Component Designator: OldDesignator=R1 NewDesignator=R2
+Change Component Designator: OldDesignator=R2 NewDesignator=R3
+Change Component Designator: OldDesignator=R3 NewDesignator=R6
+Change Component Designator: OldDesignator=R5 NewDesignator=R1
+Change Component Designator: OldDesignator=R6 NewDesignator=R5
+Added Member To Class: ClassName=智能车驱动板DRV8701E Member=Component C3 10nF
+Added Member To Class: ClassName=智能车驱动板DRV8701E Member=Component C4 100nF
+Added Member To Class: ClassName=智能车驱动板DRV8701E Member=Component C10 100nF
+Added Member To Class: ClassName=智能车驱动板DRV8701E Member=Component C11 1uF
+Added Member To Class: ClassName=智能车驱动板DRV8701E Member=Component D4 BZT52C3V3
+Added Member To Class: ClassName=智能车驱动板DRV8701E Member=Component D5 LED
+Added Member To Class: ClassName=智能车驱动板DRV8701E Member=Component J3 HT-2P
+Added Member To Class: ClassName=智能车驱动板DRV8701E Member=Component Q3 TPH1R403NL
+Added Member To Class: ClassName=智能车驱动板DRV8701E Member=Component Q6 TPH1R403NL
+Added Member To Class: ClassName=智能车驱动板DRV8701E Member=Component R1 1K
+Added Member To Class: ClassName=智能车驱动板DRV8701E Member=Component R3 1K
+Added Member To Class: ClassName=智能车驱动板DRV8701E Member=Component R6 10K
