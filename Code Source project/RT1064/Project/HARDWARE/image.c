@@ -202,7 +202,7 @@ void Image_Binarization(uint8 threshold, uint8 (*Image)[Image_Width])
             temp = *(Image[0] + j * Image_Width + i);                              // 读取像素点
             if (j == 0 || j == Image_Height - 1 || i == 0 || i == Image_Width - 1) // 大津法加一个黑框
             {
-                *(Image[0] + j * Image_Width + i) = 0;
+//                *(Image[0] + j * Image_Width + i) = 0;
             }
             else
             {
@@ -263,15 +263,21 @@ int min(int a, int b)
  * @return unsigned char 返回1表示获取成功，返回0表示获取失败
  */
 unsigned char left_point;                     //记录第一个关键点的列坐标，定义为全局变量，方便后面的函数调用
+uint8 Left_Find_Flag;//左线起始点找到标志
 unsigned char Image_Get_LeftFlag(void)
 {
     for(left_point=(Image_Width/2);left_point>3;left_point--)
     {
         if((Image_Use[56][left_point]==255)&&(Image_Use[56][left_point-1]==0)&&(Image_Use[56][left_point-2]==0))
         {
+			Left_Find_Flag=1;//
             break;
         }
     }
+	if(!Left_Find_Flag)
+	{
+		left_point=4;
+	}
     return 1;
 }
 
@@ -346,7 +352,7 @@ void Image_DrawRectangle(void)
     for(i=0;i<Image_Width;i++)
     {
         Image_Use[0][i]=0;
-        Image_Use[1][i]=0;//图片底下两层变黑
+        Image_Use[1][i]=0;
     }
 }
 
@@ -1000,12 +1006,13 @@ void Image_Run(void)
 
 	i=Image_Get_LeftFlag();
 	i=Image_Get_Rightflag();
+	Image_DrawRectangle();
 //	tft180_draw_line(0,0,start_point_Left[0],start_point_Left[1],RGB565_RED);//行坐标l_countl_count
 	tft180_show_int(3,80,left_point,3);
 	Image_Get_neighborhoods(Image_Use);
 //	tft180_show_int(3,120,points_l[l_count-1][0],3);
 //	Image_Get_neighborhoods(100,Image_Use);
-	tft180_draw_line(0,0,cur_col,cur_row,RGB565_RED);//行坐标l_countl_count
+//	tft180_draw_line(0,0,cur_col,cur_row,RGB565_RED);//行坐标l_countl_count
 //	Get_Midpoint();
 	for(i=0;i<Left_Count;i++)
 	{

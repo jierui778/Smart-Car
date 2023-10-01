@@ -8,8 +8,8 @@
 
 #define white 255
 #define black 0
-#define Image_Width 100          // 用于处理的图像高度
-#define Image_Height 60          //用于处理的图像宽度\
+#define Image_Width 160          // 用于处理的图像高度
+#define Image_Height 120          //用于处理的图像宽度\
 
 #define Primeval_Hight MT9V03X_H // 原始图像高度
 #define Primeval_With MT9V03X_W  // 原始图像宽度
