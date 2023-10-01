@@ -38,7 +38,7 @@
 #ifndef _isr_h
 #define _isr_h
 
-
-
+extern uint8 Servo_Flag;
+extern uint8 Motor_Flag;
 
 #endif

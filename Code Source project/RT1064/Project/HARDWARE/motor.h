@@ -12,5 +12,5 @@
 void Motor_Init(void);//电机引脚初始化
 void Motor_SetL(int16 Speed);//设置左电机的速度
 void Motor_SetR(int16 Speed);//设置右电机的速度
-
+void Motor_SetAll(int16 left_speed,int16 right_speed);//设置左右电机的速度
 #endif

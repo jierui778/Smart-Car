@@ -4,6 +4,7 @@
 
 //#define PIT_CH (PIT_CH0) // 使用的周期中断编号 如果修改 需要同步对应修改周期中断编号与 isr.c 中的调用
 //#define PIT_PRIORITY (PIT_IRQn)//
+extern float speed_left,speed_right;
 
 #define ENCODER_L (QTIMER1_ENCODER1)          // 正交编码器对应的编码器接口
 #define ENCODER_R (QTIMER1_ENCODER2)          // 正交编码器对应的编码器

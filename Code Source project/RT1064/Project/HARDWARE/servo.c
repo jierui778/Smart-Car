@@ -1,5 +1,7 @@
 #include "servo.h"
 #include "zf_common_headfile.h"
+#include "pid.h"
+
 /**
  * @brief 设置舵机角度
  *
@@ -21,3 +23,4 @@ void Servo_Init()
 {
     pwm_init(SERVO_CH, SERVO_FRE, 0);
 }
+
