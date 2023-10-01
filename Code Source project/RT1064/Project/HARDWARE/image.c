@@ -61,8 +61,8 @@ void Image_Compress(void)
     mt9v03x_finish_flag = 0;
 }
 
-#define UROW 60
-#define UCOL 80
+#define UROW 120
+#define UCOL 160
 void compressimage(void)
 {
     int i, j, row, line;
@@ -1398,6 +1398,24 @@ uint8 Image_Scan_Column(uint8 (*Image_Use)[Image_Width], uint8 target_column)
     return black_white_count;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 uint8 touch_boundary0; // 左边线走到图像左边界
 uint8 touch_boundary1; // 右边线走到图像右边界
 
@@ -1408,7 +1426,7 @@ int begin_x0, begin_y0; // 找线偏移点
 int begin_x1, begin_y1; // 找线偏移点
 
 #define ROAD_WIDTH (0.39)    // 赛道宽度45cm 适时调整 注意：应用方案三时情况特殊为负数-0.40,正常0.43
-#define POINTS_MAX_LEN (140) // 边线点最多的情况——>num
+#define POINTS_MAX_LEN (120) // 边线点最多的情况——>num
 
 image_t img_raw = DEF_IMAGE(NULL, UCOL, UROW);
 
@@ -1429,7 +1447,7 @@ float begin_y = 58; // 起始点距离图像底部的上下偏移量 120高度�
 
 float block_size = 7; // 自适应阈值的block大小
 float clip_value = 2; // 自适应阈值的阈值裁减量
-
+uint8_t  Image_Use_Robert[120][160];//二值化图像
 void Find_Borderline(void)
 {
     // 迷宫巡线是否走到左右边界
@@ -1448,6 +1466,10 @@ void Find_Borderline(void)
     //    uint8 uthres = ostu();
     // 寻左边线
     x1 = img_raw.width / 2 - begin_x, y1 = begin_y;
+	int TH;
+	TH = OSTU_GetThreshold(Image_Use[0], Image_Width, Image_Height);
+	Image_Sobel( Image_Use, Image_Use_Robert ,TH);//全局Sobel得二值图(方案二) 2.8ms
+	img_raw.data = Image_Use_Robert;
 
     // 标记种子起始点(后续元素处理要用到)
     x0_first = x1;
@@ -1581,6 +1603,19 @@ void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x
         loseline0 = 1;
     // 记录边线数目
     *num = step;
+	uint8 i;
+//	for(i=0;i<ipts0_num;i++)
+//	{
+//		tft180_draw_point(ipts0[i][1]/2,ipts0[i][0]/2,RGB565_RED);
+//	}
+	for(i=0;i<ipts1_num;i++)
+	{
+		tft180_draw_point(ipts1[i][1]/2-5,ipts1[i][0]/2,RGB565_BLUE);
+	}
+//	tft180_draw_line(0,0,ipts0[20-1][1],ipts0[20-1][0],RGB565_RED);
+//	tft180_show_int(3,100,ipts0[20-1][1],4);
+//	tft180_show_int(3,120,ipts0[20-1][0],4);
+	tft180_displayimage03x((uint8 *)Image_Use_Robert, 80, 60); //pidMotor1Speed
 }
 /*************************************************************************
  *  函数名称：void Right_Adaptive_Threshold();
@@ -1596,9 +1631,9 @@ void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x
  *************************************************************************/
 void Right_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x, int y, int pts[][2], int *num)
 {
-    zf_assert(img && img->data);
-    zf_assert(num && *num >= 0);
-    zf_assert(block_size > 1 && block_size % 2 == 1);
+//    zf_assert(img && img->data);
+//    zf_assert(num && *num >= 0);
+//    zf_assert(block_size > 1 && block_size % 2 == 1);
     //    int half = block_size / 2;        //上交方案
     int half = 0; // 方案二
     int step = 0, dir = 0, turn = 0;
