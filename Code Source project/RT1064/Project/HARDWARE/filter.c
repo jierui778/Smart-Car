@@ -1,5 +1,14 @@
 #include "filter.h"
 
+KalmanParam test = {
+    1,   // lastp协方差
+    0,   // nowp协方差
+    0,   // out
+    1,   // 增益
+    100, // Q过程噪声
+    4000 // 观测噪声R};
+};
+
 /**
  * @brief 一阶卡尔曼滤波器
  *
@@ -7,32 +16,15 @@
  * @param KFP 卡尔曼滤波器参数
  * @return float
  */
-float Kalman_Filter(float Data_In, KalmanParam KFP)
+float KalmanFilter(float input, KalmanParam *kfp)
 {
-    static float x_last = 0; // 上一次的状态值
-    static float p_last = 0; // 上一次的协方差值
-
-    float kg; // 卡尔曼增益
-    float p_now; // 当前协方差值
-    float x_now; // 当前状态值
-
-    // 预测当前状态值
-    x_now = x_last;
-    // 预测当前协方差值
-    p_now = p_last + KFP.Q;
-
-    // 计算卡尔曼增益
-    kg = p_now / (p_now + KFP.R);
-
-    // 计算当前状态值
-    x_now = x_now + kg * (Data_In - x_now);
-
-    // 更新协方差值
-    p_last = (1 - kg) * p_now;
-
-    // 更新上一次的状态值
-    x_last = x_now;
-
-    return x_now;
+    // 预测协方差方程：k时刻系统估算协方差 = k-1时刻的系统协方差 + 过程噪声协方差
+    kfp->Now_P = kfp->LastP + kfp->Q;
+    // 卡尔曼增益方程：卡尔曼增益 = k时刻系统估算协方差 / （k时刻系统估算协方差 + 观测噪声协方差）
+    kfp->Kg = kfp->Now_P / (kfp->Now_P + kfp->R);
+    // 更新最优值方程：k时刻状态变量的最优值 = 状态变量的预测值 + 卡尔曼增益 * （测量值 - 状态变量的预测值）
+    kfp->out = kfp->out + kfp->Kg * (input - kfp->out); // 因为这一次的预测值就是上一次的输出值
+    // 更新协方差方程: 本次的系统协方差赋给 kfp->LastP 为下一次运算准备。
+    kfp->LastP = (1 - kfp->Kg) * kfp->Now_P;
+    return kfp->out;
 }
-

@@ -10,11 +10,14 @@
 #include "motor.h"
 #include "pid.h"
 #include "isr.h"
+#include "filter.h"
 #define GrayScale 257
 
 float left_speed, right_speed;
+int32 xiao;
 int main(void)
 {
+    
     uint16 data = 8;
     clock_init(SYSTEM_CLOCK_600M); //
     Encoder_Init();
@@ -35,6 +38,10 @@ int main(void)
     //    Motor_SetPwmR(1888.88);
     while (1)
     {
+        
+        xiao = (int)KalmanFilter(Encoder_L_Data, &test);
+        tft180_show_int(3, 80, xiao, 3);
+        tft180_show_int(3, 100, Encoder_L_Data, 3);
 
         //        Schedule_Run();
         //         Image_Compress();
@@ -45,9 +52,9 @@ int main(void)
         // //		img_raw.data = Image Use Robert;
         ////         Find_Borderline();
         //        Speed_Control(2000, 2000);
-        
-        
-        
+
+
+
 //        float Deviation_L = 3 - Encoder_L_Data*10/2300;
 //        static int temp=0;
 //        static int temp1=0;

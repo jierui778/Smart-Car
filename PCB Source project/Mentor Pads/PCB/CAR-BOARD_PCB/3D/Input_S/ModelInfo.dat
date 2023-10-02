@@ -1,5 +1,5 @@
 Version: 1
-RefDes: 55
+RefDes: 57
 FactPartName: "SY8303AIC"
 SubSeriesName: "SOT23-8"
 CellName: "SOT23-8"
@@ -16,7 +16,7 @@ PRT: "C:\PADS Projects\Reuse\3DModels\PartDB\Packages\User\SOT23-8\SOT23-8.prt"
 PTD: "C:\PADS Projects\Reuse\3DModels\PartDB\User\SOT23-8\SOT23-8.etd"
 
 
-RefDes: 56
+RefDes: 58
 FactPartName: "TSW_2P"
 SubSeriesName: "TSW_SMD-3x6x5"
 CellName: "SW-3_6_2.5-LS"
@@ -67,7 +67,7 @@ PRT: "C:\PADS Projects\Reuse\3DModels\PartDB\Packages\User\CS_SMD_6x4-R\CS_SMD_6
 PTD: "C:\PADS Projects\Reuse\3DModels\PartDB\User\CS_SMD_6x4-R\CS_SMD_6x4-R.etd"
 
 
-RefDes: 51
+RefDes: 52
 FactPartName: "RP-SMD"
 SubSeriesName: "3362P"
 PartNum: "3362P"
@@ -151,7 +151,7 @@ PRT: "C:\PADS Projects\Reuse\3DModels\PartDB\Packages\User\cd_a_3216__-2 asm\cd_
 PTD: "C:\PADS Projects\Reuse\3DModels\PartDB\User\cd_a_3216__-2 asm\cd_a_3216__-2 asm.etd"
 
 
-RefDes: 41
+RefDes: 42
 FactPartName: "R-SMD"
 SubSeriesName: "R0402-G-hp"
 CellName: "R0402-HP_M"
@@ -168,7 +168,7 @@ PRT: "C:\PADS Projects\Reuse\3DModels\PartDB\Packages\User\R0402-G-hp\R0402-G-hp
 PTD: "C:\PADS Projects\Reuse\3DModels\PartDB\User\R0402-G-hp\R0402-G-hp.etd"
 
 
-RefDes: 45
+RefDes: 46
 FactPartName: "R-SMD"
 SubSeriesName: "R0603-G-hp"
 CellName: "R0603-HP_M"
@@ -185,7 +185,7 @@ PRT: "C:\PADS Projects\Reuse\3DModels\PartDB\Packages\User\R0603-G-hp\R0603-G-hp
 PTD: "C:\PADS Projects\Reuse\3DModels\PartDB\User\R0603-G-hp\R0603-G-hp.etd"
 
 
-RefDes: 48
+RefDes: 49
 FactPartName: "R-SMD"
 SubSeriesName: "R0805-G-hp"
 CellName: "R0805-HP_M"
@@ -202,7 +202,7 @@ PRT: "C:\PADS Projects\Reuse\3DModels\PartDB\Packages\User\R0805-G-hp\R0805-G-hp
 PTD: "C:\PADS Projects\Reuse\3DModels\PartDB\User\R0805-G-hp\R0805-G-hp.etd"
 
 
-RefDes: 37
+RefDes: 38
 FactPartName: "R-SMD"
 SubSeriesName: "R0201-G-hp"
 CellName: "R0201-HP_L"
@@ -219,7 +219,7 @@ PRT: "C:\PADS Projects\Reuse\3DModels\PartDB\Packages\User\R0201-G-hp\R0201-G-hp
 PTD: "C:\PADS Projects\Reuse\3DModels\PartDB\User\R0201-G-hp\R0201-G-hp.etd"
 
 
-RefDes: 40
+RefDes: 41
 FactPartName: "R-SMD"
 SubSeriesName: "R0402-G-hp"
 CellName: "R0402-HP_L"
@@ -236,7 +236,7 @@ PRT: "C:\PADS Projects\Reuse\3DModels\PartDB\Packages\User\R0402-G-hp\R0402-G-hp
 PTD: "C:\PADS Projects\Reuse\3DModels\PartDB\User\R0402-G-hp\R0402-G-hp.etd"
 
 
-RefDes: 44
+RefDes: 45
 FactPartName: "R-SMD"
 SubSeriesName: "R0603-G-hp"
 CellName: "R0603-HP_L"
@@ -253,7 +253,7 @@ PRT: "C:\PADS Projects\Reuse\3DModels\PartDB\Packages\User\R0603-G-hp\R0603-G-hp
 PTD: "C:\PADS Projects\Reuse\3DModels\PartDB\User\R0603-G-hp\R0603-G-hp.etd"
 
 
-RefDes: 47
+RefDes: 48
 FactPartName: "R-SMD"
 SubSeriesName: "R0805-G-hp"
 CellName: "R0805-HP_L"
@@ -336,6 +336,22 @@ Density: 3e-10
 Side: 
 PRT: "C:\PADS Projects\Reuse\3DModels\PartDB\Packages\User\CDRH74\CDRH74.prt"
 PTD: "C:\PADS Projects\Reuse\3DModels\PartDB\User\CDRH74\CDRH74.etd"
+
+
+RefDes: 36
+FactPartName: "PH2.0-3P"
+SubSeriesName: "PH2.0-LI-3P"
+PartNum: "PH2.0-LI-3P"
+Height: 0
+Mass: 9999
+Package: "PH2.0-LI-3P"
+ITHS: 0
+Material_ID: 1
+Package_Material: 0
+Density: 3e-10
+Side: 
+PRT: "C:\PADS Projects\Reuse\3DModels\PartDB\Packages\User\PH2.0-LI-3P\PH2.0-LI-3P.prt"
+PTD: "C:\PADS Projects\Reuse\3DModels\PartDB\User\PH2.0-LI-3P\PH2.0-LI-3P.etd"
 
 
 RefDes: 31
@@ -422,7 +438,7 @@ PRT: "C:\PADS Projects\Reuse\3DModels\PartDB\Packages\User\IMXRT1064-xVL V14\IMX
 PTD: "C:\PADS Projects\Reuse\3DModels\PartDB\User\IMXRT1064-xVL V14\IMXRT1064-xVL V14.etd"
 
 
-RefDes: 36
+RefDes: 37
 FactPartName: "R-SMD"
 SubSeriesName: "0805"
 PartNum: "0805"
@@ -455,9 +471,26 @@ PRT: "C:\PADS Projects\Reuse\3DModels\PartDB\Packages\User\TO252\TO252.prt"
 PTD: "C:\PADS Projects\Reuse\3DModels\PartDB\User\TO252\TO252.etd"
 
 
-RefDes: 57
+RefDes: 59
 FactPartName: "XH2.54-6P"
 SubSeriesName: "XH2_54-6P_H"
+PartNum: "XH2_54-6P_H"
+Height: 0
+Mass: 9999
+Package: "XH2_54-6P_H"
+ITHS: 0
+Material_ID: 1
+Package_Material: 0
+Density: 3e-10
+Side: 
+PRT: "C:\PADS Projects\Reuse\3DModels\PartDB\Packages\User\XH2_54-6P_H\XH2_54-6P_H.prt"
+PTD: "C:\PADS Projects\Reuse\3DModels\PartDB\User\XH2_54-6P_H\XH2_54-6P_H.etd"
+
+
+RefDes: 60
+FactPartName: "XH2.54-6P"
+SubSeriesName: "XH2_54-6P_H"
+CellName: "XH2.54-6P-WI"
 PartNum: "XH2_54-6P_H"
 Height: 0
 Mass: 9999
@@ -488,7 +521,7 @@ PRT: "C:\PADS Projects\Reuse\3DModels\PartDB\Packages\User\LED_0603-R\LED_0603-R
 PTD: "C:\PADS Projects\Reuse\3DModels\PartDB\User\LED_0603-R\LED_0603-R.etd"
 
 
-RefDes: 54
+RefDes: 56
 FactPartName: "SW-2P"
 SubSeriesName: "SW_DIP-2P_R"
 CellName: "SW2.54-2P-LI_R"
@@ -538,7 +571,7 @@ PRT: "C:\PADS Projects\Reuse\3DModels\PartDB\Packages\User\LED_0603-B\LED_0603-B
 PTD: "C:\PADS Projects\Reuse\3DModels\PartDB\User\LED_0603-B\LED_0603-B.etd"
 
 
-RefDes: 53
+RefDes: 54
 FactPartName: "SSW-1P"
 SubSeriesName: "User Library-SLIDE SWITCH SS12F23"
 CellName: "SS-12D10"
@@ -555,7 +588,24 @@ PRT: "C:\PADS Projects\Reuse\3DModels\PartDB\Packages\User\User Library-SLIDE SW
 PTD: "C:\PADS Projects\Reuse\3DModels\PartDB\User\User Library-SLIDE SWITCH SS12F23\User Library-SLIDE SWITCH SS12F23.etd"
 
 
-RefDes: 52
+RefDes: 55
+FactPartName: "SSW-1P"
+SubSeriesName: "User Library-SLIDE SWITCH SS12F23"
+CellName: "SS-12F23"
+PartNum: "User Library-SLIDE SWITCH SS12F23"
+Height: 0
+Mass: 9999
+Package: "User Library-SLIDE SWITCH SS12F23"
+ITHS: 0
+Material_ID: 1
+Package_Material: 0
+Density: 3e-10
+Side: 
+PRT: "C:\PADS Projects\Reuse\3DModels\PartDB\Packages\User\User Library-SLIDE SWITCH SS12F23\User Library-SLIDE SWITCH SS12F23.prt"
+PTD: "C:\PADS Projects\Reuse\3DModels\PartDB\User\User Library-SLIDE SWITCH SS12F23\User Library-SLIDE SWITCH SS12F23.etd"
+
+
+RefDes: 53
 FactPartName: "RT9080-33GB"
 SubSeriesName: "SOT23-5"
 CellName: "SOT23-5L"
@@ -656,7 +706,7 @@ PRT: "C:\PADS Projects\Reuse\3DModels\PartDB\Packages\User\5.08LI-2P\5.08LI-2P.p
 PTD: "C:\PADS Projects\Reuse\3DModels\PartDB\User\5.08LI-2P\5.08LI-2P.etd"
 
 
-RefDes: 58
+RefDes: 61
 FactPartName: "XT60PW-M"
 SubSeriesName: "XT60PW-M"
 PartNum: "XT60PW-M"
@@ -876,7 +926,7 @@ PRT: "C:\PADS Projects\Reuse\3DModels\PartDB\Packages\User\c_1812\c_1812.prt"
 PTD: "C:\PADS Projects\Reuse\3DModels\PartDB\User\c_1812\c_1812.etd"
 
 
-RefDes: 38
+RefDes: 39
 FactPartName: "R-SMD"
 SubSeriesName: "R0201-BK"
 CellName: "R0201_L"
@@ -893,7 +943,7 @@ PRT: "C:\PADS Projects\Reuse\3DModels\PartDB\Packages\User\R0201-BK\R0201-BK.prt
 PTD: "C:\PADS Projects\Reuse\3DModels\PartDB\User\R0201-BK\R0201-BK.etd"
 
 
-RefDes: 39
+RefDes: 40
 FactPartName: "R-SMD"
 SubSeriesName: "R0201-BK"
 CellName: "R0201_M"
@@ -910,7 +960,7 @@ PRT: "C:\PADS Projects\Reuse\3DModels\PartDB\Packages\User\R0201-BK\R0201-BK.prt
 PTD: "C:\PADS Projects\Reuse\3DModels\PartDB\User\R0201-BK\R0201-BK.etd"
 
 
-RefDes: 42
+RefDes: 43
 FactPartName: "R-SMD"
 SubSeriesName: "R0402-BK"
 CellName: "R0402_L"
@@ -927,7 +977,7 @@ PRT: "C:\PADS Projects\Reuse\3DModels\PartDB\Packages\User\R0402-BK\R0402-BK.prt
 PTD: "C:\PADS Projects\Reuse\3DModels\PartDB\User\R0402-BK\R0402-BK.etd"
 
 
-RefDes: 43
+RefDes: 44
 FactPartName: "R-SMD"
 SubSeriesName: "R0402-BK"
 CellName: "R0402_M"
@@ -944,7 +994,7 @@ PRT: "C:\PADS Projects\Reuse\3DModels\PartDB\Packages\User\R0402-BK\R0402-BK.prt
 PTD: "C:\PADS Projects\Reuse\3DModels\PartDB\User\R0402-BK\R0402-BK.etd"
 
 
-RefDes: 46
+RefDes: 47
 FactPartName: "R-SMD"
 SubSeriesName: "R0603-BK"
 CellName: "R0603_L"
@@ -961,7 +1011,7 @@ PRT: "C:\PADS Projects\Reuse\3DModels\PartDB\Packages\User\R0603-BK\R0603-BK.prt
 PTD: "C:\PADS Projects\Reuse\3DModels\PartDB\User\R0603-BK\R0603-BK.etd"
 
 
-RefDes: 49
+RefDes: 50
 FactPartName: "R-SMD"
 SubSeriesName: "R0805-BK"
 CellName: "R0805_L"
@@ -978,7 +1028,7 @@ PRT: "C:\PADS Projects\Reuse\3DModels\PartDB\Packages\User\R0805-BK\R0805-BK.prt
 PTD: "C:\PADS Projects\Reuse\3DModels\PartDB\User\R0805-BK\R0805-BK.etd"
 
 
-RefDes: 50
+RefDes: 51
 FactPartName: "R-SMD"
 SubSeriesName: "R0805-BK"
 CellName: "R0805_M"
