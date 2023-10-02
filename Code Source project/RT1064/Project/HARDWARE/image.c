@@ -502,10 +502,13 @@ void Image_Get_neighborhoods(uint8(*Image_Use)[IMAGE_WIDTH])
 	Left_Count=0;
 	Right_Count=0;
 	uint16 cur_row,cur_col;//当前行列
+	uint8 Pixel_Change;//灰白像素变化标志位——恢复原来的bug
+	uint8 Pixel_Count;//计算变化对应的下标值
+	uint8 Pixel_row,Pixel_col;//记录变化像素点的坐标
 	if(Image_Get_LeftPoint(117))
 	{
 		Left[0].row=Image_Get_LeftPoint(117);
-		Left[0].column=left_point;
+		Left[0].column=left_point-1;
 		Left[0].flag=1;
 		Left[0].grow=2;//初始生长方向为2
 		cur_row=Left[0].row;//返回起始的行数
@@ -600,7 +603,7 @@ void Image_Get_neighborhoods(uint8(*Image_Use)[IMAGE_WIDTH])
 				break;
 			}
 			//二 检验越界
-			if(cur_row<=3||cur_row>=IMAGE_HEIGHT-3||cur_col<=3||cur_col>=IMAGE_WIDTH-3)
+			if(cur_row<2||cur_row>IMAGE_HEIGHT-2||cur_col<1||cur_col>IMAGE_WIDTH-2)
 			{
 				break;
 			}
@@ -615,7 +618,7 @@ void Image_Get_neighborhoods(uint8(*Image_Use)[IMAGE_WIDTH])
 	if(Image_Get_RightPoint(117))
 	{
 		Right[0].row=Image_Get_RightPoint(117);
-		Right[0].column=right_point;
+		Right[0].column=right_point+1;
 		Right[0].flag=1;
 		Right[0].grow=2;
 		cur_row=Right[0].row;
@@ -656,14 +659,25 @@ void Image_Get_neighborhoods(uint8(*Image_Use)[IMAGE_WIDTH])
 			}
 			else if(Image_Use_Robert[cur_row-1][cur_col+1]==BLACK&&Image_Use_Robert[cur_row-1][cur_col]==WHITE)
 			{
-				Right[Right_Count].row=cur_row-1;
-				Right[Right_Count].column=cur_col+1;
-				Right[Right_Count].flag=1;
-				Right[Right_Count].grow=3;
-				cur_row=Right[Right_Count].row;
-				cur_col=Right[Right_Count].column;
-				Right_Count++;
-
+				if(cur_col!=157)//处理分界点问题
+				{
+					Right[Right_Count].row=cur_row-1;
+					Right[Right_Count].column=cur_col+1;
+					Right[Right_Count].flag=1;
+					Right[Right_Count].grow=3;
+					cur_row=Right[Right_Count].row;
+					cur_col=Right[Right_Count].column;
+					Right_Count++;
+				}
+				else
+				{
+					Image_Use_Robert[cur_row-1][cur_col]=BLACK;//将跳变的白点变成黑色，下次就找得到了
+					Pixel_row=cur_row-1;
+					Pixel_col=cur_col;
+					Pixel_Count=Right_Count;//记录此时的计数值
+					Pixel_Change=1;//1为变成了黑色
+				}
+//				if(Image_Use_Robert[cur_row][cur_col-1])
 			}
 			else if(Image_Use_Robert[cur_row-1][cur_col]==BLACK&&Image_Use_Robert[cur_row-1][cur_col-1]==WHITE)
 			{
@@ -707,10 +721,18 @@ void Image_Get_neighborhoods(uint8(*Image_Use)[IMAGE_WIDTH])
 			}
 			else
 				break;
-			if(cur_row<=3||cur_row>=IMAGE_HEIGHT-3||cur_col<=3||cur_col>=IMAGE_WIDTH-3)
+			//下面是巡线以后其他的处理
+			//1  越界处理
+			if(cur_row<2||cur_row>IMAGE_HEIGHT-2||cur_col<1||cur_col>IMAGE_WIDTH-2)
 			{
 				break;
 			}
+			//2 黑框分点的还原
+			if((Right_Count-Pixel_Count)==1)
+			{
+				Image_Use_Robert[Pixel_row][Pixel_col]=WHITE;
+			}
+			tft180_draw_line(0,0,cur_col/2,cur_row/2,3);
 //			//下面是巡线以后其他的处理
 //            //一 越界处理
 //			if(cur_row<=2||cur_row>=(IMAGE_WIDTH-3)||cur_col<=2||cur_col>=(IMAGE_WIDTH-3))
@@ -740,8 +762,6 @@ void Image_Get_neighborhoods(uint8(*Image_Use)[IMAGE_WIDTH])
 //            }
 		}
 	}
-	tft180_show_int(3,80,cur_row,3);
-	tft180_show_int(3,100,cur_col,3);
 }
 
 
@@ -1039,6 +1059,7 @@ void Image_Run(void)
 	Image_Sobel( Image_Use, Image_Use_Robert ,TH);//全局Sobel得二值图(方案二) 2.8ms
     tft180_displayimage03x((uint8 *)Image_Use_Robert, 80, 60); //pidMotor1Speed
 //	tft180_draw_line(0,0,start_point_Left[0],start_point_Left[1],RGB565_RED);//行坐标l_countl_count
+
 	Image_Get_neighborhoods(Image_Use_Robert);
 //	tft180_show_int(3,120,points_l[l_count-1][0],3);
 //	Image_Get_neighborhoods(100,Image_Use);
@@ -1055,8 +1076,10 @@ void Image_Run(void)
 	}
 	for(i=0;i<Right_Count;i++)
 	{
-		tft180_draw_point(Right[i].column/2,Right[i].row/2,RGB565_BLUE);
-		tft180_draw_point((Right[i].column/2)+1,Right[i].row/2,RGB565_BLUE);
+		tft180_draw_point(Right[i].column/2,Right[i].row/2,RGB565_GREEN);
+		tft180_draw_point((Right[i].column/2)+1,Right[i].row/2,RGB565_GREEN);
+		tft180_draw_point((Right[i].column/2)+3,Right[i].row/2,RGB565_GREEN);
+		tft180_draw_point((Right[i].column/2)+2,Right[i].row/2,RGB565_GREEN);
 	}
 //	for(i=0;i<Left_Count;i++)
 //	{
