@@ -503,8 +503,8 @@ void Image_Get_neighborhoods(uint8(*Image_Use)[IMAGE_WIDTH])
 	Right_Count=0;
 	uint16 cur_row,cur_col;//当前行列
 	uint8 Pixel_Change;//灰白像素变化标志位——恢复原来的bug
-	uint8 Pixel_Count;//计算变化对应的下标值
-	uint8 Pixel_row,Pixel_col;//记录变化像素点的坐标
+	uint8 Pixel_Count_r,Pixel_Count_l;//计算变化对应的下标值
+	uint8 Pixel_row,Pixel_col;//记录变化像素点的坐标（右坐标）
 	if(Image_Get_LeftPoint(117))
 	{
 		Left[0].row=Image_Get_LeftPoint(117);
@@ -550,13 +550,40 @@ void Image_Get_neighborhoods(uint8(*Image_Use)[IMAGE_WIDTH])
 			}
 			else if(Image_Use_Robert[cur_row-1][cur_col-1]==BLACK&&Image_Use_Robert[cur_row-1][cur_col]==WHITE)
 			{
-				Left[Left_Count].row=cur_row-1;
-				Left[Left_Count].column=cur_col-1;
-				Left[Left_Count].flag=1;
-				Left[Left_Count].grow=3;
-				cur_row =Left[Left_Count].row;
-				cur_col=Left[Left_Count].column;//更新中心坐标点
-				Left_Count++;
+				if(Image_Use_Robert[cur_row][cur_col+1]==BLACK&&Image_Use_Robert[cur_row-1][cur_col+1]==WHITE&&
+					Image_Use_Robert[cur_row+1][cur_col+1]==WHITE)
+				/*生长方向选择为6（正左）*/
+				{
+					Left[Left_Count].row=cur_row;
+					Left[Left_Count].column=cur_col+1;
+					Left[Left_Count].flag=1;
+					Left[Left_Count].grow=6;
+					cur_row=Left[Left_Count].row;
+					cur_col=Left[Left_Count].column;
+					Left_Count++;
+				}
+				else
+				{
+					if(cur_col!=2)//处理分界点问题
+					{
+						Left[Left_Count].row=cur_row-1;
+						Left[Left_Count].column=cur_col-1;
+						Left[Left_Count].flag=1;
+						Left[Left_Count].grow=3;
+						cur_row =Left[Left_Count].row;
+						cur_col=Left[Left_Count].column;//更新中心坐标点
+						Left_Count++;
+					}
+					else
+					{
+						Image_Use_Robert[cur_row-1][cur_col]=BLACK;//将跳变的白点变成黑色，下次就找得到了
+						Pixel_row=cur_row-1;
+						Pixel_col=cur_col;
+						Pixel_Count_l=Left_Count;//记录此时的计数值
+						Pixel_Change=1;//1为变成了黑色
+					}
+					
+				}
 			}
 			else if(Image_Use_Robert[cur_row-1][cur_col]==BLACK&&Image_Use_Robert[cur_row-1][cur_col+1]==WHITE)
 			{
@@ -602,13 +629,19 @@ void Image_Get_neighborhoods(uint8(*Image_Use)[IMAGE_WIDTH])
 			{
 				break;
 			}
-			//二 检验越界
+			//二 1.检验越界
 			if(cur_row<2||cur_row>IMAGE_HEIGHT-2||cur_col<1||cur_col>IMAGE_WIDTH-2)
 			{
 				break;
 			}
+			//2 黑框分点的还原
+			if((Left_Count-Pixel_Count_l)==1)
+			{
+				Image_Use_Robert[Pixel_row][Pixel_col]=WHITE;
+			}
 		}
 	}
+	tft180_draw_line(50,30,Left[Left_Count-1].column/2,Left[Left_Count-1].row/2,RGB565_RED);
 	//采取左右对称，后面好写
 	/*
 	5	4	3
@@ -659,25 +692,45 @@ void Image_Get_neighborhoods(uint8(*Image_Use)[IMAGE_WIDTH])
 			}
 			else if(Image_Use_Robert[cur_row-1][cur_col+1]==BLACK&&Image_Use_Robert[cur_row-1][cur_col]==WHITE)
 			{
-				if(cur_col!=157)//处理分界点问题
+				/*
+				5 7检测为白，6为黑——检测竖直状态拐点问题
+				*/
+				
+				if(Image_Use_Robert[cur_row][cur_col-1]==BLACK&&Image_Use_Robert[cur_row-1][cur_col-1]==WHITE&&
+					Image_Use_Robert[cur_row+1][cur_col-1]==WHITE)
+				/*生长方向选择为6（正左）*/
 				{
-					Right[Right_Count].row=cur_row-1;
-					Right[Right_Count].column=cur_col+1;
+					Right[Right_Count].row=cur_row;
+					Right[Right_Count].column=cur_col-1;
 					Right[Right_Count].flag=1;
-					Right[Right_Count].grow=3;
+					Right[Right_Count].grow=6;
 					cur_row=Right[Right_Count].row;
 					cur_col=Right[Right_Count].column;
 					Right_Count++;
 				}
-				else
+				
+				else//提高优先级90°巡线判断的
 				{
-					Image_Use_Robert[cur_row-1][cur_col]=BLACK;//将跳变的白点变成黑色，下次就找得到了
-					Pixel_row=cur_row-1;
-					Pixel_col=cur_col;
-					Pixel_Count=Right_Count;//记录此时的计数值
-					Pixel_Change=1;//1为变成了黑色
+					if(cur_col!=157)//处理分界点问题
+					{
+						Right[Right_Count].row=cur_row-1;
+						Right[Right_Count].column=cur_col+1;
+						Right[Right_Count].flag=1;
+						Right[Right_Count].grow=3;
+						cur_row=Right[Right_Count].row;
+						cur_col=Right[Right_Count].column;
+						Right_Count++;
+					}
+					else
+					{
+						Image_Use_Robert[cur_row-1][cur_col]=BLACK;//将跳变的白点变成黑色，下次就找得到了
+						Pixel_row=cur_row-1;
+						Pixel_col=cur_col;
+						Pixel_Count_r=Right_Count;//记录此时的计数值
+						Pixel_Change=1;//1为变成了黑色
+					}
 				}
-//				if(Image_Use_Robert[cur_row][cur_col-1])
+				
 			}
 			else if(Image_Use_Robert[cur_row-1][cur_col]==BLACK&&Image_Use_Robert[cur_row-1][cur_col-1]==WHITE)
 			{
@@ -728,11 +781,12 @@ void Image_Get_neighborhoods(uint8(*Image_Use)[IMAGE_WIDTH])
 				break;
 			}
 			//2 黑框分点的还原
-			if((Right_Count-Pixel_Count)==1)
+			if((Right_Count-Pixel_Count_r)==1)
 			{
 				Image_Use_Robert[Pixel_row][Pixel_col]=WHITE;
 			}
-			tft180_draw_line(0,0,cur_col/2,cur_row/2,3);
+			
+//			tft180_draw_line(50,30,cur_col/2,cur_row/2,RGB565_RED);
 //			//下面是巡线以后其他的处理
 //            //一 越界处理
 //			if(cur_row<=2||cur_row>=(IMAGE_WIDTH-3)||cur_col<=2||cur_col>=(IMAGE_WIDTH-3))
@@ -1065,9 +1119,9 @@ void Image_Run(void)
 //	Image_Get_neighborhoods(100,Image_Use);
 //	tft180_draw_line(0,0,cur_col/2,cur_row/2,RGB565_RED);//行坐标l_countl_count
 	
-	
-	tft180_show_int(3,120,Left[3].row,3);
-	tft180_show_int(3,140,Right_Count,3);
+//	
+//	tft180_show_int(3,120,Left[3].row,3);
+//	tft180_show_int(3,140,Right_Count,3);
 //	Get_Midpoint();
 	for(i=0;i<Left_Count;i++)
 	{
@@ -1078,8 +1132,6 @@ void Image_Run(void)
 	{
 		tft180_draw_point(Right[i].column/2,Right[i].row/2,RGB565_GREEN);
 		tft180_draw_point((Right[i].column/2)+1,Right[i].row/2,RGB565_GREEN);
-		tft180_draw_point((Right[i].column/2)+3,Right[i].row/2,RGB565_GREEN);
-		tft180_draw_point((Right[i].column/2)+2,Right[i].row/2,RGB565_GREEN);
 	}
 //	for(i=0;i<Left_Count;i++)
 //	{

@@ -1750,7 +1750,7 @@
         <RecentRowIndex>2</RecentRowIndex>
         <RectRecentDocked>
           <Len>16</Len>
-          <Data>030000001C000000EA01000038000000</Data>
+          <Data>040000001C000000EB01000038000000</Data>
         </RectRecentDocked>
         <RectRecentFloat>
           <Len>16</Len>
@@ -1874,11 +1874,11 @@
       </Doc>
       <Doc>
         <Name>..\HARDWARE\image.c</Name>
-        <ColumnNumber>29</ColumnNumber>
-        <TopLine>491</TopLine>
-        <CurrentLine>669</CurrentLine>
+        <ColumnNumber>79</ColumnNumber>
+        <TopLine>446</TopLine>
+        <CurrentLine>644</CurrentLine>
         <Folding>1</Folding>
-        <ContractedFolders>203,323,330,355,362,378,387,394,403,411,422,448,458,768,775,789,802,928,937,940,948,959,967,1001,1009,1098,1107,1139,1147,1159,1166,1177,1184,1195,1212,1421,1428,1441,1448</ContractedFolders>
+        <ContractedFolders>203,239,248,254,262,323,330,355,362,378,387,394,403,411,422,448,458,822,829,843,856,982,991,994,1002,1013,1021,1055,1063,1150,1159,1191,1199,1211,1218,1229,1236,1247,1264,1473,1480,1493,1500</ContractedFolders>
         <PaneID>0</PaneID>
       </Doc>
       <Doc>
