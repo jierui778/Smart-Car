@@ -1,13 +1,10 @@
+Generating 3D model for part R-SMD.
 Generating 3D model for part SY8303AIC.
 Generating 3D model for part C-SMD.
-Generating 3D model for part R-SMD.
 Generating 3D model for part CT.
 Generating 3D model for part HDR-2X4P_2470369872.
 	*Warning: No mapping for cell/part HDR-2X4P_2470369872
-Generating 3D model for part XH2.54-6P.
 Generating 3D model for part IDC-6P.
-Generating 3D model for part HDR-8P_2720770805.
-	*Warning: No mapping for cell/part HDR-8P_2720770805
 Generating 3D model for part FPC0.5-16P.
 Generating 3D model for part CZ5.08-2P.
 Generating 3D model for part MIMXRT1064XVL_COREBOARD.
@@ -16,14 +13,15 @@ Generating 3D model for part SS8050_4039178358.
 	*Warning: No mapping for cell/part SS8050_4039178358
 Generating 3D model for part XT60PW-M.
 Generating 3D model for part RP-SMD.
-Generating 3D model for part PH2.0-3P_821119552.
-	*Warning: No mapping for cell/part PH2.0-3P_821119552
+Generating 3D model for part PH2.0-3P.
 Generating 3D model for part LED_SMD.
 Generating 3D model for part BEEP.
-Generating 3D model for part SSW-1P.
-	*Warning: Can't do orientation alignment on a 3D model which has no model properties.
 Generating 3D model for part SW-2P.
 Generating 3D model for part TSW_2P.
 Generating 3D model for part CS_SMD.
 Generating 3D model for part IRLR7843TRPBF.
+Generating 3D model for part SSW-1P.
 Generating 3D model for part L-CDRH.
+Generating 3D model for part HDR-2X8P_1278936319.
+	*Warning: No mapping for cell/part HDR-2X8P_1278936319
+Generating 3D model for part XH2.54-6P.

@@ -17,15 +17,17 @@ PID TraceTurnParam;
  * 将比例、积分和微分增益设置为0。
  *
  */
-void PID_init(void)
+void PID_Init(void)
 {
-    SpeedParam.kd = -40;
-    SpeedParam.ki = -5;
-    SpeedParam.kp = 0;
+    SpeedParam.kp = 100;
+    SpeedParam.ki = 5;
+    SpeedParam.kd = 0;
 
-    TraceTurnParam.kd = 2;
+
+
+    TraceTurnParam.kd = 0;
     TraceTurnParam.ki = 0;
-    TraceTurnParam.kp = 0.6;
+    TraceTurnParam.kp = 0;
     // pidMotor1Speed.actual_val=0.0;
     // pidMotor1Speed.target_val=0.00;
     // pidMotor1Speed.err=0.0;
@@ -101,10 +103,12 @@ int PositionPID2(float deviation, PID pid)
 int IncrementPID(float Deviation, PID pid)
 {
     float Increment_KP = pid.kp, Increment_KI = pid.ki, Increment_KD = pid.kd;
-    static float Current_Bias, Last_Bias, Lastlast_Bias, Result; // 定义静态变量
+    static float Current_Bias, Last_Bias, Lastlast_Bias;
+    int32 Result;                                                      // 定义静态变量
     Current_Bias = Deviation;                                    // 当前偏差
     // Integral_bias += Bias;
-    Result = Increment_KP * (Current_Bias - Last_Bias) + Increment_KI * Current_Bias + Increment_KD * (Current_Bias - 2 * Last_Bias + Lastlast_Bias); // 增量式PID控制器
+
+    Result = (int32)(Increment_KP * (Current_Bias - Last_Bias) + Increment_KI * Current_Bias + Increment_KD * (Current_Bias - 2 * Last_Bias + Lastlast_Bias)); // 增量式PID控制器
     Lastlast_Bias = Last_Bias;                                                                                                                        // 上上一次偏差保存
     Last_Bias = Current_Bias;                                                                                                                         // 上一次偏差保存
     return Result;                                                                                                                                    // 返回结果
@@ -112,10 +116,11 @@ int IncrementPID(float Deviation, PID pid)
 int IncrementPID2(float Deviation, PID pid)
 {
     float Increment_KP = pid.kp, Increment_KI = pid.ki, Increment_KD = pid.kd;
-    static float Current_Bias, Last_Bias, Lastlast_Bias, Result; // 定义静态变量
+    static float Current_Bias, Last_Bias, Lastlast_Bias;
+    int32 Result;                                                      // 定义静态变量
     Current_Bias = Deviation;                                    // 当前偏差
     // Integral_bias += Bias;
-    Result = Increment_KP * (Current_Bias - Last_Bias) + Increment_KI * Current_Bias + Increment_KD * (Current_Bias - 2 * Last_Bias + Lastlast_Bias); // 增量式PID控制器
+    Result = (int32)(Increment_KP * (Current_Bias - Last_Bias) + Increment_KI * Current_Bias + Increment_KD * (Current_Bias - 2 * Last_Bias + Lastlast_Bias)); // 增量式PID控制器
     Lastlast_Bias = Last_Bias;                                                                                                                        // 上上一次偏差保存
     Last_Bias = Current_Bias;                                                                                                                         // 上一次偏差保存
     return Result;                                                                                                                                    // 返回结果

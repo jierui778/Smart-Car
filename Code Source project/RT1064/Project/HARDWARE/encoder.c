@@ -16,11 +16,11 @@ void Encoder_Init(void)
     pit_ms_init(PIT_CH0, 100);                                                   // 初始化 PIT1 为周期中断 100ms 周期
     interrupt_set_priority((IRQn_Type)PIT_CH0, 0);                                    // 设置 PIT1 对周期中断的中断优先级为 0
 
-    pit_ms_init((pit_index_enum)PIT_CH1,200);//舵机转向调节周期为200ms
-    interrupt_set_priority((IRQn_Type)PIT_CH1,1);
+//    pit_ms_init((pit_index_enum)PIT_CH1,200);//舵机转向调节周期为200ms
+//    interrupt_set_priority((IRQn_Type)PIT_CH1,1);
 
-    pit_ms_init((pit_index_enum)PIT_CH2,250);//电机速度调节周期为250ms
-    interrupt_set_priority((IRQn_Type)PIT_CH2,2);
+////    pit_ms_init((pit_index_enum)PIT_CH2,250);//电机速度调节周期为250ms
+//    interrupt_set_priority((IRQn_Type)PIT_CH2,2);
 //    pit_ms_init(PIT_CH, 100);                                                   // 初始化 PIT1 为周期中断 100ms 周期
 //    interrupt_set_priority(PIT_PRIORITY, 0);                                    // 设置 PIT1 对周期中断的中断优先级为 0
 }
@@ -39,13 +39,13 @@ void Encoder_Update(int32 *Data_L, int32 *Data_R)
     encoder_clear_count(ENCODER_L);                                       // 清空编码器计数
     encoder_clear_count(ENCODER_R);                                       // 清空编码器计数
 }
-// /**
-//  * @brief 中断读取编码器计数(100ms)
-//  *
-//  */
-// void pit_handler (void)
-// {
+ /**
+  * @brief 中断读取编码器计数(100ms)
+  *
+  */
+ void pit_handler (void)
+ {
 
-//     Encoder_Update(&encoder_l_data, &encoder_r_data);
-// }
+     Encoder_Update(&Encoder_L_Data, &Encoder_R_Data);
+ }
 

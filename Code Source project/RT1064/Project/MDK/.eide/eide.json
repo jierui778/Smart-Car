@@ -153,6 +153,9 @@
             "path": "../HARDWARE/encoder.h"
           },
           {
+            "path": "../HARDWARE/filter.c"
+          },
+          {
             "path": "../HARDWARE/image.c"
           },
           {

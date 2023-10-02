@@ -15,6 +15,8 @@
 #define ENCODER_R_A (QTIMER1_ENCODER2_CH1_C2)  // A相对应的引脚
 #define ENCODER_R_B (QTIMER1_ENCODER2_CH2_C24) // B相对应的引脚
 
+#define WHEEL_R 33//轮子半径：33mm
+
 extern int32 Encoder_L_Data, Encoder_R_Data; // 编码器的计数值，全局声明
 
 extern void Encoder_Init(void);                     // 初始化编码器

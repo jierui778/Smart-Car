@@ -3,12 +3,15 @@
 #define _FILTER_H
 
 typedef struct {
-    float Q; // 过程噪声协方差
-    float R; // 观测噪声协方差
-    float xhat; // 状态估计值
-    float P; // 状态估计协方差
-    float K; // 卡尔曼增益
+    float LastP; // 上次估算协方差 初始化值为0.02
+    float Now_P; // 当前估算协方差 初始化值为0
+    float out;   // 卡尔曼滤波器输出 初始化值为0
+    float Kg;    // 卡尔曼增益 初始化值为0
+    float Q;     // 过程噪声协方差 初始化值为0.001
+    float R;     // 观测噪声协方差 初始化值为0.543
 } KalmanParam;
+
+extern KalmanParam test;
 
 /**
  * @brief 一维卡尔曼滤波
@@ -33,8 +36,7 @@ typedef struct {
  * Pt　= (I-KtH)(Pt)',(Pt)'为先验（一维时H、I为1）
  * 总结：五个变量（协方差，上一次协方差，过程噪声，观测噪声，增益），五个公式
  */
-void KalmanFilter(float Accel,float Gyro,float *Angle,float *Gyro_Integral);
+float KalmanFilter(float input, KalmanParam *kfp);
 
-void Fir
 
 #endif // FILTER_H
