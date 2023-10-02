@@ -11,7 +11,7 @@ typedef struct {
     float R;     // 观测噪声协方差 初始化值为0.543
 } KalmanParam;
 
-extern KalmanParam test;
+extern KalmanParam EncoderParam;//全局声明编码器卡尔曼滤波参数
 
 /**
  * @brief 一维卡尔曼滤波
@@ -37,6 +37,8 @@ extern KalmanParam test;
  * 总结：五个变量（协方差，上一次协方差，过程噪声，观测噪声，增益），五个公式
  */
 float KalmanFilter(float input, KalmanParam *kfp);
+
+
 
 
 #endif // FILTER_H

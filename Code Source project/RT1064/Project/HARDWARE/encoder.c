@@ -27,7 +27,7 @@ void Encoder_Init(void)
 
 
 /**
- * @brief 更新编码器数据
+ * @brief 更新编码器数据，丢中断或者任务调度函数内
  *
  * @param encoder_l_data 传入指针
  * @param encoder_r_data 传入指针
@@ -35,17 +35,9 @@ void Encoder_Init(void)
 void Encoder_Update(int32 *Data_L, int32 *Data_R)
 {
     *Data_L = encoder_get_count(ENCODER_L);                          // 获取编码器计数
-    *Data_R = -encoder_get_count(ENCODER_R);                          // 获取编码器计数
+    *Data_R = -encoder_get_count(ENCODER_R);                          // 获取编码器计数//预采用kalman滤波
     encoder_clear_count(ENCODER_L);                                       // 清空编码器计数
     encoder_clear_count(ENCODER_R);                                       // 清空编码器计数
 }
- /**
-  * @brief 中断读取编码器计数(100ms)
-  *
-  */
- void pit_handler (void)
- {
 
-     Encoder_Update(&Encoder_L_Data, &Encoder_R_Data);
- }
 

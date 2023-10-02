@@ -44,12 +44,14 @@ void Speed_Control(float left_speed,float right_speed)
 {
     // pidMotor1Speed.target_val=left_speed;
 	// pidMotor2Speed.target_val=right_speed;
-    float Deviation_L = left_speed - Encoder_L_Data;
-    float Deviation_R = right_speed - Encoder_R_Data;//需要根据轮子半径进行转换
+    float Speed_L,Speed_R;
+    Speed_L = Encoder_L_Data / ENCODER_COUNT * WHEEL_C / 0.01; // 计算左轮速度
+    Speed_R = Encoder_R_Data / ENCODER_COUNT * WHEEL_C / 0.01; // 计算右轮速度
 
-    Motor_SetPwmL(IncrementPID(Deviation_L, SpeedParam));
-    // Motor_SetPwmR(PositionPID2(Deviation_R, SpeedParam));/////
-    // Motor_SetR(IncrementPID_Speed(&pidMotor2Speed,speed_right));
+    float Deviation_L = left_speed - Speed_L;
+    float Deviation_R = right_speed - Speed_R; // 需要根据轮子半径进行转换
+
+    static Increment_L,Increment_R;//累计增量
 }
 
 /**
@@ -84,3 +86,9 @@ void Speed_Control(float left_speed,float right_speed)
 
 
 
+
+
+void TrackLine_Control()
+{
+    
+}

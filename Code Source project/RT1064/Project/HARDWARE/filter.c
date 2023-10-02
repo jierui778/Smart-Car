@@ -28,3 +28,8 @@ float KalmanFilter(float input, KalmanParam *kfp)
     kfp->LastP = (1 - kfp->Kg) * kfp->Now_P;
     return kfp->out;
 }
+
+void Iir_Filter(float Data_In)
+{
+    
+}

@@ -26,7 +26,7 @@ typedef struct
 
 
 
-void Schedule_Setup(void);
+// void Schedule_Setup(void);
 void Schedule_Run(void);
 void pit_handler(void);
 #endif // SCHEDULER_H
