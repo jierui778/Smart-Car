@@ -17,7 +17,7 @@ float Speed_Vary=0.3;//单次速度的增值（用来加速减速）
  */
 void Control_Init()
 {
-    PID_init();
+    PID_Init();
     Motor_Init();
 }
 
@@ -47,8 +47,8 @@ void Speed_Control(float left_speed,float right_speed)
     float Deviation_L = left_speed - Encoder_L_Data;
     float Deviation_R = right_speed - Encoder_R_Data;//需要根据轮子半径进行转换
 
-    Motor_SetPwmL(IncrementPID(left_speed, SpeedParam));
-    Motor_SetPwmR(IncrementPID2(left_speed, SpeedParam));/////
+    Motor_SetPwmL(IncrementPID(Deviation_L, SpeedParam));
+    // Motor_SetPwmR(PositionPID2(Deviation_R, SpeedParam));/////
     // Motor_SetR(IncrementPID_Speed(&pidMotor2Speed,speed_right));
 }
 

@@ -1,8 +1,6 @@
 #include "motor.h"
-//DRV驱动方案
-//PWM频率一般选择13-17kHZ，这里我们选着10kHZ
-
-
+// DRV驱动方案
+// PWM频率一般选择13-17kHZ，这里我们选着10kHZ
 
 /**
  * @brief 电机引脚初始化
@@ -18,8 +16,7 @@ void Motor_Init(void)
     pwm_init(MOTOR_PWML, 10000, 0);
 
     pwm_set_duty(MOTOR_PWML, 0);
-    pwm_set_duty(MOTOR_PWMR, 
-	0); // 两电机先不动
+    pwm_set_duty(MOTOR_PWMR, 0); // 两电机先不动
 }
 
 /**
@@ -65,23 +62,23 @@ void Motor_SetPwmL(int16 Speed)
  * @param left_speed 左电机速度，范围为-1000到1000
  * @param right_speed 右电机速度，范围为-1000到1000
  */
-void Motor_SetPwmAll(int16 left_speed,int16 right_speed)
+void Motor_SetPwmAll(int16 left_speed, int16 right_speed)
 {
-    if(left_speed>1000)
+    if (left_speed > 1000)
     {
-        left_speed=1000;
+        left_speed = 1000;
     }
-    else if(left_speed<-1000)
+    else if (left_speed < -1000)
     {
-        left_speed=-1000;
+        left_speed = -1000;
     }
-    if(right_speed>1000)
+    if (right_speed > 1000)
     {
-        right_speed=1000;
+        right_speed = 1000;
     }
-    else if(right_speed<-1000)
+    else if (right_speed < -1000)
     {
-        right_speed=-1000;
+        right_speed = -1000;
     }
 
     Motor_SetPwmL(left_speed);

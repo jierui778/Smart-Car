@@ -33,8 +33,7 @@ typedef struct {
  * Pt　= (I-KtH)(Pt)',(Pt)'为先验（一维时H、I为1）
  * 总结：五个变量（协方差，上一次协方差，过程噪声，观测噪声，增益），五个公式
  */
-void KalmanFilter(float Accel,float Gyro,float *Angle,float *Gyro_Integral);
+float Kalman_Filter(float Data_In, KalmanParam KFP);
 
-void Fir
 
 #endif // FILTER_H

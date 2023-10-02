@@ -88,3 +88,25 @@ uint8 Atan2(float y, float x)
 
     return alpha; // 方向
 } // end of function Atan2
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * @brief 计算圆的周长
+ *
+ * @param r 半径
+ * @return int8 周长
+ */
+float Circle_C(float r)
+{
+    return 2 * PI * r;
+}

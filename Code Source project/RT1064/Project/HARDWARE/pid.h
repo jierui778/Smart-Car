@@ -1,3 +1,4 @@
+#include "zf_common_headfile.h"
 #ifndef _PID_H
 #define _PID_H
 
@@ -39,5 +40,5 @@ extern int IncrementPID(float Deviation, PID pid);
 extern int IncrementPID2(float Deviation, PID pid);
 // extern int IncrementPID_PWM(float *setspeed,float *actualspeed,PID pid);
 // float IncrementPID_Speed(tPid * pid,float actual_val);
-void PID_init(void);
+void PID_Init(void);
 #endif
