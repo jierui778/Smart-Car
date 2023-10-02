@@ -19,18 +19,40 @@
 
 #define LINE_K 0.5 //斜率，判断是否为直道
 extern uint8 Image_Use[IMAGE_HEIGHT][IMAGE_WIDTH]; // 全局声明用于处理的图像数组
+
+/*图像处理*/
 void Image_Compress();                             // 对原始图像进行压缩
-uint8 OSTU_GetThreshold(uint8 *image, uint16 Width, uint16 Height);//优化大津贴法获取阈值
-
+uint8 OSTU_GetThreshold(uint8 *image, uint16 Width, uint16 Height);//优化大津法获取阈值
 void Image_Sobel(uint8 Image_in[IMAGE_HEIGHT][IMAGE_WIDTH], uint8_t Image_out[IMAGE_HEIGHT][IMAGE_WIDTH], uint16 Threshold); // 全局sobel方案
-
 void Image_Binarization(unsigned char threshold, uint8 (*Image_Use)[IMAGE_WIDTH]); // 根据阈值对图像进行二值化
+void Image_DrawRectangle(void);//画黑框
+void Image_Get_neighborhoods(uint8 (*Image_Use)[IMAGE_WIDTH]);//八邻域巡线
+void Image_Filter(void);//腐蚀滤波函数（简单的早点过滤）
+uint8 Image_Get_RightPoint(uint8 start_row);//求左边界起始点坐标函数
+uint8 Image_Get_LeftPoint(uint8 start_row);//求右边界起始点坐标函数
 
-void Image_FillCross(uint8 *l_border, uint8 *r_border, uint16 total_num_l, uint16 total_num_r,
-                     uint16 *dir_l, uint16 *dir_r, uint16 (*points_l)[2], uint16 (*points_r)[2]);
-void Image_DrawRectangle(void);
-void Image_Get_neighborhoods(uint8 (*Image_Use)[IMAGE_WIDTH]);
+/*辅助计算*/
+float Image_ab_value(float a,float b);//求浮点型的绝对值
+float Image_Getk(uint8 start_y,uint8 end_y,uint8 interval);//简单计算直线斜率
+int abs_int(int a, int b);//求两整型绝对值
+int min(int a, int b);//求两整型最小值
+int Image_LeftGrowDirection(uint8 Direction);//计算左边线中生长某方向的总个数
+int Image_RightGrowDirection(uint8 Direction);//计算右边线中生长某方向的总个数
+uint8 Image_Scan_Row(uint8(*Image_Use)[IMAGE_WIDTH],uint8 target_row);//扫某行的黑白跳变点（斑马线判断）
+uint8 Image_Scan_Column(uint8(*Image_Use)[IMAGE_WIDTH],uint8 target_column);//扫某列的黑白跳变点（斑马线判断）
+void Image_pointsleft(uint8 x1,uint8 y1,uint8 x2,uint8 y2);//两点坐标求斜率和截距
+void Image_pointsright(uint8 x1,uint8 y1,uint8 x2,uint8 y2);//两点坐标求斜率和截距（存的数组不一样）
+float Imgae_Slope(uint8 begin,uint8 end,uint8 *border);//最小二乘法求直线斜率
+void Image_CountKB(uint8 start,uint8 end,uint8 *border, float *slope_rate,float *intercept);//最小二乘法求斜率和截距
+
+/*元素*/
+void Image_FillCross(uint8(*Image_Use)[IMAGE_WIDTH]);//十字
+uint8 Image_Stretch_Left(void);//左直道元素判断
+uint8 Image_Stretch_Right(void);//右直道元素判断
+void Image_Ramp(void);//坡道判断
+void Image_LeftRound(uint8(*Image_Use)[IMAGE_WIDTH]);//左环岛判断补线
+
+/*运行*/
 void Image_Run(void);//图像处理主函数
-void CannyEdgeTest(uint8 org[IMAGE_HEIGHT][IMAGE_WIDTH], uint8 lowThr);//CANNY边缘检测代码，目前不准备使用
-float Image_ab_value(float a,float b);
+
 #endif

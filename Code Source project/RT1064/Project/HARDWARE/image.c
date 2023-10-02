@@ -490,11 +490,17 @@ uint8 Gather_flag;
 uint8 Gather_row[50];//两线会聚数组，用来存储行坐标
 uint8 Gather_Count;//计数
 /**
- * @brief 八邻域巡线
+ * @brief 八邻域寻边界
  *
- * @param uint8 输入值为二值化处理后的数组
- * @example Image_Get_neighborhoods(Image_Use)
-* @explanation 1. 这个生长是沿着黑点生长，不是沿着白点生长
+ * @param uint8 必须为经过边框处理Draw_Frame后的图像才可以进行八领域扫线
+ * @return 无
+* @exception 1.我默认左上角为（0，0）
+ * 2.巡线原理就是找到第一个点，然后找附近的8个点，再选择下一个点来作为衍生，将得到的点记录即可得到边界
+ * 3.这里是从第start_row行的点开始寻找，因为要留一行做起始八邻域点，还有边界两行已经改成黑了
+ * 4.生长方向表和坐标表（可以随便定，这里也是一种方法）
+ * row-1 col-1      row-1 col       row-1 col+1         7   0   6
+ * row   col-1      row   col       row   col+1         4   *   5
+ * row+1 col-1      row+1 col       row+1 col+1         3   1   2
  */
 
 void Image_Get_neighborhoods(uint8(*Image_Use)[IMAGE_WIDTH])
@@ -552,7 +558,7 @@ void Image_Get_neighborhoods(uint8(*Image_Use)[IMAGE_WIDTH])
 			{
 				if(Image_Use_Robert[cur_row][cur_col+1]==BLACK&&Image_Use_Robert[cur_row-1][cur_col+1]==WHITE&&
 					Image_Use_Robert[cur_row+1][cur_col+1]==WHITE)
-				/*生长方向选择为6（正左）*/
+				/*生长方向选择为6（正左），详情解析在Right里面*/
 				{
 					Left[Left_Count].row=cur_row;
 					Left[Left_Count].column=cur_col+1;
@@ -641,7 +647,6 @@ void Image_Get_neighborhoods(uint8(*Image_Use)[IMAGE_WIDTH])
 			}
 		}
 	}
-	tft180_draw_line(50,30,Left[Left_Count-1].column/2,Left[Left_Count-1].row/2,RGB565_RED);
 	//采取左右对称，后面好写
 	/*
 	5	4	3
@@ -693,9 +698,9 @@ void Image_Get_neighborhoods(uint8(*Image_Use)[IMAGE_WIDTH])
 			else if(Image_Use_Robert[cur_row-1][cur_col+1]==BLACK&&Image_Use_Robert[cur_row-1][cur_col]==WHITE)
 			{
 				/*
-				5 7检测为白，6为黑——检测竖直状态拐点问题
+				5 7检测为白，6为黑——检测竖直状态拐点问题（十字路口扫线扫不上去的问题）
+				注：放在这里的话扫线速度更快（因为都是else if结构，提高算法的速度）
 				*/
-				
 				if(Image_Use_Robert[cur_row][cur_col-1]==BLACK&&Image_Use_Robert[cur_row-1][cur_col-1]==WHITE&&
 					Image_Use_Robert[cur_row+1][cur_col-1]==WHITE)
 				/*生长方向选择为6（正左）*/
@@ -708,10 +713,9 @@ void Image_Get_neighborhoods(uint8(*Image_Use)[IMAGE_WIDTH])
 					cur_col=Right[Right_Count].column;
 					Right_Count++;
 				}
-				
-				else//提高优先级90°巡线判断的
+				else//提高优先级90°巡线判断的优先级
 				{
-					if(cur_col!=157)//处理分界点问题
+					if(cur_col!=157)//处理分界点问题：当4黑 5白 6黑 7白 的时候，由于（右边）是逆时针扫描，就会有bug
 					{
 						Right[Right_Count].row=cur_row-1;
 						Right[Right_Count].column=cur_col+1;
@@ -730,7 +734,6 @@ void Image_Get_neighborhoods(uint8(*Image_Use)[IMAGE_WIDTH])
 						Pixel_Change=1;//1为变成了黑色
 					}
 				}
-				
 			}
 			else if(Image_Use_Robert[cur_row-1][cur_col]==BLACK&&Image_Use_Robert[cur_row-1][cur_col-1]==WHITE)
 			{
@@ -780,13 +783,11 @@ void Image_Get_neighborhoods(uint8(*Image_Use)[IMAGE_WIDTH])
 			{
 				break;
 			}
-			//2 黑框分点的还原
-			if((Right_Count-Pixel_Count_r)==1)
+			//2 变化灰度的还原的处理（因为不处理的话下次就还是会扫错）
+			if((Right_Count-Pixel_Count_r)==1)//确保是变黑的下一次就变白（记录次数，防止误扫）
 			{
-				Image_Use_Robert[Pixel_row][Pixel_col]=WHITE;
+				Image_Use_Robert[Pixel_row][Pixel_col]=WHITE;//一般都是白->黑->白
 			}
-			
-//			tft180_draw_line(50,30,cur_col/2,cur_row/2,RGB565_RED);
 //			//下面是巡线以后其他的处理
 //            //一 越界处理
 //			if(cur_row<=2||cur_row>=(IMAGE_WIDTH-3)||cur_col<=2||cur_col>=(IMAGE_WIDTH-3))
@@ -853,7 +854,7 @@ struct coordinate left_high;
 struct coordinate left_low;
 struct coordinate right_high;
 struct coordinate right_low;
-void Image_FillCross_1(uint8(*Image_Use)[IMAGE_WIDTH])
+void Image_FillCross(uint8(*Image_Use)[IMAGE_WIDTH])
 {
     uint8 i,j;//中间变量
     uint8 l_ready,r_ready;//定义左右线扫完的标志位
