@@ -837,11 +837,6 @@
           <GroupName>zf-driver</GroupName>
           <Files>
             <File>
-              <FileName>zf_driver_adc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\libraries\zf_driver\zf_driver_adc.c</FilePath>
-            </File>
-            <File>
               <FileName>zf_driver_csi.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\libraries\zf_driver\zf_driver_csi.c</FilePath>
@@ -885,6 +880,11 @@
               <FileName>zf_driver_pit.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\libraries\zf_driver\zf_driver_pit.c</FilePath>
+            </File>
+            <File>
+              <FileName>zf_driver_adc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\libraries\zf_driver\zf_driver_adc.c</FilePath>
             </File>
             <File>
               <FileName>zf_driver_pwm.c</FileName>

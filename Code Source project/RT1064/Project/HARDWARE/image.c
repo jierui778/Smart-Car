@@ -1,6 +1,9 @@
 #include "image.h"
 #include "math.h"
 #include "control.h"
+
+uint8 Image_Use_Robert[120][160];//二值化图像
+
 void check()
 {
 	while(1)
@@ -265,17 +268,20 @@ int min(int a, int b)
 
 /**
  * @brief 获取图像左侧起始生长点--寻找起始点函数，从第56行开始数
+ * @input start_line 开始找起始点的行 
  * 
- * 
- * @return unsigned char 返回1表示获取成功，返回0表示获取失败
+ * @return unsigned char start_row 将输入的起始行的值返回，因为加了黑框肯定会找得到，没必要关注找没找得到
+ * start_row 一般默认是110-119内（119是最低的行），无论怎么选都是可以找到起始生长点的
+	一般建议118-117就行，不然最下面没有的话数组很容易越界啥的
+*  这里返回star_row是为了在八邻域里面确定起始点，且可以操作
  */
-unsigned char left_point;                     //记录第一个关键点的列坐标，定义为全局变量，方便后面的函数调用
+uint8 left_point;                     //记录第一个关键点的列坐标，定义为全局变量，方便后面的函数调用
 uint8 Left_Find_Flag;//左线起始点找到标志
-unsigned char Image_Get_LeftFlag(void)
+uint8 Image_Get_LeftPoint(uint8 start_row)
 {
     for(left_point=(IMAGE_WIDTH/2);left_point>3;left_point--)
     {
-        if((Image_Use[IMAGE_HEIGHT-4][left_point]==255)&&(Image_Use[IMAGE_HEIGHT-4][left_point-1]==0)&&(Image_Use[IMAGE_HEIGHT-4][left_point-2]==0))
+        if((Image_Use_Robert[start_row][left_point]==255)&&(Image_Use_Robert[start_row][left_point-1]==0)&&(Image_Use_Robert[start_row][left_point-2]==0))
         {
 			Left_Find_Flag=1;//
             break;
@@ -285,22 +291,23 @@ unsigned char Image_Get_LeftFlag(void)
 	{
 		left_point=2;
 	}
-    return 1;
+    return start_row;
 }
 
 /**
- * @brief 获取图像右侧起始生长点--寻找起始点函数，从第56行开始数
+ * @brief 获取图像右侧起始生长点--寻找起始点函数，从第start_row行开始数
+ * @input start_line 开始找起始点的行
  * 
- * 
- * @return unsigned char 返回1表示获取成功，返回0表示获取失败
+ * @return unsigned char start_row 将输入的起始行的值返回
+ * @explaination 由于最右边两行画了黑框，正常情况下是肯定能扫描出来的，也就是一定能扫得到在157列坐标 
  */
-unsigned char right_point;                     //记录第一个关键点的列坐标
+uint8 right_point;                     //记录第一个关键点的列坐标
 uint8 Right_Find_Flag;//右线起始点找到标志
-unsigned char Image_Get_Rightflag(void)
+uint8 Image_Get_RightPoint(uint8 start_row)
 {
-    for(right_point=(IMAGE_WIDTH/2);right_point<(IMAGE_WIDTH-2);right_point++)
+    for(right_point=(IMAGE_WIDTH/2);right_point<(IMAGE_WIDTH-2);right_point++)//扫到
     {
-        if((Image_Use[IMAGE_HEIGHT-4][right_point]==255)&&(Image_Use[IMAGE_HEIGHT-4][right_point+1]==0)&&(Image_Use[IMAGE_HEIGHT-4][right_point+2]==0)) //这里指针变量不能直接和值比较，需要解地址
+        if((Image_Use_Robert[start_row][right_point]==255)&&(Image_Use_Robert[start_row][right_point+1]==0)&&(Image_Use_Robert[start_row][right_point+2]==0)) //这里指针变量不能直接和值比较，需要解地址
         {
 			Right_Find_Flag=1;
             break;                            //这里不能直接return 会有报错，就用break跳出循环，然后在最外面return即可
@@ -308,9 +315,9 @@ unsigned char Image_Get_Rightflag(void)
     }
 	if(!Right_Find_Flag)//如果找不到
 	{
-		right_point=IMAGE_WIDTH-3;//取边界点
+		right_point=IMAGE_WIDTH-3;//取边界点，这里的点就是白点了
 	}
-    return 1;
+    return start_row;
 }
 
 
@@ -474,10 +481,10 @@ void Image_CountKB(uint8 start,uint8 end,uint8 *border, float *slope_rate,float 
     *intercept=y_average-(*slope_rate)*x_average;//计算截距
 }
 
-unsigned char Left_Count,Right_Count;         //记录左右边界点的个数
-unsigned char grow_left,grow_right;           //记录左右边界在八邻域时寻点的相对位置
-unsigned char Left_Max=140,Right_Max=140;     //左右边界搜点时允许最大的搜点量
-unsigned char Boundary_search_end=30;         //搜寻行数的最高行
+uint8 Left_Count,Right_Count;         //记录左右边界点的个数
+uint8 grow_left,grow_right;           //记录左右边界在八邻域时寻点的相对位置
+uint8 Left_Max=140,Right_Max=140;     //左右边界搜点时允许最大的搜点量
+uint8 Boundary_search_end=30;         //搜寻行数的最高行
 
 uint8 Gather_flag;
 uint8 Gather_row[50];//两线会聚数组，用来存储行坐标
@@ -487,6 +494,7 @@ uint8 Gather_Count;//计数
  *
  * @param uint8 输入值为二值化处理后的数组
  * @example Image_Get_neighborhoods(Image_Use)
+* @explanation 1. 这个生长是沿着黑点生长，不是沿着白点生长
  */
 
 void Image_Get_neighborhoods(uint8(*Image_Use)[IMAGE_WIDTH])
@@ -494,20 +502,20 @@ void Image_Get_neighborhoods(uint8(*Image_Use)[IMAGE_WIDTH])
 	Left_Count=0;
 	Right_Count=0;
 	uint16 cur_row,cur_col;//当前行列
-	if(left_point)
+	if(Image_Get_LeftPoint(117))
 	{
-		Left[0].row=IMAGE_HEIGHT-4;
+		Left[0].row=Image_Get_LeftPoint(117);
 		Left[0].column=left_point;
 		Left[0].flag=1;
 		Left[0].grow=2;//初始生长方向为2
-		cur_row=IMAGE_HEIGHT-4;
-		cur_col=left_point;
+		cur_row=Left[0].row;//返回起始的行数
+		cur_col=left_point;//这是全局变量，可以调用
 		Left_Count++;
 		while(Left_Max--)//找140个
 		{
 			//一 寻点生长
-			//0白1黑
-			if(Image_Use[cur_row+1][cur_col]==BLACK&&Image_Use[cur_row+1][cur_col-1]==WHITE)
+			//0黑1白
+			if(Image_Use_Robert[cur_row+1][cur_col]==BLACK&&Image_Use_Robert[cur_row+1][cur_col-1]==WHITE)
 			{
 				Left[Left_Count].row=cur_row+1;
 				Left[Left_Count].column=cur_col;
@@ -517,7 +525,7 @@ void Image_Get_neighborhoods(uint8(*Image_Use)[IMAGE_WIDTH])
 				cur_col=Left[Left_Count].column;//更新中心坐标点
 				Left_Count++;
 			}
-			else if(Image_Use[cur_row+1][cur_col-1]==BLACK&&Image_Use[cur_row][cur_col-1]==WHITE)
+			else if(Image_Use_Robert[cur_row+1][cur_col-1]==BLACK&&Image_Use_Robert[cur_row][cur_col-1]==WHITE)
 			{
 				Left[Left_Count].row=cur_row+1;
 				Left[Left_Count].column=cur_col-1;
@@ -527,7 +535,7 @@ void Image_Get_neighborhoods(uint8(*Image_Use)[IMAGE_WIDTH])
 				cur_col=Left[Left_Count].column;//更新中心坐标点
 				Left_Count++;
 			}
-			else if(Image_Use[cur_row][cur_col-1]==BLACK&&Image_Use[cur_row-1][cur_col-1]==WHITE)
+			else if(Image_Use_Robert[cur_row][cur_col-1]==BLACK&&Image_Use_Robert[cur_row-1][cur_col-1]==WHITE)
 			{
 				Left[Left_Count].row=cur_row;
 				Left[Left_Count].column=cur_col-1;
@@ -537,7 +545,7 @@ void Image_Get_neighborhoods(uint8(*Image_Use)[IMAGE_WIDTH])
 				cur_col=Left[Left_Count].column;//更新中心坐标点
 				Left_Count++;
 			}
-			else if(Image_Use[cur_row-1][cur_col-1]==BLACK&&Image_Use[cur_row-1][cur_col]==WHITE)
+			else if(Image_Use_Robert[cur_row-1][cur_col-1]==BLACK&&Image_Use_Robert[cur_row-1][cur_col]==WHITE)
 			{
 				Left[Left_Count].row=cur_row-1;
 				Left[Left_Count].column=cur_col-1;
@@ -547,7 +555,7 @@ void Image_Get_neighborhoods(uint8(*Image_Use)[IMAGE_WIDTH])
 				cur_col=Left[Left_Count].column;//更新中心坐标点
 				Left_Count++;
 			}
-			else if(Image_Use[cur_row-1][cur_col]==BLACK&&Image_Use[cur_row-1][cur_col+1]==WHITE)
+			else if(Image_Use_Robert[cur_row-1][cur_col]==BLACK&&Image_Use_Robert[cur_row-1][cur_col+1]==WHITE)
 			{
 				Left[Left_Count].row=cur_row-1;
 				Left[Left_Count].column=cur_col;
@@ -557,7 +565,7 @@ void Image_Get_neighborhoods(uint8(*Image_Use)[IMAGE_WIDTH])
 				cur_col=Left[Left_Count].column;//更新中心坐标点
 				Left_Count++;
 			}
-			else if(Image_Use[cur_row-1][cur_col+1]==BLACK&&Image_Use[cur_row][cur_col+1]==WHITE)
+			else if(Image_Use_Robert[cur_row-1][cur_col+1]==BLACK&&Image_Use_Robert[cur_row][cur_col+1]==WHITE)
 			{
 				Left[Left_Count].row=cur_row-1;
 				Left[Left_Count].column=cur_col+1;
@@ -567,7 +575,7 @@ void Image_Get_neighborhoods(uint8(*Image_Use)[IMAGE_WIDTH])
 				cur_col=Left[Left_Count].column;//更新中心坐标点
 				Left_Count++;
 			}
-			else if(Image_Use[cur_row][cur_col+1]==BLACK&&Image_Use[cur_row+1][cur_col+1]==WHITE)
+			else if(Image_Use_Robert[cur_row][cur_col+1]==BLACK&&Image_Use_Robert[cur_row+1][cur_col+1]==WHITE)
 			{
 				Left[Left_Count].row=cur_row;
 				Left[Left_Count].column=cur_col+1;
@@ -577,7 +585,7 @@ void Image_Get_neighborhoods(uint8(*Image_Use)[IMAGE_WIDTH])
 				cur_col=Left[Left_Count].column;//更新中心坐标点
 				Left_Count++;
 			}
-			else if(Image_Use[cur_row+1][cur_col+1]==BLACK&&Image_Use[cur_row+1][cur_col]==WHITE)
+			else if(Image_Use_Robert[cur_row+1][cur_col+1]==BLACK&&Image_Use_Robert[cur_row+1][cur_col]==WHITE)
 			{
 				Left[Left_Count].row=cur_row+1;
 				Left[Left_Count].column=cur_col+1;
@@ -604,19 +612,19 @@ void Image_Get_neighborhoods(uint8(*Image_Use)[IMAGE_WIDTH])
 	6		2
 	7	0	1
 	*/
-	if(right_point)
+	if(Image_Get_RightPoint(117))
 	{
-		Right[0].row=IMAGE_HEIGHT-4;
+		Right[0].row=Image_Get_RightPoint(117);
 		Right[0].column=right_point;
 		Right[0].flag=1;
 		Right[0].grow=2;
-		cur_row=IMAGE_HEIGHT-4;
+		cur_row=Right[0].row;
 		cur_col=right_point;
 		Right_Count++;
 		while(Right_Max--)
 		{
 			//0黑1白
-			if(Image_Use[cur_row+1][cur_col]==BLACK&&Image_Use[cur_row+1][cur_col+1]==WHITE)
+			if(Image_Use_Robert[cur_row+1][cur_col]==BLACK&&Image_Use_Robert[cur_row+1][cur_col+1]==WHITE)
 			{
 				Right[Right_Count].row=cur_row+1;
 				Right[Right_Count].column=cur_col;
@@ -626,7 +634,7 @@ void Image_Get_neighborhoods(uint8(*Image_Use)[IMAGE_WIDTH])
 				cur_col=Right[Right_Count].column;
 				Right_Count++;
 			}
-			else if(Image_Use[cur_row+1][cur_col+1]==BLACK&&Image_Use[cur_row][cur_col+1]==WHITE)
+			else if(Image_Use_Robert[cur_row+1][cur_col+1]==BLACK&&Image_Use_Robert[cur_row][cur_col+1]==WHITE)
 			{
 				Right[Right_Count].row=cur_row+1;
 				Right[Right_Count].column=cur_col+1;
@@ -636,7 +644,7 @@ void Image_Get_neighborhoods(uint8(*Image_Use)[IMAGE_WIDTH])
 				cur_col=Right[Right_Count].column;
 				Right_Count++;
 			}
-			else if(Image_Use[cur_row][cur_col+1]==BLACK&&Image_Use[cur_row-1][cur_col+1]==WHITE)
+			else if(Image_Use_Robert[cur_row][cur_col+1]==BLACK&&Image_Use_Robert[cur_row-1][cur_col+1]==WHITE)
 			{
 				Right[Right_Count].row=cur_row;
 				Right[Right_Count].column=cur_col+1;
@@ -646,7 +654,7 @@ void Image_Get_neighborhoods(uint8(*Image_Use)[IMAGE_WIDTH])
 				cur_col=Right[Right_Count].column;
 				Right_Count++;
 			}
-			else if(Image_Use[cur_row-1][cur_col+1]==BLACK&&Image_Use[cur_row-1][cur_col]==WHITE)
+			else if(Image_Use_Robert[cur_row-1][cur_col+1]==BLACK&&Image_Use_Robert[cur_row-1][cur_col]==WHITE)
 			{
 				Right[Right_Count].row=cur_row-1;
 				Right[Right_Count].column=cur_col+1;
@@ -657,7 +665,7 @@ void Image_Get_neighborhoods(uint8(*Image_Use)[IMAGE_WIDTH])
 				Right_Count++;
 
 			}
-			else if(Image_Use[cur_row-1][cur_col]==BLACK&&Image_Use[cur_row-1][cur_col-1]==WHITE)
+			else if(Image_Use_Robert[cur_row-1][cur_col]==BLACK&&Image_Use_Robert[cur_row-1][cur_col-1]==WHITE)
 			{
 				Right[Right_Count].row=cur_row-1;
 				Right[Right_Count].column=cur_col;
@@ -667,7 +675,7 @@ void Image_Get_neighborhoods(uint8(*Image_Use)[IMAGE_WIDTH])
 				cur_col=Right[Right_Count].column;
 				Right_Count++;
 			}
-			else if(Image_Use[cur_row-1][cur_col-1]==BLACK&&Image_Use[cur_row][cur_col-1]==WHITE)
+			else if(Image_Use_Robert[cur_row-1][cur_col-1]==BLACK&&Image_Use_Robert[cur_row][cur_col-1]==WHITE)
 			{
 				Right[Right_Count].row=cur_row-1;
 				Right[Right_Count].column=cur_col-1;
@@ -677,7 +685,7 @@ void Image_Get_neighborhoods(uint8(*Image_Use)[IMAGE_WIDTH])
 				cur_col=Right[Right_Count].column;
 				Right_Count++;
 			}
-			else if(Image_Use[cur_row][cur_col-1]==BLACK&&Image_Use[cur_row+1][cur_col-1]==WHITE)
+			else if(Image_Use_Robert[cur_row][cur_col-1]==BLACK&&Image_Use_Robert[cur_row+1][cur_col-1]==WHITE)
 			{
 				Right[Right_Count].row=cur_row;
 				Right[Right_Count].column=cur_col-1;
@@ -687,7 +695,7 @@ void Image_Get_neighborhoods(uint8(*Image_Use)[IMAGE_WIDTH])
 				cur_col=Right[Right_Count].column;
 				Right_Count++;
 			}
-			else if(Image_Use[cur_row+1][cur_col-1]==BLACK&&Image_Use[cur_row+1][cur_col]==WHITE)
+			else if(Image_Use_Robert[cur_row+1][cur_col-1]==BLACK&&Image_Use[cur_row+1][cur_col]==WHITE)
 			{
 				Right[Right_Count].row=cur_row+1;
 				Right[Right_Count].column=cur_col-1;
@@ -779,7 +787,7 @@ void Image_FillCross_1(uint8(*Image_Use)[IMAGE_WIDTH])
     //先扫左拐点，从左下角开始扫，左右线的计数值不一定相等
     //两种写法，一种生长方向由5-->2，另外一种直接判断多个2（因为不能保证斜线一直是5），这里用方法一，后面可能会改，觉得这个不太行
     //判断是否进入十字，或者未进入十字
-    if(Image_Use[56][4]==BLACK&&Image_Use[56][6]==BLACK&&Image_Use[56][94]==BLACK&&Image_Use[56][96]==BLACK)
+    if(Image_Use[IMAGE_HEIGHT-4][4]==BLACK&&Image_Use[IMAGE_HEIGHT-4][6]==BLACK&&Image_Use[IMAGE_HEIGHT-4][IMAGE_WIDTH-6]==BLACK&&Image_Use[IMAGE_HEIGHT-4][IMAGE_WIDTH-4]==BLACK)
     {
         for(i=0;i<Left_Count;i++)//实际上理想情况下是i不会=left_count，因为找到左下拐点时肯定还有很多点没找
         {
@@ -850,7 +858,7 @@ void Image_FillCross_1(uint8(*Image_Use)[IMAGE_WIDTH])
         }
     }
     /*如果未进十字的补线判断完成，那么接下来就要进入十字中途的补线，这里和前面的最大区别就是左下角和右下角是不是白色*/
-    if(l_ready&&r_ready&&Image_Use[56][4]==WHITE&&Image_Use[56][6]==WHITE&&Image_Use[56][94]==WHITE&&Image_Use[56][96]==WHITE)//等左右线补完，只要补完就说明有过，那么就顺便看左下角和右小角是否为白色
+    if(l_ready&&r_ready&&Image_Use[IMAGE_HEIGHT-4][4]==WHITE&&Image_Use[IMAGE_HEIGHT-4][6]==WHITE&&Image_Use[IMAGE_HEIGHT-4][IMAGE_WIDTH-6]==WHITE&&Image_Use[IMAGE_HEIGHT-4][IMAGE_WIDTH-4]==WHITE)//等左右线补完，只要补完就说明有过，那么就顺便看左下角和右小角是否为白色
     {
         //此时只有左上拐点和右上拐点，因为左下角和右下角都是白色，所以只需要找左上拐点和右上拐点，取直线就往拐点往上扫
         for(i=0;i<Left_Count;i++)
@@ -961,7 +969,7 @@ uint8 Image_Stretch_Left(void)
         k_all+=k_buff[i];
     }
     k_left_high=k_all/5;
-    if(Image_ab_value(k_left_high,k_left_low)<Line_k)//看直线的斜率是否符合要求
+    if(Image_ab_value(k_left_high,k_left_low)<LINE_K)//看直线的斜率是否符合要求
     {
         return 1;
     }
@@ -1002,7 +1010,7 @@ uint8 Image_Stretch_Right(void)
         k_all+=k_buff[i];
     }
     k_right_high=k_all/5;
-    if(Image_ab_value(k_right_high,k_right_low)<Line_k)//看直线的斜率是否符合要求
+    if(Image_ab_value(k_right_high,k_right_low)<LINE_K)//看直线的斜率是否符合要求
     {
         return 1;
     }
@@ -1022,12 +1030,16 @@ uint8 Image_Stretch_Right(void)
 void Image_Run(void)
 {
 	uint8 i,j;
-
-	i=Image_Get_LeftFlag();
-	j=Image_Get_Rightflag();
-	
+	uint8 TH;
+//	i=Image_Get_LeftFlag(117);
+//	j=Image_Get_Rightflag(117);
+	TH = OSTU_GetThreshold(Image_Use[0], IMAGE_WIDTH, IMAGE_HEIGHT);
+//        Image_Binarization(TH,Image_Use);
+	Image_DrawRectangle();
+	Image_Sobel( Image_Use, Image_Use_Robert ,TH);//全局Sobel得二值图(方案二) 2.8ms
+    tft180_displayimage03x((uint8 *)Image_Use_Robert, 80, 60); //pidMotor1Speed
 //	tft180_draw_line(0,0,start_point_Left[0],start_point_Left[1],RGB565_RED);//行坐标l_countl_count
-	Image_Get_neighborhoods(Image_Use);
+	Image_Get_neighborhoods(Image_Use_Robert);
 //	tft180_show_int(3,120,points_l[l_count-1][0],3);
 //	Image_Get_neighborhoods(100,Image_Use);
 //	tft180_draw_line(0,0,cur_col/2,cur_row/2,RGB565_RED);//行坐标l_countl_count

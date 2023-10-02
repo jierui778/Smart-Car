@@ -13,7 +13,6 @@
 
 #define GrayScale 257
 
-uint8_t  Image_Use_Robert[120][160];//二值化图像
 float left_speed,right_speed;
 int main(void)
 {
@@ -39,14 +38,10 @@ int main(void)
         int TH;
         Schedule_Run();
         Image_Compress();
-        TH = OSTU_GetThreshold(Image_Use[0], Image_Width, Image_Height);
-        Image_Binarization(TH,Image_Use);
-		Image_DrawRectangle();
 //		tft180_show_int(3,80,TH,3);//最后有一点点
 		Servo_SetAngle(6);
 		
 //        Image_Sobel( Image_Use, Image_Use_Robert ,TH);//全局Sobel得二值图(方案二) 2.8ms
-        tft180_displayimage03x((uint8 *)Image_Use, 80, 60); //pidMotor1Speed
 		Image_Run();
 //		tft180_show_int(3,80,encoder_r_data,6);//150
 //		tft180_show_float(3,100,speed_right,4,4);//5
