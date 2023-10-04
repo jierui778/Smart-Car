@@ -25,6 +25,8 @@ int main(void)
     tft180_set_dir(TFT180_PORTAIT);
     tft180_init();
 	Servo_Init();
+	ips200_init(IPS200_TYPE_PARALLEL8);
+//	PID_init();
 //    //  //    Buzzer_Init();
 //    //  tft180_show_string(0, 0, "mt9v03x init.");
 
@@ -43,10 +45,11 @@ int main(void)
 		
 //        Image_Sobel( Image_Use, Image_Use_Robert ,TH);//全局Sobel得二值图(方案二) 2.8ms
 		Image_Run();
+//		ips200_displayimage03x(*Image_Use,160,120);
 //		tft180_show_int(3,80,encoder_r_data,6);//150
 //		tft180_show_float(3,100,speed_right,4,4);//5
 //		tft180_show_float(3,120,speed_left,4,4);//最后有一点点
-//		tft180_show_int(3,140,encoder_l_data,6);//150
+////		tft180_show_int(3,140,encoder_l_data,6);//150
 //		Control_Setspeed(3,3);
 
     }

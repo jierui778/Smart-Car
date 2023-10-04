@@ -30,10 +30,12 @@ void Image_Get_neighborhoods(uint8 (*Image_Use)[IMAGE_WIDTH]);//八邻域巡线
 void Image_Filter(void);//腐蚀滤波函数（简单的早点过滤）
 uint8 Image_Get_RightPoint(uint8 start_row);//求左边界起始点坐标函数
 uint8 Image_Get_LeftPoint(uint8 start_row);//求右边界起始点坐标函数
+void Image_blur_points_Left(int num,int kernel);//三角滤波左边线
+void Image_blur_points_Right(int num,int kernel);//三角滤波右边线
 
 /*辅助计算*/
 float Image_ab_value(float a,float b);//求浮点型的绝对值
-float Image_Getk(uint8 start_y,uint8 end_y,uint8 interval);//简单计算直线斜率
+float Image_Getk(int8 start_y,int8 end_y,int8 interval);//简单计算直线斜率
 int abs_int(int a, int b);//求两整型绝对值
 int min(int a, int b);//求两整型最小值
 int Image_LeftGrowDirection(uint8 end,uint8 Direction);//计算左边线中生长某方向的总个数
