@@ -35,7 +35,8 @@ void Image_blur_points_Right(int num,int kernel);//三角滤波右边线
 
 /*辅助计算*/
 float Image_ab_value(float a,float b);//求浮点型的绝对值
-float Image_Getk(int8 start_y,int8 end_y,int8 interval);//简单计算直线斜率
+float Image_Getk(int16 derta_column,int16 derta_row);//简单计算直线斜率
+float Image_Getb(int16 example_column,int16 example_row,float k);//简单计算截距
 int abs_int(int a, int b);//求两整型绝对值
 int min(int a, int b);//求两整型最小值
 int Image_LeftGrowDirection(uint8 end,uint8 Direction);//计算左边线中生长某方向的总个数
@@ -58,3 +59,30 @@ void Image_LeftRound(uint8(*Image_Use)[IMAGE_WIDTH]);//左环岛判断补线
 void Image_Run(void);//图像处理主函数
 
 #endif
+
+
+/*
+学到的思路：
+
+十字：
+1. 十字处理中，如何判断为十字状态？（只要有拐点，且两个拐点的行坐标相差不大即为十字
+同时设置标志位far_Lpt0_found，便于判断）
+2. 十字处理中，如何补线？（未进十字时，在找到下拐点的时候，再往前找2个拐点，取斜率补线即可）
+（若已经进入十字，则在找到下拐点的时候，可以取上拐点往后的2个拐点进行斜率补线（或者找下拐点进行补线））
+3. 十字处理的时候设置一个状态机：未进十字（检测左右拐点且行坐标相差不大）—（左右拐点坐标不断减小最终为0）—进十字（出现两个上下拐点）
+4. ***通过编码器测距求出跑1m后判断十字结束，直接退出十字状态
+
+车库：
+1. 扫行，看黑点有多少个（或黑白跳变点）sobel的话有120个黑点
+2. 转弯时通过偏航角的角度变化来判断出库
+新思路：
+1. 在十字中，如何找到上拐点？
+——for循环嵌套遍历，求出每一点与左下角（120,0）的直线的斜率，当斜率最大时：便是上拐点
+注：在未进十字时，上拐点和下拐点的坐标是一样的，当上拐点和下拐点的行坐标相差较大时，就说明已经处在十字的中央
+
+明天要干的：
+1. 通过斜率最大法测出上拐点
+2. 十字不同状态的补线
+3. 判断十字的不同状态
+4. 弯道函数判断
+*/

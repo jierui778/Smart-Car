@@ -1187,15 +1187,7 @@ void Image_FillCross(uint8(*Image_Use)[IMAGE_WIDTH])
     
         for(i=0;i<Left_Count;i++)//实际上理想情况下是i不会=left_count，因为找到左下拐点时肯定还有很多点没找
         {
-            //这里判断写越多越好，找的拐点就越符合条件，但是也有可能找不到，所以要权衡&&(Left[i-5].grow==5||Left[i-4].grow==5)
-//            if(Left[i].grow==5&&(Left[i-2].grow==5||Left[i-1].grow==5||Left[i-3].grow==5)&&(Left[i+2].grow==2||Left[i+1].grow==2)&&(Left[i+5].grow==2
-//                ||Left[i+6].grow==2)&&(Left[i+3].grow==2||Left[i+4].grow==2))
-//            {
-//                left_low.row=Left[i].row;
-//                left_low.column=Left[i].column;
-//                break;
-//            }
-//			/*plan2：生长方向优化*/
+            /*plan2：生长方向优化*/
 			if((Left[i-1].grow==5||Left[i-4].grow==5)&&(Left[i-2].grow==5||Left[i-5].grow==5)&&(Left[i-3].grow==5||Left[i-6].grow==5)
 				&&(Left[i+1].grow!=5||Left[i+4].grow!=5)&&(Left[i+2].grow!=5||Left[i+5].grow!=5)&&(Left[i+3].grow!=5||Left[i+6].grow!=5))
 			{
@@ -1204,14 +1196,6 @@ void Image_FillCross(uint8(*Image_Use)[IMAGE_WIDTH])
 				left_low.index=i;
                 break;
 			}
-//			/*plan3 斜率突变*/
-//			if((Image_Getk(Left[i].column,Left[i-4].column,(Left[i].row-Left[i-4].row)))-(Image_Getk(Left[i].column,Left[i+4].column,(Left[i].row-Left[i-4].row)))>0.35)
-//			{
-//				left_low.row=Left[i].row;
-//                left_low.column=Left[i].column;
-//                break;
-//			}
-//			if((float)(Image_LeftGrowDirection(i,5)/Left_Count)
         }
         //找的是左上拐点，这里可以不放在同一个for循环，因为肯定是先找到左下拐点，然后才能找到左拐点
         for(i=0;i<Left_Count;i++)
@@ -1219,14 +1203,16 @@ void Image_FillCross(uint8(*Image_Use)[IMAGE_WIDTH])
             //图片上方的有效点比较少，判断就简单一点，不然找不到，注意生长方向就行
 //            if((Left[i-1].grow==6||Left[i-4].grow==6)&&(Left[i-2].grow==6||Left[i-5].grow==6)&&(Left[i-3].grow==6||Left[i-6].grow==6)&&
 //				(Left[i+1].grow!=6||Left[i+4].grow!=6)&&(Left[i+2].grow!=6||Left[i+5].grow!=6)&&(Left[i+3].grow!=6||Left[i+6].grow!=6))
-			if(Left[i].grow!=5&&(Left[i-1].grow!=5||Left[i-4].grow!=5)&&(Left[i-2].grow!=5||Left[i-5].grow!=5)&&
-				(Left[i+1].grow==5||Left[i+4].grow==5)&&(Left[i+2].grow==5||Left[i+5].grow==5))
-            {
-                left_high.row=Left[i].row;
-                left_high.column=Left[i].column;
-				left_high.index=i;
-                break;
-            }
+			// if(Left[i].grow!=5&&(Left[i-1].grow!=5||Left[i-4].grow!=5)&&(Left[i-2].grow!=5||Left[i-5].grow!=5)&&
+			// 	(Left[i+1].grow==5||Left[i+4].grow==5)&&(Left[i+2].grow==5||Left[i+5].grow==5))
+            // {
+            //     left_high.row=Left[i].row;
+            //     left_high.column=Left[i].column;
+			// 	left_high.index=i;
+            //     break;
+            // }
+            /*plan3 斜率最大法*/
+            // if(Image_Getk(Left[i].column,Left[i].row-120)>)
         }
 //        //左右对称，生长方向一样，就不用改了
         for(i=0;i<Right_Count;i++)
@@ -1252,27 +1238,34 @@ void Image_FillCross(uint8(*Image_Use)[IMAGE_WIDTH])
             }
 			
 		}
-//        //找完点开始补线，先求左线，用二乘法补比较稳
-//        Image_CountLeftKB_L(left_low.index,left_low.index-3);//求出左线的斜率和截距slope_rate_l
-//		left_line.k=slope_rate_l;
-//		left_line.b=intercept_l;//左线补线
-//		slope_rate_l=0.0;
-//		intercept_l=0.0;
-		left_line.k=Image_Getk(left_low.column,Left[left_low.index-3].column,left_low.row-Left[left_low.index-3].row);
-//		left_line.k=2;
-//		left_line.b=-13;
-        //补线有两种方法：一种把全部的点都补上，一种只补两个拐点拐点，这里用第二种，后面再用基础扫线，扫出补线后的边线
-        for(i=left_low.row;i<IMAGE_HEIGHT-1;i++)//从左下拐点开始向上补线
+        if(left_low.index!=0)//判断是否为0
         {
-            Image_Use[i][50]=BLACK;//补线,这里传入的k是浮点型,后面要转换
-			//补线方程：column=k*row+b
-            if(i<=IMAGE_HEIGHT-10)
+            left_line.k=Image_Getk((left_low.column-Left[left_low.index-3].column),(left_low.row-Left[left_low.index-3].row));
+            left_line.b=Image_Getb(left_low.column,left_low.row,left_line.k);
+            //求出左线斜率和截距：column=k*row+b（十字的k一般都是1或-1）
+            //补线有两种方法：一种把全部的点都补上，一种只补两个拐点拐点，这里用第二种，后面再用基础扫线，扫出补线后的边线
+            for(i=left_low.row;i<IMAGE_HEIGHT-10;i++)//从左下拐点开始向上补线
             {
-                l_ready=1;//左线补完了
-                break;
+                Image_Use[i][(int)(left_line.k*i+left_line.b)]=BLACK;//从拐点向上补线
             }
+            left_low.index=0;
+            left_line.k=0;
+            left_line.b=0;
         }
-//		check();
+        if(right_low.index!=0)
+        {
+            right_line.k=Image_Getk((right_low.column-Right[right_low.index-3].column),(right_low.row-Right[right_low.index-3].row));
+            right_line.b=Image_Getb(right_low.column,right_low.row,right_line.k);
+            //求出右线斜率和截距：column=k*row+b（十字的k一般都是1或-1）
+            //补线有两种方法：一种把全部的点都补上，一种只补两个拐点拐点，这里用第二种，后面再用基础扫线，扫出补线后的边线
+            for(i=right_low.row;i<IMAGE_HEIGHT-10;i++)//从右下拐点开始向上补线
+            {
+                Image_Use[i][(int)(right_line.k*i+right_line.b)]=BLACK;//从拐点向上补线
+            }
+            right_low.index=0;
+            right_line.k=0;
+            right_line.b=0;
+        }
 //		Image_CountLeftKB_L(right_low.index,right_low.index-3);//求出右线的斜率和截距slope_rate_r
 //		right_line.k=slope_rate_r;
 //		right_line.b=intercept_r;//左线补线
@@ -1353,14 +1346,23 @@ void Image_FillCross(uint8(*Image_Use)[IMAGE_WIDTH])
 /**
  * @brief 获取图像的k值
  * 
- * @param start_y 起始y坐标
- * @param end_y 结束y坐标
- * @param interval y坐标间隔
+ * @param int16 derta_column,derta_row，坐标差值，别算反
  * @return float k值
  */
-float Image_Getk(int8 start_y,int8 end_y,int8 interval)
+float Image_Getk(int16 derta_column,int16 derta_row)
 {
-    return (float)((end_y-start_y)/interval);
+    return (float)(derta_column/derta_row);
+}
+/*下面是直道函数的辅助函数*/
+/**
+ * @brief 获取图像的b值
+ * 
+ * @param int16 example_row,example_column, k
+ * @return float k值
+ */
+float Image_Getb(int16 example_column,int16 example_row,float k)
+{
+    return (float)(example_column-k*example_row);
 }
 /**
  * @brief 计算两个浮点数之间的绝对值差
@@ -1390,37 +1392,37 @@ float k_buff[5];//存放5个斜率值
 */
 uint8 Image_Stretch_Left(void)
 {
-    uint8 i;
-    float k_left_low,k_left_high;//左下线斜率，左上线斜率
-    float k_all;//多断小斜率叠加
-    k_all=0.0;
-    for(i=0;i<5;i++)//求左线下10个点的平均斜率
-    {
-        k_buff[i]=Image_Getk(Left[i].column,Left[i+5].column,(Left[i+5].row-Left[i].row));//x是行坐标,y是列坐标
-    }
-    for(i=0;i<5;i++)
-    {
-        k_all+=k_buff[i];
-    }
-    k_left_low=k_all/5;
-    k_all=0.0;
-    for(i=0;i<5;i++)//求左线上10个点的平均斜率
-    {
-        k_buff[i]=Image_Getk(Left[40+i].column,Left[i+45].column,(Left[i+45].row-Left[i+40].row));//x是行坐标,y是列坐标
-    }
-    for(i=0;i<5;i++)
-    {
-        k_all+=k_buff[i];
-    }
-    k_left_high=k_all/5;
-    if(Image_ab_value(k_left_high,k_left_low)<LINE_K)//看直线的斜率是否符合要求
-    {
-        return 1;
-    }
-    else
-    {
-        return 0;
-    }
+    // uint8 i;
+    // float k_left_low,k_left_high;//左下线斜率，左上线斜率
+    // float k_all;//多断小斜率叠加
+    // k_all=0.0;
+    // for(i=0;i<5;i++)//求左线下10个点的平均斜率
+    // {
+    //     k_buff[i]=Image_Getk(Left[i].column,Left[i+5].column,(Left[i+5].row-Left[i].row));//x是行坐标,y是列坐标
+    // }
+    // for(i=0;i<5;i++)
+    // {
+    //     k_all+=k_buff[i];
+    // }
+    // k_left_low=k_all/5;
+    // k_all=0.0;
+    // for(i=0;i<5;i++)//求左线上10个点的平均斜率
+    // {
+    //     k_buff[i]=Image_Getk(Left[40+i].column,Left[i+45].column,(Left[i+45].row-Left[i+40].row));//x是行坐标,y是列坐标
+    // }
+    // for(i=0;i<5;i++)
+    // {
+    //     k_all+=k_buff[i];
+    // }
+    // k_left_high=k_all/5;
+    // if(Image_ab_value(k_left_high,k_left_low)<LINE_K)//看直线的斜率是否符合要求
+    // {
+    //     return 1;
+    // }
+    // else
+    // {
+    //     return 0;
+    // }
 }
 
 /**
@@ -1432,36 +1434,36 @@ uint8 Image_Stretch_Left(void)
 */
 uint8 Image_Stretch_Right(void)
 {
-    uint8 i;
-    float k_right_low,k_right_high,k_all;
-    k_all=0.0;
-    for(i=0;i<5;i++)//求右线下10个点的平均斜率
-    {
-        k_buff[i]=Image_Getk(Right[i].column,Right[i+5].column,(Right[i+5].row-Right[i].row));//x是行坐标,y是列坐标
-    }
-    for(i=0;i<5;i++)
-    {
-        k_all+=k_buff[i];
-    }
-    k_right_low=k_all/5;
-    k_all=0.0;
-    for(i=0;i<5;i++)//求右线上10个点的平均斜率
-    {
-        k_buff[i]=Image_Getk(Right[40+i].column,Right[i+45].column,(Right[i+45].row-Right[i+40].row));//x是行坐标,y是列坐标
-    }
-    for(i=0;i<5;i++)
-    {
-        k_all+=k_buff[i];
-    }
-    k_right_high=k_all/5;
-    if(Image_ab_value(k_right_high,k_right_low)<LINE_K)//看直线的斜率是否符合要求
-    {
-        return 1;
-    }
-    else
-    {
-        return 0;
-    }
+    // uint8 i;
+    // float k_right_low,k_right_high,k_all;
+    // k_all=0.0;
+    // for(i=0;i<5;i++)//求右线下10个点的平均斜率
+    // {
+    //     k_buff[i]=Image_Getk(Right[i].column,Right[i+5].column,(Right[i+5].row-Right[i].row));//x是行坐标,y是列坐标
+    // }
+    // for(i=0;i<5;i++)
+    // {
+    //     k_all+=k_buff[i];
+    // }
+    // k_right_low=k_all/5;
+    // k_all=0.0;
+    // for(i=0;i<5;i++)//求右线上10个点的平均斜率
+    // {
+    //     k_buff[i]=Image_Getk(Right[40+i].column,Right[i+45].column,(Right[i+45].row-Right[i+40].row));//x是行坐标,y是列坐标
+    // }
+    // for(i=0;i<5;i++)
+    // {
+    //     k_all+=k_buff[i];
+    // }
+    // k_right_high=k_all/5;
+    // if(Image_ab_value(k_right_high,k_right_low)<LINE_K)//看直线的斜率是否符合要求
+    // {
+    //     return 1;
+    // }
+    // else
+    // {
+    //     return 0;
+    // }
 }
 float Image_B(uint8 point_row,uint8 point_column,float k)
 {
@@ -1828,12 +1830,13 @@ void Image_LeftRound(uint8(*Image_Use)[IMAGE_WIDTH])
     {
         for(i=0;i<Left_Count;i++)
         {
-            if(Image_ab_value((Image_Getk(Left[i].column,Left[i-3].column,abs_int(Left[i-3].row,Left[i].row))),
-            Image_Getk(Left[i].column,Left[i+3].column,abs_int(Left[i+3].row,Left[i].row)))>0.4)
-            {
-                Left_third_point_index=i;//记录下标
-                break;
-            }
+            /*防函数报错*/
+            // if(Image_ab_value((Image_Getk(Left[i].column,Left[i-3].column,abs_int(Left[i-3].row,Left[i].row))),
+            // Image_Getk(Left[i].column,Left[i+3].column,abs_int(Left[i+3].row,Left[i].row)))>0.4)
+            // {
+            //     Left_third_point_index=i;//记录下标
+            //     break;
+            // }
         }
         //补线是沿着行向下补，故直线方程为column=row*k+b
         if(Left_third_point_index!=0)
