@@ -416,10 +416,9 @@ void Image_pointsright(uint8 x1,uint8 y1,uint8 x2,uint8 y2)
  * 
  * @param begin 线的起点
  * @param end 线的终点
- * @param border 线上点的y坐标数组
  * @return 通过一组点的直线的斜率
  */
-float Imgae_Slope(uint8 begin,uint8 end,uint8 *border)
+float Imgae_SlopeLeft(uint8 begin,uint8 end)
 {
     float xsum=0,ysum=0,xysum=0,x2sum=0;
     int16 i=0;
@@ -428,10 +427,10 @@ float Imgae_Slope(uint8 begin,uint8 end,uint8 *border)
 
     for(i=begin;i<end;i++)//从起点开始向终点自增（这个应该指的是下标）
     {
-        xsum +=i;//对x坐标自增（行坐标）
-        ysum +=border[i];//对y坐标自增（列坐标）
-        xysum += i*(border[i]);//xy坐标乘积自增
-        x2sum +=i*i;//x坐标平方自增
+        xsum +=Left[i].row;//对x坐标自增（行坐标）
+        ysum +=Left[i].column;//对y坐标自增（列坐标）
+        xysum += Left[i].row*(Left[i].column);//xy坐标乘积自增
+        x2sum +=Left[i].row*Left[i].row;//x坐标平方自增
     }
     if((end-begin)*x2sum-xsum*xsum)//这个在求斜率中会作为分母，因此需要判断是否为0
     {
@@ -445,17 +444,55 @@ float Imgae_Slope(uint8 begin,uint8 end,uint8 *border)
 
     return result;
 }
+/**
+ * @brief 计算通过一组点的直线的斜率
+ * @param begin 线的起点
+ * @param end 线的终点
+ * @return 通过一组点的直线的斜率
+ */
+/**
+ * @brief 计算右边车道线的斜率
+ * 
+ * @param begin 起点下标
+ * @param end 终点下标
+ * @return float 斜率值
+ */
+float Imgae_SlopeRight(uint8 begin,uint8 end)
+{
+    float xsum=0,ysum=0,xysum=0,x2sum=0;
+    int16 i=0;
+    float result =0;
+    static float resultlast=0;//记录上次结果，用来比对
+
+    for(i=begin;i<end;i++)//从起点开始向终点自增（这个应该指的是下标）
+    {
+        xsum +=Right[i].row;//对x坐标自增（行坐标）
+        ysum +=Right[i].column;//对y坐标自增（列坐标）
+        xysum += Right[i].row*(Right[i].column);//xy坐标乘积自增
+        x2sum +=Right[i].row*Right[i].row;//x坐标平方自增
+    }
+    if((end-begin)*x2sum-xsum*xsum)//这个在求斜率中会作为分母，因此需要判断是否为0
+    {
+        result = ((end - begin)*xysum - xsum * ysum) / ((end - begin)*x2sum - xsum * xsum);
+        resultlast =result;
+    }
+    else
+    {
+        result = resultlast;
+    }
+    return result;
+}
 
 /**
- * @brief 计算斜率和截距,配合上面的最小二乘法使用
- * 
- * 
+ * @brief 计算斜率和截距,配合上面的最小二乘法使用（求的是左边线的）
  * @param begin 线的起点
  * @param end 线的终点
  * @param border 线上点的y坐标数组
  * @return 通过一组点的直线的斜率,通过指针来返回斜率和截距
+ * @example Image_CountLeftKB(1,45)
  */
-void Image_CountKB(uint8 start,uint8 end,uint8 *border, float *slope_rate,float *intercept)
+float slope_rate_l,intercept_l;
+void Image_CountLeftKB_L(uint8 start,uint8 end)
 {
     uint16 i,num=0;
     uint16 xsum=0,ysum=0;
@@ -467,8 +504,8 @@ void Image_CountKB(uint8 start,uint8 end,uint8 *border, float *slope_rate,float 
     x_average=0;
     for(i=start;i<end;i++)//计算xy坐标的总值（行列坐标）
     {
-        xsum +=i;
-        ysum +=border[i];
+        xsum +=Left[i].row;//行坐标累加
+        ysum +=Left[i].column;//列坐标累加
         num++;
     }
     //计算x,y坐标的平均值
@@ -477,13 +514,49 @@ void Image_CountKB(uint8 start,uint8 end,uint8 *border, float *slope_rate,float 
         x_average=(float)(xsum/num);
         y_average=(float)(ysum/num);
     }
-    *slope_rate =Imgae_Slope(start,end,border);//计算斜率
-    *intercept=y_average-(*slope_rate)*x_average;//计算截距
+    slope_rate_l =Imgae_SlopeLeft(start,end);//计算斜率
+    intercept_l=y_average-(slope_rate_l)*x_average;//计算截距
+}
+/**
+ * @brief 计算斜率和截距,配合上面的最小二乘法使用（求的是左边线的）
+ * 
+ * 
+ * @param begin 线的起点
+ * @param end 线的终点
+ * @param border 线上点的y坐标数组
+ * @return 通过一组点的直线的斜率,通过指针来返回斜率和截距
+ * @example Image_CountRightKB_R(1,45)
+ */
+float slope_rate_r,intercept_r;
+void Image_CountRightKB_R(uint8 start,uint8 end)
+{
+    uint16 i,num=0;
+    uint16 xsum=0,ysum=0;
+    float y_average,x_average;
+    num=0;
+    xsum=0;
+    ysum=0;
+    y_average=0;
+    x_average=0;
+    for(i=start;i<end;i++)//计算xy坐标的总值（行列坐标）
+    {
+        xsum +=Right[i].row;//行坐标累加
+        ysum +=Right[i].column;//列坐标累加
+        num++;
+    }
+    //计算x,y坐标的平均值
+    if(num)
+    {
+        x_average=(float)(xsum/num);
+        y_average=(float)(ysum/num);
+    }
+    slope_rate_r =Imgae_SlopeRight(start,end);//计算斜率
+    intercept_r=y_average-(slope_rate_r)*x_average;//计算截距
 }
 
 uint8 Left_Count,Right_Count;         //记录左右边界点的个数
 uint8 grow_left,grow_right;           //记录左右边界在八邻域时寻点的相对位置
-uint8 Left_Max=140,Right_Max=140;     //左右边界搜点时允许最大的搜点量
+uint8 Left_Max=200,Right_Max=200;     //左右边界搜点时允许最大的搜点量
 uint8 Boundary_search_end=30;         //搜寻行数的最高行
 
 uint8 Gather_flag;
@@ -765,7 +838,7 @@ void Image_Get_neighborhoods(uint8(*Image_Use)[IMAGE_WIDTH])
 				cur_col=Right[Right_Count].column;
 				Right_Count++;
 			}
-			else if(Image_Use_Robert[cur_row+1][cur_col-1]==BLACK&&Image_Use[cur_row+1][cur_col]==WHITE)
+			else if(Image_Use_Robert[cur_row+1][cur_col-1]==BLACK&&Image_Use_Robert[cur_row+1][cur_col]==WHITE)
 			{
 				Right[Right_Count].row=cur_row+1;
 				Right[Right_Count].column=cur_col-1;
@@ -819,7 +892,321 @@ void Image_Get_neighborhoods(uint8(*Image_Use)[IMAGE_WIDTH])
 	}
 }
 
-
+void Image_Get_neighborhoods2(uint8(*Image_Use)[IMAGE_WIDTH])
+{
+	Left_Count=0;
+	Right_Count=0;
+	uint16 cur_row,cur_col;//当前行列
+	uint8 Pixel_Change;//灰白像素变化标志位——恢复原来的bug
+	uint8 Pixel_Count_r,Pixel_Count_l;//计算变化对应的下标值
+	uint8 Pixel_row,Pixel_col;//记录变化像素点的坐标（右坐标）
+	if(Image_Get_LeftPoint(117))
+	{
+		Left[0].row=Image_Get_LeftPoint(117);
+		Left[0].column=left_point-1;
+		Left[0].flag=1;
+		Left[0].grow=2;//初始生长方向为2
+		cur_row=Left[0].row;//返回起始的行数
+		cur_col=left_point;//这是全局变量，可以调用
+		Left_Count++;
+		while(Left_Max--)//找140个
+		{
+			//一 寻点生长
+			//0黑1白
+			if(Image_Use[cur_row+1][cur_col]==BLACK&&Image_Use[cur_row+1][cur_col-1]==WHITE)
+			{
+				Left[Left_Count].row=cur_row+1;
+				Left[Left_Count].column=cur_col;
+				Left[Left_Count].flag=1;
+				Left[Left_Count].grow=0;
+				cur_row =Left[Left_Count].row;
+				cur_col=Left[Left_Count].column;//更新中心坐标点
+				Left_Count++;
+			}
+			else if(Image_Use[cur_row+1][cur_col-1]==BLACK&&Image_Use[cur_row][cur_col-1]==WHITE)
+			{
+				Left[Left_Count].row=cur_row+1;
+				Left[Left_Count].column=cur_col-1;
+				Left[Left_Count].flag=1;
+				Left[Left_Count].grow=1;
+				cur_row =Left[Left_Count].row;
+				cur_col=Left[Left_Count].column;//更新中心坐标点
+				Left_Count++;
+			}
+			else if(Image_Use[cur_row][cur_col-1]==BLACK&&Image_Use[cur_row-1][cur_col-1]==WHITE)
+			{
+				Left[Left_Count].row=cur_row;
+				Left[Left_Count].column=cur_col-1;
+				Left[Left_Count].flag=1;
+				Left[Left_Count].grow=2;
+				cur_row =Left[Left_Count].row;
+				cur_col=Left[Left_Count].column;//更新中心坐标点
+				Left_Count++;
+			}
+			else if(Image_Use[cur_row-1][cur_col-1]==BLACK&&Image_Use[cur_row-1][cur_col]==WHITE)
+			{
+				if(Image_Use[cur_row][cur_col+1]==BLACK&&Image_Use[cur_row-1][cur_col+1]==WHITE&&
+					Image_Use[cur_row+1][cur_col+1]==WHITE)
+				/*生长方向选择为6（正左），详情解析在Right里面*/
+				{
+					Left[Left_Count].row=cur_row;
+					Left[Left_Count].column=cur_col+1;
+					Left[Left_Count].flag=1;
+					Left[Left_Count].grow=6;
+					cur_row=Left[Left_Count].row;
+					cur_col=Left[Left_Count].column;
+					Left_Count++;
+				}
+				else
+				{
+					if(cur_col!=2)//处理分界点问题
+					{
+						Left[Left_Count].row=cur_row-1;
+						Left[Left_Count].column=cur_col-1;
+						Left[Left_Count].flag=1;
+						Left[Left_Count].grow=3;
+						cur_row =Left[Left_Count].row;
+						cur_col=Left[Left_Count].column;//更新中心坐标点
+						Left_Count++;
+					}
+					else
+					{
+						Image_Use[cur_row-1][cur_col]=BLACK;//将跳变的白点变成黑色，下次就找得到了
+						Pixel_row=cur_row-1;
+						Pixel_col=cur_col;
+						Pixel_Count_l=Left_Count;//记录此时的计数值
+						Pixel_Change=1;//1为变成了黑色
+					}
+					
+				}
+			}
+			else if(Image_Use[cur_row-1][cur_col]==BLACK&&Image_Use[cur_row-1][cur_col+1]==WHITE)
+			{
+				Left[Left_Count].row=cur_row-1;
+				Left[Left_Count].column=cur_col;
+				Left[Left_Count].flag=1;
+				Left[Left_Count].grow=4;
+				cur_row =Left[Left_Count].row;
+				cur_col=Left[Left_Count].column;//更新中心坐标点
+				Left_Count++;
+			}
+			else if(Image_Use[cur_row-1][cur_col+1]==BLACK&&Image_Use[cur_row][cur_col+1]==WHITE)
+			{
+				Left[Left_Count].row=cur_row-1;
+				Left[Left_Count].column=cur_col+1;
+				Left[Left_Count].flag=1;
+				Left[Left_Count].grow=5;
+				cur_row =Left[Left_Count].row;
+				cur_col=Left[Left_Count].column;//更新中心坐标点
+				Left_Count++;
+			}
+			else if(Image_Use[cur_row][cur_col+1]==BLACK&&Image_Use[cur_row+1][cur_col+1]==WHITE)
+			{
+				Left[Left_Count].row=cur_row;
+				Left[Left_Count].column=cur_col+1;
+				Left[Left_Count].flag=1;
+				Left[Left_Count].grow=6;
+				cur_row =Left[Left_Count].row;
+				cur_col=Left[Left_Count].column;//更新中心坐标点
+				Left_Count++;
+			}
+			else if(Image_Use[cur_row+1][cur_col+1]==BLACK&&Image_Use[cur_row+1][cur_col]==WHITE)
+			{
+				Left[Left_Count].row=cur_row+1;
+				Left[Left_Count].column=cur_col+1;
+				Left[Left_Count].flag=1;
+				Left[Left_Count].grow=7;
+				cur_row =Left[Left_Count].row;
+				cur_col=Left[Left_Count].column;//更新中心坐标点
+				Left_Count++;
+			}
+			else
+			{
+				break;
+			}
+			//二 1.检验越界
+			if(cur_row<2||cur_row>IMAGE_HEIGHT-2||cur_col<1||cur_col>IMAGE_WIDTH-2)
+			{
+				break;
+			}
+			//2 黑框分点的还原
+			if((Left_Count-Pixel_Count_l)==1)
+			{
+				Image_Use[Pixel_row][Pixel_col]=WHITE;
+			}
+		}
+	}
+	//采取左右对称，后面好写
+	/*
+	5	4	3
+	6		2
+	7	0	1
+	*/
+	if(Image_Get_RightPoint(117))
+	{
+		Right[0].row=Image_Get_RightPoint(117);
+		Right[0].column=right_point+1;
+		Right[0].flag=1;
+		Right[0].grow=2;
+		cur_row=Right[0].row;
+		cur_col=right_point;
+		Right_Count++;
+		while(Right_Max--)
+		{
+			//0黑1白
+			if(Image_Use[cur_row+1][cur_col]==BLACK&&Image_Use[cur_row+1][cur_col+1]==WHITE)
+			{
+				Right[Right_Count].row=cur_row+1;
+				Right[Right_Count].column=cur_col;
+				Right[Right_Count].flag=1;
+				Right[Right_Count].grow=0;
+				cur_row=Right[Right_Count].row;
+				cur_col=Right[Right_Count].column;
+				Right_Count++;
+			}
+			else if(Image_Use[cur_row+1][cur_col+1]==BLACK&&Image_Use[cur_row][cur_col+1]==WHITE)
+			{
+				Right[Right_Count].row=cur_row+1;
+				Right[Right_Count].column=cur_col+1;
+				Right[Right_Count].flag=1;
+				Right[Right_Count].grow=1;
+				cur_row=Right[Right_Count].row;
+				cur_col=Right[Right_Count].column;
+				Right_Count++;
+			}
+			else if(Image_Use[cur_row][cur_col+1]==BLACK&&Image_Use[cur_row-1][cur_col+1]==WHITE)
+			{
+				Right[Right_Count].row=cur_row;
+				Right[Right_Count].column=cur_col+1;
+				Right[Right_Count].flag=1;
+				Right[Right_Count].grow=2;
+				cur_row=Right[Right_Count].row;
+				cur_col=Right[Right_Count].column;
+				Right_Count++;
+			}
+			else if(Image_Use[cur_row-1][cur_col+1]==BLACK&&Image_Use[cur_row-1][cur_col]==WHITE)
+			{
+				/*
+				5 7检测为白，6为黑——检测竖直状态拐点问题（十字路口扫线扫不上去的问题）
+				注：放在这里的话扫线速度更快（因为都是else if结构，提高算法的速度）
+				*/
+				if(Image_Use[cur_row][cur_col-1]==BLACK&&Image_Use[cur_row-1][cur_col-1]==WHITE&&
+					Image_Use[cur_row+1][cur_col-1]==WHITE)
+				/*生长方向选择为6（正左）*/
+				{
+					Right[Right_Count].row=cur_row;
+					Right[Right_Count].column=cur_col-1;
+					Right[Right_Count].flag=1;
+					Right[Right_Count].grow=6;
+					cur_row=Right[Right_Count].row;
+					cur_col=Right[Right_Count].column;
+					Right_Count++;
+				}
+				else//提高优先级90°巡线判断的优先级
+				{
+					if(cur_col!=157)//处理分界点问题：当4黑 5白 6黑 7白 的时候，由于（右边）是逆时针扫描，就会有bug
+					{
+						Right[Right_Count].row=cur_row-1;
+						Right[Right_Count].column=cur_col+1;
+						Right[Right_Count].flag=1;
+						Right[Right_Count].grow=3;
+						cur_row=Right[Right_Count].row;
+						cur_col=Right[Right_Count].column;
+						Right_Count++;
+					}
+					else
+					{
+						Image_Use_Robert[cur_row-1][cur_col]=BLACK;//将跳变的白点变成黑色，下次就找得到了
+						Pixel_row=cur_row-1;
+						Pixel_col=cur_col;
+						Pixel_Count_r=Right_Count;//记录此时的计数值
+						Pixel_Change=1;//1为变成了黑色
+					}
+				}
+			}
+			else if(Image_Use[cur_row-1][cur_col]==BLACK&&Image_Use[cur_row-1][cur_col-1]==WHITE)
+			{
+				Right[Right_Count].row=cur_row-1;
+				Right[Right_Count].column=cur_col;
+				Right[Right_Count].flag=1;
+				Right[Right_Count].grow=4;
+				cur_row=Right[Right_Count].row;
+				cur_col=Right[Right_Count].column;
+				Right_Count++;
+			}
+			else if(Image_Use[cur_row-1][cur_col-1]==BLACK&&Image_Use[cur_row][cur_col-1]==WHITE)
+			{
+				Right[Right_Count].row=cur_row-1;
+				Right[Right_Count].column=cur_col-1;
+				Right[Right_Count].flag=1;
+				Right[Right_Count].grow=5;
+				cur_row=Right[Right_Count].row;
+				cur_col=Right[Right_Count].column;
+				Right_Count++;
+			}
+			else if(Image_Use[cur_row][cur_col-1]==BLACK&&Image_Use[cur_row+1][cur_col-1]==WHITE)
+			{
+				Right[Right_Count].row=cur_row;
+				Right[Right_Count].column=cur_col-1;
+				Right[Right_Count].flag=1;
+				Right[Right_Count].grow=6;
+				cur_row=Right[Right_Count].row;
+				cur_col=Right[Right_Count].column;
+				Right_Count++;
+			}
+			else if(Image_Use[cur_row+1][cur_col-1]==BLACK&&Image_Use[cur_row+1][cur_col]==WHITE)
+			{
+				Right[Right_Count].row=cur_row+1;
+				Right[Right_Count].column=cur_col-1;
+				Right[Right_Count].flag=1;
+				Right[Right_Count].grow=7;
+				cur_row=Right[Right_Count].row;
+				cur_col=Right[Right_Count].column;
+				Right_Count++;
+			}
+			else
+				break;
+			//下面是巡线以后其他的处理
+			//1  越界处理
+			if(cur_row<2||cur_row>IMAGE_HEIGHT-2||cur_col<1||cur_col>IMAGE_WIDTH-2)
+			{
+				break;
+			}
+			//2 变化灰度的还原的处理（因为不处理的话下次就还是会扫错）
+			if((Right_Count-Pixel_Count_r)==1)//确保是变黑的下一次就变白（记录次数，防止误扫）
+			{
+				Image_Use_Robert[Pixel_row][Pixel_col]=WHITE;//一般都是白->黑->白
+			}
+//			//下面是巡线以后其他的处理
+//            //一 越界处理
+//			if(cur_row<=2||cur_row>=(IMAGE_WIDTH-3)||cur_col<=2||cur_col>=(IMAGE_WIDTH-3))
+//			{
+//				break;
+//			}
+//            //以下是待测试的代码
+//            //二 连续3次都是同一个点就不再寻找
+//            if(Right[Right_Count].row==Right[Right_Count-1].row&&Right[Right_Count].column==Right[Right_Count-1].column&&
+//                Right[Right_Count-1].row==Right[Right_Count-2].row&&Right[Right_Count-1].column==Right[Right_Count-2].column)
+//            {
+//                break;
+//            }
+//            //三 当扫到的点多个在同一行时，只保留最后一个点（这个目前不写，因为处理的是压缩后的图像，点多一点也没关系，如果需要的话后期再改进）
+//            //四 当左右线会聚时退出循环，并记录此时的行数（判断坡道）
+//            if((Left[Left_Count-1].row==Right[Right_Count-1].row)&&(Left[Left_Count-1].column==Right[Right_Count-1].column||
+//            Right[Right_Count-1].column-Left[Left_Count-1].column<=3))
+//            //判断条件：行相等，列也相等or列相差在3以内
+//            {
+//                Gather_row[Gather_Count]=Left[Left_Count-1].row;
+//                Gather_flag=1;
+//                break;
+//            }
+//            else
+//            {
+//                Gather_flag=0;
+//            }
+		}
+	}
+}
 uint8 Mid_Count;
 /**
  * @brief 取中线函数（有bug，待验证）
@@ -862,32 +1249,48 @@ void Image_FillCross(uint8(*Image_Use)[IMAGE_WIDTH])
     //先扫左拐点，从左下角开始扫，左右线的计数值不一定相等
     //两种写法，一种生长方向由5-->2，另外一种直接判断多个2（因为不能保证斜线一直是5），这里用方法一，后面可能会改，觉得这个不太行
     //判断是否进入十字，或者未进入十字
-    if(Image_Use[IMAGE_HEIGHT-4][4]==BLACK&&Image_Use[IMAGE_HEIGHT-4][6]==BLACK&&Image_Use[IMAGE_HEIGHT-4][IMAGE_WIDTH-6]==BLACK&&Image_Use[IMAGE_HEIGHT-4][IMAGE_WIDTH-4]==BLACK)
-    {
+//    if(Image_Use[IMAGE_HEIGHT-4][4]==BLACK&&Image_Use[IMAGE_HEIGHT-4][6]==BLACK&&Image_Use[IMAGE_HEIGHT-4][IMAGE_WIDTH-6]==BLACK&&Image_Use[IMAGE_HEIGHT-4][IMAGE_WIDTH-4]==BLACK)
+    
         for(i=0;i<Left_Count;i++)//实际上理想情况下是i不会=left_count，因为找到左下拐点时肯定还有很多点没找
         {
-            //这里判断写越多越好，找的拐点就越符合条件，但是也有可能找不到，所以要权衡
-            if(Left[i].grow==5&&Left[i-2].grow==5&&Left[i+2].grow==2&&Left[i+3].grow==2&&Left[i+5].grow==2
-                &&Left[i+7].grow==2&&Left[i-5].grow==5)
-            {
-                left_low.row=Left[i].row;
+            //这里判断写越多越好，找的拐点就越符合条件，但是也有可能找不到，所以要权衡&&(Left[i-5].grow==5||Left[i-4].grow==5)
+//            if(Left[i].grow==5&&(Left[i-2].grow==5||Left[i-1].grow==5||Left[i-3].grow==5)&&(Left[i+2].grow==2||Left[i+1].grow==2)&&(Left[i+5].grow==2
+//                ||Left[i+6].grow==2)&&(Left[i+3].grow==2||Left[i+4].grow==2))
+//            {
+//                left_low.row=Left[i].row;
+//                left_low.column=Left[i].column;
+//                break;
+//            }
+//			/*plan2：生长方向优化*/
+			if((Left[i-1].grow==5||Left[i-4].grow==5)&&(Left[i-2].grow==5||Left[i-5].grow==5)&&(Left[i-3].grow==5||Left[i-6].grow==5)
+				&&(Left[i+1].grow!=5||Left[i+4].grow!=5)&&(Left[i+2].grow!=5||Left[i+5].grow!=5)&&(Left[i+3].grow!=5||Left[i+6].grow!=5))
+			{
+				left_low.row=Left[i].row;
                 left_low.column=Left[i].column;
                 break;
-            }
+			}
+//			/*plan3 斜率突变*/
+//			if((Image_Getk(Left[i].column,Left[i-4].column,(Left[i].row-Left[i-4].row)))-(Image_Getk(Left[i].column,Left[i+4].column,(Left[i].row-Left[i-4].row)))>0.35)
+//			{
+//				left_low.row=Left[i].row;
+//                left_low.column=Left[i].column;
+//                break;
+//			}
+//			if((float)(Image_LeftGrowDirection(i,5)/Left_Count)
         }
         //找的是左上拐点，这里可以不放在同一个for循环，因为肯定是先找到左下拐点，然后才能找到左拐点
-        for(i=0;i<Left_Count;i++)
-        {
-            //图片上方的有效点比较少，判断就简单一点，不然找不到，注意生长方向就行
-            if(Left[i].grow==5&&Left[i-2].grow==5&&Left[i-5].grow==5
-            &&Left[i-2].grow==6&&Left[i-4].grow==6&&Left[i-6].grow==6)
-            {
-                left_high.row=Left[i].row;
-                left_high.column=Left[i].column;
-                break;
-            }
-        }
-        //左右对称，生长方向一样，就不用改了
+//        for(i=0;i<Left_Count;i++)
+//        {
+//            //图片上方的有效点比较少，判断就简单一点，不然找不到，注意生长方向就行
+//            if(Left[i].grow==5&&Left[i-2].grow==5&&Left[i-5].grow==5
+//            &&Left[i-2].grow==6&&Left[i-4].grow==6&&Left[i-6].grow==6)
+//            {
+//                left_high.row=Left[i].row;
+//                left_high.column=Left[i].column;
+//                break;
+//            }
+//        }
+//        //左右对称，生长方向一样，就不用改了
         for(i=0;i<Right_Count;i++)
         {
             if(Right[i].grow==5&&Right[i-2].grow==5&&Right[i+2].grow==2&&Right[i+3].grow==2&&Right[i+5].grow==2
@@ -898,86 +1301,87 @@ void Image_FillCross(uint8(*Image_Use)[IMAGE_WIDTH])
                 break;
             }
         }
-        for(i=0;i<Right_Count;i++)
-        {
-            if(Right[i].grow==5&&Right[i-2].grow==5&&Right[i-5].grow==5
-            &&Right[i-2].grow==6&&Right[i-4].grow==6&&Right[i-6].grow==6)
-            {
-                right_high.row=Right[i].row;
-                right_high.column=Right[i].column;
-                break;
-            }
-        }
-        //找完点开始补线，先求左线
-        Image_pointsleft(left_high.row,left_high.column,left_low.row,left_low.column);//求出左线的斜率和截距
-        //补线有两种方法：一种把全部的点都补上，一种只补两个拐点拐点，这里用第二种，后面再用基础扫线，扫出补线后的边线
-        for(i=left_low.row;i<IMAGE_HEIGHT-1;i++)//从左下拐点开始补线
-        {
-            Image_Use[i][(int)(left_line.k)*i+(int)(left_line.b)]=BLACK;//补线,这里传入的k是浮点型,后面要换
-            if(i>=IMAGE_HEIGHT-4)
-            {
-                l_ready=1;//左线补完了
-                break;
-            }
-            
-        }
-        Image_pointsright(right_high.row,right_high.column,right_low.row,right_low.column);//求出右线的斜率和截距
-        for(i=right_low.row;i<IMAGE_HEIGHT-1;i++)//从右下拐点开始补线
-        {
-            Image_Use[i][(int)(right_line.k)*i+(int)(right_line.b)]=BLACK;//补线
-            if(i>=IMAGE_HEIGHT-4)
-            {
-                r_ready=1;//右线补完了
-                break;
-            }
-        }
-    }
-    /*如果未进十字的补线判断完成，那么接下来就要进入十字中途的补线，这里和前面的最大区别就是左下角和右下角是不是白色*/
-    if(l_ready&&r_ready&&Image_Use[IMAGE_HEIGHT-4][4]==WHITE&&Image_Use[IMAGE_HEIGHT-4][6]==WHITE&&Image_Use[IMAGE_HEIGHT-4][IMAGE_WIDTH-6]==WHITE&&Image_Use[IMAGE_HEIGHT-4][IMAGE_WIDTH-4]==WHITE)//等左右线补完，只要补完就说明有过，那么就顺便看左下角和右小角是否为白色
-    {
-        //此时只有左上拐点和右上拐点，因为左下角和右下角都是白色，所以只需要找左上拐点和右上拐点，取直线就往拐点往上扫
-        for(i=0;i<Left_Count;i++)
-        {
-            if(Left[i].grow==5&&Left[i-2].grow==5&&Left[i-5].grow==5
-            &&Left[i-2].grow==6&&Left[i-4].grow==6&&Left[i-6].grow==6)
-            {
-                left_high.row=Left[i].row;
-                left_high.column=Left[i].column;
-                break;
-            }
-        }
-        for(i=0;i<Right_Count;i++)
-        {
-            if(Right[i].grow==5&&Right[i-2].grow==5&&Right[i-5].grow==5
-            &&Right[i-2].grow==6&&Right[i-4].grow==6&&Right[i-6].grow==6)
-            {
-                right_high.row=Right[i].row;
-                right_high.column=Right[i].column;
-                break;
-            }
-        }
-        //求出拐点后开始补线,这里求斜率有三种方法:1.直接用两点(拐点和左下角)求斜率 2.用最小二乘法求斜率(用拐点往上的点) 3.用最小二乘法求斜率，但是只用拐点附近的点
-        Image_pointsleft(left_high.row,left_high.column,IMAGE_HEIGHT-4,4);//求出左线的斜率和截距
-        for(i=IMAGE_HEIGHT-4;i>4;i--)
-        {
-            Image_Use[i][(int)(left_line.k)*i+(int)(left_line.b)]=BLACK;//补线
-            if(i<=left_high.row-1)
-            {
-                l_ready=1;//左线补完了
-                break;
-            }
-        }
-        Image_pointsright(right_high.row,right_high.column,IMAGE_HEIGHT-4,IMAGE_WIDTH-4);//求出右线的斜率和截距
-        for(i=IMAGE_HEIGHT-4;i>4;i--)
-        {
-            Image_Use[i][(int)(right_line.k)*i+(int)(right_line.b)]=BLACK;//补线
-            if(i<=right_high.row-1)
-            {
-                r_ready=1;//右线补完了
-                break;
-            }
-        }
-    }
+//        for(i=0;i<Right_Count;i++)
+//        {
+//            if(Right[i].grow==5&&Right[i-2].grow==5&&Right[i-5].grow==5
+//            &&Right[i-2].grow==6&&Right[i-4].grow==6&&Right[i-6].grow==6)
+//            {
+//                right_high.row=Right[i].row;
+//                right_high.column=Right[i].column;
+//                break;
+//            }
+//        }
+//        //找完点开始补线，先求左线
+//        Image_pointsleft(left_high.row,left_high.column,left_low.row,left_low.column);//求出左线的斜率和截距
+//        //补线有两种方法：一种把全部的点都补上，一种只补两个拐点拐点，这里用第二种，后面再用基础扫线，扫出补线后的边线
+//        for(i=left_low.row;i<IMAGE_HEIGHT-1;i++)//从左下拐点开始补线
+//        {
+//            Image_Use[i][(int)(left_line.k)*i+(int)(left_line.b)]=BLACK;//补线,这里传入的k是浮点型,后面要换
+//            if(i>=IMAGE_HEIGHT-4)
+//            {
+//                l_ready=1;//左线补完了
+//                break;
+//            }
+//            
+//        }
+//        Image_pointsright(right_high.row,right_high.column,right_low.row,right_low.column);//求出右线的斜率和截距
+//        for(i=right_low.row;i<IMAGE_HEIGHT-1;i++)//从右下拐点开始补线
+//        {
+//            Image_Use[i][(int)(right_line.k)*i+(int)(right_line.b)]=BLACK;//补线
+//            if(i>=IMAGE_HEIGHT-4)
+//            {
+//                r_ready=1;//右线补完了
+//                break;
+//            }
+//        }
+//    
+//    /*如果未进十字的补线判断完成，那么接下来就要进入十字中途的补线，这里和前面的最大区别就是左下角和右下角是不是白色*/
+//		/*用的sobel就判断不出来左下角是不是黑色了*/
+////    if(l_ready&&r_ready&&Image_Use[IMAGE_HEIGHT-4][4]==WHITE&&Image_Use[IMAGE_HEIGHT-4][6]==WHITE&&Image_Use[IMAGE_HEIGHT-4][IMAGE_WIDTH-6]==WHITE&&Image_Use[IMAGE_HEIGHT-4][IMAGE_WIDTH-4]==WHITE)//等左右线补完，只要补完就说明有过，那么就顺便看左下角和右小角是否为白色
+//    
+//        //此时只有左上拐点和右上拐点，因为左下角和右下角都是白色，所以只需要找左上拐点和右上拐点，取直线就往拐点往上扫
+//        for(i=0;i<Left_Count;i++)
+//        {
+//            if(Left[i].grow==5&&Left[i-2].grow==5&&Left[i-5].grow==5
+//            &&Left[i-2].grow==6&&Left[i-4].grow==6&&Left[i-6].grow==6)
+//            {
+//                left_high.row=Left[i].row;
+//                left_high.column=Left[i].column;
+//                break;
+//            }
+//        }
+//        for(i=0;i<Right_Count;i++)
+//        {
+//            if(Right[i].grow==5&&Right[i-2].grow==5&&Right[i-5].grow==5
+//            &&Right[i-2].grow==6&&Right[i-4].grow==6&&Right[i-6].grow==6)
+//            {
+//                right_high.row=Right[i].row;
+//                right_high.column=Right[i].column;
+//                break;
+//            }
+//        }
+//        //求出拐点后开始补线,这里求斜率有三种方法:1.直接用两点(拐点和左下角)求斜率 2.用最小二乘法求斜率(用拐点往上的点) 3.用最小二乘法求斜率，但是只用拐点附近的点
+//        Image_pointsleft(left_high.row,left_high.column,IMAGE_HEIGHT-4,4);//求出左线的斜率和截距
+//        for(i=IMAGE_HEIGHT-4;i>4;i--)
+//        {
+//            Image_Use[i][(int)(left_line.k)*i+(int)(left_line.b)]=BLACK;//补线
+//            if(i<=left_high.row-1)
+//            {
+//                l_ready=1;//左线补完了
+//                break;
+//            }
+//        }
+//        Image_pointsright(right_high.row,right_high.column,IMAGE_HEIGHT-4,IMAGE_WIDTH-4);//求出右线的斜率和截距
+//        for(i=IMAGE_HEIGHT-4;i>4;i--)
+//        {
+//            Image_Use[i][(int)(right_line.k)*i+(int)(right_line.b)]=BLACK;//补线
+//            if(i<=right_high.row-1)
+//            {
+//                r_ready=1;//右线补完了
+//                break;
+//            }
+//        }
+    
 }
 
 /*下面是直道函数的辅助函数*/
@@ -1109,31 +1513,35 @@ void Image_Run(void)
 //	i=Image_Get_LeftFlag(117);
 //	j=Image_Get_Rightflag(117);
 	TH = OSTU_GetThreshold(Image_Use[0], IMAGE_WIDTH, IMAGE_HEIGHT);
-//        Image_Binarization(TH,Image_Use);
+	Image_Binarization(TH,Image_Use);
 	Image_DrawRectangle();
+//	Image_Filter();
 	Image_Sobel( Image_Use, Image_Use_Robert ,TH);//全局Sobel得二值图(方案二) 2.8ms
     tft180_displayimage03x((uint8 *)Image_Use_Robert, 80, 60); //pidMotor1Speed
 //	tft180_draw_line(0,0,start_point_Left[0],start_point_Left[1],RGB565_RED);//行坐标l_countl_count
-
+	
 	Image_Get_neighborhoods(Image_Use_Robert);
+	Image_FillCross(Image_Use_Robert);
 //	tft180_show_int(3,120,points_l[l_count-1][0],3);
 //	Image_Get_neighborhoods(100,Image_Use);
-//	tft180_draw_line(0,0,cur_col/2,cur_row/2,RGB565_RED);//行坐标l_countl_count
+	tft180_draw_line(0,0,left_low.column/2,left_low.row/2,RGB565_BLUE);
 	
+//	tft180_draw_line(0,0,right_low.column/2,right_low.row/2,RGB565_BLUE);
 //	
-//	tft180_show_int(3,120,Left[3].row,3);
-//	tft180_show_int(3,140,Right_Count,3);
+	tft180_show_int(3,120,Left_Count,3);
+	tft180_show_int(3,140,left_low.column,3);
 //	Get_Midpoint();
 	for(i=0;i<Left_Count;i++)
 	{
 		tft180_draw_point(Left[i].column/2,Left[i].row/2,RGB565_RED);
 		tft180_draw_point((Left[i].column/2)+1,Left[i].row/2,RGB565_RED);
+//		tft180_draw_line(0,45,Left[i].column/2,Left[i].row/2,RGB565_RED);
 	}
-	for(i=0;i<Right_Count;i++)
-	{
-		tft180_draw_point(Right[i].column/2,Right[i].row/2,RGB565_GREEN);
-		tft180_draw_point((Right[i].column/2)+1,Right[i].row/2,RGB565_GREEN);
-	}
+//	for(i=0;i<Right_Count;i++)
+//	{
+//		tft180_draw_point(Right[i].column/2,Right[i].row/2,RGB565_GREEN);
+//		tft180_draw_point((Right[i].column/2)+1,Right[i].row/2,RGB565_GREEN);
+//	}
 //	for(i=0;i<Left_Count;i++)
 //	{
 //		tft180_draw_point((Left[i].column)/2+1,Left[i].row/2,RGB565_RED);
@@ -1216,10 +1624,10 @@ int abs_int(int a, int b)
  * @param Direction 给定的生长方向
  * @return uint8 相同方向的数量
  */
-int Image_LeftGrowDirection(uint8 Direction)
+int Image_LeftGrowDirection(uint8 end,uint8 Direction)
 {
     uint8 i,direction_count;
-    for(i=0;i<Left_Count;i++)
+    for(i=0;i<end;i++)
     {
         if(Left[i].grow==Direction)//如果方向一致的话，就计数自增
         {
@@ -1234,7 +1642,7 @@ int Image_LeftGrowDirection(uint8 Direction)
  * @param Direction 给定的生长方向
  * @return uint8 相同方向的数量
  */
-int Image_RightGrowDirection(uint8 Direction)
+int Image_RightGrowDirection(uint8 end,uint8 Direction)
 {
     uint8 i,direction_count;
     for(i=0;i<Right_Count;i++)
@@ -1304,7 +1712,7 @@ void Image_LeftRound(uint8(*Image_Use)[IMAGE_WIDTH])
             //状态5的标志判断：1.右侧拐点消失（或右侧拐点太低了） 2. 左线生长方向向上 3.右线基本生长方向左上5
             //4. 左右线相交  5.和状态3差不多，唯一不同的就是右线的生长方向为直线（可以求斜率来判断） 
             //这里来的做法是统计5方向的个数，如果大于3/4就认为是状态5（也可以判断斜率的直线）
-            if(LeftRound_State==4&&Last_LeftRound_State==3&&(Image_RightGrowDirection(5)>=((Right_Count/4)*3)))
+            if(LeftRound_State==4&&Last_LeftRound_State==3&&(Image_RightGrowDirection(Right_Count,5)>=((Right_Count/4)*3)))
             {
                 Last_LeftRound_State=LeftRound_State;
                 LeftRound_State=5;//进入状态5
@@ -1364,14 +1772,14 @@ void Image_LeftRound(uint8(*Image_Use)[IMAGE_WIDTH])
     //状态3的标志判断：1. 左边线和右边线会相交 2.左右边线起始点的列坐标相差较大 3.左线的生长方向基本都是正上（4）
     //4.右线的列坐标的起始和终点相差较大
     else if(LeftRound_State==2&&Last_LeftRound_State==1&&(abs_int(Right[0].column,Left[0].column)>80)
-            &&(Image_LeftGrowDirection(4)>=(Left_Count/2))&&(abs_int(Right[0].column,Right[Right_Count-1].column)>80))
+            &&(Image_LeftGrowDirection(Left_Count,4)>=(Left_Count/2))&&(abs_int(Right[0].column,Right[Right_Count-1].column)>80))
     {
         Last_LeftRound_State=LeftRound_State;
         LeftRound_State=3;//进入状态3，状态3就不用补线了，拐点也不用搞了
     }
     //状态4的标志判断
     //标志判断：1.左线的生长方向正上占比较少 2.右线的起点和终点列坐标相差较小 3.右线起始的列坐标和和终点的列坐标相差较小
-    else if(LeftRound_State==3&&Last_LeftRound_State==2&&(Image_LeftGrowDirection(4)<=(Left_Count/4))
+    else if(LeftRound_State==3&&Last_LeftRound_State==2&&(Image_LeftGrowDirection(Left_Count,4)<=(Left_Count/4))
     &&(abs_int(Right[0].column,Right[Right_Count-1].column)<20))
     {
         Last_LeftRound_State=LeftRound_State;
@@ -1380,7 +1788,7 @@ void Image_LeftRound(uint8(*Image_Use)[IMAGE_WIDTH])
     //状态6的标志判断
     //1. 右线的起始点和终止点的列坐标间隔较小   2. 左线向上生长方向的比例下降 3.左线的起点和终止点的列坐标间隔较大
     else if(LeftRound_State==5&&Last_LeftRound_State==4&&(abs_int(Left[0].column,Left[Left_Count-1].column)>80)
-    &&(abs_int(Right[0].column,Right[Right_Count-1].column)<20)&&(Image_LeftGrowDirection(4)<=(Left_Count/4)))
+    &&(abs_int(Right[0].column,Right[Right_Count-1].column)<20)&&(Image_LeftGrowDirection(Left_Count,4)<=(Left_Count/4)))
     {
         Last_LeftRound_State=LeftRound_State;
         LeftRound_State=6;//进入状态6

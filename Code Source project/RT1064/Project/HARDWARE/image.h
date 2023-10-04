@@ -15,7 +15,7 @@
 #define Primeval_With MT9V03X_W  // 原始图像宽度
 
 #define THRESHOLD_MAX 255*6         //滤波阈值
-#define THRESHOLD_MIN 255*2
+#define THRESHOLD_MIN 255*3
 
 #define LINE_K 0.5 //斜率，判断是否为直道
 extern uint8 Image_Use[IMAGE_HEIGHT][IMAGE_WIDTH]; // 全局声明用于处理的图像数组
@@ -36,14 +36,14 @@ float Image_ab_value(float a,float b);//求浮点型的绝对值
 float Image_Getk(uint8 start_y,uint8 end_y,uint8 interval);//简单计算直线斜率
 int abs_int(int a, int b);//求两整型绝对值
 int min(int a, int b);//求两整型最小值
-int Image_LeftGrowDirection(uint8 Direction);//计算左边线中生长某方向的总个数
-int Image_RightGrowDirection(uint8 Direction);//计算右边线中生长某方向的总个数
+int Image_LeftGrowDirection(uint8 end,uint8 Direction);//计算左边线中生长某方向的总个数
+int Image_RightGrowDirection(uint8 end,uint8 Direction);//计算右边线中生长某方向的总个数
 uint8 Image_Scan_Row(uint8(*Image_Use)[IMAGE_WIDTH],uint8 target_row);//扫某行的黑白跳变点（斑马线判断）
 uint8 Image_Scan_Column(uint8(*Image_Use)[IMAGE_WIDTH],uint8 target_column);//扫某列的黑白跳变点（斑马线判断）
 void Image_pointsleft(uint8 x1,uint8 y1,uint8 x2,uint8 y2);//两点坐标求斜率和截距
 void Image_pointsright(uint8 x1,uint8 y1,uint8 x2,uint8 y2);//两点坐标求斜率和截距（存的数组不一样）
-float Imgae_Slope(uint8 begin,uint8 end,uint8 *border);//最小二乘法求直线斜率
-void Image_CountKB(uint8 start,uint8 end,uint8 *border, float *slope_rate,float *intercept);//最小二乘法求斜率和截距
+float Imgae_SlopeLeft(uint8 begin,uint8 end);//最小二乘法求左边线斜率
+void Image_CountLeftKB_L(uint8 start,uint8 end);
 
 /*元素*/
 void Image_FillCross(uint8(*Image_Use)[IMAGE_WIDTH]);//十字

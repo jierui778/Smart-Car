@@ -32,7 +32,7 @@ int main(void)
 //    //  Servo_Init();
 //    pit_ms_init(PIT_CH0, 200);
 //    interrupt_set_priority(PIT_IRQn, 0);
-	PID_init();
+
     while (1)
     {
         int TH;
@@ -44,8 +44,8 @@ int main(void)
 //        Image_Sobel( Image_Use, Image_Use_Robert ,TH);//全局Sobel得二值图(方案二) 2.8ms
 		Image_Run();
 //		tft180_show_int(3,80,encoder_r_data,6);//150
-		tft180_show_float(3,100,speed_right,4,4);//5
-		tft180_show_float(3,120,speed_left,4,4);//最后有一点点
+//		tft180_show_float(3,100,speed_right,4,4);//5
+//		tft180_show_float(3,120,speed_left,4,4);//最后有一点点
 //		tft180_show_int(3,140,encoder_l_data,6);//150
 //		Control_Setspeed(3,3);
 
