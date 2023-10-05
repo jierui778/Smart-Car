@@ -38,6 +38,17 @@ struct Line
 struct Line left_line;
 struct Line right_line; // 定义左右线方程
 uint8 Image_Use[IMAGE_HEIGHT][IMAGE_WIDTH];
+uint8 Image_Use_Robert[IMAGE_HEIGHT][IMAGE_WIDTH];
+
+void test(void)
+{
+    int th;
+    Image_Compress();
+    // th = OSTU_GetThreshold(*Image_Use, IMAGE_HEIGHT, IMAGE_WIDTH);
+    // Image_Sobel(Image_Use, Image_Use_Robert, th);
+    Find_Borderline();
+}
+
 /**
  * @brief 截取我们需要的图像大小
  *
@@ -48,8 +59,8 @@ uint8 Image_Use[IMAGE_HEIGHT][IMAGE_WIDTH];
 void Image_Compress(void)
 {
     int i, j, row, line;
-    const float pro_h = Primeval_Hight / IMAGE_HEIGHT, pro_w = Primeval_With / IMAGE_WIDTH; // 根据原始的图像尺寸和你所需要的图像尺寸确定好压缩比例。
-    for (i = 0; i < IMAGE_HEIGHT; i++)                                                      // 遍历图像的每一行，从第零行到第59行。
+    const float pro_h = PRIMEVAL_HEIGHT / IMAGE_HEIGHT, pro_w = PRIMEVAL_WIDTH / IMAGE_WIDTH; // 根据原始的图像尺寸和你所需要的图像尺寸确定好压缩比例。
+    for (i = 0; i < IMAGE_HEIGHT; i++)                                                        // 遍历图像的每一行，从第零行到第59行。
     {
         row = i * pro_h + 0.5;
         for (j = 0; j < IMAGE_WIDTH; j++) // 遍历图像的每一列，从第零列到第79列。
@@ -1398,24 +1409,6 @@ uint8 Image_Scan_Column(uint8 (*Image_Use)[IMAGE_WIDTH], uint8 target_column)
     return black_white_count;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 uint8 touch_boundary0; // 左边线走到图像左边界
 uint8 touch_boundary1; // 右边线走到图像右边界
 
@@ -1447,7 +1440,7 @@ float begin_y = 58; // 起始点距离图像底部的上下偏移量 120高度�
 
 float block_size = 7; // 自适应阈值的block大小
 float clip_value = 2; // 自适应阈值的阈值裁减量
-uint8_t  Image_Use_Robert[120][160];//SOBEL二值化图像
+                      // SOBEL二值化图像
 void Find_Borderline(void)
 {
     // 迷宫巡线是否走到左右边界
@@ -1466,10 +1459,11 @@ void Find_Borderline(void)
     //    uint8 uthres = ostu();
     // 寻左边线
     x1 = img_raw.width / 2 - begin_x, y1 = begin_y;
-	int TH;
-	TH = OSTU_GetThreshold(Image_Use[0], IMAGE_WIDTH, IMAGE_HEIGHT);
-	Image_Sobel( Image_Use, Image_Use_Robert ,TH);//全局Sobel得二值图(方案二) 2.8ms
-	img_raw.data = Image_Use_Robert;
+    int TH;
+    TH = OSTU_GetThreshold(Image_Use[0], IMAGE_WIDTH, IMAGE_HEIGHT);
+    Image_Binarization(TH, *Image_Use);
+    // Image_Sobel(Image_Use, Image_Use_Robert, TH); // 全局Sobel得二值图(方案二) 2.8ms
+    img_raw.data = Image_Use;
 
     // 标记种子起始点(后续元素处理要用到)
     x0_first = x1;
@@ -1603,19 +1597,18 @@ void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x
         loseline0 = 1;
     // 记录边线数目
     *num = step;
-	uint8 i;
-//	for(i=0;i<ipts0_num;i++)
-//	{
-//		tft180_draw_point(ipts0[i][1]/2,ipts0[i][0]/2,RGB565_RED);
-//	}
-	for(i=0;i<ipts1_num;i++)
-	{
-		tft180_draw_point(ipts1[i][1]/2-5,ipts1[i][0]/2,RGB565_BLUE);
-	}
-//	tft180_draw_line(0,0,ipts0[20-1][1],ipts0[20-1][0],RGB565_RED);
-//	tft180_show_int(3,100,ipts0[20-1][1],4);
-//	tft180_show_int(3,120,ipts0[20-1][0],4);
-	tft180_displayimage03x((uint8 *)Image_Use_Robert, 80, 60); //pidMotor1Speed
+    uint8 i;
+    //	for(i=0;i<ipts0_num;i++)
+    //	{
+    //		tft180_draw_point(ipts0[i][1]/2,ipts0[i][0]/2,RGB565_RED);
+    //	}
+    for (i = 0; i < ipts1_num; i++)
+    {
+        ips200_draw_point(ipts0[i][0] + 2, ipts0[i][1] + 2, RGB565_RED);
+
+    }
+    //	tft180_draw_line(0,0,ipts0[20-1][1],ipts0[20-1][0],RGB565_RED);
+    //	tft180_show_int(3,100,ipts0[20-1][1],4);
 }
 /*************************************************************************
  *  函数名称：void Right_Adaptive_Threshold();
@@ -1631,9 +1624,9 @@ void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x
  *************************************************************************/
 void Right_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x, int y, int pts[][2], int *num)
 {
-//    zf_assert(img && img->data);
-//    zf_assert(num && *num >= 0);
-//    zf_assert(block_size > 1 && block_size % 2 == 1);
+    //    zf_assert(img && img->data);
+    //    zf_assert(num && *num >= 0);
+    //    zf_assert(block_size > 1 && block_size % 2 == 1);
     //    int half = block_size / 2;        //上交方案
     int half = 0; // 方案二
     int step = 0, dir = 0, turn = 0;
@@ -1729,3 +1722,39 @@ void draw_line(image_t *img, int pt0[2], int pt1[2], uint8_t value)
     }
 }
 
+/**
+ * @brief 线性回归求斜率
+ *
+ * @param pts_in 二维数组
+ * @param num 数组长度
+ * @return float 返回斜率
+ */
+float LineRession(int pts_in[][2], int num)
+{
+    float slope;
+    // int num = sizeof(pts_in) / sizeof(pts_in[0]); // 求数组的长度
+    int i = 0, SumX = 0, SumY = 0, SumLines = 0;
+    float SumUp = 0, SumDown = 0, avrX = 0, avrY = 0, A;
+    SumLines = pts_in[0][1] - pts_in[num][1]; // pts_in[0][1] 为开始行， //pts_in[num][1] 结束行 //SumLines
+
+    for (i = 0; i < num; i++)
+    {
+        SumY += pts_in[i][1];
+        SumX += pts_in[i][0]; // 对边界X,Y求和
+    }
+    avrY = SumY / SumLines; // Y的平均值
+    avrX = SumX / SumLines; // X的平均值
+    SumUp = 0;
+    SumDown = 0;
+    for (i = 0; i < num; i++)
+    {
+        SumUp += (pts_in[i][0] - avrX) * (pts_in[i][1] - avrY);
+        SumDown += (pts_in[i][1] - avrY) * (pts_in[i][1] - avrY);
+    }
+    if (SumDown == 0)
+        slope = 0;
+    else
+        slope = (SumUp / SumDown);
+    A = (SumX - slope * SumY) / SumLines; // 截距
+    return slope;                         // 返回斜率
+}

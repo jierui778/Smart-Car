@@ -8,18 +8,19 @@
 
 #define white 255
 #define black 0
-#define IMAGE_WIDTH 160          // 用于处理的图像高度
-#define IMAGE_HEIGHT 120         //用于处理的图像宽度\
+#define IMAGE_WIDTH 160           // 用于处理的图像高度
+#define IMAGE_HEIGHT 120          //用于处理的图像宽度\
 
-#define Primeval_Hight MT9V03X_H // 原始图像高度
-#define Primeval_With MT9V03X_W  // 原始图像宽度
+#define PRIMEVAL_HEIGHT MT9V03X_H // 原始图像高度
+#define PRIMEVAL_WIDTH MT9V03X_W  // 原始图像宽度
 
 #define threshold_max 255 * 6 // 滤波阈值
 #define threshold_min 255 * 2
 
-#define Line_k 0.5                                 // 斜率，判断是否为直道
-extern uint8 Image_Use[IMAGE_HEIGHT][IMAGE_WIDTH]; // 全局声明用于处理的图像数组
-void Image_Compress();                             // 对原始图像进行压缩
+#define Line_k 0.5 // 斜率，判断是否为直道
+extern uint8 Image_Use[IMAGE_HEIGHT][IMAGE_WIDTH];
+extern uint8 Image_Use_Robert[IMAGE_HEIGHT][IMAGE_WIDTH]; // 全局声明用于处理的图像数组
+void Image_Compress();                                    // 对原始图像进行压缩
 void compressimage();
 void halve_image(unsigned char *p_in, unsigned char *p_out, unsigned char row, unsigned char col);
 uint8 OSTU_GetThreshold(uint8 *image, uint16 Width, uint16 Height); // 优化大津贴法获取阈值
@@ -58,4 +59,7 @@ extern image_t img_raw;
 void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x, int y, int pts[][2], int *num);
 void Right_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x, int y, int pts[][2], int *num);
 void Find_Borderline(void);
+
+void test(void);
+
 #endif

@@ -1,60 +1,60 @@
 /*********************************************************************************************************************
-* RT1064DVL6A Opensourec Library ¼´£¨RT1064DVL6A ¿ªÔ´¿â£©ÊÇÒ»¸ö»ùÓÚ¹Ù·½ SDK ½Ó¿ÚµÄµÚÈý·½¿ªÔ´¿â
-* Copyright (c) 2022 SEEKFREE Öð·É¿Æ¼¼
+* RT1064DVL6A Opensourec Library å³ï¼ˆRT1064DVL6A å¼€æºåº“ï¼‰æ˜¯ä¸€ä¸ªåŸºäºŽå®˜æ–¹ SDK æŽ¥å£çš„ç¬¬ä¸‰æ–¹å¼€æºåº“
+* Copyright (c) 2022 SEEKFREE é€é£žç§‘æŠ€
 * 
-* ±¾ÎÄ¼þÊÇ RT1064DVL6A ¿ªÔ´¿âµÄÒ»²¿·Ö
+* æœ¬æ–‡ä»¶æ˜¯ RT1064DVL6A å¼€æºåº“çš„ä¸€éƒ¨åˆ†
 * 
-* RT1064DVL6A ¿ªÔ´¿â ÊÇÃâ·ÑÈí¼þ
-* Äú¿ÉÒÔ¸ù¾Ý×ÔÓÉÈí¼þ»ù½ð»á·¢²¼µÄ GPL£¨GNU General Public License£¬¼´ GNUÍ¨ÓÃ¹«¹²Ðí¿ÉÖ¤£©µÄÌõ¿î
-* ¼´ GPL µÄµÚ3°æ£¨¼´ GPL3.0£©»ò£¨ÄúÑ¡ÔñµÄ£©ÈÎºÎºóÀ´µÄ°æ±¾£¬ÖØÐÂ·¢²¼ºÍ/»òÐÞ¸ÄËü
+* RT1064DVL6A å¼€æºåº“ æ˜¯å…è´¹è½¯ä»¶
+* æ‚¨å¯ä»¥æ ¹æ®è‡ªç”±è½¯ä»¶åŸºé‡‘ä¼šå‘å¸ƒçš„ GPLï¼ˆGNU General Public Licenseï¼Œå³ GNUé€šç”¨å…¬å…±è®¸å¯è¯ï¼‰çš„æ¡æ¬¾
+* å³ GPL çš„ç¬¬3ç‰ˆï¼ˆå³ GPL3.0ï¼‰æˆ–ï¼ˆæ‚¨é€‰æ‹©çš„ï¼‰ä»»ä½•åŽæ¥çš„ç‰ˆæœ¬ï¼Œé‡æ–°å‘å¸ƒå’Œ/æˆ–ä¿®æ”¹å®ƒ
 * 
-* ±¾¿ªÔ´¿âµÄ·¢²¼ÊÇÏ£ÍûËüÄÜ·¢»Ó×÷ÓÃ£¬µ«²¢Î´¶ÔÆä×÷ÈÎºÎµÄ±£Ö¤
-* ÉõÖÁÃ»ÓÐÒþº¬µÄÊÊÏúÐÔ»òÊÊºÏÌØ¶¨ÓÃÍ¾µÄ±£Ö¤
-* ¸ü¶àÏ¸½ÚÇë²Î¼û GPL
+* æœ¬å¼€æºåº“çš„å‘å¸ƒæ˜¯å¸Œæœ›å®ƒèƒ½å‘æŒ¥ä½œç”¨ï¼Œä½†å¹¶æœªå¯¹å…¶ä½œä»»ä½•çš„ä¿è¯
+* ç”šè‡³æ²¡æœ‰éšå«çš„é€‚é”€æ€§æˆ–é€‚åˆç‰¹å®šç”¨é€”çš„ä¿è¯
+* æ›´å¤šç»†èŠ‚è¯·å‚è§ GPL
 * 
-* ÄúÓ¦¸ÃÔÚÊÕµ½±¾¿ªÔ´¿âµÄÍ¬Ê±ÊÕµ½Ò»·Ý GPL µÄ¸±±¾
-* Èç¹ûÃ»ÓÐ£¬Çë²ÎÔÄ<https://www.gnu.org/licenses/>
+* æ‚¨åº”è¯¥åœ¨æ”¶åˆ°æœ¬å¼€æºåº“çš„åŒæ—¶æ”¶åˆ°ä¸€ä»½ GPL çš„å‰¯æœ¬
+* å¦‚æžœæ²¡æœ‰ï¼Œè¯·å‚é˜…<https://www.gnu.org/licenses/>
 * 
-* ¶îÍâ×¢Ã÷£º
-* ±¾¿ªÔ´¿âÊ¹ÓÃ GPL3.0 ¿ªÔ´Ðí¿ÉÖ¤Ð­Òé ÒÔÉÏÐí¿ÉÉêÃ÷ÎªÒëÎÄ°æ±¾
-* Ðí¿ÉÉêÃ÷Ó¢ÎÄ°æÔÚ libraries/doc ÎÄ¼þ¼ÐÏÂµÄ GPL3_permission_statement.txt ÎÄ¼þÖÐ
-* Ðí¿ÉÖ¤¸±±¾ÔÚ libraries ÎÄ¼þ¼ÐÏÂ ¼´¸ÃÎÄ¼þ¼ÐÏÂµÄ LICENSE ÎÄ¼þ
-* »¶Ó­¸÷Î»Ê¹ÓÃ²¢´«²¥±¾³ÌÐò µ«ÐÞ¸ÄÄÚÈÝÊ±±ØÐë±£ÁôÖð·É¿Æ¼¼µÄ°æÈ¨ÉùÃ÷£¨¼´±¾ÉùÃ÷£©
+* é¢å¤–æ³¨æ˜Žï¼š
+* æœ¬å¼€æºåº“ä½¿ç”¨ GPL3.0 å¼€æºè®¸å¯è¯åè®® ä»¥ä¸Šè®¸å¯ç”³æ˜Žä¸ºè¯‘æ–‡ç‰ˆæœ¬
+* è®¸å¯ç”³æ˜Žè‹±æ–‡ç‰ˆåœ¨ libraries/doc æ–‡ä»¶å¤¹ä¸‹çš„ GPL3_permission_statement.txt æ–‡ä»¶ä¸­
+* è®¸å¯è¯å‰¯æœ¬åœ¨ libraries æ–‡ä»¶å¤¹ä¸‹ å³è¯¥æ–‡ä»¶å¤¹ä¸‹çš„ LICENSE æ–‡ä»¶
+* æ¬¢è¿Žå„ä½ä½¿ç”¨å¹¶ä¼ æ’­æœ¬ç¨‹åº ä½†ä¿®æ”¹å†…å®¹æ—¶å¿…é¡»ä¿ç•™é€é£žç§‘æŠ€çš„ç‰ˆæƒå£°æ˜Žï¼ˆå³æœ¬å£°æ˜Žï¼‰
 * 
-* ÎÄ¼þÃû³Æ          zf_device_ips200
-* ¹«Ë¾Ãû³Æ          ³É¶¼Öð·É¿Æ¼¼ÓÐÏÞ¹«Ë¾
-* °æ±¾ÐÅÏ¢          ²é¿´ libraries/doc ÎÄ¼þ¼ÐÄÚ version ÎÄ¼þ °æ±¾ËµÃ÷
-* ¿ª·¢»·¾³          IAR 8.32.4 or MDK 5.33
-* ÊÊÓÃÆ½Ì¨          RT1064DVL6A
-* µêÆÌÁ´½Ó          https://seekfree.taobao.com/
+* æ–‡ä»¶åç§°          zf_device_ips200
+* å…¬å¸åç§°          æˆéƒ½é€é£žç§‘æŠ€æœ‰é™å…¬å¸
+* ç‰ˆæœ¬ä¿¡æ¯          æŸ¥çœ‹ libraries/doc æ–‡ä»¶å¤¹å†… version æ–‡ä»¶ ç‰ˆæœ¬è¯´æ˜Ž
+* å¼€å‘çŽ¯å¢ƒ          IAR 8.32.4 or MDK 5.33
+* é€‚ç”¨å¹³å°          RT1064DVL6A
+* åº—é“ºé“¾æŽ¥          https://seekfree.taobao.com/
 * 
-* ÐÞ¸Ä¼ÇÂ¼
-* ÈÕÆÚ              ×÷Õß                ±¸×¢
+* ä¿®æ”¹è®°å½•
+* æ—¥æœŸ              ä½œè€…                å¤‡æ³¨
 * 2022-09-21        SeekFree            first version
 ********************************************************************************************************************/
 /*********************************************************************************************************************
-* ½ÓÏß¶¨Òå£º
+* æŽ¥çº¿å®šä¹‰ï¼š
 *                   ------------------------------------
-*                   Ä£¿é¹Ü½Å            µ¥Æ¬»ú¹Ü½Å
-*                   // Ë«ÅÅÅÅÕë ²¢¿ÚÁ½´çÆÁ Ó²¼þÒý½Å
-*                   RD                  ²é¿´ zf_device_ips200.h ÖÐ IPS200_RD_PIN_PARALLEL8     ºê¶¨Òå
-*                   WR                  ²é¿´ zf_device_ips200.h ÖÐ IPS200_WR_PIN_PARALLEL8     ºê¶¨Òå
-*                   RS                  ²é¿´ zf_device_ips200.h ÖÐ IPS200_RS_PIN_PARALLEL8     ºê¶¨Òå
-*                   RST                 ²é¿´ zf_device_ips200.h ÖÐ IPS200_RST_PIN_PARALLEL8    ºê¶¨Òå
-*                   CS                  ²é¿´ zf_device_ips200.h ÖÐ IPS200_CS_PIN_PARALLEL8     ºê¶¨Òå
-*                   BL                  ²é¿´ zf_device_ips200.h ÖÐ IPS200_BL_PIN_PARALLEL8     ºê¶¨Òå
-*                   D0-D7               ²é¿´ zf_device_ips200.h ÖÐ IPS200_Dx_PIN_PARALLEL8     ºê¶¨Òå
-*                   // µ¥ÅÅÅÅÕë SPI Á½´çÆÁ Ó²¼þÒý½Å
-*                   SCL                 ²é¿´ zf_device_ips200.h ÖÐ IPS200_SCL_PIN_SPI  ºê¶¨Òå
-*                   SDA                 ²é¿´ zf_device_ips200.h ÖÐ IPS200_SDA_PIN_SPI  ºê¶¨Òå
-*                   RST                 ²é¿´ zf_device_ips200.h ÖÐ IPS200_RST_PIN_SPI  ºê¶¨Òå
-*                   DC                  ²é¿´ zf_device_ips200.h ÖÐ IPS200_DC_PIN_SPI   ºê¶¨Òå
-*                   CS                  ²é¿´ zf_device_ips200.h ÖÐ IPS200_CS_PIN_SPI   ºê¶¨Òå
-*                   BLk                 ²é¿´ zf_device_ips200.h ÖÐ IPS200_BLk_PIN_SPI  ºê¶¨Òå
-*                   µçÔ´Òý½Å
-*                   VCC                 3.3VµçÔ´
-*                   GND                 µçÔ´µØ
-*                   ×î´ó·Ö±æÂÊ 320 * 240
+*                   æ¨¡å—ç®¡è„š            å•ç‰‡æœºç®¡è„š
+*                   // åŒæŽ’æŽ’é’ˆ å¹¶å£ä¸¤å¯¸å± ç¡¬ä»¶å¼•è„š
+*                   RD                  æŸ¥çœ‹ zf_device_ips200.h ä¸­ IPS200_RD_PIN_PARALLEL8     å®å®šä¹‰
+*                   WR                  æŸ¥çœ‹ zf_device_ips200.h ä¸­ IPS200_WR_PIN_PARALLEL8     å®å®šä¹‰
+*                   RS                  æŸ¥çœ‹ zf_device_ips200.h ä¸­ IPS200_RS_PIN_PARALLEL8     å®å®šä¹‰
+*                   RST                 æŸ¥çœ‹ zf_device_ips200.h ä¸­ IPS200_RST_PIN_PARALLEL8    å®å®šä¹‰
+*                   CS                  æŸ¥çœ‹ zf_device_ips200.h ä¸­ IPS200_CS_PIN_PARALLEL8     å®å®šä¹‰
+*                   BL                  æŸ¥çœ‹ zf_device_ips200.h ä¸­ IPS200_BL_PIN_PARALLEL8     å®å®šä¹‰
+*                   D0-D7               æŸ¥çœ‹ zf_device_ips200.h ä¸­ IPS200_Dx_PIN_PARALLEL8     å®å®šä¹‰
+*                   // å•æŽ’æŽ’é’ˆ SPI ä¸¤å¯¸å± ç¡¬ä»¶å¼•è„š
+*                   SCL                 æŸ¥çœ‹ zf_device_ips200.h ä¸­ IPS200_SCL_PIN_SPI  å®å®šä¹‰
+*                   SDA                 æŸ¥çœ‹ zf_device_ips200.h ä¸­ IPS200_SDA_PIN_SPI  å®å®šä¹‰
+*                   RST                 æŸ¥çœ‹ zf_device_ips200.h ä¸­ IPS200_RST_PIN_SPI  å®å®šä¹‰
+*                   DC                  æŸ¥çœ‹ zf_device_ips200.h ä¸­ IPS200_DC_PIN_SPI   å®å®šä¹‰
+*                   CS                  æŸ¥çœ‹ zf_device_ips200.h ä¸­ IPS200_CS_PIN_SPI   å®å®šä¹‰
+*                   BLk                 æŸ¥çœ‹ zf_device_ips200.h ä¸­ IPS200_BLk_PIN_SPI  å®å®šä¹‰
+*                   ç”µæºå¼•è„š
+*                   VCC                 3.3Vç”µæº
+*                   GND                 ç”µæºåœ°
+*                   æœ€å¤§åˆ†è¾¨çŽ‡ 320 * 240
 *                   ------------------------------------
 ********************************************************************************************************************/
 
@@ -64,30 +64,30 @@
 #include "zf_common_typedef.h"
 #include "zf_driver_gpio.h"
 
-#define IPS200_USE_SOFT_SPI             (0 )                                    // Ä¬ÈÏÊ¹ÓÃÓ²¼þ SPI ·½Ê½Çý¶¯ ½¨ÒéÊ¹ÓÃÓ²¼þ SPI ·½Ê½Çý¶¯
-#if IPS200_USE_SOFT_SPI                                                         // ÕâÁ½¶Î ÑÕÉ«Õý³£µÄ²ÅÊÇÕýÈ·µÄ ÑÕÉ«»ÒµÄ¾ÍÊÇÃ»ÓÐÓÃµÄ
-//====================================================Èí¼þ SPI Çý¶¯====================================================
-// Èç¹ûÊ¹ÓÃµÄÊÇµ¥ÅÅÅÅÕëµÄÁ½´çÆÁÄ» SPI Çý¶¯¿ØÖÆÒý½Å ¿ÉÒÔÐÞ¸Ä
-#define IPS200_SOFT_SPI_DELAY           (1 )                                    // Èí¼þ SPI µÄÊ±ÖÓÑÓÊ±ÖÜÆÚ ÊýÖµÔ½Ð¡ SPI Í¨ÐÅËÙÂÊÔ½¿ì
-#define IPS200_SCL_PIN                  (B0)                                    // Èí¼þ SPI SCK Òý½Å
-#define IPS200_SDA_PIN                  (B1)                                    // Èí¼þ SPI MOSI Òý½Å
-//====================================================Èí¼þ SPI Çý¶¯====================================================
+#define IPS200_USE_SOFT_SPI             (0 )                                    // é»˜è®¤ä½¿ç”¨ç¡¬ä»¶ SPI æ–¹å¼é©±åŠ¨ å»ºè®®ä½¿ç”¨ç¡¬ä»¶ SPI æ–¹å¼é©±åŠ¨
+#if IPS200_USE_SOFT_SPI                                                         // è¿™ä¸¤æ®µ é¢œè‰²æ­£å¸¸çš„æ‰æ˜¯æ­£ç¡®çš„ é¢œè‰²ç°çš„å°±æ˜¯æ²¡æœ‰ç”¨çš„
+//====================================================è½¯ä»¶ SPI é©±åŠ¨====================================================
+// å¦‚æžœä½¿ç”¨çš„æ˜¯å•æŽ’æŽ’é’ˆçš„ä¸¤å¯¸å±å¹• SPI é©±åŠ¨æŽ§åˆ¶å¼•è„š å¯ä»¥ä¿®æ”¹
+#define IPS200_SOFT_SPI_DELAY           (1 )                                    // è½¯ä»¶ SPI çš„æ—¶é’Ÿå»¶æ—¶å‘¨æœŸ æ•°å€¼è¶Šå° SPI é€šä¿¡é€ŸçŽ‡è¶Šå¿«
+#define IPS200_SCL_PIN                  (B0)                                    // è½¯ä»¶ SPI SCK å¼•è„š
+#define IPS200_SDA_PIN                  (B1)                                    // è½¯ä»¶ SPI MOSI å¼•è„š
+//====================================================è½¯ä»¶ SPI é©±åŠ¨====================================================
 #else
-//====================================================Ó²¼þ SPI Çý¶¯====================================================
-// Èç¹ûÊ¹ÓÃµÄÊÇµ¥ÅÅÅÅÕëµÄÁ½´çÆÁÄ» SPI Çý¶¯¿ØÖÆÒý½Å ¿ÉÒÔÐÞ¸Ä
-#define IPS200_SPI_SPEED                (60 * 1000 * 1000)                      // Ó²¼þ SPI ËÙÂÊ ÕâÀïÉèÖÃÎªÏµÍ³Ê±ÖÓ¶þ·ÖÆµ
-#define IPS200_SPI                      (SPI_3           )                      // Ó²¼þ SPI ºÅ
-#define IPS200_SCL_PIN_SPI              (SPI3_SCK_B0     )                      // Ó²¼þ SPI SCK Òý½Å
-#define IPS200_SDA_PIN_SPI              (SPI3_MOSI_B1    )                      // Ó²¼þ SPI MOSI Òý½Å
-//====================================================Ó²¼þ SPI Çý¶¯====================================================
+//====================================================ç¡¬ä»¶ SPI é©±åŠ¨====================================================
+// å¦‚æžœä½¿ç”¨çš„æ˜¯å•æŽ’æŽ’é’ˆçš„ä¸¤å¯¸å±å¹• SPI é©±åŠ¨æŽ§åˆ¶å¼•è„š å¯ä»¥ä¿®æ”¹
+#define IPS200_SPI_SPEED                (60 * 1000 * 1000)                      // ç¡¬ä»¶ SPI é€ŸçŽ‡ è¿™é‡Œè®¾ç½®ä¸ºç³»ç»Ÿæ—¶é’ŸäºŒåˆ†é¢‘
+#define IPS200_SPI                      (SPI_3           )                      // ç¡¬ä»¶ SPI å·
+#define IPS200_SCL_PIN_SPI              (SPI3_SCK_B0     )                      // ç¡¬ä»¶ SPI SCK å¼•è„š
+#define IPS200_SDA_PIN_SPI              (SPI3_MOSI_B1    )                      // ç¡¬ä»¶ SPI MOSI å¼•è„š
+//====================================================ç¡¬ä»¶ SPI é©±åŠ¨====================================================
 #endif
-// Èç¹ûÊ¹ÓÃµÄÊÇµ¥ÅÅÅÅÕëµÄÁ½´çÆÁÄ» SPI Çý¶¯¿ØÖÆÒý½Å ¿ÉÒÔÐÞ¸Ä
-#define IPS200_RST_PIN_SPI              (B2 )                                   // Òº¾§¸´Î»Òý½Å¶¨Òå
-#define IPS200_DC_PIN_SPI               (C19)                                   // Òº¾§ÃüÁîÎ»Òý½Å¶¨Òå
+// å¦‚æžœä½¿ç”¨çš„æ˜¯å•æŽ’æŽ’é’ˆçš„ä¸¤å¯¸å±å¹• SPI é©±åŠ¨æŽ§åˆ¶å¼•è„š å¯ä»¥ä¿®æ”¹
+#define IPS200_RST_PIN_SPI              (B2 )                                   // æ¶²æ™¶å¤ä½å¼•è„šå®šä¹‰
+#define IPS200_DC_PIN_SPI               (C19)                                   // æ¶²æ™¶å‘½ä»¤ä½å¼•è„šå®šä¹‰
 #define IPS200_CS_PIN_SPI               (B3 )
 #define IPS200_BLk_PIN_SPI              (C18)
 
-// Èç¹ûÊ¹ÓÃµÄÊÇË«ÅÅÅÅÕëµÄÁ½´çÆÁÄ» ²¢¿ÚÇý¶¯¿ØÖÆÒý½Å ¿ÉÒÔÐÞ¸Ä
+// å¦‚æžœä½¿ç”¨çš„æ˜¯åŒæŽ’æŽ’é’ˆçš„ä¸¤å¯¸å±å¹• å¹¶å£é©±åŠ¨æŽ§åˆ¶å¼•è„š å¯ä»¥ä¿®æ”¹
 #define IPS200_RD_PIN_PARALLEL8         (B0 )
 #define IPS200_WR_PIN_PARALLEL8         (B1 )
 #define IPS200_RS_PIN_PARALLEL8         (B2 )
@@ -95,7 +95,7 @@
 #define IPS200_CS_PIN_PARALLEL8         (B3 )
 #define IPS200_BL_PIN_PARALLEL8         (C18)
 
-// Èç¹ûÊ¹ÓÃµÄÊÇË«ÅÅÅÅÕëµÄÁ½´çÆÁÄ» ²¢¿ÚÇý¶¯Êý¾ÝÒý½Å ²»¿ÉËæÒâÐÞ¸Ä
+// å¦‚æžœä½¿ç”¨çš„æ˜¯åŒæŽ’æŽ’é’ˆçš„ä¸¤å¯¸å±å¹• å¹¶å£é©±åŠ¨æ•°æ®å¼•è„š ä¸å¯éšæ„ä¿®æ”¹
 #define IPS200_D0_PIN_PARALLEL8         (B16)
 #define IPS200_D1_PIN_PARALLEL8         (B17)
 #define IPS200_D2_PIN_PARALLEL8         (B18)
@@ -105,16 +105,16 @@
 #define IPS200_D6_PIN_PARALLEL8         (D14)
 #define IPS200_D7_PIN_PARALLEL8         (D15)
 
-#define IPS200_DEFAULT_DISPLAY_DIR      (IPS200_PORTAIT)                        // Ä¬ÈÏµÄÏÔÊ¾·½Ïò
-#define IPS200_DEFAULT_PENCOLOR         (RGB565_RED    )                        // Ä¬ÈÏµÄ»­±ÊÑÕÉ«
-#define IPS200_DEFAULT_BGCOLOR          (RGB565_WHITE  )                        // Ä¬ÈÏµÄ±³¾°ÑÕÉ«
-#define IPS200_DEFAULT_DISPLAY_FONT     (IPS200_8X16_FONT)                      // Ä¬ÈÏµÄ×ÖÌåÄ£Ê½
+#define IPS200_DEFAULT_DISPLAY_DIR      (IPS200_PORTAIT)                        // é»˜è®¤çš„æ˜¾ç¤ºæ–¹å‘
+#define IPS200_DEFAULT_PENCOLOR         (RGB565_RED    )                        // é»˜è®¤çš„ç”»ç¬”é¢œè‰²
+#define IPS200_DEFAULT_BGCOLOR          (RGB565_WHITE  )                        // é»˜è®¤çš„èƒŒæ™¯é¢œè‰²
+#define IPS200_DEFAULT_DISPLAY_FONT     (IPS200_8X16_FONT)                      // é»˜è®¤çš„å­—ä½“æ¨¡å¼
 
-// Êý¾Ý¶ÔÓ¦µØÖ· ²»¿É¸ü¸Ä
+// æ•°æ®å¯¹åº”åœ°å€ ä¸å¯æ›´æ”¹
 #define IPS200_DATA_ADD1                (PORTB_FAST_DR)
 #define IPS200_DATA_ADD2                (PORTD_FAST_DR)
 
-// ¿ØÖÆÓï¾ä
+// æŽ§åˆ¶è¯­å¥
 #define IPS200_RD(x)       	            fast_gpio_set_level(IPS200_RD_PIN_PARALLEL8,x)
 #define IPS200_WR(x)       	            fast_gpio_set_level(IPS200_WR_PIN_PARALLEL8,x)
 #define IPS200_RS(x)       	            fast_gpio_set_level(IPS200_RS_PIN_PARALLEL8,x)
@@ -127,23 +127,23 @@
 
 typedef enum
 {
-    IPS200_TYPE_SPI,                                                            // SPI Çý¶¯
-    IPS200_TYPE_PARALLEL8,                                                      // ²¢¿ÚÇý¶¯
+    IPS200_TYPE_SPI,                                                            // SPI é©±åŠ¨
+    IPS200_TYPE_PARALLEL8,                                                      // å¹¶å£é©±åŠ¨
 }ips200_type_enum;
 
 typedef enum
 {
-    IPS200_PORTAIT                      = 0,                                    // ÊúÆÁÄ£Ê½
-    IPS200_PORTAIT_180                  = 1,                                    // ÊúÆÁÄ£Ê½  Ðý×ª180
-    IPS200_CROSSWISE                    = 2,                                    // ºáÆÁÄ£Ê½
-    IPS200_CROSSWISE_180                = 3,                                    // ºáÆÁÄ£Ê½  Ðý×ª180
+    IPS200_PORTAIT                      = 0,                                    // ç«–å±æ¨¡å¼
+    IPS200_PORTAIT_180                  = 1,                                    // ç«–å±æ¨¡å¼  æ—‹è½¬180
+    IPS200_CROSSWISE                    = 2,                                    // æ¨ªå±æ¨¡å¼
+    IPS200_CROSSWISE_180                = 3,                                    // æ¨ªå±æ¨¡å¼  æ—‹è½¬180
 }ips200_dir_enum;
 
 typedef enum
 {
-    IPS200_6X8_FONT                     = 0,                                    // 6x8      ×ÖÌå
-    IPS200_8X16_FONT                    = 1,                                    // 8x16     ×ÖÌå
-    IPS200_16X16_FONT                   = 2,                                    // 16x16    ×ÖÌå Ä¿Ç°²»Ö§³Ö
+    IPS200_6X8_FONT                     = 0,                                    // 6x8      å­—ä½“
+    IPS200_8X16_FONT                    = 1,                                    // 8x16     å­—ä½“
+    IPS200_16X16_FONT                   = 2,                                    // 16x16    å­—ä½“ ç›®å‰ä¸æ”¯æŒ
 }ips200_font_size_enum;
 
 
@@ -172,35 +172,35 @@ void    ips200_show_wave                (uint16 x, uint16 y, const uint16 *wave,
 void    ips200_show_chinese             (uint16 x, uint16 y, uint8 size, const uint8 *chinese_buffer, uint8 number, const uint16 color);
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é     IPS200 ÏÔÊ¾Ð¡×ê·çÍ¼Ïñ
-// ²ÎÊýËµÃ÷     p               Í¼ÏñÊý×é
-// ²ÎÊýËµÃ÷     width           ÏÔÊ¾¿í¶È
-// ²ÎÊýËµÃ÷     height          ÏÔÊ¾¸ß¶È
-// ·µ»Ø²ÎÊý     void
-// Ê¹ÓÃÊ¾Àý     ips200_displayimage7725(ov7725_image_binary[0], 80, 60);
-// ±¸×¢ÐÅÏ¢     
+// å‡½æ•°ç®€ä»‹     IPS200 æ˜¾ç¤ºå°é’»é£Žå›¾åƒ
+// å‚æ•°è¯´æ˜Ž     p               å›¾åƒæ•°ç»„
+// å‚æ•°è¯´æ˜Ž     width           æ˜¾ç¤ºå®½åº¦
+// å‚æ•°è¯´æ˜Ž     height          æ˜¾ç¤ºé«˜åº¦
+// è¿”å›žå‚æ•°     void
+// ä½¿ç”¨ç¤ºä¾‹     ips200_displayimage7725(ov7725_image_binary[0], 80, 60);
+// å¤‡æ³¨ä¿¡æ¯     
 //-------------------------------------------------------------------------------------------------------------------
 #define ips200_displayimage7725(p, width, height)       (ips200_show_binary_image(0, 0, (p), OV7725_W, OV7725_H, (width), (height)))
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é     IPS200 ÏÔÊ¾×Ü×ê·çÍ¼Ïñ ²»´ø¶þÖµ»¯ ÏÔÊ¾»Ò¶ÈÍ¼Ïñ
-// ²ÎÊýËµÃ÷     p               Í¼ÏñÊý×é
-// ²ÎÊýËµÃ÷     width           ÏÔÊ¾¿í¶È
-// ²ÎÊýËµÃ÷     height          ÏÔÊ¾¸ß¶È
-// ·µ»Ø²ÎÊý     void
-// Ê¹ÓÃÊ¾Àý     ips200_displayimage03x(mt9v03x_image[0], 94, 60);
-// ±¸×¢ÐÅÏ¢     Èç¹ûÒªÏÔÊ¾¶þÖµ»¯Í¼Ïñ¾ÍÈ¥µ÷ÓÃ ips200_show_gray_image º¯Êý
+// å‡½æ•°ç®€ä»‹     IPS200 æ˜¾ç¤ºæ€»é’»é£Žå›¾åƒ ä¸å¸¦äºŒå€¼åŒ– æ˜¾ç¤ºç°åº¦å›¾åƒ
+// å‚æ•°è¯´æ˜Ž     p               å›¾åƒæ•°ç»„
+// å‚æ•°è¯´æ˜Ž     width           æ˜¾ç¤ºå®½åº¦
+// å‚æ•°è¯´æ˜Ž     height          æ˜¾ç¤ºé«˜åº¦
+// è¿”å›žå‚æ•°     void
+// ä½¿ç”¨ç¤ºä¾‹     ips200_displayimage03x(mt9v03x_image[0], 94, 60);
+// å¤‡æ³¨ä¿¡æ¯     å¦‚æžœè¦æ˜¾ç¤ºäºŒå€¼åŒ–å›¾åƒå°±åŽ»è°ƒç”¨ ips200_show_gray_image å‡½æ•°
 //-------------------------------------------------------------------------------------------------------------------
 #define ips200_displayimage03x(p, width, height)        (ips200_show_gray_image(0, 0, (p), MT9V03X_W, MT9V03X_H, (width), (height), 0))
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é     IPS200 ÏÔÊ¾ÁèÍ«Í¼Ïñ
-// ²ÎÊýËµÃ÷     p               Í¼ÏñÊý×é
-// ²ÎÊýËµÃ÷     width           ÏÔÊ¾¿í¶È
-// ²ÎÊýËµÃ÷     height          ÏÔÊ¾¸ß¶È
-// ·µ»Ø²ÎÊý     void
-// Ê¹ÓÃÊ¾Àý     ips200_displayimage8660(scc8660_image[0], 80, 60);
-// ±¸×¢ÐÅÏ¢     
+// å‡½æ•°ç®€ä»‹     IPS200 æ˜¾ç¤ºå‡Œçž³å›¾åƒ
+// å‚æ•°è¯´æ˜Ž     p               å›¾åƒæ•°ç»„
+// å‚æ•°è¯´æ˜Ž     width           æ˜¾ç¤ºå®½åº¦
+// å‚æ•°è¯´æ˜Ž     height          æ˜¾ç¤ºé«˜åº¦
+// è¿”å›žå‚æ•°     void
+// ä½¿ç”¨ç¤ºä¾‹     ips200_displayimage8660(scc8660_image[0], 80, 60);
+// å¤‡æ³¨ä¿¡æ¯     
 //-------------------------------------------------------------------------------------------------------------------
 #define ips200_displayimage8660(p, width, height)       (ips200_show_rgb565_image(0, 0, (p), SCC8660_W, SCC8660_H, (width), (height), 1))
 

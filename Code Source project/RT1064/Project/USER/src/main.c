@@ -11,6 +11,8 @@
 #include "pid.h"
 #include "isr.h"
 #include "filter.h"
+
+
 int main(void)
 {
 
@@ -33,8 +35,10 @@ int main(void)
     //    Motor_SetPwmR(1888.88);
     while (1)
     {
-        Image_Compress();
-        ips200_displayimage03x(*Image_Use,160,120);
-//        Schedule_Run();//任务运行总函数，开始任务调度
+        test();
+        ips200_displayimage03x(*Image_Use, 160, 120);
+        //        Schedule_Run();//任务运行总函数，开始任务调度
     }
 }
+
+

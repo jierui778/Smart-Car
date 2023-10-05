@@ -20,7 +20,7 @@
 
 enum motor_mode
 {
-    MOTOR_NORMAL,MOTORSOFT,MODE_STOP,ERROR
+    MOTOR_NORMAL,MOTORSOFT,MODE_STOP,
 };
 
 void TrackLine_Control(float current_err); // 巡线控制

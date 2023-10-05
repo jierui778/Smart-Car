@@ -17,6 +17,10 @@ void Garage_Check(void)
  */
 void Garage_Out(void)
 {
+        if (garage_type == GARAGE_OUT_RIGHT)
+    {
+        
+    }
 
 }
 
@@ -30,12 +34,17 @@ void Garage_In(void)
         {
             if (Image_Use_Robert[j][i] == 0) // 底部两行黑点数            一般正常最多不超过100，斑马线大概300，阈值garage_thres可以设置120(Sobel) 440(Ostu)
             {
-                Bottom_black_point_num++;
+                Bottom_black_point_num++;//累计斑马线的黑点数
             }
         }
     }
-    if (garage_type == GARAGE_FOUND_RIGHT && Garage_Cnt == 1 && Bottom_black_point_num > Garage_Thres)
+    if (garage_type == GARAGE_FOUND_RIGHT && Garage_Cnt == 1 && Bottom_black_point_num > ZEBRA_THRES)
     {
         garage_type = GARAGE_IN_RIGHT;//右入库
     }
+    else if (garage_type == GARAGE_FOUND_LEFT && Garage_Cnt == 1 && Bottom_black_point_num > ZEBRA_THRES)
+    {
+        garage_type = GARAGE_IN_LEFT;//左入库
+    }
+
 }

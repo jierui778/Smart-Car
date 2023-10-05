@@ -1,6 +1,7 @@
 #include "zf_common_headfile.h"
 #ifndef _GARAGE_H_
 #define _GARAGE_H_
+#define ZEBRA_THRES 120//斑马线黑点阈值
 
 enum garage_type_e
 {
@@ -17,11 +18,7 @@ enum garage_type_e
     GARAGE_NUM,
 };
 
-
-
 extern enum garage_type_e garage_type;//枚举类型全局定义
-
-
 
 
 void Garage_Out(void);
