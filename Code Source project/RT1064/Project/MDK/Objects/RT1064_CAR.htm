@@ -3,9 +3,9 @@
 <title>Static Call Graph - [.\Objects\RT1064_CAR.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\RT1064_CAR.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6190004: Last Updated: Thu Oct  5 13:12:58 2023
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6190004: Last Updated: Thu Oct  5 16:26:27 2023
 <BR><P>
-<H3>Maximum Stack Usage =       1192 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
+<H3>Maximum Stack Usage =       1184 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
 main &rArr; Image_Run &rArr; ips200_show_float &rArr; ips200_show_string &rArr; ips200_show_char &rArr; ips200_set_region &rArr; ips200_write_command &rArr; spi_write_8bit &rArr; spi_write_8bit_array &rArr; spi_write &rArr; LPSPI_MasterTransferBlocking &rArr; LPSPI_CheckTransferArgument &rArr; __aeabi_assert &rArr; DbgConsole_Printf &rArr; DbgConsole_Vprintf &rArr; DbgConsole_PrintfFormattedData &rArr; DbgConsole_ConvertFloatRadixNumToString &rArr; __hardfp_pow &rArr; sqrt
 <P>
@@ -952,7 +952,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[1ae]"></a>abs</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, siabs.o(.text))
-<BR><BR>[Called By]<UL><LI><a href="#[1a9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Sobel
+<BR><BR>[Called By]<UL><LI><a href="#[1a8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Sobel
 </UL>
 
 <P><STRONG><a name="[220]"></a>__aeabi_memcpy</STRONG> (Thumb, 36 bytes, Stack size 0 bytes, memcpya.o(.text))
@@ -982,7 +982,7 @@ Global Symbols
 </UL>
 <BR>[Called By]<UL><LI><a href="#[21d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fifo_clear
 <LI><a href="#[20b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;debug_output
-<LI><a href="#[1a6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OSTU_GetThreshold
+<LI><a href="#[1a5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OSTU_GetThreshold
 </UL>
 
 <P><STRONG><a name="[153]"></a>__aeabi_memclr4</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, memseta.o(.text))
@@ -1848,47 +1848,46 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[ad]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[1a7]"></a>Image_DrawRectangle</STRONG> (Thumb, 168 bytes, Stack size 4 bytes, image.o(.text.Image_DrawRectangle))
+<P><STRONG><a name="[1a6]"></a>Image_DrawRectangle</STRONG> (Thumb, 168 bytes, Stack size 4 bytes, image.o(.text.Image_DrawRectangle))
 <BR><BR>[Stack]<UL><LI>Max Depth = 4<LI>Call Chain = Image_DrawRectangle
 </UL>
-<BR>[Called By]<UL><LI><a href="#[1a5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Run
+<BR>[Called By]<UL><LI><a href="#[1a4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Run
 </UL>
 
-<P><STRONG><a name="[19e]"></a>Image_FillCross</STRONG> (Thumb, 1968 bytes, Stack size 56 bytes, image.o(.text.Image_FillCross))
-<BR><BR>[Stack]<UL><LI>Max Depth = 1040<LI>Call Chain = Image_FillCross &rArr; ips200_draw_line &rArr; ips200_draw_point &rArr; ips200_set_region &rArr; ips200_write_command &rArr; spi_write_8bit &rArr; spi_write_8bit_array &rArr; spi_write &rArr; LPSPI_MasterTransferBlocking &rArr; LPSPI_CheckTransferArgument &rArr; __aeabi_assert &rArr; DbgConsole_Printf &rArr; DbgConsole_Vprintf &rArr; DbgConsole_PrintfFormattedData &rArr; DbgConsole_ConvertFloatRadixNumToString &rArr; __hardfp_pow &rArr; sqrt
+<P><STRONG><a name="[19e]"></a>Image_FillCross</STRONG> (Thumb, 1942 bytes, Stack size 48 bytes, image.o(.text.Image_FillCross))
+<BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = Image_FillCross &rArr; Image_Getb
 </UL>
-<BR>[Calls]<UL><LI><a href="#[1a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_draw_line
-<LI><a href="#[1a0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Getb
+<BR>[Calls]<UL><LI><a href="#[1a0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Getb
 <LI><a href="#[19f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Getk
 </UL>
-<BR>[Called By]<UL><LI><a href="#[1a5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Run
+<BR>[Called By]<UL><LI><a href="#[1a4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Run
 </UL>
 
-<P><STRONG><a name="[1a8]"></a>Image_Filter</STRONG> (Thumb, 304 bytes, Stack size 16 bytes, image.o(.text.Image_Filter))
+<P><STRONG><a name="[1a7]"></a>Image_Filter</STRONG> (Thumb, 304 bytes, Stack size 16 bytes, image.o(.text.Image_Filter))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = Image_Filter
 </UL>
-<BR>[Called By]<UL><LI><a href="#[1a5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Run
+<BR>[Called By]<UL><LI><a href="#[1a4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Run
 </UL>
 
-<P><STRONG><a name="[1a3]"></a>Image_Get_LeftPoint</STRONG> (Thumb, 222 bytes, Stack size 4 bytes, image.o(.text.Image_Get_LeftPoint))
+<P><STRONG><a name="[1a2]"></a>Image_Get_LeftPoint</STRONG> (Thumb, 222 bytes, Stack size 4 bytes, image.o(.text.Image_Get_LeftPoint))
 <BR><BR>[Stack]<UL><LI>Max Depth = 4<LI>Call Chain = Image_Get_LeftPoint
 </UL>
-<BR>[Called By]<UL><LI><a href="#[1a2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Get_neighborhoods
+<BR>[Called By]<UL><LI><a href="#[1a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Get_neighborhoods
 </UL>
 
-<P><STRONG><a name="[1a4]"></a>Image_Get_RightPoint</STRONG> (Thumb, 218 bytes, Stack size 4 bytes, image.o(.text.Image_Get_RightPoint))
+<P><STRONG><a name="[1a3]"></a>Image_Get_RightPoint</STRONG> (Thumb, 218 bytes, Stack size 4 bytes, image.o(.text.Image_Get_RightPoint))
 <BR><BR>[Stack]<UL><LI>Max Depth = 4<LI>Call Chain = Image_Get_RightPoint
 </UL>
-<BR>[Called By]<UL><LI><a href="#[1a2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Get_neighborhoods
+<BR>[Called By]<UL><LI><a href="#[1a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Get_neighborhoods
 </UL>
 
-<P><STRONG><a name="[1a2]"></a>Image_Get_neighborhoods</STRONG> (Thumb, 3670 bytes, Stack size 96 bytes, image.o(.text.Image_Get_neighborhoods))
+<P><STRONG><a name="[1a1]"></a>Image_Get_neighborhoods</STRONG> (Thumb, 3666 bytes, Stack size 96 bytes, image.o(.text.Image_Get_neighborhoods))
 <BR><BR>[Stack]<UL><LI>Max Depth = 100<LI>Call Chain = Image_Get_neighborhoods &rArr; Image_Get_RightPoint
 </UL>
-<BR>[Calls]<UL><LI><a href="#[1a4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Get_RightPoint
-<LI><a href="#[1a3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Get_LeftPoint
+<BR>[Calls]<UL><LI><a href="#[1a3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Get_RightPoint
+<LI><a href="#[1a2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Get_LeftPoint
 </UL>
-<BR>[Called By]<UL><LI><a href="#[1a5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Run
+<BR>[Called By]<UL><LI><a href="#[1a4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Run
 </UL>
 
 <P><STRONG><a name="[1a0]"></a>Image_Getb</STRONG> (Thumb, 50 bytes, Stack size 8 bytes, image.o(.text.Image_Getb))
@@ -1903,30 +1902,30 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[19e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_FillCross
 </UL>
 
-<P><STRONG><a name="[1a5]"></a>Image_Run</STRONG> (Thumb, 682 bytes, Stack size 120 bytes, image.o(.text.Image_Run))
-<BR><BR>[Stack]<UL><LI>Max Depth = 1160<LI>Call Chain = Image_Run &rArr; ips200_show_float &rArr; ips200_show_string &rArr; ips200_show_char &rArr; ips200_set_region &rArr; ips200_write_command &rArr; spi_write_8bit &rArr; spi_write_8bit_array &rArr; spi_write &rArr; LPSPI_MasterTransferBlocking &rArr; LPSPI_CheckTransferArgument &rArr; __aeabi_assert &rArr; DbgConsole_Printf &rArr; DbgConsole_Vprintf &rArr; DbgConsole_PrintfFormattedData &rArr; DbgConsole_ConvertFloatRadixNumToString &rArr; __hardfp_pow &rArr; sqrt
+<P><STRONG><a name="[1a4]"></a>Image_Run</STRONG> (Thumb, 658 bytes, Stack size 112 bytes, image.o(.text.Image_Run))
+<BR><BR>[Stack]<UL><LI>Max Depth = 1152<LI>Call Chain = Image_Run &rArr; ips200_show_float &rArr; ips200_show_string &rArr; ips200_show_char &rArr; ips200_set_region &rArr; ips200_write_command &rArr; spi_write_8bit &rArr; spi_write_8bit_array &rArr; spi_write &rArr; LPSPI_MasterTransferBlocking &rArr; LPSPI_CheckTransferArgument &rArr; __aeabi_assert &rArr; DbgConsole_Printf &rArr; DbgConsole_Vprintf &rArr; DbgConsole_PrintfFormattedData &rArr; DbgConsole_ConvertFloatRadixNumToString &rArr; __hardfp_pow &rArr; sqrt
 </UL>
 <BR>[Calls]<UL><LI><a href="#[1ad]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_draw_point
 <LI><a href="#[1ac]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_float
 <LI><a href="#[1ab]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_int
-<LI><a href="#[1aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_gray_image
-<LI><a href="#[1a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_draw_line
+<LI><a href="#[1aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_draw_line
+<LI><a href="#[1a9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_gray_image
 <LI><a href="#[19e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_FillCross
-<LI><a href="#[1a2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Get_neighborhoods
-<LI><a href="#[1a7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_DrawRectangle
-<LI><a href="#[1a8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Filter
-<LI><a href="#[1a9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Sobel
-<LI><a href="#[1a6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OSTU_GetThreshold
+<LI><a href="#[1a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Get_neighborhoods
+<LI><a href="#[1a6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_DrawRectangle
+<LI><a href="#[1a7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Filter
+<LI><a href="#[1a8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Sobel
+<LI><a href="#[1a5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OSTU_GetThreshold
 </UL>
 <BR>[Called By]<UL><LI><a href="#[ad]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[1a9]"></a>Image_Sobel</STRONG> (Thumb, 624 bytes, Stack size 32 bytes, image.o(.text.Image_Sobel))
+<P><STRONG><a name="[1a8]"></a>Image_Sobel</STRONG> (Thumb, 624 bytes, Stack size 32 bytes, image.o(.text.Image_Sobel))
 <BR><BR>[Stack]<UL><LI>Max Depth = 32<LI>Call Chain = Image_Sobel
 </UL>
 <BR>[Calls]<UL><LI><a href="#[1ae]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;abs
 </UL>
-<BR>[Called By]<UL><LI><a href="#[1a5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Run
+<BR>[Called By]<UL><LI><a href="#[1a4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Run
 </UL>
 
 <P><STRONG><a name="[c9]"></a>LPI2C1_DriverIRQHandler</STRONG> (Thumb, 16 bytes, Stack size 8 bytes, fsl_lpi2c.o(.text.LPI2C1_DriverIRQHandler))
@@ -2283,12 +2282,12 @@ Global Symbols
 <BR>[Address Reference Count : 2]<UL><LI> startup_mimxrt1064.o(.text)
 <LI> startup_mimxrt1064.o(.isr_vector)
 </UL>
-<P><STRONG><a name="[1a6]"></a>OSTU_GetThreshold</STRONG> (Thumb, 734 bytes, Stack size 384 bytes, image.o(.text.OSTU_GetThreshold))
+<P><STRONG><a name="[1a5]"></a>OSTU_GetThreshold</STRONG> (Thumb, 734 bytes, Stack size 384 bytes, image.o(.text.OSTU_GetThreshold))
 <BR><BR>[Stack]<UL><LI>Max Depth = 384<LI>Call Chain = OSTU_GetThreshold
 </UL>
 <BR>[Calls]<UL><LI><a href="#[f2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr
 </UL>
-<BR>[Called By]<UL><LI><a href="#[1a5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Run
+<BR>[Called By]<UL><LI><a href="#[1a4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Run
 </UL>
 
 <P><STRONG><a name="[1d4]"></a>PIT_Deinit</STRONG> (Thumb, 44 bytes, Stack size 16 bytes, fsl_pit.o(.text.PIT_Deinit))
@@ -2684,8 +2683,8 @@ Global Symbols
 <LI><a href="#[1ad]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_draw_point
 <LI><a href="#[1ac]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_float
 <LI><a href="#[1ab]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_int
-<LI><a href="#[1aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_gray_image
-<LI><a href="#[1a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_draw_line
+<LI><a href="#[1aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_draw_line
+<LI><a href="#[1a9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_gray_image
 <LI><a href="#[177]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;encoder_quad_init
 <LI><a href="#[1ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pwm_init
 <LI><a href="#[1ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pwm_set_duty
@@ -2799,7 +2798,7 @@ Global Symbols
 <LI><a href="#[192]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_SetPinsOutput
 </UL>
 <BR>[Called By]<UL><LI><a href="#[1ad]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_draw_point
-<LI><a href="#[1aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_gray_image
+<LI><a href="#[1a9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_gray_image
 <LI><a href="#[234]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_init
 <LI><a href="#[23b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_char
 <LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_clear
@@ -3001,14 +3000,13 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> zf_device_ips200.o(.text.ips200_debug_init)
 </UL>
-<P><STRONG><a name="[1a1]"></a>ips200_draw_line</STRONG> (Thumb, 638 bytes, Stack size 64 bytes, zf_device_ips200.o(.text.ips200_draw_line))
+<P><STRONG><a name="[1aa]"></a>ips200_draw_line</STRONG> (Thumb, 638 bytes, Stack size 64 bytes, zf_device_ips200.o(.text.ips200_draw_line))
 <BR><BR>[Stack]<UL><LI>Max Depth = 984<LI>Call Chain = ips200_draw_line &rArr; ips200_draw_point &rArr; ips200_set_region &rArr; ips200_write_command &rArr; spi_write_8bit &rArr; spi_write_8bit_array &rArr; spi_write &rArr; LPSPI_MasterTransferBlocking &rArr; LPSPI_CheckTransferArgument &rArr; __aeabi_assert &rArr; DbgConsole_Printf &rArr; DbgConsole_Vprintf &rArr; DbgConsole_PrintfFormattedData &rArr; DbgConsole_ConvertFloatRadixNumToString &rArr; __hardfp_pow &rArr; sqrt
 </UL>
 <BR>[Calls]<UL><LI><a href="#[208]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;debug_assert_handler
 <LI><a href="#[1ad]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_draw_point
 </UL>
-<BR>[Called By]<UL><LI><a href="#[19e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_FillCross
-<LI><a href="#[1a5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Run
+<BR>[Called By]<UL><LI><a href="#[1a4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Run
 </UL>
 
 <P><STRONG><a name="[1ad]"></a>ips200_draw_point</STRONG> (Thumb, 182 bytes, Stack size 24 bytes, zf_device_ips200.o(.text.ips200_draw_point))
@@ -3019,8 +3017,8 @@ Global Symbols
 <LI><a href="#[232]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_write_16bit_data
 <LI><a href="#[231]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_set_region
 </UL>
-<BR>[Called By]<UL><LI><a href="#[1a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_draw_line
-<LI><a href="#[1a5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Run
+<BR>[Called By]<UL><LI><a href="#[1aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_draw_line
+<LI><a href="#[1a4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Run
 </UL>
 
 <P><STRONG><a name="[234]"></a>ips200_init</STRONG> (Thumb, 1016 bytes, Stack size 144 bytes, zf_device_ips200.o(.text.ips200_init))
@@ -3071,10 +3069,10 @@ Global Symbols
 <LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_string
 <LI><a href="#[f3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memset
 </UL>
-<BR>[Called By]<UL><LI><a href="#[1a5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Run
+<BR>[Called By]<UL><LI><a href="#[1a4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Run
 </UL>
 
-<P><STRONG><a name="[1aa]"></a>ips200_show_gray_image</STRONG> (Thumb, 480 bytes, Stack size 64 bytes, zf_device_ips200.o(.text.ips200_show_gray_image))
+<P><STRONG><a name="[1a9]"></a>ips200_show_gray_image</STRONG> (Thumb, 480 bytes, Stack size 64 bytes, zf_device_ips200.o(.text.ips200_show_gray_image))
 <BR><BR>[Stack]<UL><LI>Max Depth = 960<LI>Call Chain = ips200_show_gray_image &rArr; ips200_set_region &rArr; ips200_write_command &rArr; spi_write_8bit &rArr; spi_write_8bit_array &rArr; spi_write &rArr; LPSPI_MasterTransferBlocking &rArr; LPSPI_CheckTransferArgument &rArr; __aeabi_assert &rArr; DbgConsole_Printf &rArr; DbgConsole_Vprintf &rArr; DbgConsole_PrintfFormattedData &rArr; DbgConsole_ConvertFloatRadixNumToString &rArr; __hardfp_pow &rArr; sqrt
 </UL>
 <BR>[Calls]<UL><LI><a href="#[208]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;debug_assert_handler
@@ -3082,7 +3080,7 @@ Global Symbols
 <LI><a href="#[232]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_write_16bit_data
 <LI><a href="#[231]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_set_region
 </UL>
-<BR>[Called By]<UL><LI><a href="#[1a5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Run
+<BR>[Called By]<UL><LI><a href="#[1a4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Run
 </UL>
 
 <P><STRONG><a name="[1ab]"></a>ips200_show_int</STRONG> (Thumb, 256 bytes, Stack size 56 bytes, zf_device_ips200.o(.text.ips200_show_int))
@@ -3093,7 +3091,7 @@ Global Symbols
 <LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_string
 <LI><a href="#[f3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memset
 </UL>
-<BR>[Called By]<UL><LI><a href="#[1a5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Run
+<BR>[Called By]<UL><LI><a href="#[1a4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Run
 </UL>
 
 <P><STRONG><a name="[e7]"></a>ips200_show_string</STRONG> (Thumb, 220 bytes, Stack size 32 bytes, zf_device_ips200.o(.text.ips200_show_string))
@@ -3108,9 +3106,9 @@ Global Symbols
 <BR>[Address Reference Count : 1]<UL><LI> zf_device_ips200.o(.text.ips200_debug_init)
 </UL>
 <P><STRONG><a name="[ad]"></a>main</STRONG> (Thumb, 98 bytes, Stack size 32 bytes, main.o(.text.main))
-<BR><BR>[Stack]<UL><LI>Max Depth = 1192<LI>Call Chain = main &rArr; Image_Run &rArr; ips200_show_float &rArr; ips200_show_string &rArr; ips200_show_char &rArr; ips200_set_region &rArr; ips200_write_command &rArr; spi_write_8bit &rArr; spi_write_8bit_array &rArr; spi_write &rArr; LPSPI_MasterTransferBlocking &rArr; LPSPI_CheckTransferArgument &rArr; __aeabi_assert &rArr; DbgConsole_Printf &rArr; DbgConsole_Vprintf &rArr; DbgConsole_PrintfFormattedData &rArr; DbgConsole_ConvertFloatRadixNumToString &rArr; __hardfp_pow &rArr; sqrt
+<BR><BR>[Stack]<UL><LI>Max Depth = 1184<LI>Call Chain = main &rArr; Image_Run &rArr; ips200_show_float &rArr; ips200_show_string &rArr; ips200_show_char &rArr; ips200_set_region &rArr; ips200_write_command &rArr; spi_write_8bit &rArr; spi_write_8bit_array &rArr; spi_write &rArr; LPSPI_MasterTransferBlocking &rArr; LPSPI_CheckTransferArgument &rArr; __aeabi_assert &rArr; DbgConsole_Printf &rArr; DbgConsole_Vprintf &rArr; DbgConsole_PrintfFormattedData &rArr; DbgConsole_ConvertFloatRadixNumToString &rArr; __hardfp_pow &rArr; sqrt
 </UL>
-<BR>[Calls]<UL><LI><a href="#[1a5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Run
+<BR>[Calls]<UL><LI><a href="#[1a4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Run
 <LI><a href="#[1ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Servo_SetAngle
 <LI><a href="#[241]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Compress
 <LI><a href="#[1ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Schedule_Run
@@ -3777,7 +3775,7 @@ Local Symbols
 <LI><a href="#[232]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_write_16bit_data
 </UL>
 <BR>[Called By]<UL><LI><a href="#[1ad]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_draw_point
-<LI><a href="#[1aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_gray_image
+<LI><a href="#[1a9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_gray_image
 <LI><a href="#[23b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_char
 <LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_clear
 </UL>
@@ -3790,7 +3788,7 @@ Local Symbols
 <LI><a href="#[23c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;spi_write_16bit
 </UL>
 <BR>[Called By]<UL><LI><a href="#[1ad]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_draw_point
-<LI><a href="#[1aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_gray_image
+<LI><a href="#[1a9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_gray_image
 <LI><a href="#[23b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_char
 <LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_clear
 <LI><a href="#[231]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_set_region

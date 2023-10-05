@@ -54,11 +54,11 @@ int main(void)
 
     }
 }
-void pit_exti_handler(void)
-{
-  //    Scheduler_Tick();
-  gpio_toggle_level(B9);
-}
+//void pit_exti_handler(void)
+//{
+//  //    Scheduler_Tick();
+//  gpio_toggle_level(B9);
+//}
 
 // #define LED1                    (B9 )
 

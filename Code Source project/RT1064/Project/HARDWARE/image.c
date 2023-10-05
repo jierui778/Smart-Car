@@ -575,7 +575,7 @@ uint8 Gather_Count;//计数
  * row   col-1      row   col       row   col+1         4   *   5
  * row+1 col-1      row+1 col       row+1 col+1         3   1   2
  */
-
+uint8 count;
 void Image_Get_neighborhoods(uint8(*Image_Use)[IMAGE_WIDTH])
 {
 	Left_Count=0;
@@ -848,12 +848,17 @@ void Image_Get_neighborhoods(uint8(*Image_Use)[IMAGE_WIDTH])
 				cur_col=Right[Right_Count].column;
 				Right_Count++;
 			}
-			else
-				break;
+			/*以下是附加扫线*/
+//			else if(Image_Use_Robert)
+//			{
+//				
+//				break;
+//			}
 			//下面是巡线以后其他的处理
 			//1  越界处理
-			if(cur_row<2||cur_row>IMAGE_HEIGHT-2||cur_col<1||cur_col>IMAGE_WIDTH-2)
+			if(cur_row==0||cur_row==IMAGE_HEIGHT-1||cur_col==1||cur_col==IMAGE_WIDTH-1)
 			{
+				
 				break;
 			}
 			//2 变化灰度的还原的处理（因为不处理的话下次就还是会扫错）
@@ -923,7 +928,7 @@ void Image_Get_neighborhoods2(uint8(*Image_Use)[IMAGE_WIDTH])
 				cur_col=Left[Left_Count].column;//更新中心坐标点
 				Left_Count++;
 			}
-			else if(Image_Use[cur_row+1][cur_col-1]==BLACK&&Image_Use[cur_row][cur_col-1]==WHITE)
+			else if(Left[Left_Count-1].grow!=5&&Image_Use[cur_row+1][cur_col-1]==BLACK&&Image_Use[cur_row][cur_col-1]==WHITE)
 			{
 				Left[Left_Count].row=cur_row+1;
 				Left[Left_Count].column=cur_col-1;
@@ -933,7 +938,7 @@ void Image_Get_neighborhoods2(uint8(*Image_Use)[IMAGE_WIDTH])
 				cur_col=Left[Left_Count].column;//更新中心坐标点
 				Left_Count++;
 			}
-			else if(Image_Use[cur_row][cur_col-1]==BLACK&&Image_Use[cur_row-1][cur_col-1]==WHITE)
+			else if(Left[Left_Count-1].grow!=6&&Image_Use[cur_row][cur_col-1]==BLACK&&Image_Use[cur_row-1][cur_col-1]==WHITE)
 			{
 				Left[Left_Count].row=cur_row;
 				Left[Left_Count].column=cur_col-1;
@@ -943,7 +948,7 @@ void Image_Get_neighborhoods2(uint8(*Image_Use)[IMAGE_WIDTH])
 				cur_col=Left[Left_Count].column;//更新中心坐标点
 				Left_Count++;
 			}
-			else if(Image_Use[cur_row-1][cur_col-1]==BLACK&&Image_Use[cur_row-1][cur_col]==WHITE)
+			else if(Left[Left_Count-1].grow!=7&&Image_Use[cur_row-1][cur_col-1]==BLACK&&Image_Use[cur_row-1][cur_col]==WHITE)
 			{
 				Left[Left_Count].row=cur_row-1;
 				Left[Left_Count].column=cur_col-1;
@@ -963,7 +968,7 @@ void Image_Get_neighborhoods2(uint8(*Image_Use)[IMAGE_WIDTH])
 				cur_col=Left[Left_Count].column;//更新中心坐标点
 				Left_Count++;
 			}
-			else if(Image_Use[cur_row-1][cur_col+1]==BLACK&&Image_Use[cur_row][cur_col+1]==WHITE)
+			else if(Left[Left_Count-1].grow!=1&&Image_Use[cur_row-1][cur_col+1]==BLACK&&Image_Use[cur_row][cur_col+1]==WHITE)
 			{
 				Left[Left_Count].row=cur_row-1;
 				Left[Left_Count].column=cur_col+1;
@@ -973,7 +978,7 @@ void Image_Get_neighborhoods2(uint8(*Image_Use)[IMAGE_WIDTH])
 				cur_col=Left[Left_Count].column;//更新中心坐标点
 				Left_Count++;
 			}
-			else if(Image_Use[cur_row][cur_col+1]==BLACK&&Image_Use[cur_row+1][cur_col+1]==WHITE)
+			else if(Left[Left_Count-1].grow!=2&&Image_Use[cur_row][cur_col+1]==BLACK&&Image_Use[cur_row+1][cur_col+1]==WHITE)
 			{
 				Left[Left_Count].row=cur_row;
 				Left[Left_Count].column=cur_col+1;
@@ -983,7 +988,7 @@ void Image_Get_neighborhoods2(uint8(*Image_Use)[IMAGE_WIDTH])
 				cur_col=Left[Left_Count].column;//更新中心坐标点
 				Left_Count++;
 			}
-			else if(Image_Use[cur_row+1][cur_col+1]==BLACK&&Image_Use[cur_row+1][cur_col]==WHITE)
+			else if(Left[Left_Count-1].grow!=3&&Image_Use[cur_row+1][cur_col+1]==BLACK&&Image_Use[cur_row+1][cur_col]==WHITE)
 			{
 				Left[Left_Count].row=cur_row+1;
 				Left[Left_Count].column=cur_col+1;
@@ -1037,7 +1042,7 @@ void Image_Get_neighborhoods2(uint8(*Image_Use)[IMAGE_WIDTH])
 				cur_col=Right[Right_Count].column;
 				Right_Count++;
 			}
-			else if(Image_Use[cur_row+1][cur_col+1]==BLACK&&Image_Use[cur_row][cur_col+1]==WHITE)
+			else if(Right[Left_Count-1].grow!=5&&Image_Use[cur_row+1][cur_col+1]==BLACK&&Image_Use[cur_row][cur_col+1]==WHITE)
 			{
 				Right[Right_Count].row=cur_row+1;
 				Right[Right_Count].column=cur_col+1;
@@ -1047,7 +1052,7 @@ void Image_Get_neighborhoods2(uint8(*Image_Use)[IMAGE_WIDTH])
 				cur_col=Right[Right_Count].column;
 				Right_Count++;
 			}
-			else if(Image_Use[cur_row][cur_col+1]==BLACK&&Image_Use[cur_row-1][cur_col+1]==WHITE)
+			else if(Right[Left_Count-1].grow!=6&&Image_Use[cur_row][cur_col+1]==BLACK&&Image_Use[cur_row-1][cur_col+1]==WHITE)
 			{
 				Right[Right_Count].row=cur_row;
 				Right[Right_Count].column=cur_col+1;
@@ -1057,7 +1062,7 @@ void Image_Get_neighborhoods2(uint8(*Image_Use)[IMAGE_WIDTH])
 				cur_col=Right[Right_Count].column;
 				Right_Count++;
 			}
-			else if(Image_Use[cur_row-1][cur_col+1]==BLACK&&Image_Use[cur_row-1][cur_col]==WHITE)
+			else if(Right[Left_Count-1].grow!=7&&Image_Use[cur_row-1][cur_col+1]==BLACK&&Image_Use[cur_row-1][cur_col]==WHITE)
 			{
 				Right[Right_Count].row=cur_row-1;
 				Right[Right_Count].column=cur_col+1;
@@ -1077,7 +1082,7 @@ void Image_Get_neighborhoods2(uint8(*Image_Use)[IMAGE_WIDTH])
 				cur_col=Right[Right_Count].column;
 				Right_Count++;
 			}
-			else if(Image_Use[cur_row-1][cur_col-1]==BLACK&&Image_Use[cur_row][cur_col-1]==WHITE)
+			else if(Right[Left_Count-1].grow!=1&&Image_Use[cur_row-1][cur_col-1]==BLACK&&Image_Use[cur_row][cur_col-1]==WHITE)
 			{
 				Right[Right_Count].row=cur_row-1;
 				Right[Right_Count].column=cur_col-1;
@@ -1087,7 +1092,7 @@ void Image_Get_neighborhoods2(uint8(*Image_Use)[IMAGE_WIDTH])
 				cur_col=Right[Right_Count].column;
 				Right_Count++;
 			}
-			else if(Image_Use[cur_row][cur_col-1]==BLACK&&Image_Use[cur_row+1][cur_col-1]==WHITE)
+			else if(Right[Left_Count-1].grow!=2&&Image_Use[cur_row][cur_col-1]==BLACK&&Image_Use[cur_row+1][cur_col-1]==WHITE)
 			{
 				Right[Right_Count].row=cur_row;
 				Right[Right_Count].column=cur_col-1;
@@ -1097,7 +1102,7 @@ void Image_Get_neighborhoods2(uint8(*Image_Use)[IMAGE_WIDTH])
 				cur_col=Right[Right_Count].column;
 				Right_Count++;
 			}
-			else if(Image_Use[cur_row+1][cur_col-1]==BLACK&&Image_Use[cur_row+1][cur_col]==WHITE)
+			else if(Right[Left_Count-1].grow!=3&&Image_Use[cur_row+1][cur_col-1]==BLACK&&Image_Use[cur_row+1][cur_col]==WHITE)
 			{
 				Right[Right_Count].row=cur_row+1;
 				Right[Right_Count].column=cur_col-1;
@@ -1178,6 +1183,9 @@ struct coordinate left_high;
 struct coordinate left_low;
 struct coordinate right_high;
 struct coordinate right_low;
+uint8 Cross_State;//定义环岛状态变量
+uint8 Cross_left2,Cross_right2;//定义未进十字左右状态量
+uint8 Cross_left1,Cross_right1;//定义进十字左右状态量
 void Image_FillCross(uint8(*Image_Use)[IMAGE_WIDTH])
 {
     uint8 i,j;//中间变量
@@ -1200,6 +1208,7 @@ void Image_FillCross(uint8(*Image_Use)[IMAGE_WIDTH])
 				left_low.flag=1;
                 break;
 			}
+			Cross_left1=1;//左拐点找到
         }
         //找的是左上拐点，这里可以不放在同一个for循环，因为肯定是先找到左下拐点，然后才能找到左拐点
 //        for(i=0;i<Left_Count;i++)
@@ -1229,6 +1238,7 @@ void Image_FillCross(uint8(*Image_Use)[IMAGE_WIDTH])
 				right_low.index=i;
                 break;
 			}
+			Cross_right1=1;//右拐点找到
         }
 		for(i=0;i<Right_Count;i++)
         {
@@ -1239,97 +1249,104 @@ void Image_FillCross(uint8(*Image_Use)[IMAGE_WIDTH])
                 right_high.column=Right[i].column;
 				right_high.index=i;
                 break;
-            }
-			
+            }	
 		}
-		//左边线补线
-        if(left_low.index!=0)//判断是否为0
-        {
-            left_line.k=Image_Getk((left_low.column-Left[left_low.index-3].column),(left_low.row-Left[left_low.index-3].row));
-            left_line.b=Image_Getb(left_low.column,left_low.row,left_line.k);
-            //求出左线斜率和截距：column=k*row+b（十字的k一般都是1或-1）
-            //补线有两种方法：一种把全部的点都补上，一种只补两个拐点拐点，这里用第二种，后面再用基础扫线，扫出补线后的边线
-            
-			for(i=left_low.row;i>10;i--)//从左下拐点开始向上补线
-            {
-				int new_column_l=(int)(left_line.k*i+left_line.b);
-				if(new_column_l>0)
-				{
-					Image_Use[i][new_column_l]=BLACK;//从拐点向上补线
-					ips200_draw_line(0,0,i,new_column_l,RGB565_RED);
-				}
-				else
-				{
-					break;
-				}
-            }
-			//记录上一次的斜率和截距
-			last_left_line.k=left_line.k;
-			last_left_line.b=left_line.b;
-			//记录完后清零
-            left_low.index=0;
-            left_line.k=0;
-            left_line.b=0;
-        }
-		else//如果找不到的话（下标为0）
+		/*未进入十字状态判断*/
+		if(Cross_left1==1&&Cross_right1==1)
 		{
-			left_line.k=last_left_line.k;//就用上次的斜率和截距
-			left_line.b=last_left_line.b;
-			for(i=left_low.row;i>10;i--)//从左下拐点开始向上补线
-            {
-				int new_column_l=(int)(left_line.k*i+left_line.b);
-				if(new_column_l>0)
-				{
-					Image_Use[i][new_column_l]=BLACK;//从拐点向上补线
-					ips200_draw_line(0,0,i,new_column_l,RGB565_RED);
-				}
-				else
-				{
-					break;
-				}
-            }
+			Cross_State=1;//状态1：未进入十字
 		}
-		//右边线补线
-        if(right_low.index!=0)
-        {
-            right_line.k=Image_Getk((right_low.column-Right[right_low.index-3].column),(right_low.row-Right[right_low.index-3].row));
-            right_line.b=Image_Getb(right_low.column,right_low.row,right_line.k);
-            for(i=right_low.row;i>10;i--)//从左下拐点开始向上补线
-            {
-				int new_column_r=(int)(right_line.k*i+right_line.b);
-				if(new_column_r>0)
+		//状态一的左边线补线
+		
+			if(left_low.index!=0)//判断是否为0
+			{
+				left_line.k=Image_Getk((left_low.column-Left[left_low.index-3].column),(left_low.row-Left[left_low.index-3].row));
+				left_line.b=Image_Getb(left_low.column,left_low.row,left_line.k);
+				//求出左线斜率和截距：column=k*row+b（十字的k一般都是1或-1）
+				//补线有两种方法：一种把全部的点都补上，一种只补两个拐点拐点，这里用第二种，后面再用基础扫线，扫出补线后的边线
+				
+				for(i=left_low.row;i>10;i--)//从左下拐点开始向上补线
 				{
-					Image_Use[i][new_column_r]=BLACK;//从拐点向上补线
-					ips200_draw_line(0,0,i,new_column_r,RGB565_RED);
+					int new_column_l=(int)(left_line.k*i+left_line.b);
+					if(new_column_l>0)
+					{
+						Image_Use[i][new_column_l]=BLACK;//从拐点向上补线
+//						ips200_draw_line(0,0,i,new_column_l,RGB565_RED);
+					}
+					else
+					{
+						break;
+					}
 				}
-				else
-					break;
-            }
-			last_right_line.k=right_line.k;
-			last_right_line.b=right_line.b;
-			//记录完后清零
-            right_low.index=0;
-            right_line.k=0;
-            right_line.b=0;
-        }
-		else//如果找不到的话（下标为0）
-		{
-			right_line.k=last_right_line.k;//就用上次的斜率和截距
-			right_line.b=last_right_line.b;
-			for(i=right_low.row;i>10;i--)//从左下拐点开始向上补线
-            {
-				int new_column_r=(int)(right_line.k*i+right_line.b);
-				if(new_column_r>0)
+				//记录上一次的斜率和截距
+				last_left_line.k=left_line.k;
+				last_left_line.b=left_line.b;
+				//记录完后清零
+				left_low.index=0;
+				left_line.k=0;
+				left_line.b=0;
+			}
+			else//如果找不到的话（下标为0）
+			{
+				left_line.k=last_left_line.k;//就用上次的斜率和截距
+				left_line.b=last_left_line.b;
+				for(i=left_low.row;i>10;i--)//从左下拐点开始向上补线
 				{
-					Image_Use[i][new_column_r]=BLACK;//从拐点向上补线
-					ips200_draw_line(0,0,i,new_column_r,RGB565_RED);
+					int new_column_l=(int)(left_line.k*i+left_line.b);
+					if(new_column_l>0)
+					{
+						Image_Use[i][new_column_l]=BLACK;//从拐点向上补线
+//						ips200_draw_line(0,0,i,new_column_l,RGB565_RED);
+					}
+					else
+					{
+						break;
+					}
 				}
-				else
+			}
+			//右边线补线
+			if(right_low.index!=0)
+			{
+				right_line.k=Image_Getk((right_low.column-Right[right_low.index-3].column),(right_low.row-Right[right_low.index-3].row));
+				right_line.b=Image_Getb(right_low.column,right_low.row,right_line.k);
+				for(i=right_low.row;i>10;i--)//从左下拐点开始向上补线
 				{
-					break;
+					int new_column_r=(int)(right_line.k*i+right_line.b);
+					if(new_column_r>0)
+					{
+						Image_Use[i][new_column_r]=BLACK;//从拐点向上补线
+//						ips200_draw_line(0,0,i,new_column_r,RGB565_RED);
+					}
+					else
+						break;
 				}
-            }
-		}
+				last_right_line.k=right_line.k;
+				last_right_line.b=right_line.b;
+				//记录完后清零
+				right_low.index=0;
+				right_line.k=0;
+				right_line.b=0;
+			}
+			else//如果找不到的话（下标为0）
+			{
+				right_line.k=last_right_line.k;//就用上次的斜率和截距
+				right_line.b=last_right_line.b;
+				for(i=right_low.row;i>10;i--)//从左下拐点开始向上补线
+				{
+					int new_column_r=(int)(right_line.k*i+right_line.b);
+					if(new_column_r>0)
+					{
+						Image_Use[i][new_column_r]=BLACK;//从拐点向上补线
+//						ips200_draw_line(160,0,new_column_r,i,RGB565_BLUE);
+					}
+					else
+					{
+						break;
+					}
+				}
+			}
+		
+		
 //		Image_CountLeftKB_L(right_low.index,right_low.index-3);//求出右线的斜率和截距slope_rate_r
 //		right_line.k=slope_rate_r;
 //		right_line.b=intercept_r;//左线补线
@@ -1560,16 +1577,17 @@ void Image_Run(void)
 	Image_Get_neighborhoods(Image_Use_Robert);
 //	
 	Image_FillCross(Image_Use_Robert);
-//	tft180_show_int(3,120,points_l[l_count-1][0],3);left_lineleft_line.b
+	
+//	tft180_show_int(3,120,points_l[l_count-1][0],3);left_lineleft_line.bRight_Count
 //	Image_Get_neighborhoods(100,Image_Use);left_high.index
-    ips200_draw_line(0,0,left_low.column,left_low.row,RGB565_RED);
-    ips200_draw_line(0,0,right_low.column,right_low.row,RGB565_BLUE);
-    ips200_draw_line(60,80,left_high.column,left_low.row,RGB565_RED);
-	ips200_draw_line(0,0,right_high.column,right_high.row,RGB565_BLUE);
-//	new_column
-    ips200_show_int(3,140,left_low.column,3);
-    ips200_show_int(3,160,left_low.index,3);
-	ips200_show_int(3,180,Left[left_low.index-3].row,3);
+  ips200_draw_line(0,0,Left[Left_Count-1].column,Left[Left_Count-1].row,RGB565_RED);
+  ips200_draw_line(0,0,Right[Right_Count-1].column,Right[Right_Count-1].row,RGB565_BLUE);
+//  ips200_draw_line(60,80,left_high.column,left_low.row,RGB565_GREEN);
+//	ips200_draw_line(0,0,right_high.column,right_high.row,RGB565_YELLOW);
+
+    ips200_show_int(3,140,Left_Count,3);
+    ips200_show_int(3,160,Right_Count,3);
+	ips200_show_int(3,180,count,3);
     ips200_show_int(3,200,Left[left_low.index-3].column,3);
 	
 	ips200_show_int(43,120,right_low.row,3);
@@ -1933,9 +1951,7 @@ void Image_LeftRound(uint8(*Image_Use)[IMAGE_WIDTH])
                 }
             }
         }
-        
     }
-
 }
 
 /**
