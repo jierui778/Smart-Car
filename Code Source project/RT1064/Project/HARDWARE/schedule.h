@@ -24,8 +24,6 @@ typedef struct
 // your code goes here
 
 
-
-
 // void Schedule_Setup(void);
 void Schedule_Run(void);
 void pit_handler(void);

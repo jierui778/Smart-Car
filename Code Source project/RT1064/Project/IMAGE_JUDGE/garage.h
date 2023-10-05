@@ -24,10 +24,8 @@ extern enum garage_type_e garage_type;//枚举类型全局定义
 
 
 
-void Garage_out(void);
-void Garage_in(void);
-void Garage_stop(void);
-void Garage_pass(void);
+void Garage_Out(void);
+void Garage_In(void);
 void Garage_Check(void);//车库检测函数
 
 

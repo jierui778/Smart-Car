@@ -37,7 +37,7 @@ struct Line
 }; // 定义直线方程
 struct Line left_line;
 struct Line right_line; // 定义左右线方程
-uint8 Image_Use[Image_Height][Image_Width];
+uint8 Image_Use[IMAGE_HEIGHT][IMAGE_WIDTH];
 /**
  * @brief 截取我们需要的图像大小
  *
@@ -48,11 +48,11 @@ uint8 Image_Use[Image_Height][Image_Width];
 void Image_Compress(void)
 {
     int i, j, row, line;
-    const float pro_h = Primeval_Hight / Image_Height, pro_w = Primeval_With / Image_Width; // 根据原始的图像尺寸和你所需要的图像尺寸确定好压缩比例。
-    for (i = 0; i < Image_Height; i++)                                                      // 遍历图像的每一行，从第零行到第59行。
+    const float pro_h = Primeval_Hight / IMAGE_HEIGHT, pro_w = Primeval_With / IMAGE_WIDTH; // 根据原始的图像尺寸和你所需要的图像尺寸确定好压缩比例。
+    for (i = 0; i < IMAGE_HEIGHT; i++)                                                      // 遍历图像的每一行，从第零行到第59行。
     {
         row = i * pro_h + 0.5;
-        for (j = 0; j < Image_Width; j++) // 遍历图像的每一列，从第零列到第79列。
+        for (j = 0; j < IMAGE_WIDTH; j++) // 遍历图像的每一列，从第零列到第79列。
         {
             line = j * pro_w + 0.5;
             Image_Use[i][j] = mt9v03x_image[row][line]; // mt9v03x_image数组里面是原始灰度图像，Image_Use数组存储的是我之后要拿去处理的图像，但依然是灰度图像哦！只是压缩了一下而已。
@@ -170,17 +170,17 @@ uint8 OSTU_GetThreshold(uint8 *image, uint16 Width, uint16 Height)
  * @param Image_out 输出图像
  * @param Threshold 阈值
  */
-void Image_Sobel(uint8 Image_in[Image_Height][Image_Width], uint8_t Image_out[Image_Height][Image_Width], uint16 Threshold)
+void Image_Sobel(uint8 Image_in[IMAGE_HEIGHT][IMAGE_WIDTH], uint8_t Image_out[IMAGE_HEIGHT][IMAGE_WIDTH], uint16 Threshold)
 {
     uint8_t i, j;
     uint8_t UP, DN, LL, RR;
     if (Threshold == 0) // 观察每点梯度值
     {
-        for (i = 1; i < Image_Height - 1; i++)
+        for (i = 1; i < IMAGE_HEIGHT - 1; i++)
         {
             DN = i + 1;
             UP = i - 1;
-            for (j = 1; j < Image_Width - 1; j++)
+            for (j = 1; j < IMAGE_WIDTH - 1; j++)
             {
                 RR = j + 1;
                 LL = j - 1;
@@ -190,11 +190,11 @@ void Image_Sobel(uint8 Image_in[Image_Height][Image_Width], uint8_t Image_out[Im
     }
     else // 根据梯度值二值化
     {
-        for (i = 1; i < Image_Height - 1; i++)
+        for (i = 1; i < IMAGE_HEIGHT - 1; i++)
         {
             DN = i + 1;
             UP = i - 1;
-            for (j = 1; j < Image_Width - 1; j++)
+            for (j = 1; j < IMAGE_WIDTH - 1; j++)
             {
                 RR = j + 1;
                 LL = j - 1;
@@ -208,26 +208,26 @@ void Image_Sobel(uint8 Image_in[Image_Height][Image_Width], uint8_t Image_out[Im
  * @brief 将输入的灰度图像转化为二值化图像
  * @param Threshold 图像阈值(实际上阈值需要进行计算，而不是直接赋值)
  */
-void Image_Binarization(uint8 threshold, uint8 (*Image)[Image_Width])
+void Image_Binarization(uint8 threshold, uint8 (*Image)[IMAGE_WIDTH])
 {
     uint32 i, j;
     uint16 temp = 0;
 
-    for (j = 0; j < Image_Height; j++)
+    for (j = 0; j < IMAGE_HEIGHT; j++)
     {
-        for (i = 0; i < Image_Width; i++)
+        for (i = 0; i < IMAGE_WIDTH; i++)
         {
-            temp = *(Image[0] + j * Image_Width + i);                              // 读取像素点
-            if (j == 0 || j == Image_Height - 1 || i == 0 || i == Image_Width - 1) // 大津法加一个黑框
+            temp = *(Image[0] + j * IMAGE_WIDTH + i);                              // 读取像素点
+            if (j == 0 || j == IMAGE_HEIGHT - 1 || i == 0 || i == IMAGE_WIDTH - 1) // 大津法加一个黑框
             {
-                //                *(Image[0] + j * Image_Width + i) = 0;
+                //                *(Image[0] + j * IMAGE_WIDTH + i) = 0;
             }
             else
             {
                 if (temp >= threshold)
-                    *(Image[0] + j * Image_Width + i) = 255;
+                    *(Image[0] + j * IMAGE_WIDTH + i) = 255;
                 else
-                    *(Image[0] + j * Image_Width + i) = 0;
+                    *(Image[0] + j * IMAGE_WIDTH + i) = 0;
             }
         }
     }
@@ -286,7 +286,7 @@ unsigned char left_point; // 记录第一个关键点的列坐标，定义为全
 uint8 Left_Find_Flag;     // 左线起始点找到标志
 unsigned char Image_Get_LeftFlag(void)
 {
-    for (left_point = (Image_Width / 2); left_point > 3; left_point--)
+    for (left_point = (IMAGE_WIDTH / 2); left_point > 3; left_point--)
     {
         if ((Image_Use[56][left_point] == 255) && (Image_Use[56][left_point - 1] == 0) && (Image_Use[56][left_point - 2] == 0))
         {
@@ -311,7 +311,7 @@ unsigned char right_point; // 记录第一个关键点的列坐标
 unsigned char Image_Get_Rightflag(void)
 {
 
-    for (right_point = (Image_Width / 2); right_point < (Image_Width - 2); right_point++)
+    for (right_point = (IMAGE_WIDTH / 2); right_point < (IMAGE_WIDTH - 2); right_point++)
     {
         if ((Image_Use[56][right_point] == 255) && (Image_Use[56][right_point + 1] == 0) && (Image_Use[56][right_point + 2] == 0)) // 这里指针变量不能直接和值比较，需要解地址
         {
@@ -331,9 +331,9 @@ void Image_Filter(void)
 {
     uint16 i, j;
     uint32 num = 0;
-    for (i = 1; i < Image_Height - 1; i++)
+    for (i = 1; i < IMAGE_HEIGHT - 1; i++)
     {
-        for (j = 1; j < Image_Width - 1; j++)
+        for (j = 1; j < IMAGE_WIDTH - 1; j++)
         {
             // 统计8个方向的像素值
             num = Image_Use[i - 1][j - 1] + Image_Use[i - 1][j] + Image_Use[i - 1][j + 1] + Image_Use[i][j - 1] + Image_Use[i][j + 1] + Image_Use[i + 1][j - 1] + Image_Use[i + 1][j] + Image_Use[i + 1][j + 1];
@@ -359,13 +359,13 @@ void Image_Filter(void)
 void Image_DrawRectangle(void)
 {
     uint8 i = 0;
-    for (i = 0; i < Image_Height; i++)
+    for (i = 0; i < IMAGE_HEIGHT; i++)
     {
         Image_Use[i][0] = 0;
-        Image_Use[i][Image_Width - 1] = 0;
-        Image_Use[i][Image_Width - 2] = 0;
+        Image_Use[i][IMAGE_WIDTH - 1] = 0;
+        Image_Use[i][IMAGE_WIDTH - 2] = 0;
     }
-    for (i = 0; i < Image_Width; i++)
+    for (i = 0; i < IMAGE_WIDTH; i++)
     {
         Image_Use[0][i] = 0;
         Image_Use[1][i] = 0;
@@ -492,7 +492,7 @@ uint8 Gather_Count;   // 计数
  * @example Image_Get_neighborhoods(Image_Use)
  */
 
-void Image_Get_neighborhoods(uint8 (*Image_Use)[Image_Width])
+void Image_Get_neighborhoods(uint8 (*Image_Use)[IMAGE_WIDTH])
 {
     Left_Count = 0;
     Right_Count = 0;
@@ -765,7 +765,7 @@ struct coordinate left_high;
 struct coordinate left_low;
 struct coordinate right_high;
 struct coordinate right_low;
-void Image_FillCross_1(uint8 (*Image_Use)[Image_Width])
+void Image_FillCross_1(uint8 (*Image_Use)[IMAGE_WIDTH])
 {
     uint8 i, j;             // 中间变量
     uint8 l_ready, r_ready; // 定义左右线扫完的标志位
@@ -818,20 +818,20 @@ void Image_FillCross_1(uint8 (*Image_Use)[Image_Width])
         // 找完点开始补线，先求左线
         Image_pointsleft(left_high.row, left_high.column, left_low.row, left_low.column); // 求出左线的斜率和截距
         // 补线有两种方法：一种把全部的点都补上，一种只补两个拐点拐点，这里用第二种，后面再用基础扫线，扫出补线后的边线
-        for (i = left_low.row; i < Image_Height - 1; i++) // 从左下拐点开始补线
+        for (i = left_low.row; i < IMAGE_HEIGHT - 1; i++) // 从左下拐点开始补线
         {
             Image_Use[i][(int)(left_line.k) * i + (int)(left_line.b)] = black; // 补线,这里传入的k是浮点型,后面要换
-            if (i >= Image_Height - 4)
+            if (i >= IMAGE_HEIGHT - 4)
             {
                 l_ready = 1; // 左线补完了
                 break;
             }
         }
         Image_pointsright(right_high.row, right_high.column, right_low.row, right_low.column); // 求出右线的斜率和截距
-        for (i = right_low.row; i < Image_Height - 1; i++)                                     // 从右下拐点开始补线
+        for (i = right_low.row; i < IMAGE_HEIGHT - 1; i++)                                     // 从右下拐点开始补线
         {
             Image_Use[i][(int)(right_line.k) * i + (int)(right_line.b)] = black; // 补线
-            if (i >= Image_Height - 4)
+            if (i >= IMAGE_HEIGHT - 4)
             {
                 r_ready = 1; // 右线补完了
                 break;
@@ -1150,7 +1150,7 @@ int Image_RightGrowDirection(uint8 Direction)
 struct coordinate Left_first_point;  // 左环岛的第一个拐点
 struct coordinate Left_second_point; // 左环岛的第二个拐点
 struct coordinate Right_first_point; // 右拐点
-void Image_LeftRound(uint8 (*Image_Use)[Image_Width])
+void Image_LeftRound(uint8 (*Image_Use)[IMAGE_WIDTH])
 {
     uint8 LeftRound_State = 0;      // 左环岛状态1-5
     uint8 Last_LeftRound_State = 0; // 上一个状态
@@ -1205,7 +1205,7 @@ void Image_LeftRound(uint8 (*Image_Use)[Image_Width])
             left_line.b = 0.0; // 清零
             Image_pointsleft(Left[Left_first_point_index - 2].row, Left[Left_first_point_index - 2].column, Left[Left_first_point_index - 5].row, Left[Left_first_point_index - 5].column);
             // 求出左补线的斜率和截距
-            for (i = Left[Left_first_point_index - 2].row; i > Image_Height - 10; i--) // 从左下拐点，向上开始补线
+            for (i = Left[Left_first_point_index - 2].row; i > IMAGE_HEIGHT - 10; i--) // 从左下拐点，向上开始补线
             {
                 if (Image_Use[i][(int)(left_line.k) * i + (int)(left_line.b)] == black) // 如果要变黑的点本来就是黑点
                 {
@@ -1215,7 +1215,7 @@ void Image_LeftRound(uint8 (*Image_Use)[Image_Width])
                 {
                     Image_Use[i][(int)(left_line.k) * i + (int)(left_line.b)] = black; // column=k*row+b，这里补线方程和下面不一样
                 }
-                if (i <= Image_Height - 13 || black_count >= 3)
+                if (i <= IMAGE_HEIGHT - 13 || black_count >= 3)
                 {
                     Left_first_point_index = 0; // 补完下标索引清零
                     black_count = 0;
@@ -1241,7 +1241,7 @@ void Image_LeftRound(uint8 (*Image_Use)[Image_Width])
                     Image_Use[(int)(left_line.k) * i + (int)(left_line.b)][i] = black; // 如果是白色的话就变为黑点
                 }
                 // 这里的直线方程为:row=k*column+b
-                if ((i >= Image_Width - 4) || (black_count >= 3)) // 防止赛道上出现噪点
+                if ((i >= IMAGE_WIDTH - 4) || (black_count >= 3)) // 防止赛道上出现噪点
                 {
                     Left_second_point_index = 0; // 补完下标索引清零
                     black_count = 0;             // 记得清零
@@ -1303,7 +1303,7 @@ void Image_LeftRound(uint8 (*Image_Use)[Image_Width])
                     Image_Use[(int)(right_line.k) * i + (int)(right_line.b)][i] = black; // 如果是白色的话就变为黑点
                 }
                 // 这里的直线方程为:row=k*column+b，列的点比较多
-                if ((i <= Image_Width - 4) || (black_count >= 3)) // 防止赛道上出现噪点
+                if ((i <= IMAGE_WIDTH - 4) || (black_count >= 3)) // 防止赛道上出现噪点
                 {
                     Right_first_point_index = 0; // 补完下标索引清零
                     black_count = 0;             // 记得清零
@@ -1347,7 +1347,7 @@ void Image_LeftRound(uint8 (*Image_Use)[Image_Width])
                     Image_Use[i][(int)(left_line.k) * i + (int)(left_line.b)] = black; // 如果是白色的话就变为黑点
                 }
                 // 这里的直线方程为:row=k*column+b，列的点比较多
-                if ((i >= Image_Height - 4) || (black_count >= 3)) // 防止赛道上出现噪点
+                if ((i >= IMAGE_HEIGHT - 4) || (black_count >= 3)) // 防止赛道上出现噪点
                 {
                     Left_third_point_index = 0; // 补完下标索引清零
                     black_count = 0;            // 记得清零
@@ -1361,14 +1361,14 @@ void Image_LeftRound(uint8 (*Image_Use)[Image_Width])
 /**
  * @brief 扫描60行中的某一行的黑白跳变的函数（检测斑马线）
  *
- * @param uint8(*Image_Use)[Image_Width] 二值化后的图像 target_row：目标行
+ * @param uint8(*Image_Use)[IMAGE_WIDTH] 二值化后的图像 target_row：目标行
  * @return uint8 返回黑白跳变的次数
  */
-uint8 Image_Scan_Row(uint8 (*Image_Use)[Image_Width], uint8 target_row)
+uint8 Image_Scan_Row(uint8 (*Image_Use)[IMAGE_WIDTH], uint8 target_row)
 {
     uint8 i;                     // 中间变量
     uint8 black_white_count = 0; // 黑白跳变的计数
-    for (i = 0; i < Image_Width - 1; i++)
+    for (i = 0; i < IMAGE_WIDTH - 1; i++)
     {
         if (Image_Use[target_row][i] != Image_Use[target_row][i + 1]) // 如果不相等的话，就说明是黑白跳变
         {
@@ -1381,14 +1381,14 @@ uint8 Image_Scan_Row(uint8 (*Image_Use)[Image_Width], uint8 target_row)
 /**
  * @brief 扫描100行中的某一行的黑白跳变的函数（检测斑马线）
  *
- * @param uint8(*Image_Use)[Image_Width] 二值化后的图像 target_row：目标行
+ * @param uint8(*Image_Use)[IMAGE_WIDTH] 二值化后的图像 target_row：目标行
  * @return uint8 返回黑白跳变的次数
  */
-uint8 Image_Scan_Column(uint8 (*Image_Use)[Image_Width], uint8 target_column)
+uint8 Image_Scan_Column(uint8 (*Image_Use)[IMAGE_WIDTH], uint8 target_column)
 {
     uint8 i;
     uint8 black_white_count = 0; // 黑白跳变的计数
-    for (i = 0; i < Image_Height; i++)
+    for (i = 0; i < IMAGE_HEIGHT; i++)
     {
         if (Image_Use[i][target_column] != Image_Use[i + 1][target_column]) // 如果不相等的话，就说明是黑白跳变
         {
@@ -1447,7 +1447,7 @@ float begin_y = 58; // 起始点距离图像底部的上下偏移量 120高度�
 
 float block_size = 7; // 自适应阈值的block大小
 float clip_value = 2; // 自适应阈值的阈值裁减量
-uint8_t  Image_Use_Robert[120][160];//二值化图像
+uint8_t  Image_Use_Robert[120][160];//SOBEL二值化图像
 void Find_Borderline(void)
 {
     // 迷宫巡线是否走到左右边界
@@ -1467,7 +1467,7 @@ void Find_Borderline(void)
     // 寻左边线
     x1 = img_raw.width / 2 - begin_x, y1 = begin_y;
 	int TH;
-	TH = OSTU_GetThreshold(Image_Use[0], Image_Width, Image_Height);
+	TH = OSTU_GetThreshold(Image_Use[0], IMAGE_WIDTH, IMAGE_HEIGHT);
 	Image_Sobel( Image_Use, Image_Use_Robert ,TH);//全局Sobel得二值图(方案二) 2.8ms
 	img_raw.data = Image_Use_Robert;
 
@@ -1728,3 +1728,4 @@ void draw_line(image_t *img, int pt0[2], int pt1[2], uint8_t value)
         }
     }
 }
+
