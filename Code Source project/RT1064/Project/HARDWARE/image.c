@@ -2215,20 +2215,21 @@ void Find_Borderline(void)
 
     ipts0_num = sizeof(ipts0) / sizeof(ipts0[0]); // 求数组的长度
     // 扫底下五行，寻找跳变点
-    for (; y0_first > begin_y - 5; y0_first--)
+    for (; y0_first > begin_y - 5; y0_first--)//从所选的行，向上扫5次，每次从中间向左线扫
     {
-        for (; x0_first > 0; x0_first--)
-            if (AT_IMAGE(&img_raw, x0_first - 1, y0_first) < uthres)
-                goto out1;
-        x0_first = img_raw.width / 2 - begin_x;
+        for (; x0_first > 0; x0_first--)//在选的每行中，从中间向左线扫
+            if (AT_IMAGE(&img_raw, x0_first - 1, y0_first) < uthres)//如果扫到黑点（灰度值为0），就从该点开始扫线
+                goto out1;.//开始扫左线
+        x0_first = img_raw.width / 2 - begin_x;//每次每一行扫完，都把x0_first归位
     }
+    //如果扫不到的话，判定左边的底边丢线
     loseline0 = 1; // 底边丢线
-	out1:
+	out1://从起始点开始执行扫线
 	{
-		if (AT_IMAGE(&img_raw, x0_first, y0_first) >= uthres)
-			Left_Adaptive_Threshold(&img_raw, block_size, clip_value, x0_first, y0_first, ipts0, &ipts0_num);
+		if (AT_IMAGE(&img_raw, x0_first, y0_first) >= uthres)//如果这个点是白色（且左边是黑色的话）
+			Left_Adaptive_Threshold(&img_raw, block_size, clip_value, x0_first, y0_first, ipts0, &ipts0_num);//开始跑迷宫
 		else
-			ipts0_num = 0;
+			ipts0_num = 0;//如果不是的话，就不用跑了，求得的number记为0
 	}
 
     // 寻右边线
@@ -2270,7 +2271,7 @@ const int dir_frontright[4][2] = {{1, -1},
                                   {-1, -1}};
 
 #define AT AT_IMAGE
-
+#define MAX_HIGH 88 定义图像中
 void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x, int y, int pts[][2], int *num)
 {
     zf_assert(img && img->data); // 不满足则退出执行
@@ -2280,6 +2281,7 @@ void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x
     int half = 0;                                                                                                      // 方案二
     int step = 0, dir = 0, turn = 0;                                                                                   // step表示前进的步数；dir通过改变索引改变当前小人朝向的方向
     while (step < *num && half < x && x < img->width - half - 1 && half < y && y < img->height - half - 1 && turn < 4) // 保证block不出界
+        /*保证step步数小于Num   保证x（列）坐标>0同时小于宽度-1   保证y（行）坐标大于0小于高度-1*/
     {
         int local_thres = 1;
         //        int local_thres;
@@ -2298,7 +2300,8 @@ void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x
         int current_value = AT(img, x, y);                                                   // 当前像素点灰度值
         int front_value = AT(img, x + dir_front[dir][0], y + dir_front[dir][1]);             // 正前方像素点灰度值 （dir=0 下；dir=1 右；dir=2 上；dir=3 左）
         int frontleft_value = AT(img, x + dir_frontleft[dir][0], y + dir_frontleft[dir][1]); // 左前方像素点灰度值 （dir=0左下；dir=1 右下；dir=2 右上；dir=3 左上 ）
-        //=======添加部分=======
+        //=======添加部分=======（限制条件）
+        /*  当扫点的列坐标到左黑框边界且行坐标小于20    列坐标到右边的黑框边界  行坐标为1   行坐标为88的同时步数已经大于19*/
         if ((x == 1 && y < img->height - 20) || x == img->width - 2 || y == 1 || (y == 88 && step > 19))
         {
             if (x == 1 /*|| x== img->width - 2*/)
@@ -2350,7 +2353,6 @@ void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x
     {
 //		ips200_draw_line(0,0,ipts0[i][0],ipts0[i][1],RGB565_RED);
         ips200_draw_point(ipts0[i][0] + 2, ipts0[i][1] + 2, RGB565_RED);
-
     }
     //	tft180_draw_line(0,0,ipts0[20-1][1],ipts0[20-1][0],RGB565_RED);
     //	tft180_show_int(3,100,ipts0[20-1][1],4);
@@ -2395,12 +2397,10 @@ void Right_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int 
         //=======添加部分=======
         if ((x == img->width - 2 && y < img->height - 20) || x == 1 || y == 1 || (y == 58 && step > 19)) // 丢线标志，否则由于sobel特殊性会一直往上巡线
         {
-
             if (x == img->width - 2 /*|| x==1*/)
                 touch_boundary1 = 1; // 右边界是因为到最右边才停下来的，触碰到最右边，可能是环岛，十字等，
             if (y == 1)
                 touch_boundary_up1 = 1; // 走到顶边，判断坡道or障碍
-
             break;
         }
         //=======添加部分=======
