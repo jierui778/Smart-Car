@@ -10,7 +10,7 @@
 #define SPEED_MIN 0.5
 
 
-#define PI 3.1415926//圆周率
+#define Pi 3.1415926//圆周率
 #define WHEEL_R 0.033 // 轮子半径：33mm=0.033m
 #define WHEEL_C 2*PI*WHEEL_R // 轮子周长
 

@@ -35,8 +35,9 @@ int main(void)
     //    Motor_SetPwmR(1888.88);
     while (1)
     {
+
         test();
-        ips200_displayimage03x(*Image_Use, 160, 120);
+        ips200_displayimage03x(*Image_Use_Robert, 160, 120);
         //        Schedule_Run();//任务运行总函数，开始任务调度
     }
 }

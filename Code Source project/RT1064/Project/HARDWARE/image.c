@@ -50,6 +50,8 @@ struct Line
 }; // 定义直线方程
 struct Line left_line;
 struct Line right_line; // 定义左右线方程
+struct Line last_left_line;
+struct Line last_right_line;
 uint8 Image_Use[IMAGE_HEIGHT][IMAGE_WIDTH];
 uint8 Image_Use_Robert[IMAGE_HEIGHT][IMAGE_WIDTH];
 
@@ -57,8 +59,9 @@ void test(void)
 {
     int th;
     Image_Compress();
-    // th = OSTU_GetThreshold(*Image_Use, IMAGE_HEIGHT, IMAGE_WIDTH);
-    // Image_Sobel(Image_Use, Image_Use_Robert, th);
+    th = OSTU_GetThreshold(*Image_Use, IMAGE_HEIGHT, IMAGE_WIDTH);
+    Image_Sobel(Image_Use, Image_Use_Robert, th);
+	
     Find_Borderline();
 }
 
@@ -488,18 +491,13 @@ void Image_pointsright(uint8 x1, uint8 y1, uint8 x2, uint8 y2)
  * @param end 线的终点
  * @return 通过一组点的直线的斜率
  */
-float Imgae_SlopeLeft(uint8 begin,uint8 end)
-float Imgae_Slope(uint8 begin, uint8 end, uint8 *border)
+float Imgae_SlopeLeft(uint8 begin, uint8 end)
 {
     float xsum=0,ysum=0,xysum=0,x2sum=0;
     int16 i=0;
     float result =0;
     static float resultlast=0;//记录上次结果，用来比对
     for(i=begin;i<end;i++)//从起点开始向终点自增（这个应该指的是下标）
-    float xsum = 0, ysum = 0, xysum = 0, x2sum = 0;
-    int16 i = 0;
-    float result = 0;
-    static float resultlast = 0; // 记录上次结果，用来比对
 
     for (i = begin; i < end; i++) // 从起点开始向终点自增（这个应该指的是下标）
     {
@@ -507,10 +505,6 @@ float Imgae_Slope(uint8 begin, uint8 end, uint8 *border)
         ysum +=Left[i].column;//对y坐标自增（列坐标）
         xysum += Left[i].row*(Left[i].column);//xy坐标乘积自增
         x2sum +=Left[i].row*Left[i].row;//x坐标平方自增
-        xsum += i;                // 对x坐标自增（行坐标）
-        ysum += border[i];        // 对y坐标自增（列坐标）
-        xysum += i * (border[i]); // xy坐标乘积自增
-        x2sum += i * i;           // x坐标平方自增
     }
     if ((end - begin) * x2sum - xsum * xsum) // 这个在求斜率中会作为分母，因此需要判断是否为0
     {
@@ -1573,6 +1567,7 @@ uint8 Image_Stretch_Left(void)
     // {
     //     return 0;
     // }
+	return 1;
 }
 
 /**
@@ -1614,6 +1609,7 @@ uint8 Image_Stretch_Right(void)
     // {
     //     return 0;
     // }
+	return 1;
 }
 float Image_B(uint8 point_row,uint8 point_column,float k)
 {
@@ -1697,16 +1693,12 @@ void Image_Run(void)
 //	{
 //		tft180_draw_point(Right[i].column,Right[i].row,RGB565_RED);
 //	}
-    uint8 i;
 
-    i = Image_Get_LeftFlag();
-    i = Image_Get_Rightflag();
     Image_DrawRectangle();
     //	tft180_draw_line(0,0,start_point_Left[0],start_point_Left[1],RGB565_RED);//行坐标l_countl_count
     tft180_show_int(3, 80, left_point, 3);
     Image_Get_neighborhoods(Image_Use);
     //	tft180_show_int(3,120,points_l[l_count-1][0],3);
-    //	Image_Get_neighborhoods(100,Image_Use);
     //	tft180_draw_line(0,0,cur_col,cur_row,RGB565_RED);//行坐标l_countl_count
     //	Get_Midpoint();
     for (i = 0; i < Left_Count; i++)
@@ -2143,12 +2135,11 @@ void Image_blur_points_Right(int num,int kernel)
     }
 }
 
-uint8 Image_Scan_Column(uint8(*Image_Use)[IMAGE_WIDTH],uint8 target_column)
+
 uint8 Image_Scan_Column(uint8 (*Image_Use)[IMAGE_WIDTH], uint8 target_column)
 {
     uint8 i;
     uint8 BLACK_WHITE_count=0;//黑白跳变的计数
-    for(i=0;i<IMAGE_HEIGHT;i++)
     uint8 black_white_count = 0; // 黑白跳变的计数
     for (i = 0; i < IMAGE_HEIGHT; i++)
     {
@@ -2186,8 +2177,9 @@ int x0_first, y0_first, x1_first, y1_first; // 左右边线第一个点的坐标
 
 int x1, y1;
 int x2, y2;
-float begin_x = 8;  // 起始点距离图像中心的左右偏移量
-float begin_y = 58; // 起始点距离图像底部的上下偏移量 120高度：35;100高
+float begin_x = 8;  // 起始点距离图像中心的左右偏移量	8
+float begin_y = 100; // 起始点距离图像底部的上下偏移量 120高度：35;100高	58
+/*beginy值越小，初始的生长点与上框越近*/
 
 float block_size = 7; // 自适应阈值的block大小
 float clip_value = 2; // 自适应阈值的阈值裁减量
@@ -2205,16 +2197,17 @@ void Find_Borderline(void)
     // 底边扫线防止丢线 注意：由于sobel边缘检测特殊性（黑框），此丢线标志仅适用Ostu方案
     loseline0 = 0;
     loseline1 = 0;
-
+	/*添加*/
+//	begin_y=Image_Get_LeftPoint(117);
     uint8 uthres = 1;
     //    uint8 uthres = ostu();
     // 寻左边线
     x1 = img_raw.width / 2 - begin_x, y1 = begin_y;
     int TH;
     TH = OSTU_GetThreshold(Image_Use[0], IMAGE_WIDTH, IMAGE_HEIGHT);
-    Image_Binarization(TH, *Image_Use);
+    Image_Binarization(TH, Image_Use);
     // Image_Sobel(Image_Use, Image_Use_Robert, TH); // 全局Sobel得二值图(方案二) 2.8ms
-    img_raw.data = Image_Use;
+    img_raw.data = *Image_Use;
 
     // 标记种子起始点(后续元素处理要用到)
     x0_first = x1;
@@ -2230,13 +2223,13 @@ void Find_Borderline(void)
         x0_first = img_raw.width / 2 - begin_x;
     }
     loseline0 = 1; // 底边丢线
-out1:
-{
-    if (AT_IMAGE(&img_raw, x0_first, y0_first) >= uthres)
-        Left_Adaptive_Threshold(&img_raw, block_size, clip_value, x0_first, y0_first, ipts0, &ipts0_num);
-    else
-        ipts0_num = 0;
-}
+	out1:
+	{
+		if (AT_IMAGE(&img_raw, x0_first, y0_first) >= uthres)
+			Left_Adaptive_Threshold(&img_raw, block_size, clip_value, x0_first, y0_first, ipts0, &ipts0_num);
+		else
+			ipts0_num = 0;
+	}
 
     // 寻右边线
     x2 = img_raw.width / 2 + begin_x, y2 = begin_y;
@@ -2254,13 +2247,13 @@ out1:
         x1_first = img_raw.width / 2 + begin_x;
     }
     loseline1 = 1; // 底边丢线
-out2:
-{
-    if (AT_IMAGE(&img_raw, x1_first, y1_first) >= uthres)
-        Right_Adaptive_Threshold(&img_raw, block_size, clip_value, x1_first, y1_first, ipts1, &ipts1_num);
-    else
-        ipts1_num = 0;
-}
+	out2:
+	{
+		if (AT_IMAGE(&img_raw, x1_first, y1_first) >= uthres)
+			Right_Adaptive_Threshold(&img_raw, block_size, clip_value, x1_first, y1_first, ipts1, &ipts1_num);
+		else
+			ipts1_num = 0;
+	}
 }
 
 const int dir_front[4][2] = {{0, -1},
@@ -2306,7 +2299,7 @@ void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x
         int front_value = AT(img, x + dir_front[dir][0], y + dir_front[dir][1]);             // 正前方像素点灰度值 （dir=0 下；dir=1 右；dir=2 上；dir=3 左）
         int frontleft_value = AT(img, x + dir_frontleft[dir][0], y + dir_frontleft[dir][1]); // 左前方像素点灰度值 （dir=0左下；dir=1 右下；dir=2 右上；dir=3 左上 ）
         //=======添加部分=======
-        if ((x == 1 && y < img->height - 20) || x == img->width - 2 || y == 1 || (y == 58 && step > 19))
+        if ((x == 1 && y < img->height - 20) || x == img->width - 2 || y == 1 || (y == 88 && step > 19))
         {
             if (x == 1 /*|| x== img->width - 2*/)
                 touch_boundary0 = 1; // 左边界是因为到最左边才停下来的，触碰到最左边，可能是环岛，十字等，
@@ -2355,6 +2348,7 @@ void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x
     //	}
     for (i = 0; i < ipts1_num; i++)
     {
+//		ips200_draw_line(0,0,ipts0[i][0],ipts0[i][1],RGB565_RED);
         ips200_draw_point(ipts0[i][0] + 2, ipts0[i][1] + 2, RGB565_RED);
 
     }
@@ -2445,11 +2439,6 @@ void Right_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int 
 }
 // 补线 原图
 
-int clip(int x, int low, int up)
-{
-    return x > up ? up : x < low ? low
-                                 : x;
-}
 
 void draw_line(image_t *img, int pt0[2], int pt1[2], uint8_t value)
 {
