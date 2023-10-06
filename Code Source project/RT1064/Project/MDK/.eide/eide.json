@@ -10,76 +10,106 @@
     "files": [],
     "folders": [
       {
-        "name": "user_c",
+        "name": "components_fatfs",
         "files": [
           {
-            "path": "../USER/src/isr.c"
+            "path": "../../Libraries/components/fatfs/source/ff.c"
           },
           {
-            "path": "../USER/src/main.c"
+            "path": "../../Libraries/components/fatfs/source/ffsystem.c"
+          },
+          {
+            "path": "../../Libraries/components/fatfs/source/ffunicode.c"
+          },
+          {
+            "path": "../../Libraries/components/fatfs/source/diskio.c"
+          },
+          {
+            "path": "../../Libraries/components/fatfs/source/fsl_sd_disk/fsl_sd_disk.c"
           }
         ],
         "folders": []
       },
       {
-        "name": "user_h",
+        "name": "components_sdmmc",
         "files": [
           {
-            "path": "../USER/inc/isr.h"
+            "path": "../../Libraries/components/sdmmc/sdmmc_config.c"
+          },
+          {
+            "path": "../../Libraries/components/sdmmc/common/fsl_sdmmc_common.c"
+          },
+          {
+            "path": "../../Libraries/components/sdmmc/host/usdhc/blocking/fsl_sdmmc_host.c"
+          },
+          {
+            "path": "../../Libraries/components/sdmmc/osa/fsl_sdmmc_osa.c"
+          },
+          {
+            "path": "../../Libraries/components/sdmmc/sd/fsl_sd.c"
           }
         ],
         "folders": []
       },
       {
-        "name": "hardware",
+        "name": "components_usb",
         "files": [
           {
-            "path": "../HARDWARE/servo.c"
+            "path": "../../Libraries/components/usb/device/usb_device_ehci.c"
           },
           {
-            "path": "../HARDWARE/servo.h"
+            "path": "../../Libraries/components/usb/phy/usb_phy.c"
           },
           {
-            "path": "../HARDWARE/motor.c"
+            "path": "../../Libraries/components/usb/device/usb_device_dci.c"
           },
           {
-            "path": "../HARDWARE/motor.h"
+            "path": "../../Libraries/components/usb/usb_cdc_adapter/usb_device_cdc_acm.c"
           },
           {
-            "path": "../HARDWARE/encoder.c"
+            "path": "../../Libraries/components/usb/usb_cdc_adapter/usb_device_ch9.c"
           },
           {
-            "path": "../HARDWARE/encoder.h"
+            "path": "../../Libraries/components/usb/usb_cdc_adapter/usb_device_class.c"
           },
           {
-            "path": "../HARDWARE/camera.h"
+            "path": "../../Libraries/components/usb/usb_cdc_adapter/usb_device_descriptor.c"
           },
           {
-            "path": "../HARDWARE/camera.c"
+            "path": "../../Libraries/components/usb/device/usb_device.h"
           },
           {
-            "path": "../HARDWARE/image.c"
+            "path": "../../Libraries/components/usb/device/usb_device_dci.h"
           },
           {
-            "path": "../HARDWARE/image.h"
+            "path": "../../Libraries/components/usb/include/usb.h"
           },
           {
-            "path": "../HARDWARE/buzzer.h"
+            "path": "../../Libraries/components/usb/include/usb_misc.h"
           },
           {
-            "path": "../HARDWARE/buzzer.c"
+            "path": "../../Libraries/components/usb/include/usb_spec.h"
           },
           {
-            "path": "../HARDWARE/schedule.c"
+            "path": "../../Libraries/components/usb/phy/usb_phy.h"
           },
           {
-            "path": "../HARDWARE/schedule.h"
+            "path": "../../Libraries/components/usb/templates/config/usb_device_config.h"
           },
           {
-            "path": "../HARDWARE/display.h"
+            "path": "../../Libraries/components/usb/templates/device/usb_device_ch9.h"
           },
           {
-            "path": "../HARDWARE/display.c"
+            "path": "../../Libraries/components/usb/device/usb_device_ehci.h"
+          },
+          {
+            "path": "../../Libraries/components/usb/usb_cdc_adapter/usb_device_cdc_acm.h"
+          },
+          {
+            "path": "../../Libraries/components/usb/templates/device/class/usb_device_class.h"
+          },
+          {
+            "path": "../../Libraries/components/usb/usb_cdc_adapter/usb_device_descriptor.h"
           }
         ],
         "folders": []
@@ -90,208 +120,163 @@
         "folders": []
       },
       {
-        "name": "zf_common",
+        "name": "hardware",
         "files": [
           {
-            "path": "../../Libraries/zf_common/zf_common_clock.c"
+            "path": "../HARDWARE/buzzer.c"
           },
           {
-            "path": "../../Libraries/zf_common/zf_common_debug.c"
+            "path": "../HARDWARE/buzzer.h"
           },
           {
-            "path": "../../Libraries/zf_common/zf_common_fifo.c"
+            "path": "../HARDWARE/camera.c"
           },
           {
-            "path": "../../Libraries/zf_common/zf_common_font.c"
+            "path": "../HARDWARE/camera.h"
           },
           {
-            "path": "../../Libraries/zf_common/zf_common_function.c"
+            "path": "../HARDWARE/control.c"
           },
           {
-            "path": "../../Libraries/zf_common/zf_common_interrupt.c"
+            "path": "../HARDWARE/control.h"
           },
           {
-            "path": "../../Libraries/zf_common/zf_common_vector.c"
+            "path": "../HARDWARE/display.c"
           },
           {
-            "path": "../../Libraries/zf_common/zf_common_clock.h"
+            "path": "../HARDWARE/display.h"
           },
           {
-            "path": "../../Libraries/zf_common/zf_common_debug.h"
+            "path": "../HARDWARE/encoder.c"
           },
           {
-            "path": "../../Libraries/zf_common/zf_common_fifo.h"
+            "path": "../HARDWARE/encoder.h"
           },
           {
-            "path": "../../Libraries/zf_common/zf_common_font.h"
+            "path": "../HARDWARE/filter.c"
           },
           {
-            "path": "../../Libraries/zf_common/zf_common_function.h"
+            "path": "../HARDWARE/image.c"
           },
           {
-            "path": "../../Libraries/zf_common/zf_common_headfile.h"
+            "path": "../HARDWARE/image.h"
           },
           {
-            "path": "../../Libraries/zf_common/zf_common_interrupt.h"
+            "path": "../HARDWARE/motor.c"
           },
           {
-            "path": "../../Libraries/zf_common/zf_common_typedef.h"
+            "path": "../HARDWARE/motor.h"
           },
           {
-            "path": "../../Libraries/zf_common/zf_common_vector.h"
+            "path": "../HARDWARE/mymath.c"
+          },
+          {
+            "path": "../HARDWARE/mymath.h"
+          },
+          {
+            "path": "../HARDWARE/pid.c"
+          },
+          {
+            "path": "../HARDWARE/pid.h"
+          },
+          {
+            "path": "../HARDWARE/schedule.c"
+          },
+          {
+            "path": "../HARDWARE/schedule.h"
+          },
+          {
+            "path": "../HARDWARE/servo.c"
+          },
+          {
+            "path": "../HARDWARE/servo.h"
           }
         ],
         "folders": []
       },
       {
-        "name": "zf-device",
+        "name": "sdk_device",
         "files": [
           {
-            "path": "../../libraries/zf_device/zf_device_absolute_encoder.c"
+            "path": "../../Libraries/sdk/board/board.c"
           },
           {
-            "path": "../../libraries/zf_device/zf_device_bluetooth_ch9141.c"
+            "path": "../../Libraries/sdk/board/board.h"
           },
           {
-            "path": "../../libraries/zf_device/zf_device_camera.c"
+            "path": "../../Libraries/sdk/board/clock_config.c"
           },
           {
-            "path": "../../libraries/zf_device/zf_device_detector.c"
+            "path": "../../Libraries/sdk/board/clock_config.h"
           },
           {
-            "path": "../../libraries/zf_device/zf_device_dl1a.c"
+            "path": "../../Libraries/sdk/xip/fsl_flexspi_nor_boot.c"
           },
           {
-            "path": "../../libraries/zf_device/zf_device_dl1b.c"
+            "path": "../../Libraries/sdk/xip/fsl_flexspi_nor_boot.h"
           },
           {
-            "path": "../../libraries/zf_device/zf_device_gps_tau1201.c"
+            "path": "../../Libraries/sdk/xip/evkmimxrt1064_sdram_ini_dcd.c"
           },
           {
-            "path": "../../libraries/zf_device/zf_device_icm20602.c"
+            "path": "../../Libraries/sdk/xip/evkmimxrt1064_sdram_ini_dcd.h"
           },
           {
-            "path": "../../libraries/zf_device/zf_device_imu660ra.c"
+            "path": "../../Libraries/sdk/xip/evkmimxrt1064_flexspi_nor_config.c"
           },
           {
-            "path": "../../libraries/zf_device/zf_device_imu963ra.c"
+            "path": "../../Libraries/sdk/xip/evkmimxrt1064_flexspi_nor_config.h"
           },
           {
-            "path": "../../libraries/zf_device/zf_device_ips114.c"
+            "path": "../../Libraries/sdk/deceive/system_MIMXRT1064.c"
           },
           {
-            "path": "../../libraries/zf_device/zf_device_ips200.c"
+            "path": "../../Libraries/sdk/deceive/system_MIMXRT1064.h"
           },
           {
-            "path": "../../libraries/zf_device/zf_device_key.c"
+            "path": "../../Libraries/sdk/deceive/MIMXRT1064_features.h"
           },
           {
-            "path": "../../libraries/zf_device/zf_device_mpu6050.c"
+            "path": "../../Libraries/sdk/deceive/MIMXRT1064.h"
           },
           {
-            "path": "../../libraries/zf_device/zf_device_mt9v03x.c"
+            "path": "../../Libraries/sdk/deceive/fsl_device_registers.h"
           },
           {
-            "path": "../../libraries/zf_device/zf_device_mt9v03x_flexio.c"
+            "path": "../../Libraries/sdk/utilities/fsl_assert.c"
           },
           {
-            "path": "../../libraries/zf_device/zf_device_oled.c"
+            "path": "../../Libraries/sdk/components/osa/fsl_os_abstraction.h"
           },
           {
-            "path": "../../libraries/zf_device/zf_device_ov7725.c"
+            "path": "../../Libraries/sdk/components/osa/fsl_os_abstraction_bm.c"
           },
           {
-            "path": "../../libraries/zf_device/zf_device_scc8660.c"
+            "path": "../../Libraries/sdk/components/osa/fsl_os_abstraction_bm.h"
           },
           {
-            "path": "../../libraries/zf_device/zf_device_scc8660_flexio.c"
+            "path": "../../Libraries/sdk/utilities/debug_console/fsl_debug_console_conf.h"
           },
           {
-            "path": "../../libraries/zf_device/zf_device_tft180.c"
+            "path": "../../Libraries/sdk/components/lists/fsl_component_generic_list.c"
           },
           {
-            "path": "../../libraries/zf_device/zf_device_tsl1401.c"
+            "path": "../../Libraries/sdk/components/uart/fsl_adapter_lpuart.c"
           },
           {
-            "path": "../../libraries/zf_device/zf_device_type.c"
+            "path": "../../Libraries/sdk/components/uart/fsl_adapter_uart.h"
           },
           {
-            "path": "../../libraries/zf_device/zf_device_virtual_oscilloscope.c"
+            "path": "../../Libraries/sdk/utilities/debug_console/fsl_debug_console.c"
           },
           {
-            "path": "../../libraries/zf_device/zf_device_wifi_spi.c"
+            "path": "../../Libraries/sdk/utilities/debug_console/fsl_debug_console.h"
           },
           {
-            "path": "../../libraries/zf_device/zf_device_wifi_uart.c"
+            "path": "../../Libraries/sdk/components/osa/fsl_os_abstraction_config.h"
           },
           {
-            "path": "../../libraries/zf_device/zf_device_wireless_uart.c"
-          },
-          {
-            "path": "../../libraries/zf_device/zf_device_config.lib"
-          }
-        ],
-        "folders": []
-      },
-      {
-        "name": "zf-driver",
-        "files": [
-          {
-            "path": "../../libraries/zf_driver/zf_driver_adc.c"
-          },
-          {
-            "path": "../../libraries/zf_driver/zf_driver_csi.c"
-          },
-          {
-            "path": "../../libraries/zf_driver/zf_driver_delay.c"
-          },
-          {
-            "path": "../../libraries/zf_driver/zf_driver_encoder.c"
-          },
-          {
-            "path": "../../libraries/zf_driver/zf_driver_exti.c"
-          },
-          {
-            "path": "../../libraries/zf_driver/zf_driver_flash.c"
-          },
-          {
-            "path": "../../libraries/zf_driver/zf_driver_flexio_csi.c"
-          },
-          {
-            "path": "../../libraries/zf_driver/zf_driver_gpio.c"
-          },
-          {
-            "path": "../../libraries/zf_driver/zf_driver_iic.c"
-          },
-          {
-            "path": "../../libraries/zf_driver/zf_driver_pit.c"
-          },
-          {
-            "path": "../../libraries/zf_driver/zf_driver_pwm.c"
-          },
-          {
-            "path": "../../libraries/zf_driver/zf_driver_romapi.c"
-          },
-          {
-            "path": "../../libraries/zf_driver/zf_driver_sdio.c"
-          },
-          {
-            "path": "../../libraries/zf_driver/zf_driver_soft_iic.c"
-          },
-          {
-            "path": "../../libraries/zf_driver/zf_driver_soft_spi.c"
-          },
-          {
-            "path": "../../libraries/zf_driver/zf_driver_spi.c"
-          },
-          {
-            "path": "../../libraries/zf_driver/zf_driver_timer.c"
-          },
-          {
-            "path": "../../libraries/zf_driver/zf_driver_uart.c"
-          },
-          {
-            "path": "../../libraries/zf_driver/zf_driver_usb_cdc.c"
+            "path": "../../libraries/sdk/startup/mdk/startup_MIMXRT1064.S"
           }
         ],
         "folders": []
@@ -729,193 +714,229 @@
         "folders": []
       },
       {
-        "name": "sdk_device",
+        "name": "user_c",
         "files": [
           {
-            "path": "../../Libraries/sdk/board/board.c"
+            "path": "../USER/src/isr.c"
           },
           {
-            "path": "../../Libraries/sdk/board/board.h"
-          },
-          {
-            "path": "../../Libraries/sdk/board/clock_config.c"
-          },
-          {
-            "path": "../../Libraries/sdk/board/clock_config.h"
-          },
-          {
-            "path": "../../Libraries/sdk/xip/fsl_flexspi_nor_boot.c"
-          },
-          {
-            "path": "../../Libraries/sdk/xip/fsl_flexspi_nor_boot.h"
-          },
-          {
-            "path": "../../Libraries/sdk/xip/evkmimxrt1064_sdram_ini_dcd.c"
-          },
-          {
-            "path": "../../Libraries/sdk/xip/evkmimxrt1064_sdram_ini_dcd.h"
-          },
-          {
-            "path": "../../Libraries/sdk/xip/evkmimxrt1064_flexspi_nor_config.c"
-          },
-          {
-            "path": "../../Libraries/sdk/xip/evkmimxrt1064_flexspi_nor_config.h"
-          },
-          {
-            "path": "../../Libraries/sdk/deceive/system_MIMXRT1064.c"
-          },
-          {
-            "path": "../../Libraries/sdk/deceive/system_MIMXRT1064.h"
-          },
-          {
-            "path": "../../Libraries/sdk/deceive/MIMXRT1064_features.h"
-          },
-          {
-            "path": "../../Libraries/sdk/deceive/MIMXRT1064.h"
-          },
-          {
-            "path": "../../Libraries/sdk/deceive/fsl_device_registers.h"
-          },
-          {
-            "path": "../../Libraries/sdk/utilities/fsl_assert.c"
-          },
-          {
-            "path": "../../Libraries/sdk/components/osa/fsl_os_abstraction.h"
-          },
-          {
-            "path": "../../Libraries/sdk/components/osa/fsl_os_abstraction_bm.c"
-          },
-          {
-            "path": "../../Libraries/sdk/components/osa/fsl_os_abstraction_bm.h"
-          },
-          {
-            "path": "../../Libraries/sdk/utilities/debug_console/fsl_debug_console_conf.h"
-          },
-          {
-            "path": "../../Libraries/sdk/components/lists/fsl_component_generic_list.c"
-          },
-          {
-            "path": "../../Libraries/sdk/components/uart/fsl_adapter_lpuart.c"
-          },
-          {
-            "path": "../../Libraries/sdk/components/uart/fsl_adapter_uart.h"
-          },
-          {
-            "path": "../../Libraries/sdk/utilities/debug_console/fsl_debug_console.c"
-          },
-          {
-            "path": "../../Libraries/sdk/utilities/debug_console/fsl_debug_console.h"
-          },
-          {
-            "path": "../../Libraries/sdk/components/osa/fsl_os_abstraction_config.h"
-          },
-          {
-            "path": "../../libraries/sdk/startup/mdk/startup_MIMXRT1064.S"
+            "path": "../USER/src/main.c"
           }
         ],
         "folders": []
       },
       {
-        "name": "components_fatfs",
+        "name": "user_h",
         "files": [
           {
-            "path": "../../Libraries/components/fatfs/source/ff.c"
-          },
-          {
-            "path": "../../Libraries/components/fatfs/source/ffsystem.c"
-          },
-          {
-            "path": "../../Libraries/components/fatfs/source/ffunicode.c"
-          },
-          {
-            "path": "../../Libraries/components/fatfs/source/diskio.c"
-          },
-          {
-            "path": "../../Libraries/components/fatfs/source/fsl_sd_disk/fsl_sd_disk.c"
+            "path": "../USER/inc/isr.h"
           }
         ],
         "folders": []
       },
       {
-        "name": "components_sdmmc",
+        "name": "zf_common",
         "files": [
           {
-            "path": "../../Libraries/components/sdmmc/sdmmc_config.c"
+            "path": "../../Libraries/zf_common/zf_common_clock.c"
           },
           {
-            "path": "../../Libraries/components/sdmmc/common/fsl_sdmmc_common.c"
+            "path": "../../Libraries/zf_common/zf_common_debug.c"
           },
           {
-            "path": "../../Libraries/components/sdmmc/host/usdhc/blocking/fsl_sdmmc_host.c"
+            "path": "../../Libraries/zf_common/zf_common_fifo.c"
           },
           {
-            "path": "../../Libraries/components/sdmmc/osa/fsl_sdmmc_osa.c"
+            "path": "../../Libraries/zf_common/zf_common_font.c"
           },
           {
-            "path": "../../Libraries/components/sdmmc/sd/fsl_sd.c"
+            "path": "../../Libraries/zf_common/zf_common_function.c"
+          },
+          {
+            "path": "../../Libraries/zf_common/zf_common_interrupt.c"
+          },
+          {
+            "path": "../../Libraries/zf_common/zf_common_vector.c"
+          },
+          {
+            "path": "../../Libraries/zf_common/zf_common_clock.h"
+          },
+          {
+            "path": "../../Libraries/zf_common/zf_common_debug.h"
+          },
+          {
+            "path": "../../Libraries/zf_common/zf_common_fifo.h"
+          },
+          {
+            "path": "../../Libraries/zf_common/zf_common_font.h"
+          },
+          {
+            "path": "../../Libraries/zf_common/zf_common_function.h"
+          },
+          {
+            "path": "../../Libraries/zf_common/zf_common_headfile.h"
+          },
+          {
+            "path": "../../Libraries/zf_common/zf_common_interrupt.h"
+          },
+          {
+            "path": "../../Libraries/zf_common/zf_common_typedef.h"
+          },
+          {
+            "path": "../../Libraries/zf_common/zf_common_vector.h"
           }
         ],
         "folders": []
       },
       {
-        "name": "components_usb",
+        "name": "zf-device",
         "files": [
           {
-            "path": "../../Libraries/components/usb/device/usb_device_ehci.c"
+            "path": "../../libraries/zf_device/zf_device_absolute_encoder.c"
           },
           {
-            "path": "../../Libraries/components/usb/phy/usb_phy.c"
+            "path": "../../libraries/zf_device/zf_device_bluetooth_ch9141.c"
           },
           {
-            "path": "../../Libraries/components/usb/device/usb_device_dci.c"
+            "path": "../../libraries/zf_device/zf_device_camera.c"
           },
           {
-            "path": "../../Libraries/components/usb/usb_cdc_adapter/usb_device_cdc_acm.c"
+            "path": "../../libraries/zf_device/zf_device_detector.c"
           },
           {
-            "path": "../../Libraries/components/usb/usb_cdc_adapter/usb_device_ch9.c"
+            "path": "../../libraries/zf_device/zf_device_dl1a.c"
           },
           {
-            "path": "../../Libraries/components/usb/usb_cdc_adapter/usb_device_class.c"
+            "path": "../../libraries/zf_device/zf_device_dl1b.c"
           },
           {
-            "path": "../../Libraries/components/usb/usb_cdc_adapter/usb_device_descriptor.c"
+            "path": "../../libraries/zf_device/zf_device_gps_tau1201.c"
           },
           {
-            "path": "../../Libraries/components/usb/device/usb_device.h"
+            "path": "../../libraries/zf_device/zf_device_icm20602.c"
           },
           {
-            "path": "../../Libraries/components/usb/device/usb_device_dci.h"
+            "path": "../../libraries/zf_device/zf_device_imu660ra.c"
           },
           {
-            "path": "../../Libraries/components/usb/include/usb.h"
+            "path": "../../libraries/zf_device/zf_device_imu963ra.c"
           },
           {
-            "path": "../../Libraries/components/usb/include/usb_misc.h"
+            "path": "../../libraries/zf_device/zf_device_ips114.c"
           },
           {
-            "path": "../../Libraries/components/usb/include/usb_spec.h"
+            "path": "../../libraries/zf_device/zf_device_ips200.c"
           },
           {
-            "path": "../../Libraries/components/usb/phy/usb_phy.h"
+            "path": "../../libraries/zf_device/zf_device_key.c"
           },
           {
-            "path": "../../Libraries/components/usb/templates/config/usb_device_config.h"
+            "path": "../../libraries/zf_device/zf_device_mpu6050.c"
           },
           {
-            "path": "../../Libraries/components/usb/templates/device/usb_device_ch9.h"
+            "path": "../../libraries/zf_device/zf_device_mt9v03x.c"
           },
           {
-            "path": "../../Libraries/components/usb/device/usb_device_ehci.h"
+            "path": "../../libraries/zf_device/zf_device_mt9v03x_flexio.c"
           },
           {
-            "path": "../../Libraries/components/usb/usb_cdc_adapter/usb_device_cdc_acm.h"
+            "path": "../../libraries/zf_device/zf_device_oled.c"
           },
           {
-            "path": "../../Libraries/components/usb/templates/device/class/usb_device_class.h"
+            "path": "../../libraries/zf_device/zf_device_ov7725.c"
           },
           {
-            "path": "../../Libraries/components/usb/usb_cdc_adapter/usb_device_descriptor.h"
+            "path": "../../libraries/zf_device/zf_device_scc8660.c"
+          },
+          {
+            "path": "../../libraries/zf_device/zf_device_scc8660_flexio.c"
+          },
+          {
+            "path": "../../libraries/zf_device/zf_device_tft180.c"
+          },
+          {
+            "path": "../../libraries/zf_device/zf_device_tsl1401.c"
+          },
+          {
+            "path": "../../libraries/zf_device/zf_device_type.c"
+          },
+          {
+            "path": "../../libraries/zf_device/zf_device_virtual_oscilloscope.c"
+          },
+          {
+            "path": "../../libraries/zf_device/zf_device_wifi_spi.c"
+          },
+          {
+            "path": "../../libraries/zf_device/zf_device_wifi_uart.c"
+          },
+          {
+            "path": "../../libraries/zf_device/zf_device_wireless_uart.c"
+          },
+          {
+            "path": "../../libraries/zf_device/zf_device_config.lib"
+          }
+        ],
+        "folders": []
+      },
+      {
+        "name": "zf-driver",
+        "files": [
+          {
+            "path": "../../libraries/zf_driver/zf_driver_adc.c"
+          },
+          {
+            "path": "../../libraries/zf_driver/zf_driver_csi.c"
+          },
+          {
+            "path": "../../libraries/zf_driver/zf_driver_delay.c"
+          },
+          {
+            "path": "../../libraries/zf_driver/zf_driver_encoder.c"
+          },
+          {
+            "path": "../../libraries/zf_driver/zf_driver_exti.c"
+          },
+          {
+            "path": "../../libraries/zf_driver/zf_driver_flash.c"
+          },
+          {
+            "path": "../../libraries/zf_driver/zf_driver_flexio_csi.c"
+          },
+          {
+            "path": "../../libraries/zf_driver/zf_driver_gpio.c"
+          },
+          {
+            "path": "../../libraries/zf_driver/zf_driver_iic.c"
+          },
+          {
+            "path": "../../libraries/zf_driver/zf_driver_pit.c"
+          },
+          {
+            "path": "../../libraries/zf_driver/zf_driver_pwm.c"
+          },
+          {
+            "path": "../../libraries/zf_driver/zf_driver_romapi.c"
+          },
+          {
+            "path": "../../libraries/zf_driver/zf_driver_sdio.c"
+          },
+          {
+            "path": "../../libraries/zf_driver/zf_driver_soft_iic.c"
+          },
+          {
+            "path": "../../libraries/zf_driver/zf_driver_soft_spi.c"
+          },
+          {
+            "path": "../../libraries/zf_driver/zf_driver_spi.c"
+          },
+          {
+            "path": "../../libraries/zf_driver/zf_driver_timer.c"
+          },
+          {
+            "path": "../../libraries/zf_driver/zf_driver_uart.c"
+          },
+          {
+            "path": "../../libraries/zf_driver/zf_driver_usb_cdc.c"
           }
         ],
         "folders": []

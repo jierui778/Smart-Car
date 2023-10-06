@@ -10,91 +10,35 @@
 #include "motor.h"
 #include "pid.h"
 #include "isr.h"
+#include "filter.h"
 
-#define GrayScale 257
 
-float left_speed,right_speed;
 int main(void)
 {
+
     uint16 data = 8;
     clock_init(SYSTEM_CLOCK_600M); //
     Encoder_Init();
     debug_init();
-//	Motor_Init();
+    Motor_Init();
     gpio_init(B9, GPO, GPIO_HIGH, GPO_PUSH_PULL);
-    tft180_set_dir(TFT180_PORTAIT);
-    tft180_init();
-	Servo_Init();
-	ips200_init(IPS200_TYPE_PARALLEL8);
-//	PID_init();
-//    //  //    Buzzer_Init();
-//    //  tft180_show_string(0, 0, "mt9v03x init.");
+    ips200_init(IPS200_TYPE_PARALLEL8);
+    //    //  //    Buzzer_Init();
+    //    //  tft180_show_string(0, 0, "mt9v03x init.");
 
     Camera_Init();
-//    //  Servo_Init();
-//    pit_ms_init(PIT_CH0, 200);
-//    interrupt_set_priority(PIT_IRQn, 0);
-
+    //    //  Servo_Init();
+    //    pit_ms_init(PIT_CH0, 200);
+    //    interrupt_set_priority(PIT_IRQn, 0);
+    PID_Init();
+    //    Motor_SetPwmL(2000);
+    //    Motor_SetPwmR(1888.88);
     while (1)
     {
-        int TH;
-        Schedule_Run();
-        Image_Compress();
-//		tft180_show_int(3,80,TH,3);//最后有一点点
-		Servo_SetAngle(6);
-		
-//        Image_Sobel( Image_Use, Image_Use_Robert ,TH);//全局Sobel得二值图(方案二) 2.8ms
-		Image_Run();
-//		ips200_displayimage03x(*Image_Use,160,120);
-//		tft180_show_int(3,80,encoder_r_data,6);//150
-//		tft180_show_float(3,100,speed_right,4,4);//5
-//		tft180_show_float(3,120,speed_left,4,4);//最后有一点点
-////		tft180_show_int(3,140,encoder_l_data,6);//150
-//		Control_Setspeed(3,3);
-
+        test();
+        ips200_displayimage03x(*Image_Use, 160, 120);
+        //        Schedule_Run();//任务运行总函数，开始任务调度
     }
 }
-//void pit_exti_handler(void)
-//{
-//  //    Scheduler_Tick();
-//  gpio_toggle_level(B9);
-//}
-
-// #define LED1                    (B9 )
-
-// #define PIT_CH                  (PIT_CH0 )                                      // 使用的周期中断编号 如果修改 需要同步对应修改周期中断编号与 isr.c 中的调用
-// #define PIT_PRIORITY            (PIT_IRQn)                                      // 对应周期中断的中断编号
-
-// int main (void)
-//{
-//     clock_init(SYSTEM_CLOCK_600M);                                              // 初始化芯片时钟 工作频率为 600MHz
-//     debug_init();                                                               // 初始化默认 Debug UART
-
-//    // 此处编写用户代码 例如外设初始化代码等
-//    gpio_init(LED1, GPO, GPIO_HIGH, GPO_PUSH_PULL);                             // 初始化 LED1 输出 默认高电平 推挽输出模式
-
-//    pit_ms_init(PIT_CH, 200);                                                   // 初始化 PIT 为周期中断 200ms 周期
-//    interrupt_set_priority(PIT_PRIORITY, 0);                                    // 设置 PIT 对周期中断的中断优先级为 1 优先级比外部中断低 会被外部中断打断
-//    // 此处编写用户代码 例如外设初始化代码等
-
-//    while(1)
-//    {
-//        // 此处编写需要循环执行的代码
-//        // 此处编写需要循环执行的代码
-//
-//
-//    }
-//}
-
-//-------------------------------------------------------------------------------------------------------------------
-// 函数简介     PIT 的周期中断处理函数 这个函数将在 PIT 对应的定时器中断调用 详见 isr.c
-// 参数说明     void
-// 返回参数     void
-// 使用示例     pit_exti_handler();
-//-------------------------------------------------------------------------------------------------------------------
-// void pit_handler(void)
-//{
-//    gpio_toggle_level(B9);                                                    // 触发 PIT 中断后翻转 LED 状态
-//}
 
 

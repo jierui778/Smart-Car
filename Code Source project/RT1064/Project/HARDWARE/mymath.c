@@ -88,3 +88,14 @@ uint8 Atan2(float y, float x)
 
     return alpha; // 方向
 } // end of function Atan2
+
+
+
+
+
+
+
+
+
+
+

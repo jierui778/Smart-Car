@@ -125,7 +125,11 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>JL2CM3</Key>
+<<<<<<< HEAD
           <Name>-U4294967295 -O78 -S1 -ZTIFSpeedSel10000 -A0 -C0 -JU1 -JI127.0.0.1 -JP0 -RST0 -N00("ARM CoreSight SW-DP") -D00(0BD11477) -L00(0) -TO18 -TC10000000 -TP21 -TDS8007 -TDT0 -TDC1F -TIEFFFFFFFF -TIP8 -TB1 -TFE0 -FO15 -FD20000000 -FC8000 -FN1 -FF0MIMXRT1064_QSPI_4KB_SEC.FLM -FS070000000 -FL0400000 -FP0($$Device:MIMXRT1064DVL6A$devices\MIMXRT1064\arm\MIMXRT1064_QSPI_4KB_SEC.FLM)</Name>
+=======
+          <Name>-U4294967295 -O78 -S1 -ZTIFSpeedSel10000 -A0 -C0 -JU1 -JI127.0.0.1 -JP0 -RST0 -N00("ARM CoreSight SW-DP") -D00(0BD11477) -L00(0) -TO18 -TC10000000 -TP21 -TDS8007 -TDT0 -TDC1F -TIEFFFFFFFF -TIP8 -TB1 -TFE0 -FO15 -FD20000000 -FC8000 -FN1 -FF0MIMXRT1064_QSPI_4KB_SEC.FLM -FS070000000 -FL0400000 -FP0($$Device:MIMXRT1064DVL6A$arm\MIMXRT1064_QSPI_4KB_SEC.FLM)</Name>
+>>>>>>> 9967d091bf0de7ed2788620ce808564e7a437c78
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -150,12 +154,12 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>CMSIS_AGDI</Key>
-          <Name>-X"CMSIS-DAP-HS-Wireless-MuseLab" -U6055F9D9-40915189 -O462 -S8 -C0 -P00000000 -N00("ARM CoreSight SW-DP") -D00(0BD11477) -L00(0) -TO65554 -TC10000000 -TT10000000 -TP20 -TDS8007 -TDT0 -TDC1F -TIEFFFFFFFF -TIP8 -FO15 -FD20000000 -FC8000 -FN1 -FF0MIMXRT1064_QSPI_4KB_SEC.FLM -FS070000000 -FL0400000 -FP0($$Device:MIMXRT1064DVL6A$devices\MIMXRT1064\arm\MIMXRT1064_QSPI_4KB_SEC.FLM)</Name>
+          <Name>-X"CMSIS-DAP-HS-Wireless-MuseLab" -U6055F9D9-40915189 -O462 -S8 -C0 -P00000000 -N00("ARM CoreSight SW-DP") -D00(0BD11477) -L00(0) -TO65554 -TC10000000 -TT10000000 -TP20 -TDS8007 -TDT0 -TDC1F -TIEFFFFFFFF -TIP8 -FO15 -FD20000000 -FC8000 -FN1 -FF0MIMXRT1064_QSPI_4KB_SEC.FLM -FS070000000 -FL0400000 -FP0($$Device:MIMXRT1064DVL6A$arm\MIMXRT1064_QSPI_4KB_SEC.FLM)</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
           <Key>UL2CM3</Key>
-          <Name>UL2CM3(-S0 -C0 -P0 -FD20000000 -FC8000 -FN1 -FF0MIMXRT1064_QSPI_4KB_SEC -FS070000000 -FL0400000 -FP0($$Device:MIMXRT1064DVL6A$devices\MIMXRT1064\arm\MIMXRT1064_QSPI_4KB_SEC.FLM))</Name>
+          <Name>UL2CM3(-S0 -C0 -P0 -FD20000000 -FC8000 -FN1 -FF0MIMXRT1064_QSPI_4KB_SEC -FS070000000 -FL0400000 -FP0($$Device:MIMXRT1064DVL6A$arm\MIMXRT1064_QSPI_4KB_SEC.FLM))</Name>
         </SetRegEntry>
       </TargetDriverDllRegistry>
       <Breakpoint>
@@ -219,7 +223,24 @@
           <WinNumber>1</WinNumber>
           <ItemText>encoder_data_dir</ItemText>
         </Ww>
+        <Ww>
+          <count>2</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>PositionPID</ItemText>
+        </Ww>
       </WatchWindow1>
+      <WatchWindow2>
+        <Ww>
+          <count>0</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>Deviation_L</ItemText>
+        </Ww>
+        <Ww>
+          <count>1</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>Deviation_R</ItemText>
+        </Ww>
+      </WatchWindow2>
       <Tracepoint>
         <THDelay>0</THDelay>
       </Tracepoint>
@@ -601,8 +622,13 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
+<<<<<<< HEAD
       <PathWithFileName>..\HARDWARE\labyrinth.c</PathWithFileName>
       <FilenameWithoutPath>labyrinth.c</FilenameWithoutPath>
+=======
+      <PathWithFileName>..\HARDWARE\filter.c</PathWithFileName>
+      <FilenameWithoutPath>filter.c</FilenameWithoutPath>
+>>>>>>> 9967d091bf0de7ed2788620ce808564e7a437c78
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -613,8 +639,13 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
+<<<<<<< HEAD
       <PathWithFileName>..\HARDWARE\labyrinth.h</PathWithFileName>
       <FilenameWithoutPath>labyrinth.h</FilenameWithoutPath>
+=======
+      <PathWithFileName>..\HARDWARE\filter.h</PathWithFileName>
+      <FilenameWithoutPath>filter.h</FilenameWithoutPath>
+>>>>>>> 9967d091bf0de7ed2788620ce808564e7a437c78
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -1181,6 +1212,21 @@
     <File>
       <GroupNumber>7</GroupNumber>
       <FileNumber>72</FileNumber>
+<<<<<<< HEAD
+=======
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\..\libraries\zf_driver\zf_driver_adc.c</PathWithFileName>
+      <FilenameWithoutPath>zf_driver_adc.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>7</GroupNumber>
+      <FileNumber>73</FileNumber>
+>>>>>>> 9967d091bf0de7ed2788620ce808564e7a437c78
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -1192,7 +1238,11 @@
     </File>
     <File>
       <GroupNumber>7</GroupNumber>
+<<<<<<< HEAD
       <FileNumber>73</FileNumber>
+=======
+      <FileNumber>74</FileNumber>
+>>>>>>> 9967d091bf0de7ed2788620ce808564e7a437c78
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -1204,7 +1254,11 @@
     </File>
     <File>
       <GroupNumber>7</GroupNumber>
+<<<<<<< HEAD
       <FileNumber>74</FileNumber>
+=======
+      <FileNumber>75</FileNumber>
+>>>>>>> 9967d091bf0de7ed2788620ce808564e7a437c78
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -1216,7 +1270,11 @@
     </File>
     <File>
       <GroupNumber>7</GroupNumber>
+<<<<<<< HEAD
       <FileNumber>75</FileNumber>
+=======
+      <FileNumber>76</FileNumber>
+>>>>>>> 9967d091bf0de7ed2788620ce808564e7a437c78
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -1228,7 +1286,11 @@
     </File>
     <File>
       <GroupNumber>7</GroupNumber>
+<<<<<<< HEAD
       <FileNumber>76</FileNumber>
+=======
+      <FileNumber>77</FileNumber>
+>>>>>>> 9967d091bf0de7ed2788620ce808564e7a437c78
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -1240,7 +1302,11 @@
     </File>
     <File>
       <GroupNumber>7</GroupNumber>
+<<<<<<< HEAD
       <FileNumber>77</FileNumber>
+=======
+      <FileNumber>78</FileNumber>
+>>>>>>> 9967d091bf0de7ed2788620ce808564e7a437c78
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -1252,7 +1318,11 @@
     </File>
     <File>
       <GroupNumber>7</GroupNumber>
+<<<<<<< HEAD
       <FileNumber>78</FileNumber>
+=======
+      <FileNumber>79</FileNumber>
+>>>>>>> 9967d091bf0de7ed2788620ce808564e7a437c78
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -1264,7 +1334,11 @@
     </File>
     <File>
       <GroupNumber>7</GroupNumber>
+<<<<<<< HEAD
       <FileNumber>79</FileNumber>
+=======
+      <FileNumber>80</FileNumber>
+>>>>>>> 9967d091bf0de7ed2788620ce808564e7a437c78
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -1276,7 +1350,11 @@
     </File>
     <File>
       <GroupNumber>7</GroupNumber>
+<<<<<<< HEAD
       <FileNumber>80</FileNumber>
+=======
+      <FileNumber>81</FileNumber>
+>>>>>>> 9967d091bf0de7ed2788620ce808564e7a437c78
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -1288,6 +1366,7 @@
     </File>
     <File>
       <GroupNumber>7</GroupNumber>
+<<<<<<< HEAD
       <FileNumber>81</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
@@ -1300,6 +1379,8 @@
     </File>
     <File>
       <GroupNumber>7</GroupNumber>
+=======
+>>>>>>> 9967d091bf0de7ed2788620ce808564e7a437c78
       <FileNumber>82</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>

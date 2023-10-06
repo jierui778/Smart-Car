@@ -4,121 +4,61 @@
  * @文件说明：本文件为PID相关函数文件
  ******************************************************************************/
 #include "pid.h"
-#include "motor.h"
-tPid pidMotor1Speed;//电机1速度PID闭环参数
-tPid pidMotor2Speed;//电机2速度PID闭环参数
-
+PID SpeedParam;
+PID TraceTurnParam;
 /**
  * @brief 初始化两个电机的PID控制器。
- * 
+ *
  * 此函数为两个电机的PID控制器设置初始值。
  * 它将实际值和目标值设置为0，将误差和误差总和设置为0，
  * 将比例、积分和微分增益设置为0。
- * 
+ *
  */
- //第一次 200 5 -1
-void PID_init(void)
+void PID_Init(void)
 {
-    pidMotor1Speed.actual_val=0.0;
-    pidMotor1Speed.target_val=0.00;
-    pidMotor1Speed.err=0.0;
-    pidMotor1Speed.err_last=0.0;
-    pidMotor1Speed.err_sum=.0;
-    pidMotor1Speed.Kp=50;
-    pidMotor1Speed.Ki=5;
-    pidMotor1Speed.Kd=-1;
-    
-    pidMotor2Speed.actual_val=0.0;
-    pidMotor2Speed.target_val=0.00;
-    pidMotor2Speed.err=0.0;
-    pidMotor2Speed.err_last=0.0;
-    pidMotor2Speed.err_sum=0.0;
-    pidMotor2Speed.Kp=50;
-    pidMotor2Speed.Ki=5;
-    pidMotor2Speed.Kd=-1;
+    SpeedParam.kp = 100;
+    SpeedParam.ki = 5;
+    SpeedParam.kd = 0;
+
+    TraceTurnParam.kd = 0;
+    TraceTurnParam.ki = 0;
+    TraceTurnParam.kp = 0;
 }
-// 速度PID参数
-PID SpeedDate =
-    {
-        -40, // 赋值比例值
-        -5,  // 赋值积分值
-        0    // 赋值微分值
-};
-// 转向PID参数
-PID TraceTurnPdate =
-    {
-        2,  // 赋值比例值
-        0,  // 赋值积分值
-        0.6 // 赋值微分值
-};
 
-
-
-/*@brief:位置式PID控制器1
- *        [in] deviation:偏差
- * @return:调节电机的Result
+/**
+ * @brief 位置式PID控制器
+ *
+ * @param deviation 偏差
+ * @param pid PID参数
+ * @return int 调节电机的Result
  */
 int PositionPID(float deviation, PID pid)
 {
-    float Position_KP = pid.kp, Position_KI = pid.ki, Position_KD = pid.kd;
-    int Result;
+    float Position_KP = pid.kp, Position_KI = pid.ki, Position_KD = pid.kd;//PID参数
+    int16 Result;
     static float Bias, Integral_bias, Last_Bias;
-    Bias = deviation;
-    Integral_bias += Bias;
-    Result = Position_KP * Bias + Position_KI * Integral_bias + Position_KD * (Bias - Last_Bias);
+    Bias = deviation;//输入偏差
+    Integral_bias += Bias;//累加误差
+    Result = Position_KP * Bias + Position_KI * Integral_bias + Position_KD * (Bias - Last_Bias);//位置式PID控制器
     Last_Bias = Bias; // 上一次偏差保存
     return Result;
 }
 
-/*@brief:位置式PID控制器2
- *        [in] deviation:偏差
- * @return:调节电机的Result
- */
-int PositionPID2(float deviation, PID pid)
-{
-    float Position_KP = pid.kp, Position_KI = pid.ki, Position_KD = pid.kd;
-    int Result;
-    static float Bias, Integral_bias, Last_Bias;
-    Bias = deviation;
-    Integral_bias += Bias;
-    Result = Position_KP * Bias + Position_KI * Integral_bias + Position_KD * (Bias - Last_Bias);
-    Last_Bias = Bias;
-    return Result;
-}
-/*@brief:速度PID使用位置式PID控制器
- *        [in] deviation:偏差
- * @return:调节电机的Result
- */
-// int PositionPIDToSpeed(float deviation, PID pid)
-// {
-//     float Position_KP = pid.kp, Position_KI = pid.ki, Position_KD = pid.kd;
-//     int Result;
-//     static float Bias, Integral_bias, Last_Bias, ResultKI = 0;
-//     Bias = deviation;
-//     ResultKI += Position_KI * Bias;
-
-//     //	if(ResultKI>MAX_MOTOR_Result) Integral_bias=MAX_MOTOR_Result/Position_KI;
-//     Result = Position_KP * Bias + ResultKI + Position_KD * (Bias - Last_Bias);
-//     Last_Bias = Bias;
-//     return Result;
-// }
-// /*@brief:速度PID使用位置式PID控制器，对积分值进行限幅
+// /*@brief:位置式PID控制器2
 //  *        [in] deviation:偏差
 //  * @return:调节电机的Result
 //  */
-// int PositionPIDToSpeed2(float deviation, PID pid)
+// int PositionPID2(float deviation, PID pid)
 // {
 //     float Position_KP = pid.kp, Position_KI = pid.ki, Position_KD = pid.kd;
-//     int Result;
-//     static float Bias, Integral_bias, Last_Bias, ResultKI = 0;
+//     float Result;
+//     static float Bias, Integral_bias, Last_Bias;
 //     Bias = deviation;
-//     ResultKI += Position_KI * Bias;
-//     //	if(ResultKI>MAX_MOTOR_Result) Integral_bias=MAX_MOTOR_Result/Position_KI;
-//     Result = Position_KP * Bias + ResultKI + Position_KD * (Bias - Last_Bias);
+//     Integral_bias += Bias;
+//     Result = Position_KP * Bias + Position_KI * Integral_bias + Position_KD * (Bias - Last_Bias);
 //     Last_Bias = Bias;
 //     return Result;
 // }
-
 /**
  * @brief 增量式PID控制器
  *
@@ -127,79 +67,74 @@ int PositionPID2(float deviation, PID pid)
  * @param pid PID参数
  * @return int 调节电机的Result
  */
-int IncrementPID(float SetValue,float ActualValue,PID pid)
+int IncrementPID(float Deviation, PID pid)
 {
     float Increment_KP = pid.kp, Increment_KI = pid.ki, Increment_KD = pid.kd;
-    static float Current_Bias, Last_Bias,Lastlast_Bias,Result;//定义静态变量
-    Current_Bias = SetValue - ActualValue;//当前偏差
-    // Integral_bias += Bias;
-    Result = Increment_KP * (Current_Bias-Last_Bias) + Increment_KI * Current_Bias + Increment_KD * (Current_Bias - 2*Last_Bias+Lastlast_Bias);//增量式PID控制器
-    Lastlast_Bias = Last_Bias;//上上一次偏差保存
-    Last_Bias = Current_Bias;//上一次偏差保存
-    return Result;//返回结果
-}
+    static float Current_Bias, Last_Bias, Lastlast_Bias;
+    static int16 Result;      // 定义静态变量
+    Current_Bias = Deviation; // 当前偏差
 
-/**
- * @brief 增量式PID控制器
- *
- * @param SetValue 期望值
- * @param ActualValue 实际值
- * @param pid PID参数
- * @return int 调节电机的Result
- */
-int IncrementPID_PWM(float *setspeed,float *actualspeed,PID pid)
+    Result += (int32)(Increment_KP * (Current_Bias - Last_Bias) + Increment_KI * Current_Bias + Increment_KD * (Current_Bias - 2 * Last_Bias + Lastlast_Bias)); // 增量式PID控制器
+    Lastlast_Bias = Last_Bias;                                                                                                                                  // 上上一次偏差保存
+    Last_Bias = Current_Bias;                                                                                                                                   // 上一次偏差保存
+    return Result;                                                                                                                                              // 返回结果
+}
+int IncrementPID2(float Deviation, PID pid)
 {
     float Increment_KP = pid.kp, Increment_KI = pid.ki, Increment_KD = pid.kd;
-    static float Current_Bias, Last_Bias,Lastlast_Bias,Result;//定义静态变量
-    Current_Bias = *setspeed - *actualspeed;//当前偏差
+    static float Current_Bias, Last_Bias, Lastlast_Bias;
+    static int16 Result;      // 定义静态变量
+    Current_Bias = Deviation; // 当前偏差
     // Integral_bias += Bias;
-    Result = Increment_KP * (Current_Bias-Last_Bias) + Increment_KI * Current_Bias + Increment_KD * (Current_Bias - 2*Last_Bias+Lastlast_Bias);//增量式PID控制器
-    Lastlast_Bias = Last_Bias;//上上一次偏差保存
-    Last_Bias = Current_Bias;//上一次偏差保存
-    return Result;//返回结果
+    Result += (int32)(Increment_KP * (Current_Bias - Last_Bias) + Increment_KI * Current_Bias + Increment_KD * (Current_Bias - 2 * Last_Bias + Lastlast_Bias)); // 增量式PID控制器
+    Lastlast_Bias = Last_Bias;                                                                                                                                  // 上上一次偏差保存
+    Last_Bias = Current_Bias;                                                                                                                                   // 上一次偏差保存
+    return Result;                                                                                                                                              // 返回结果
 }
 
-/**
- * @brief PID控制器实现函数
- * 
- * @param pid PID控制器结构体指针
- * @param actual_val 实际值
- * @return float PID控制器输出值
- */
-float IncrementPID_Speed(tPid * pid,float actual_val)
-{
-    pid->actual_val = actual_val;//传递真实值
-    pid->err = pid->target_val - pid->actual_val;////当前误差=目标值-真实值
-    pid->err_sum += pid->err;//误差累计值 = 当前误差累计和
-    //使用PID控制 输出 = Kp*当前误差  +  Ki*误差累计值 + Kd*(当前误差-上次误差)
-    pid->actual_val = pid->Kp*pid->err + pid->Ki*pid->err_sum + pid->Kd*(pid->err - pid->err_last);
-    //保存上次误差: 这次误差赋值给上次误差
-    pid->err_last = pid->err;
-	
-    return pid->actual_val;
-}
-/*@brief:位置式PID控制器（用于舵机控制转向）
- *        [in] deviation:偏差角度
- * @return:调节舵机的PWM_result
- */
-int PositionPID_Servo(float deviation, PID pid)
-{
-    float Position_KP = pid.kp, Position_KI = pid.ki, Position_KD = pid.kd;
-    int Result;
-    static float Bias, Integral_bias, Last_Bias;
-    Bias = deviation;
-    Integral_bias += Bias;
-    Result = Servo_Mid+Position_KP * Bias + Position_KI * Integral_bias + Position_KD * (Bias - Last_Bias);
-    Last_Bias = Bias; // 上一次偏差保存
+/*************************************************************************
+ *  函数名称：float constrain_float(float amt, float low, float high)
+ *  功能说明：pid位置式控制器输出
+ *  参数说明：
+ * @param    pid     pid参数
+ * @param    error   pid输入误差
+ *  函数返回：PID输出结果
+ *  修改时间：2020年4月1日
+ *  备    注：
+//  *************************************************************************/
+// float PidLocCtrl(pid_param_t *pid, float error)
+// {
+//     /* 累积误差 */
+//     pid->integrator += error;
 
-    //舵机限幅（防止转向过大）
-    if(Result>Servo_Max)
-    {
-        Result=Servo_Max;
-    }
-    if(Result<=Servo_Min)
-    {
-        Result=Servo_Min;
-    }
-    return Result;
-}
+//     /* 误差限幅 */
+//     constrain_float(pid->integrator, -pid->imax, pid->imax);
+
+//     pid->out_p = pid->kp * error;
+//     pid->out_i = pid->ki * pid->integrator;
+//     pid->out_d = pid->kd * (error - pid->last_error);
+
+//     pid->last_error = error;
+
+//     pid->out = pid->out_p + pid->out_i + pid->out_d;
+
+//     return pid->out;
+// }
+
+// /**************************************************************************函数名称：float constrain_float(float amt, float low, float high) * 功能说明：pid增量式控制器输出 *参数说明： *@param pid pid参数 *@param error pid输入误差 *函数返回：PID输出结果 注意输出结果已经包涵了上次结果 *修改时间：2020年4月1日 *备 注： ************************************************************************* /
+//     float PidIncCtrl(pid_param_t *pid, float error)
+// {
+
+//     pid->out_p = pid->kp * (error - pid->last_error);
+//     pid->out_i = pid->ki * error;
+//     pid->out_d = pid->kd * ((error - pid->last_error) - pid->last_derivative);
+
+//     pid->last_derivative = error - pid->last_error;
+//     pid->last_error = error;
+
+//     pid->out += pid->out_p + pid->out_i + pid->out_d;
+
+//     return pid->out;
+// }
+
+
