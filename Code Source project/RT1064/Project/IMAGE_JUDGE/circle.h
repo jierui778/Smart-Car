@@ -17,4 +17,6 @@ enum circle_type_e {
 
 extern enum circle_type_e circle_type;//枚举类型全局定义
 
+
+//进圆环必定丢线，考虑进圆环仅巡单边线
 #endif

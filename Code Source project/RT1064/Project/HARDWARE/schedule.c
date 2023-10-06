@@ -1,14 +1,7 @@
 #include "schedule.h"
 #include "encoder.h"
 
-// #define CR_BEGIN
-//{
-//    uint8 interrupt_state = interrupt_global_disable();
 
-// #define CR_END
-
-//    interrupt_global_enable(interrupt_state);
-//}//确保在部分代码块中禁用中断，以确保代码块的原子性
 
 #define TASK_LIST_END \
     {                 \

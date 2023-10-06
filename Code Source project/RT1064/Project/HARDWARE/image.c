@@ -1461,9 +1461,9 @@ void Find_Borderline(void)
     x1 = img_raw.width / 2 - begin_x, y1 = begin_y;
     int TH;
     TH = OSTU_GetThreshold(Image_Use[0], IMAGE_WIDTH, IMAGE_HEIGHT);
-    Image_Binarization(TH, *Image_Use);
-    // Image_Sobel(Image_Use, Image_Use_Robert, TH); // 全局Sobel得二值图(方案二) 2.8ms
-    img_raw.data = Image_Use;
+    // Image_Binarization(TH, *Image_Use);
+    Image_Sobel(Image_Use, Image_Use_Robert, TH); // 全局Sobel得二值图(方案二) 2.8ms
+    img_raw.data = Image_Use_Robert;
 
     // 标记种子起始点(后续元素处理要用到)
     x0_first = x1;
@@ -1605,7 +1605,6 @@ void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x
     for (i = 0; i < ipts1_num; i++)
     {
         ips200_draw_point(ipts0[i][0] + 2, ipts0[i][1] + 2, RGB565_RED);
-
     }
     //	tft180_draw_line(0,0,ipts0[20-1][1],ipts0[20-1][0],RGB565_RED);
     //	tft180_show_int(3,100,ipts0[20-1][1],4);

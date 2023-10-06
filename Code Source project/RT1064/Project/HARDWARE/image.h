@@ -57,7 +57,11 @@ typedef struct img
     }
 extern image_t img_raw;
 void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x, int y, int pts[][2], int *num);
+
+
 void Right_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x, int y, int pts[][2], int *num);
+
+
 void Find_Borderline(void);
 
 void test(void);
