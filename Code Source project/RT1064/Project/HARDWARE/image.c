@@ -2203,6 +2203,9 @@ int x0_first, y0_first, x1_first, y1_first; // 左右边线第一个点的坐标
 int x1, y1;
 int x2, y2;
 
+int Mid_line[POINTS_MAX_LEN][2];//定义中线数组
+int mid_num;//中线数组点数
+
                       // SOBEL二值化图像
 
 void test(void)
@@ -2213,9 +2216,43 @@ void test(void)
 //    Image_Sobel(Image_Use, Image_Use_Robert, th);
 	
     Find_Borderline();
-
+    Get_Midline(ipts0, ipts0_num, ipts1, ipts1_num);//取中线
 }
 
+
+/**
+ * @brief 获取左右车道线的中线
+ * 
+ * @param pts_l 左车道线点集
+ * @param pts_l_num 左车道线点数
+ * @param pts_r 右车道线点集
+ * @param pts_r_num 右车道线点数
+ */
+void Get_Midline(int pts_l[][2],int pts_l_num,int pts_r[][2],int pts_r_num)
+{
+    int i,mid_num;
+    /*取两个边线中最小的一个做数组*/
+    if(pts_l_num>pts_r_num)
+    {
+        mid_num=pts_r_num;
+    }
+    else
+    {
+        mid_num=pts_l_num;
+    }
+    /*取中线*/
+    for(i=0;i<mid_num;i++)
+    {
+        Mid_line[i][0]=(pts_l[i][0]+pts_r[i][0])/2;
+        Mid_line[i][1]=(pts_l[i][1]+pts_r[i][1])/2;
+    }
+    /*显示*/
+    for(i=0;i<ipts0_num;i++)
+    {
+        ips200_draw_point(Mid_line[i][0],Mid_line[i][1],RGB565_RED);
+    }
+	ips200_show_int(3,140,mid_num,3);
+}
 
 void Find_Borderline(void)
 {
