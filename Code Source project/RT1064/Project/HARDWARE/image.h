@@ -123,6 +123,38 @@ void draw_line2(float pt0[2], float pt1[2], float pts_out[][2], int *num, float 
 void SplicingArray(float pt0[][2], int num1, float pt1[][2], int num2, float pt_out[][2], int *num, uint8 x);//数组拼接
 void test(void);
 void blur_points(float pts_in[][2], int num, float pts_out[][2], int kernel);
+void Pespective(int pts_in[][2],int int_num ,  float pts_out[][2]);
+
+//W矩阵参数
+//60*80
+#define a11 (-8.0769f)
+#define a12 (-0.1923f)
+#define a13 (336.1538f)
+#define a21 (0.0f)
+#define a22 (2.7885f)
+#define a23 (-440.0f)
+#define a31 (-0.0f)
+#define a32 (-0.2404f)
+#define a33 (1.0f)
+#define getx(u,v) (a11*(u)+a12*(v)+a13)
+#define gety(u,v) (a21*(u)+a22*(v)+a23)
+#define getw(u,v) (a31*(u)+a32*(v)+a33)
+
+//D矩阵参数
+/*这些宏定义都是给60*80的矩阵*/
+#define b11 (-0.1238f)
+#define b12 (-0.0969f)
+#define b13 (-1.0252f)
+#define b21 ( 0.0000f)
+#define b22 (-0.0097f)
+#define b23 (-4.2726f)
+#define b31 (-0.0000f)
+#define b32 (-0.0023f)
+#define b33 (-0.0271f)
+#define getx_b(u,v) (b11*(u)+b12*(v)+b13)
+#define gety_b(u,v) (b21*(u)+b22*(v)+b23)
+#define getw_b(u,v) (b31*(u)+b32*(v)+b33)
+
 #endif
 
 

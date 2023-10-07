@@ -74,15 +74,7 @@ struct Line last_right_line;
 uint8 Image_Use[IMAGE_HEIGHT][IMAGE_WIDTH];
 uint8 Image_Use_Robert[IMAGE_HEIGHT][IMAGE_WIDTH];
 
-void test(void)
-{
-//    int th;
-    Image_Compress();
-//    th = OSTU_GetThreshold(*Image_Use, IMAGE_HEIGHT, IMAGE_WIDTH);
-//    Image_Sobel(Image_Use, Image_Use_Robert, th);
-	
-    Find_Borderline();
-}
+
 
 /**
  * @brief 截取我们需要的图像大小
@@ -2189,14 +2181,42 @@ int ipts0[POINTS_MAX_LEN][2]; // 存放边线数据（左）
 int ipts1[POINTS_MAX_LEN][2]; // 存放边线数据（右）
 int ipts0_num;                // 存放边线像素点个数(左)
 int ipts1_num;                // 存放边线像素点个数(右)
-int ipts0_lvbo[POINTS_MAX_LEN][2];//存放边线滤波之后的像素点数组
-int ipts1_lvbo[POINTS_MAX_LEN][2];//存放边线滤波之后的像素点数组
+
+// 逆透视变换后左右边线
+float rpts0[POINTS_MAX_LEN][2];
+float rpts1[POINTS_MAX_LEN][2];
+int rpts0_num, rpts1_num;
+
+// 逆透视变换后左右边线再三角滤波后的边线数组
+float rpts0b[POINTS_MAX_LEN][2];
+float rpts1b[POINTS_MAX_LEN][2];
+int rpts0b_num, rpts1b_num;
+
+//逆透视变换后左右边线再三角滤波后再等距采样的数组
+float rpts0s[POINTS_MAX_LEN][2];
+float rpts1s[POINTS_MAX_LEN][2];
+int rpts0s_num, rpts1s_num;
+
+int rpts0_num, rpts1_num;
 int x0_first, y0_first, x1_first, y1_first; // 左右边线第一个点的坐标
 
 int x1, y1;
 int x2, y2;
 
                       // SOBEL二值化图像
+
+void test(void)
+{
+//    int th;
+    Image_Compress();
+//    th = OSTU_GetThreshold(*Image_Use, IMAGE_HEIGHT, IMAGE_WIDTH);
+//    Image_Sobel(Image_Use, Image_Use_Robert, th);
+	
+    Find_Borderline();
+
+}
+
+
 void Find_Borderline(void)
 {
     // 迷宫巡线是否走到左右边界
@@ -2268,17 +2288,7 @@ void Find_Borderline(void)
 		else
 			ipts1_num = 0;
 	}
-    blur_points(ipts0,ipts0_num,ipts0_lvbo,5);
-    uint8 i;
-    for(i=0;i<ipts0_num;i++)
-    {
-        ips200_draw_line(0,0,ipts0_lvbo[i][0] + 2, ipts0_lvbo[i][1] + 2, RGB565_RED);
-    }
-    blur_points(ipts1,ipts1_num,ipts1_lvbo,5);
-    for(i=0;i<ipts1_num;i++)
-    {
-        ips200_draw_line(0,0,ipts1_lvbo[i][0] + 2, ipts1_lvbo[i][1] + 2, RGB565_BLUE);
-    }
+
 }
 
 const int dir_front[4][2] = {{0, -1},
@@ -2705,18 +2715,7 @@ void resample_points(float pts_in[][2], int num1, float pts_out[][2], int *num2,
 
 // 角点提取&筛选 Y角点用于检测坡道，L角点用于检测圆环、十字、路障、断路
 
-// 变换后左右边线
-float rpts0[POINTS_MAX_LEN][2];
-float rpts1[POINTS_MAX_LEN][2];
-int rpts0_num, rpts1_num;
-// 变换后左右边线+滤波
-float rpts0b[POINTS_MAX_LEN][2];
-float rpts1b[POINTS_MAX_LEN][2];
-int rpts0b_num, rpts1b_num;
-// 变换后左右边线+等距采样
-float rpts0s[POINTS_MAX_LEN][2];
-float rpts1s[POINTS_MAX_LEN][2];
-int rpts0s_num, rpts1s_num;
+
 // 左右边线局部角度变化率
 float rpts0a[POINTS_MAX_LEN];
 float rpts1a[POINTS_MAX_LEN];
@@ -2997,3 +2996,26 @@ void find_corners()
         }
     }
 }
+
+
+/**
+ * @brief 透视变换函数，将提取出来的两条边线进行透视变换
+ * 
+ * @param pts_in 二维数组，表示输入的点集，每个点有两个坐标值
+ * @param int_num 整型，表示输入的点集中点的数量
+ * @param pts_out 二维数组，表示输出的点集，每个点有两个坐标值
+ */
+void Pespective(int pts_in[][2],int int_num ,  float pts_out[][2])
+//带入提取出来的两条边线，得到透视变换后的两条边线
+{
+    float x, y, w;
+    for (int16_t i = 0; i < int_num; i++)
+    {
+        x = getx((pts_in[i][0]), (pts_in[i][1]));
+        y = gety((pts_in[i][0]), (pts_in[i][1]));
+        w = getw((pts_in[i][0]), (pts_in[i][1]));
+        pts_out[i][0] = x / w;
+        pts_out[i][1] = y / w;
+    }
+}
+
