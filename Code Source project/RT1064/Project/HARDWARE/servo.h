@@ -2,7 +2,7 @@
 #ifndef _SERVO_H_
 #define _SERVO_H_
 
-#define SERVO_CH (PWM4_MODULE2_CHA_C30)
+#define SERVO_CH (PWM4_MODULE2_CHA_C30)//舵机PWM控制引脚
 #define SERVO_FRE 50 // 舵机频率:50Hz
 #define ERROR (6)    // 机械零点值误差，视具体调节修改
 
@@ -12,3 +12,4 @@ void Servo_Init();                // 舵机初始化
 void Servo_SetAngle(float Angle); // 设置舵机的角度值，舵机角度范围-90~90(实际上舵机打角需要进行限制)
 
 #endif
+

@@ -100,7 +100,7 @@ void Schedule_Run(void)
 void pit_handler(void)
 {
     Schedule_Tick();
-    gpio_toggle_level(B9);
+    gpio_toggle_level(B9);//test
 }
 // //void pit_handler(void)
 // //{
