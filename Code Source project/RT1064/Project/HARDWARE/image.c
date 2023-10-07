@@ -2219,7 +2219,7 @@ void Find_Borderline(void)
     {
         for (; x0_first > 0; x0_first--)//在选的每行中，从中间向左线扫
             if (AT_IMAGE(&img_raw, x0_first - 1, y0_first) < uthres)//如果扫到黑点（灰度值为0），就从该点开始扫线
-                goto out1;.//开始扫左线
+                goto out1;//开始扫左线
         x0_first = img_raw.width / 2 - begin_x;//每次每一行扫完，都把x0_first归位
     }
     //如果扫不到的话，判定左边的底边丢线
@@ -2509,4 +2509,166 @@ float LineRession(int pts_in[][2], int num)
         slope = (SumUp / SumDown);
     A = (SumX - slope * SumY) / SumLines; // 截距
     return slope;                         // 返回斜率
+}
+
+
+/**
+ * @brief 快速计算 平方根Sqrt(x),牛顿迭代法
+ * 
+ * @param x 浮点数
+ * @return float 平方根
+ * @explanation    较快于invSqrt(a)*a; invSqrt()==1.0/sqrt(value);
+ 这个mySqrt计算平方根速度比invSqrt(a)*a快，而且最大误差只有0.6%
+ */
+float mySqrt(float x)
+{
+    float a = x;
+    unsigned int i = *(unsigned int *)&x;
+    i = (i + 0x3f76cf62) >> 1;
+    x = *(float *)&i;
+    x = (x + a / x) * 0.5;
+    return x;
+}
+
+/*************************************************************************
+ *  函数名称：void draw_line2();
+ *  功能说明：补线 逆透视
+ *  参数说明：这个函数的输入参数是两个浮点型数组 pt0 和 pt1，分别表示直线的起点和终点的坐标。
+ *           每个数组包含两个元素，分别表示横坐标和纵坐标。
+ *           pts_out[][2]是一个二维浮点型数组，用于存储等距采样后的折线段上的点的坐标。
+ *           第一维表示点的数量，第二维表示点的坐标，其中第一个元素是横坐标，第二个元素是纵坐标。
+             num是一个指向整数的指针，用于存储等距采样后的折线段上的点的数量。
+             dist是一个浮点型变量，表示等距采样的折线段距离，即相邻两个采样点之间的距离。
+ *  函数返回：无
+ *  修改时间：2023年6月1日
+ *  备    注： 本质是等距采样
+ *************************************************************************/
+void draw_line2(float pt0[2], float pt1[2], float pts_out[][2], int *num, float dist){
+    int remain = 0, len = 0;//下一次采样折线段距离
+    float x0 = pt0[0];
+    float y0 = pt0[1];
+    float dx = pt1[0] - x0;//求出x,y坐标的差值
+    float dy = pt1[1] - y0;
+    float dn = mySqrt(dx*dx+dy*dy);//求平方根 求弧长积分，即输入线段前后两点距离
+    //float dn = sqrt(dx*dx+dy*dy);//求平方根 求弧长积分，即输入线段前后两点距离
+    dx /= dn;//此点处的cosθ
+    dy /= dn;//此点处的sinθ
+
+    //每次等距采样处理
+    while(remain < dn){
+        x0 += dx * remain;
+        pts_out[len][0] = x0;
+        y0 += dy * remain;
+        pts_out[len][1] = y0;
+
+        len++;
+        dn -= remain;
+        remain = dist;
+    }
+    *num = len;
+}
+
+/*************************************************************************
+ *  函数名称：void SplicingArray();
+ *  功能说明：数组拼接
+ *  参数说明：输入的两个数组和容量，输出数组以及容量，x=0正向拼接，x=1反向拼接
+ *           pt_out就是拼接以后输出的数组
+ *  函数返回：无
+ *  修改时间：2023年6月2日
+ *  备    注： 用于连接补线的数组
+ *************************************************************************/
+void SplicingArray(float pt0[][2], int num1, float pt1[][2], int num2, float pt_out[][2], int *num, uint8 x)
+{
+    int i ,count;//用来计数
+    for(i = 0;i<num1;i++)//复制数组1
+    {
+        pt_out[i][0] = pt0[i][0];
+        pt_out[i][1] = pt0[i][1];
+        count++;
+    }
+
+    if(x)//反向拼接
+    {
+        for(i = 0;i<num2;i++)
+        {
+            pt_out[num1+i][0] = pt1[num2-i-1][0];
+            pt_out[num1+i][1] = pt1[num2-i-1][1];
+            count++;
+        }
+
+    }else//正向拼接
+    {
+        for(i = 0;i<num2;i++)
+        {
+            pt_out[num1+i][0] = pt1[i][0];
+            pt_out[num1+i][1] = pt1[i][1];
+            count++;
+        }
+    }
+    *num = count;
+}
+
+/*************************************************************************
+ *  函数名称：void blur_points();
+ *  功能说明：点集三角滤波
+ *  参数说明：输入边线数组pits_in[][2]，边线总个数num，输出边线数组pts_out，点集范围kernel
+ *  函数返回：无
+ *  修改时间：2022年10月4日
+ *  备    注：这个函数中的kernel参数是用来指定点集三角滤波的范围的。具体来说，它是一个奇数，表示以每个点为中心的滤波器的大小。
+ *  如果kernel为5，则每个点周围的5个点将被用于计算平均值，以平滑该点。kernel越大，平滑效果越明显，但也会导致失去一些细节
+ *  例如：kernel = 5
+ *  xi = (0*xi-3 + 1*xi-2 + 2*xi-1 + 3*xi + 2*xi+1 + 1*xi+2 + 0*xi+3)/9
+ *  yi 同理
+ *************************************************************************/
+void blur_points(float pts_in[][2], int num, float pts_out[][2], int kernel)
+{
+    zf_assert(kernel % 2 == 1);//检查变量 kernel 是否为奇数
+    int half = kernel / 2;//用于计算滤波器的大小
+    for (int i = 0; i < num; i++) //对于每个点，都会计算它周围的点的加权平均值，并将结果存储在输出点集数组中
+    {
+        pts_out[i][0] = pts_out[i][1] = 0;
+        for (int j = -half; j <= half; j++) {
+            pts_out[i][0] += (float)pts_in[clip(i + j, 0, num - 1)][0] * (half + 1 - abs(j));
+            pts_out[i][1] += (float)pts_in[clip(i + j, 0, num - 1)][1] * (half + 1 - abs(j));
+        }
+        pts_out[i][0] /= (2 * half + 2) * (half + 1) / 2;
+        pts_out[i][1] /= (2 * half + 2) * (half + 1) / 2;
+    }
+}
+/*************************************************************************
+ *  函数名称：void resample_points（）;
+ *  功能说明：点集等距采样
+ *  参数说明：输入边线数组pts_in[][2]，输入原边线总个数num1，输出边线数组pts_out[][2]，获取输出边线数组个数num2，采样距离dist
+ *  函数返回：无
+ *  修改时间：2022年10月27日
+ *  备    注：使走过的采样前折线段的距离为`dist`
+ *            这个函数的作用是对输入的点集进行等距采样处理，输出采样后的点集。
+ *            函数的实现过程是对输入点集中的每个线段进行等距采样，采样后的点集存储在输出点集中。
+ *************************************************************************/
+void resample_points(float pts_in[][2], int num1, float pts_out[][2], int *num2, float dist){
+    int remain = 0, len = 0;//下一次采样折线段距离
+    for(int i=0; i<num1-1 && len < *num2; i++){
+        float x0 = pts_in[i][0];
+        float y0 = pts_in[i][1];
+        float dx = pts_in[i+1][0] - x0;
+        float dy = pts_in[i+1][1] - y0;
+        float dn = mySqrt(dx*dx+dy*dy);//求平方根 求弧长积分，即输入线段前后两点距离
+        //float dn = sqrt(dx*dx+dy*dy);//求平方根 求弧长积分，即输入线段前后两点距离
+        dx /= dn;//此点处的cosθ
+        dy /= dn;//此点处的sinθ
+
+        //每次等距采样处理
+        while(remain < dn && len < *num2){
+            x0 += dx * remain;
+            pts_out[len][0] = x0;
+            y0 += dy * remain;
+            pts_out[len][1] = y0;
+
+            len++;
+            dn -= remain;
+            remain = dist;
+        }
+        remain -= dn;//当跨越一点采样折线距离近似直线
+    }
+    *num2 = len;
 }

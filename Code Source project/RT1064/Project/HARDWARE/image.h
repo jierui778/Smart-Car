@@ -33,6 +33,9 @@ uint8 Image_Get_LeftPoint(uint8 start_row);//求右边界起始点坐标函数
 void Image_blur_points_Left(int num,int kernel);//三角滤波左边线
 void Image_blur_points_Right(int num,int kernel);//三角滤波右边线
 
+
+
+
 /*辅助计算*/
 float Image_ab_value(float a,float b);//求浮点型的绝对值
 float Image_Getk(int16 derta_column,int16 derta_row);//简单计算直线斜率
@@ -47,6 +50,7 @@ void Image_pointsleft(uint8 x1,uint8 y1,uint8 x2,uint8 y2);//两点坐标求斜�
 void Image_pointsright(uint8 x1,uint8 y1,uint8 x2,uint8 y2);//两点坐标求斜率和截距（存的数组不一样）
 float Imgae_SlopeLeft(uint8 begin,uint8 end);//最小二乘法求左边线斜率
 void Image_CountLeftKB_L(uint8 start,uint8 end);
+float mySqrt(float x);//计算一个浮点数的平方根
 
 /*元素*/
 void Image_FillCross(uint8(*Image_Use)[IMAGE_WIDTH]);//十字
@@ -87,9 +91,11 @@ extern image_t img_raw;
 void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x, int y, int pts[][2], int *num);
 void Right_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x, int y, int pts[][2], int *num);
 void Find_Borderline(void);
-
+void draw_line(image_t *img, int pt0[2], int pt1[2], uint8_t value);//两点画线
+void draw_line2(float pt0[2], float pt1[2], float pts_out[][2], int *num, float dist);//逆透视等距采样
+void SplicingArray(float pt0[][2], int num1, float pt1[][2], int num2, float pt_out[][2], int *num, uint8 x);//数组拼接
 void test(void);
-
+void blur_points(float pts_in[][2], int num, float pts_out[][2], int kernel);
 #endif
 
 

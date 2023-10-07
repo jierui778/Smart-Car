@@ -529,6 +529,16 @@
               <FileType>5</FileType>
               <FilePath>..\HARDWARE\filter.h</FilePath>
             </File>
+            <File>
+              <FileName>cross.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\cross.c</FilePath>
+            </File>
+            <File>
+              <FileName>cross.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\HARDWARE\cross.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
