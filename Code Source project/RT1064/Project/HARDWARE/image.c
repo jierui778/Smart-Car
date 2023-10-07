@@ -4,6 +4,25 @@
 #include "stdlib.h"
 uint8 Image_Use_Robert[120][160];//二值化图像
 
+//flash参数统一定义
+float begin_x = 8;  // 起始点距离图像中心的左右偏移量	8
+float begin_y = 118; // 起始点距离图像底部的上下偏移量 120高度：35;100高	58
+/*beginy值越小，初始的生长点与上框越近*/
+
+float block_size = 7; // 自适应阈值的block大小
+float clip_value = 2; // 自适应阈值的阈值裁减量
+
+float thres = 120;                 // 二值化阈值，主要用于找起始点(边线使用自适应阈值，不使用该阈值)
+float line_blur_kernel = 7;      // 边线三角滤波核的大小
+float pixel_per_meter = 102;       // 俯视图中，每个像素对应的长度 (厘米*10^3)/像素个数 调大意味着平移距离增大 原：102
+float sample_dist = 0.022;           // 边线等距采样的间距 动态调整，使其每两点距离刚好为1cm 为0.02时10个点间隔约为9cm
+float angle_dist = 0.2;            // 计算边线转角时，三个计算点的距离
+float far_rate = 0.5;              //
+float aim_distance_flash = 0.68;          // 预锚点长度
+float aim_dist[5] = {0.68,0.78,0.88,0.98,1.08};//多个预瞄点长度，间隔5cm，34~54个点，用于速度模糊控制，而不是偏差角计算！
+
+float xielv_left_y_to_end,xielv_right_y_to_end;                 //在逆透视后得坐标系建得斜率
+
 void check()
 {
 	while(1)
@@ -57,10 +76,10 @@ uint8 Image_Use_Robert[IMAGE_HEIGHT][IMAGE_WIDTH];
 
 void test(void)
 {
-    int th;
+//    int th;
     Image_Compress();
-    th = OSTU_GetThreshold(*Image_Use, IMAGE_HEIGHT, IMAGE_WIDTH);
-    Image_Sobel(Image_Use, Image_Use_Robert, th);
+//    th = OSTU_GetThreshold(*Image_Use, IMAGE_HEIGHT, IMAGE_WIDTH);
+//    Image_Sobel(Image_Use, Image_Use_Robert, th);
 	
     Find_Borderline();
 }
@@ -2157,8 +2176,6 @@ uint8 touch_boundary1; // 右边线走到图像右边界
 uint8 touch_boundary_up0; // 左边线走到图像上边界
 uint8 touch_boundary_up1; // 右边线走到图像上边界
 
-int begin_x0, begin_y0; // 找线偏移点
-int begin_x1, begin_y1; // 找线偏移点
 
 #define ROAD_WIDTH (0.39)    // 赛道宽度45cm 适时调整 注意：应用方案三时情况特殊为负数-0.40,正常0.43
 #define POINTS_MAX_LEN (120) // 边线点最多的情况——>num
@@ -2177,12 +2194,7 @@ int x0_first, y0_first, x1_first, y1_first; // 左右边线第一个点的坐标
 
 int x1, y1;
 int x2, y2;
-float begin_x = 8;  // 起始点距离图像中心的左右偏移量	8
-float begin_y = 100; // 起始点距离图像底部的上下偏移量 120高度：35;100高	58
-/*beginy值越小，初始的生长点与上框越近*/
 
-float block_size = 7; // 自适应阈值的block大小
-float clip_value = 2; // 自适应阈值的阈值裁减量
                       // SOBEL二值化图像
 void Find_Borderline(void)
 {
@@ -2206,7 +2218,7 @@ void Find_Borderline(void)
     int TH;
     TH = OSTU_GetThreshold(Image_Use[0], IMAGE_WIDTH, IMAGE_HEIGHT);
     Image_Binarization(TH, Image_Use);
-    // Image_Sobel(Image_Use, Image_Use_Robert, TH); // 全局Sobel得二值图(方案二) 2.8ms
+    Image_Sobel(Image_Use, Image_Use_Robert, TH); // 全局Sobel得二值图(方案二) 2.8ms
     img_raw.data = *Image_Use;
 
     // 标记种子起始点(后续元素处理要用到)
@@ -2215,7 +2227,7 @@ void Find_Borderline(void)
 
     ipts0_num = sizeof(ipts0) / sizeof(ipts0[0]); // 求数组的长度
     // 扫底下五行，寻找跳变点
-    for (; y0_first > begin_y - 5; y0_first--)//从所选的行，向上扫5次，每次从中间向左线扫
+    for (; y0_first > begin_y - 50; y0_first--)//从所选的行，向上扫5次，每次从中间向左线扫
     {
         for (; x0_first > 0; x0_first--)//在选的每行中，从中间向左线扫
             if (AT_IMAGE(&img_raw, x0_first - 1, y0_first) < uthres)//如果扫到黑点（灰度值为0），就从该点开始扫线
@@ -2240,7 +2252,7 @@ void Find_Borderline(void)
     y1_first = y2;
 
     ipts1_num = sizeof(ipts1) / sizeof(ipts1[0]);
-    for (; y1_first > begin_y - 5; y1_first--)
+    for (; y1_first > begin_y - 50; y1_first--)
     {
         for (; x1_first < img_raw.width - 1; x1_first++)
             if (AT_IMAGE(&img_raw, x1_first + 1, y1_first) < uthres)
@@ -2271,7 +2283,7 @@ const int dir_frontright[4][2] = {{1, -1},
                                   {-1, -1}};
 
 #define AT AT_IMAGE
-#define MAX_HIGH 88 定义图像中
+#define MAX_WIDTH 88 定义图像中
 void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x, int y, int pts[][2], int *num)
 {
     zf_assert(img && img->data); // 不满足则退出执行
@@ -2302,7 +2314,7 @@ void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x
         int frontleft_value = AT(img, x + dir_frontleft[dir][0], y + dir_frontleft[dir][1]); // 左前方像素点灰度值 （dir=0左下；dir=1 右下；dir=2 右上；dir=3 左上 ）
         //=======添加部分=======（限制条件）
         /*  当扫点的列坐标到左黑框边界且行坐标小于20    列坐标到右边的黑框边界  行坐标为1   行坐标为88的同时步数已经大于19*/
-        if ((x == 1 && y < img->height - 20) || x == img->width - 2 || y == 1 || (y == 88 && step > 19))
+        if ((x == 1 && y < img->height - 10) || x == img->width - 2 || y == 1 || (y == 100 && step > 19))
         {
             if (x == 1 /*|| x== img->width - 2*/)
                 touch_boundary0 = 1; // 左边界是因为到最左边才停下来的，触碰到最左边，可能是环岛，十字等，
@@ -2351,9 +2363,11 @@ void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x
     //	}
     for (i = 0; i < ipts1_num; i++)
     {
-//		ips200_draw_line(0,0,ipts0[i][0],ipts0[i][1],RGB565_RED);
-        ips200_draw_point(ipts0[i][0] + 2, ipts0[i][1] + 2, RGB565_RED);
+        ips200_draw_line(0,0,ipts0[i][0] + 2, ipts0[i][1] + 2, RGB565_RED);
     }
+    ips200_show_int(3,140,ipts0_num,3);
+    ips200_show_int(3,160,loseline0,3);
+    ips200_show_int(3,180,*num,3);
     //	tft180_draw_line(0,0,ipts0[20-1][1],ipts0[20-1][0],RGB565_RED);
     //	tft180_show_int(3,100,ipts0[20-1][1],4);
 }
@@ -2371,10 +2385,11 @@ void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x
  *************************************************************************/
 void Right_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x, int y, int pts[][2], int *num)
 {
-    //    zf_assert(img && img->data);
-    //    zf_assert(num && *num >= 0);
-    //    zf_assert(block_size > 1 && block_size % 2 == 1);
-    //    int half = block_size / 2;        //上交方案
+    uint8 i;
+       zf_assert(img && img->data);
+       zf_assert(num && *num >= 0);
+       zf_assert(block_size > 1 && block_size % 2 == 1);
+//       int half = block_size / 2;        //上交方案
     int half = 0; // 方案二
     int step = 0, dir = 0, turn = 0;
     while (step < *num && 0 < x && x < img->width - 1 && half < y && y < img->height - half - 1 && turn < 4)
@@ -2395,7 +2410,7 @@ void Right_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int 
         int front_value = AT(img, x + dir_front[dir][0], y + dir_front[dir][1]);
         int frontright_value = AT(img, x + dir_frontright[dir][0], y + dir_frontright[dir][1]);
         //=======添加部分=======
-        if ((x == img->width - 2 && y < img->height - 20) || x == 1 || y == 1 || (y == 58 && step > 19)) // 丢线标志，否则由于sobel特殊性会一直往上巡线
+        if ((x == img->width - 2 && y < img->height - 20) || x == 1 || y == 1 || (y == 100 && step > 19)) // 丢线标志，否则由于sobel特殊性会一直往上巡线
         {
             if (x == img->width - 2 /*|| x==1*/)
                 touch_boundary1 = 1; // 右边界是因为到最右边才停下来的，触碰到最右边，可能是环岛，十字等，
@@ -2436,6 +2451,13 @@ void Right_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int 
         loseline1 = 1;
     // 记录边线数目
     *num = step;
+    for (i = 0; i < ipts1_num; i++)
+    {
+        ips200_draw_line(160,0,ipts1[i][0] + 2, ipts1[i][1] + 2, RGB565_RED);
+    }
+    ips200_show_int(43,140,ipts1_num,3);
+    ips200_show_int(43,160,loseline1,3);
+    ips200_show_int(43,180,*num,3);
 }
 // 补线 原图
 
@@ -2671,4 +2693,299 @@ void resample_points(float pts_in[][2], int num1, float pts_out[][2], int *num2,
         remain -= dn;//当跨越一点采样折线距离近似直线
     }
     *num2 = len;
+}
+
+// 角点提取&筛选 Y角点用于检测坡道，L角点用于检测圆环、十字、路障、断路
+
+// 变换后左右边线
+float rpts0[POINTS_MAX_LEN][2];
+float rpts1[POINTS_MAX_LEN][2];
+int rpts0_num, rpts1_num;
+// 变换后左右边线+滤波
+float rpts0b[POINTS_MAX_LEN][2];
+float rpts1b[POINTS_MAX_LEN][2];
+int rpts0b_num, rpts1b_num;
+// 变换后左右边线+等距采样
+float rpts0s[POINTS_MAX_LEN][2];
+float rpts1s[POINTS_MAX_LEN][2];
+int rpts0s_num, rpts1s_num;
+// 左右边线局部角度变化率
+float rpts0a[POINTS_MAX_LEN];
+float rpts1a[POINTS_MAX_LEN];
+int rpts0a_num, rpts1a_num;
+// 左右边线局部角度变化率+非极大抑制
+float rpts0an[POINTS_MAX_LEN];
+float rpts1an[POINTS_MAX_LEN];
+int rpts0an_num, rpts1an_num;
+// 左/右中线
+float rptsc0[POINTS_MAX_LEN][2];
+float rptsc1[POINTS_MAX_LEN][2];
+int rptsc0_num, rptsc1_num;
+// 左右跟踪后的中线
+float (*rpts)[2];
+int rpts_num;
+// 归一化最终中线
+float rptsn[POINTS_MAX_LEN][2];
+int rptsn_num;
+
+// Y角点
+int Ypt0_rpts0s_id, Ypt1_rpts1s_id;
+bool Ypt0_found, Ypt1_found;
+// L角点
+int Lpt0_rpts0s_id, Lpt1_rpts1s_id;
+bool Lpt0_found, Lpt1_found;
+// 内L角点
+int N_Lpt0_rpts0s_id, N_Lpt1_rpts1s_id;
+bool N_Lpt0_found, N_Lpt1_found;
+// 长直道
+bool is_straight0, is_straight1;
+// 弯道
+bool is_turn0, is_turn1;
+
+int N_Xfound_num;//面向赛道编程，双内L计数
+
+// 当前巡线模式（发车方向）
+enum track_type_e track_type = TRACK_RIGHT;
+
+float error[1];
+float ave_error;//速度控制输入变量
+// 多个预锚点位置
+int aim_idx[1] ;
+
+
+// 计算远锚点偏差值
+float dx[1] ;
+float dy[1] ;
+float dn[1] ;
+
+// 若考虑近点远点,可近似构造Stanley算法,避免撞路肩
+// 计算近锚点偏差值
+float dx_near;
+float dy_near ;
+float dn_near ;
+float pure_angle;
+
+enum garage_type_e garage_type = GARAGE_NONE;//初始化为向左出库 调试状态为NONE
+
+/**
+ * 识别图像中的Y型和L型拐点，并进行二次检查。
+ * 
+ * @param sample_dist 采样距离
+ * @param angle_dist 角度距离
+ * @param pixel_per_meter 每米像素数
+ * @param garage_type 车库类型
+ * @param rpts0s_num 左边线点数
+ * @param rpts0s 左边线点坐标
+ * @param rpts0a 左边线点角度
+ * @param rpts0an 左边线点角度是否为峰值
+ * @param rpts1s_num 右边线点数
+ * @param rpts1s 右边线点坐标
+ * @param rpts1a 右边线点角度
+ * @param rpts1an 右边线点角度是否为峰值
+ * @param Ypt0_rpts0s_id 左边线Y型拐点点号
+ * @param Ypt1_rpts1s_id 右边线Y型拐点点号
+ * @param Lpt0_rpts0s_id 左边线L型拐点点号
+ * @param Lpt1_rpts1s_id 右边线L型拐点点号
+ * @param N_Lpt0_rpts0s_id 左边线内L型拐点点号
+ * @param N_Lpt1_rpts1s_id 右边线内L型拐点点号
+ * @param xielv_left_y_to_end 左边线Y型拐点到终点的斜率
+ * @param xielv_right_y_to_end 右边线Y型拐点到终点的斜率
+ */
+void find_corners()
+{
+    // 识别Y,L拐点
+    Ypt0_found = Ypt1_found = Lpt0_found = Lpt1_found = N_Lpt1_found = N_Lpt0_found = false;
+    is_straight0 = rpts0s_num > 1.6 / sample_dist;           //逆透视之后的边线个数大于80个就是直道,也就是边线边长大于0.8m,并不是直向前0.8m
+    is_straight1 = rpts1s_num > 1.6 / sample_dist;
+
+    //左边线角度
+    for (int i = 1; i < rpts0s_num; i++) {              //只要数组里的角度符合的，Y或L就为true,然后就不在继续检测Y或L
+        if (rpts0an[i] == 0) continue;                      //以下检测只检测峰值（极大值）
+        int im1 = clip(i - (int) round(angle_dist / sample_dist), 0, rpts0s_num - 1);
+        int ip1 = clip(i + (int) round(angle_dist / sample_dist), 0, rpts0s_num - 1);
+        float conf = fabs(rpts0a[i]) - (fabs(rpts0a[im1]) + fabs(rpts0a[ip1])) / 2;
+
+        //Y角点阈值                 (30*  ,   50*)    并且距离在40个点之内 (注：30.转化浮点数)
+        if (Ypt0_found == false && 6. / 180. * PI < conf && conf < 15. / 180. * PI && i < 0.8 / sample_dist) {
+            Ypt0_rpts0s_id = i;
+            Ypt0_found = true;
+        }
+        //L角点阈值                 (55*  ,    140*)  并且距离在40个点之内 修改距离为1.2m增长判断路障距离
+        if (Lpt0_found == false && 45. / 180. * PI < conf && conf < 140. / 180. * PI && i < 0.8 / sample_dist) {
+
+            Lpt0_rpts0s_id = i;
+            Lpt0_found = true;
+
+            if(rpts0a[Lpt0_rpts0s_id] < 0)              //这一个L点如果是向右拐的，就是内L点
+            {
+                N_Lpt0_rpts0s_id = Lpt0_rpts0s_id;
+                N_Lpt0_found = true;
+//                //对内L角的线截断
+//                rptsc0_num = rpts0s_num = N_Lpt0_rpts0s_id;
+                Lpt0_found = false;
+            }
+
+        }
+        //长直道阈值
+        if (conf > 5. / 180. * PI && i < 1.4 / sample_dist) is_straight0 = false;           //只要中间有大角度，就不是长直道
+        if (Ypt0_found == true && Lpt0_found == true && is_straight0 == false) break;
+    }
+
+    //右边线角度
+    for (int i = 1; i < rpts1s_num; i++) {
+        if (rpts1an[i] == 0) continue;
+        int im1 = clip(i - (int) round(angle_dist / sample_dist), 0, rpts1s_num - 1);
+        int ip1 = clip(i + (int) round(angle_dist / sample_dist), 0, rpts1s_num - 1);
+        float conf = fabs(rpts1a[i]) - (fabs(rpts1a[im1]) + fabs(rpts1a[ip1])) / 2;
+        if (Ypt1_found == false && 6. / 180. * PI < conf && conf < 15. / 180. * PI && i < 0.8 / sample_dist) {
+            Ypt1_rpts1s_id = i;
+            Ypt1_found = true;
+        }
+        if (Lpt1_found == false && 45. / 180. * PI < conf && conf < 140. / 180. * PI && i < 0.8 / sample_dist) {
+            Lpt1_rpts1s_id = i;
+            Lpt1_found = true;
+
+            if(rpts1a[Lpt1_rpts1s_id] > 0)              //这一个L点如果是向左拐的，就是内L点
+            {
+                N_Lpt1_rpts1s_id = Lpt1_rpts1s_id;
+                N_Lpt1_found = true;
+//                //对内L角的线截断
+//                rptsc1_num = rpts1s_num = N_Lpt1_rpts1s_id;
+                Lpt1_found = false;
+            }
+        }
+
+        if (conf > 5. / 180. * PI && i < 1.4 / sample_dist) is_straight1 = false;
+        if (Ypt1_found == true && Lpt1_found == true && is_straight1 == false) break;
+    }
+
+    // Y点二次检查,依据两角点距离及角点后张开特性
+    if (Ypt0_found && Ypt1_found) {
+        //==================================================================原检查
+        float dx = rpts0s[Ypt0_rpts0s_id][0] - rpts1s[Ypt1_rpts1s_id][0];
+        float dy = rpts0s[Ypt0_rpts0s_id][1] - rpts1s[Ypt1_rpts1s_id][1];
+        float dn = sqrtf(dx * dx + dy * dy);
+        if (fabs(dn - 0.40 * pixel_per_meter) < 0.20 * pixel_per_meter)             //两点距离不能大于60cm  (赛道40cm)
+        {
+            float dwx = rpts0s[clip(Ypt0_rpts0s_id + 50, 0, rpts0s_num - 1)][0] -
+                        rpts1s[clip(Ypt1_rpts1s_id + 50, 0, rpts1s_num - 1)][0];
+            float dwy = rpts0s[clip(Ypt0_rpts0s_id + 50, 0, rpts0s_num - 1)][1] -
+                        rpts1s[clip(Ypt1_rpts1s_id + 50, 0, rpts1s_num - 1)][1];
+            float dwn = sqrtf(dwx * dwx + dwy * dwy);
+            if (!(dwn > 0.7 * pixel_per_meter &&                            //如两个Y点之后第50个 点之间的距离小于0.7m
+                  rpts0s[clip(Ypt0_rpts0s_id + 50, 0, rpts0s_num - 1)][0] < rpts0s[Ypt0_rpts0s_id][0] &&
+                  rpts1s[clip(Ypt1_rpts1s_id + 50, 0, rpts1s_num - 1)][0] > rpts1s[Ypt1_rpts1s_id][0]))
+            {
+                Ypt0_found = Ypt1_found = false;
+            }
+        } else
+        {
+            Ypt0_found = Ypt1_found = false;
+        }
+        //zqkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk的检查
+
+        float dx_temp ,dy_temp ;
+
+
+
+        dx_temp = rpts0s[Ypt0_rpts0s_id][0] - rpts0s[rpts0s_num-5][0];
+        dy_temp = rpts0s[Ypt0_rpts0s_id][1] - rpts0s[rpts0s_num-5][1];
+        xielv_left_y_to_end =  dy_temp / dx_temp;                                   //这里得算法包含十字得情况，所以dy 有可能为0，所以dy做分子
+
+
+        dx_temp = rpts1s[Ypt1_rpts1s_id][0] - rpts1s[rpts1s_num-5][0];
+        dy_temp = rpts1s[Ypt1_rpts1s_id][1] - rpts1s[rpts1s_num-5][1];
+        xielv_right_y_to_end =  dy_temp / dx_temp;                                   //这里得算法包含十字得情况，所以dy 有可能为0，所以dy做分子
+
+
+    }
+    // L点二次检查，车库模式不检查, 依据L角点距离及角点后张开特性
+    if (garage_type == GARAGE_NONE) {
+        if (Lpt0_found && Lpt1_found) {
+            float dx = rpts0s[Lpt0_rpts0s_id][0] - rpts1s[Lpt1_rpts1s_id][0];
+            float dy = rpts0s[Lpt0_rpts0s_id][1] - rpts1s[Lpt1_rpts1s_id][1];
+            float dn = sqrtf(dx * dx + dy * dy);
+            if (fabs(dn - 0.40 * pixel_per_meter) < 0.20 * pixel_per_meter)            //两点距离不能大于60cm  (赛道40cm)
+            {
+                float dwx = rpts0s[clip(Lpt0_rpts0s_id + 50, 0, rpts0s_num - 1)][0] -
+                            rpts1s[clip(Lpt1_rpts1s_id + 50, 0, rpts1s_num - 1)][0];
+                float dwy = rpts0s[clip(Lpt0_rpts0s_id + 50, 0, rpts0s_num - 1)][1] -
+                            rpts1s[clip(Lpt1_rpts1s_id + 50, 0, rpts1s_num - 1)][1];
+                float dwn = sqrtf(dwx * dwx + dwy * dwy);
+                if (!(dwn > 0.5 * pixel_per_meter &&                                //符合直角的特征必须50个点后距离大于0.7m，
+                      rpts0s[clip(Lpt0_rpts0s_id + 50, 0, rpts0s_num - 1)][0] < rpts0s[Lpt0_rpts0s_id][0] &&
+                      rpts1s[clip(Lpt1_rpts1s_id + 50, 0, rpts1s_num - 1)][0] > rpts1s[Lpt1_rpts1s_id][0]))
+                {
+                    Lpt0_found = Lpt1_found = false;
+                }
+            } else
+            {
+                Lpt0_found = Lpt1_found = false;
+            }
+
+            float dx_temp ,dy_temp ;
+
+
+
+            dx_temp = rpts0s[Lpt0_rpts0s_id][0] - rpts0s[rpts0s_num-5][0];
+            dy_temp = rpts0s[Lpt0_rpts0s_id][1] - rpts0s[rpts0s_num-5][1];
+            xielv_left_y_to_end =  dy_temp / dx_temp;                                   //这里得算法包含十字得情况，所以dy 有可能为0，所以dy做分子  一般是负
+
+
+            dx_temp = rpts1s[Lpt1_rpts1s_id][0] - rpts1s[rpts1s_num-5][0];
+            dy_temp = rpts1s[Lpt1_rpts1s_id][1] - rpts1s[rpts1s_num-5][1];
+            xielv_right_y_to_end =  dy_temp / dx_temp;                                   //这里得算法包含十字得情况，所以dy 有可能为0，所以dy做分子
+
+
+        }
+    }
+
+    //左车库第二次检查
+    if (Lpt0_found && N_Lpt1_found) {                   //理论上是左车库
+        float dx = rpts0s[Lpt0_rpts0s_id][0] - rpts1s[Lpt1_rpts1s_id][0];
+        float dy = rpts0s[Lpt0_rpts0s_id][1] - rpts1s[Lpt1_rpts1s_id][1];
+        float dn = sqrtf(dx * dx + dy * dy);
+        if (fabs(dn - 0.45 * pixel_per_meter) < 0.15 * pixel_per_meter)            //两点距离不能大于60cm  (赛道45cm)
+        {
+            float dwx = rpts0s[clip(Lpt0_rpts0s_id + 50, 0, rpts0s_num - 1)][0] -
+                        rpts1s[clip(Lpt1_rpts1s_id + 50, 0, rpts1s_num - 1)][0];
+            float dwy = rpts0s[clip(Lpt0_rpts0s_id + 50, 0, rpts0s_num - 1)][1] -
+                        rpts1s[clip(Lpt1_rpts1s_id + 50, 0, rpts1s_num - 1)][1];
+            float dwn = sqrtf(dwx * dwx + dwy * dwy);
+            if (!(dwn < 0.5 * pixel_per_meter &&                                //符合左车库特征必须50个点后距离小于0.5m，
+                  rpts0s[clip(Lpt0_rpts0s_id + 50, 0, rpts0s_num - 1)][0] < rpts0s[Lpt0_rpts0s_id][0] &&
+                  rpts1s[clip(Lpt1_rpts1s_id + 50, 0, rpts1s_num - 1)][0] < rpts1s[Lpt1_rpts1s_id][0]))
+            {
+                Lpt0_found = N_Lpt1_found = false;
+            }
+        } else
+        {
+            Lpt0_found = N_Lpt1_found = false;
+        }
+    }
+
+
+    //右车库第二次检查
+    if (Lpt1_found && N_Lpt0_found) {                   //理论上是右车库
+        float dx = rpts0s[Lpt0_rpts0s_id][0] - rpts1s[Lpt1_rpts1s_id][0];
+        float dy = rpts0s[Lpt0_rpts0s_id][1] - rpts1s[Lpt1_rpts1s_id][1];
+        float dn = sqrtf(dx * dx + dy * dy);
+        if (fabs(dn - 0.45 * pixel_per_meter) < 0.15 * pixel_per_meter)            //两点距离不能大于60cm  (赛道45cm)
+        {
+            float dwx = rpts0s[clip(Lpt0_rpts0s_id + 50, 0, rpts0s_num - 1)][0] -
+                        rpts1s[clip(Lpt1_rpts1s_id + 50, 0, rpts1s_num - 1)][0];
+            float dwy = rpts0s[clip(Lpt0_rpts0s_id + 50, 0, rpts0s_num - 1)][1] -
+                        rpts1s[clip(Lpt1_rpts1s_id + 50, 0, rpts1s_num - 1)][1];
+            float dwn = sqrtf(dwx * dwx + dwy * dwy);
+            if (!(dwn < 0.5 * pixel_per_meter &&                                //符合左车库特征必须50个点后距离小于0.5m，
+                  rpts0s[clip(Lpt0_rpts0s_id + 50, 0, rpts0s_num - 1)][0] > rpts0s[Lpt0_rpts0s_id][0] &&
+                  rpts1s[clip(Lpt1_rpts1s_id + 50, 0, rpts1s_num - 1)][0] > rpts1s[Lpt1_rpts1s_id][0]))
+            {
+                Lpt1_found = N_Lpt0_found = false;
+            }
+        } else
+        {
+            Lpt1_found = N_Lpt0_found = false;
+        }
+    }
 }
