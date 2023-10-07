@@ -2439,12 +2439,24 @@ void Right_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int 
 }
 // 补线 原图
 
-
+/**
+ * @brief 两点求直线，直线颜色为value
+ *
+ * @param img image_t类型的指针img
+ * @param pt0[2] 两个点的坐标
+ * @return 无（主要的作用是在图上画出直线）
+ * @explanation 函数首先计算出pt0到pt1的水平和垂直方向的差值dx和dy。如果dx的绝对值大于dy的绝对值，
+ * 那么函数就从pt0[0]开始遍历到pt1[0]，每次增加1或减少1，取决于dx的正负。在遍历的过程中，函数计算出当前点的纵坐标y，
+ * 并将value赋值给img图像上的对应像素点。计算y的方法是：y = pt0[1] + (x - pt0[0]) * dy / dx，其中x是当前遍历到的横坐标。
+ * 如果dx的绝对值小于等于dy的绝对值，那么函数就从pt0[1]开始遍历到pt1[1]，每次增加1或减少1，取决于dy的正负。在遍历的过程中，
+ * 函数计算出当前点的横坐标x，并将value赋值给img图像上的对应像素点。计算x的方法是：x = pt0[0] + (y - pt0[1]) * dx / dy，
+ * 其中y是当前遍历到的纵坐标。
+ */
 void draw_line(image_t *img, int pt0[2], int pt1[2], uint8_t value)
 {
-    int dx = pt1[0] - pt0[0];
+    int dx = pt1[0] - pt0[0];//求出x,y坐标的差值
     int dy = pt1[1] - pt0[1];
-    if (abs(dx) > abs(dy))
+    if (abs(dx) > abs(dy))//如果x的差值大于y的差值，那么直线形式就是y=kx+b
     {
         for (int x = pt0[0]; x != pt1[0]; x += (dx > 0 ? 1 : -1))
         {
@@ -2452,7 +2464,7 @@ void draw_line(image_t *img, int pt0[2], int pt1[2], uint8_t value)
             AT(img, clip(x, 0, img->width - 1), clip(y, 0, img->height - 1)) = value; // （x，y）坐标像素（不超出边界）赋值
         }
     }
-    else
+    else//如果y的差值大于x的差值，那么直线形式就是x=ky+b
     {
         for (int y = pt0[1]; y != pt1[1]; y += (dy > 0 ? 1 : -1))
         {
