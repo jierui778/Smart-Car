@@ -2189,7 +2189,8 @@ int ipts0[POINTS_MAX_LEN][2]; // 存放边线数据（左）
 int ipts1[POINTS_MAX_LEN][2]; // 存放边线数据（右）
 int ipts0_num;                // 存放边线像素点个数(左)
 int ipts1_num;                // 存放边线像素点个数(右)
-
+int ipts0_lvbo[POINTS_MAX_LEN][2];//存放边线滤波之后的像素点数组
+int ipts1_lvbo[POINTS_MAX_LEN][2];//存放边线滤波之后的像素点数组
 int x0_first, y0_first, x1_first, y1_first; // 左右边线第一个点的坐标
 
 int x1, y1;
@@ -2267,6 +2268,17 @@ void Find_Borderline(void)
 		else
 			ipts1_num = 0;
 	}
+    blur_points(ipts0,ipts0_num,ipts0_lvbo,5);
+    uint8 i;
+    for(i=0;i<ipts0_num;i++)
+    {
+        ips200_draw_line(0,0,ipts0_lvbo[i][0] + 2, ipts0_lvbo[i][1] + 2, RGB565_RED);
+    }
+    blur_points(ipts1,ipts1_num,ipts1_lvbo,5);
+    for(i=0;i<ipts1_num;i++)
+    {
+        ips200_draw_line(0,0,ipts1_lvbo[i][0] + 2, ipts1_lvbo[i][1] + 2, RGB565_BLUE);
+    }
 }
 
 const int dir_front[4][2] = {{0, -1},
@@ -2361,13 +2373,9 @@ void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x
     //	{
     //		tft180_draw_point(ipts0[i][1]/2,ipts0[i][0]/2,RGB565_RED);
     //	}
-    for (i = 0; i < ipts1_num; i++)
-    {
-        ips200_draw_line(0,0,ipts0[i][0] + 2, ipts0[i][1] + 2, RGB565_RED);
-    }
-    ips200_show_int(3,140,ipts0_num,3);
-    ips200_show_int(3,160,loseline0,3);
-    ips200_show_int(3,180,*num,3);
+    // ips200_show_int(3,140,ipts0_num,3);
+    // ips200_show_int(3,160,loseline0,3);
+    // ips200_show_int(3,180,*num,3);
     //	tft180_draw_line(0,0,ipts0[20-1][1],ipts0[20-1][0],RGB565_RED);
     //	tft180_show_int(3,100,ipts0[20-1][1],4);
 }
@@ -2451,13 +2459,13 @@ void Right_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int 
         loseline1 = 1;
     // 记录边线数目
     *num = step;
-    for (i = 0; i < ipts1_num; i++)
-    {
-        ips200_draw_line(160,0,ipts1[i][0] + 2, ipts1[i][1] + 2, RGB565_RED);
-    }
-    ips200_show_int(43,140,ipts1_num,3);
-    ips200_show_int(43,160,loseline1,3);
-    ips200_show_int(43,180,*num,3);
+    // for (i = 0; i < ipts1_num; i++)
+    // {
+    //     ips200_draw_line(160,0,ipts1[i][0] + 2, ipts1[i][1] + 2, RGB565_RED);
+    // }
+    // ips200_show_int(43,140,ipts1_num,3);
+    // ips200_show_int(43,160,loseline1,3);
+    // ips200_show_int(43,180,*num,3);
 }
 // 补线 原图
 
