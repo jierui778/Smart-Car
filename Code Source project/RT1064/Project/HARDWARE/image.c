@@ -2231,7 +2231,7 @@ void test(void)
 */
 void Get_Midline(int pts_l[][2],int pts_l_num,int pts_r[][2],int pts_r_num)
 {
-    int i,mid_num;
+    int i;
     /*丢线判定*/
     if(loseline0==1)//左边丢线
     {
@@ -2280,6 +2280,25 @@ void Get_Midline(int pts_l[][2],int pts_l_num,int pts_r[][2],int pts_r_num)
     {
         ips200_draw_point(Mid_line[i][0],Mid_line[i][1],RGB565_RED);
     }
+}
+
+#define TARGET_ANGEL //目标机械中值对应的角度
+
+/**
+ * @brief 计算给定中线的偏差（只适用于直道）
+ * 
+ * @param pts_in 给定点集
+ * @param num 点集中点的数量
+ * @return float 误差值，返回给舵机
+ */
+float Get_err1(int pts_in[][2], int num)
+{
+    float k,err,last_err;
+    k=LineRession(Mid_line,mid_num);//对中线线性回归，先对中线进行处理了，所以不会超过80行
+    err=-(k-TARGET_ANGEL);//符合舵机的斜率，左负右正
+    err=err*0.8+last_err*0.2;//滤波
+    last_err=err;//更新上一次的偏差值
+    return err;
 }
 
 void Find_Borderline(void)

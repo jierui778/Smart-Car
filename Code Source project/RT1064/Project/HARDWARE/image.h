@@ -125,7 +125,7 @@ void test(void);
 void blur_points(float pts_in[][2], int num, float pts_out[][2], int kernel);
 void Pespective(int pts_in[][2],int int_num ,  float pts_out[][2]);
 void Get_Midline(int pts_l[][2],int pts_l_num,int pts_r[][2],int pts_r_num);
-
+float Get_err1(int pts_in[][2], int num);
 //W矩阵参数
 //60*80
 //#define a11 (-8.0769f)
