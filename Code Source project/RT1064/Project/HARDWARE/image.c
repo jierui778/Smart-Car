@@ -2212,10 +2212,8 @@ void test(void)
 {
 //    int th;
     Image_Compress();
-//    th = OSTU_GetThreshold(*Image_Use, IMAGE_HEIGHT, IMAGE_WIDTH);
-//    Image_Sobel(Image_Use, Image_Use_Robert, th);
-	
     Find_Borderline();
+	bluetooth_ch9141_send_image((const uint8 *)mt9v03x_image, MT9V03X_IMAGE_SIZE);
     Get_Midline(ipts0, ipts0_num, ipts1, ipts1_num);//取中线
 }
 
@@ -2228,30 +2226,60 @@ void test(void)
  * @param pts_r 右车道线点集
  * @param pts_r_num 右车道线点数
  */
+/*
+    2023/10/08优化（待测试）：1.判定弯道的丢线问题 2.同时舍弃掉过高以上的中线
+*/
 void Get_Midline(int pts_l[][2],int pts_l_num,int pts_r[][2],int pts_r_num)
 {
     int i,mid_num;
-    /*取两个边线中最小的一个做数组*/
-    if(pts_l_num>pts_r_num)
+    /*丢线判定*/
+    if(loseline0==1)//左边丢线
     {
-        mid_num=pts_r_num;
+        mid_num=pts_r_num;//中线点数取右边的点数
+        for(i=0;i<mid_num;i++)
+        {
+            Mid_line[i][0]=pts_r[i][0]/2;
+            Mid_line[i][1]=pts_r[i][1]/2;
+            if(Mid_line[i][0]>=80)//如果中线生长到2/3
+                break;
+        }
     }
-    else
+    /*右边丢线*/
+    else if(loseline1==1)
     {
         mid_num=pts_l_num;
+        for(i=0;i<mid_num;i++)
+        {
+            Mid_line[i][0]=pts_l[i][0]/2;
+            Mid_line[i][1]=pts_l[i][1]/2;
+            if(Mid_line[i][0]>=80)//如果中线生长到2/3
+                break;
+        }
     }
-    /*取中线*/
-    for(i=0;i<mid_num;i++)
+    /*两边都不丢线*/
+    else
     {
-        Mid_line[i][0]=(pts_l[i][0]+pts_r[i][0])/2;
-        Mid_line[i][1]=(pts_l[i][1]+pts_r[i][1])/2;
+        /*取两个边线中最小的一个做数组*/
+        if(pts_l_num>pts_r_num)
+        {
+            mid_num=pts_r_num;
+        }
+        else
+            mid_num=pts_l_num;
+        /*取中线*/
+        for(i=0;i<mid_num;i++)
+        {
+            Mid_line[i][0]=(pts_l[i][0]+pts_r[i][0])/2;
+            Mid_line[i][1]=(pts_l[i][1]+pts_r[i][1])/2;
+            if(Mid_line[i][0]>=80)//如果中线生长到2/3
+                break;
+        }
     }
-    /*显示*/
+     /*显示*/
     for(i=0;i<ipts0_num;i++)
     {
         ips200_draw_point(Mid_line[i][0],Mid_line[i][1],RGB565_RED);
     }
-	ips200_show_int(3,140,mid_num,3);
 }
 
 void Find_Borderline(void)
@@ -2558,6 +2586,10 @@ void draw_line(image_t *img, int pt0[2], int pt1[2], uint8_t value)
  * @param num 数组长度
  * @return float 返回斜率
  */
+/*
+    add:这个函数有两处优化的地方：1.如果直线超过60行，就舍弃掉60行以上的部分
+    2.防止斜率突变，应该要加入低通滤波
+*/
 float LineRession(int pts_in[][2], int num)
 {
     float slope;
@@ -2722,7 +2754,8 @@ void blur_points(float pts_in[][2], int num, float pts_out[][2], int kernel)
  *            这个函数的作用是对输入的点集进行等距采样处理，输出采样后的点集。
  *            函数的实现过程是对输入点集中的每个线段进行等距采样，采样后的点集存储在输出点集中。
  *************************************************************************/
-void resample_points(float pts_in[][2], int num1, float pts_out[][2], int *num2, float dist){
+void resample_points(float pts_in[][2], int num1, float pts_out[][2], int *num2, float dist)
+{
     int remain = 0, len = 0;//下一次采样折线段距离
     for(int i=0; i<num1-1 && len < *num2; i++){
         float x0 = pts_in[i][0];
@@ -3055,4 +3088,62 @@ void Pespective(int pts_in[][2],int int_num ,  float pts_out[][2])
         pts_out[i][1] = y / w;
     }
 }
+
+/*
+
+*/
+//void Normalization(float in[][2],int16 num,float out[][2])
+//{
+//    for (int i = 0; i < rpts_num; i++) 
+//    {
+//        float dx = rpts[i][0] - cx;
+//        float dy = rpts[i][1] - cy;//求出每个点到x,y变化值
+//        //float dist = mySqrt(dx * dx + dy * dy);
+//        float dist = sqrt(dx * dx + dy * dy);
+//        //计算rpts上每一点到起始点cx,cy的距离
+//        if (dist < min_dist)//如果当前点到起始点的距离小于已知的最小距离，则更新最小距离和最近点的下标索引
+//        {
+//            min_dist = dist;
+//            begin_id = i;
+//        }
+//    }
+//    // 中线有点，同时最近点不是最后几个点
+//    if (begin_id >= 0 && rpts_num - begin_id >= 3)//这个if条件是用来判断中线是否有足够的点数，同时最近点不是最后几个点
+//    {
+//        // 归一化中线
+//        rpts[begin_id][0] = cx;
+//        rpts[begin_id][1] = cy;//选定起始点
+//        rptsn_num = sizeof(rptsn) / sizeof(rptsn[0]);//sizeof(rptsn) 表示 rptsn 数组的总字节数，sizeof(rptsn[0]) 表示 rptsn 数组中每个元素的字节数
+//        resample_points(rpts + begin_id, rpts_num - begin_id, rptsn, &rptsn_num, sample_dist * pixel_per_meter);
+//         aim_idx[0] = clip(round(aim_distance / sample_dist), 0, rptsn_num - 1);
+
+
+//        // 计算远锚点偏差值      cx，cy为摄像头坐标距重心坐标距离 0,-7
+//        dx[0] = rptsn[aim_idx[0]][0] - cx;
+//        dy[0] = rptsn[aim_idx[0]][1] - cy;
+//        dn[0] = sqrt(dx[0] * dx[0] + dy[0] * dy[0]);
+//        //dn = mySqrt(dx * dx + dy * dy);
+//        //error<0(输出为正) 左 error>0(输出为负) 右 以下为角度制换算为弧度制
+//        error[0] = atan2f(dx[0], dy[0]) * 180 / PI;//1弧度=180/π度 1度=π/180弧度
+//        //assert(!isnan(error));
+
+
+
+//        ave_error = 0;
+//        // 远近锚点综合考虑
+//        //angle = pid_solve(&servo_pid, error * far_rate + error_near * (1 - far_rate));
+//        // 根据偏差进行PD计算
+//        //float angle = pid_solve(&servo_pid, error);
+
+//        // 纯跟踪算法(只考虑远点)三轮控制用不到
+////        pure_angle = -atanf(pixel_per_meter * 2 * 0.2 * dx / dn / dn) / PI * 180 / 1;
+//      } else {
+//          // 中线点过少(出现问题)，则不控制舵机
+//          rptsn_num = 0;
+//      }
+
+//     end = system_getval_us();
+//     //timer_cost = end - start;                              //处理每一帧的时间
+
+//}
 
