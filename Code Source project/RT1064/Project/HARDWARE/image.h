@@ -126,33 +126,24 @@ void blur_points(float pts_in[][2], int num, float pts_out[][2], int kernel);
 void Pespective(int pts_in[][2],int int_num ,  float pts_out[][2]);
 void Get_Midline(int pts_l[][2],int pts_l_num,int pts_r[][2],int pts_r_num);
 float Get_err1(int pts_in[][2], int num);
-//W矩阵参数
+float LineRession(int pts_in[][2], int num);
+void Get_Midline2(int pts_l[][2],int pts_l_num,int pts_r[][2],int pts_r_num);
+//W矩阵参数（原图转化成逆透视后图像的参数）
 //60*80
-//#define a11 (-8.0769f)
-//#define a12 (-0.1923f)
-//#define a13 (336.1538f)
-//#define a21 (0.0f)
-//#define a22 (2.7885f)
-//#define a23 (-440.0f)
-//#define a31 (-0.0f)
-//#define a32 (-0.2404f)
-//#define a33 (1.0f)
-//#define getx(u,v) (a11*(u)+a12*(v)+a13)
-//#define gety(u,v) (a21*(u)+a22*(v)+a23)
-//#define getw(u,v) (a31*(u)+a32*(v)+a33)
-
-#define a11 (1)
-#define a12 (1)
-#define a13 (1)
-#define a21 (1)
-#define a22 (1)
-#define a23 (1)
-#define a31 (1)
-#define a32 (1)
-#define a33 (1)
+#define a11 (3.6707f)
+#define a12 (0.0932f)
+#define a13 (-311.3923f)
+#define a21 (-0.5058f)
+#define a22 (-2.5636f)
+#define a23 (4.608447f)
+#define a31 (-0.000049f)
+#define a32 (-0.001130f)
+#define a33 (0.145079f)
 #define getx(u,v) (a11*(u)+a12*(v)+a13)
 #define gety(u,v) (a21*(u)+a22*(v)+a23)
 #define getw(u,v) (a31*(u)+a32*(v)+a33)
+
+
 
 //D矩阵参数
 /*这些宏定义都是给60*80的矩阵*/

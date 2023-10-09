@@ -2211,10 +2211,12 @@ int mid_num;//中线数组点数
 void test(void)
 {
 //    int th;
+    uint8 i;
     Image_Compress();
     Find_Borderline();
-	bluetooth_ch9141_send_image((const uint8 *)mt9v03x_image, MT9V03X_IMAGE_SIZE);
-    Get_Midline(ipts0, ipts0_num, ipts1, ipts1_num);//取中线
+//	bluetooth_ch9141_send_image((const uint8 *)Image_Use_Robert, 19200);
+    Pespective(ipts0,ipts0_num,rpts0);
+    Get_Midline(ipts0,ipts0_num,ipts1,ipts1_num);
 }
 
 
@@ -2239,8 +2241,8 @@ void Get_Midline(int pts_l[][2],int pts_l_num,int pts_r[][2],int pts_r_num)
         for(i=0;i<mid_num;i++)
         {
             Mid_line[i][0]=pts_r[i][0]/2;
-            Mid_line[i][1]=pts_r[i][1]/2;
-            if(Mid_line[i][0]>=80)//如果中线生长到2/3
+            Mid_line[i][1]=pts_r[i][1];
+            if(Mid_line[i][0]<=40)//如果中线生长到2/3
                 break;
         }
     }
@@ -2250,9 +2252,9 @@ void Get_Midline(int pts_l[][2],int pts_l_num,int pts_r[][2],int pts_r_num)
         mid_num=pts_l_num;
         for(i=0;i<mid_num;i++)
         {
-            Mid_line[i][0]=pts_l[i][0]/2;
-            Mid_line[i][1]=pts_l[i][1]/2;
-            if(Mid_line[i][0]>=80)//如果中线生长到2/3
+            Mid_line[i][0]=(IMAGE_WIDTH-pts_l[i][0])/2+pts_l[i][0];
+            Mid_line[i][1]=pts_l[i][1];
+            if(Mid_line[i][1]<=45)//如果中线生长到2/3
                 break;
         }
     }
@@ -2271,7 +2273,7 @@ void Get_Midline(int pts_l[][2],int pts_l_num,int pts_r[][2],int pts_r_num)
         {
             Mid_line[i][0]=(pts_l[i][0]+pts_r[i][0])/2;
             Mid_line[i][1]=(pts_l[i][1]+pts_r[i][1])/2;
-            if(Mid_line[i][0]>=80)//如果中线生长到2/3
+            if(Mid_line[i][0]<=40)//如果中线生长到2/3
                 break;
         }
     }
@@ -2279,7 +2281,45 @@ void Get_Midline(int pts_l[][2],int pts_l_num,int pts_r[][2],int pts_r_num)
     for(i=0;i<ipts0_num;i++)
     {
         ips200_draw_point(Mid_line[i][0],Mid_line[i][1],RGB565_RED);
+		ips200_show_uint(3,140,Mid_line[i][0],3);
+		ips200_show_uint(3,160,Mid_line[i][1],3);
     }
+	for(i=0;i<ipts1_num;i++)
+    {
+        ips200_draw_line(0,0,pts_r[i][0],pts_r[i][1],RGB565_RED);
+    }
+    ips200_show_uint(3,180,loseline0,3);
+    ips200_show_uint(3,200,loseline1,3);
+}
+
+void Get_Midline2(int pts_l[][2],int pts_l_num,int pts_r[][2],int pts_r_num)
+{
+    int i,mid_num;
+    /*取两个边线中最小的一个做数组*/
+    if(pts_l_num>pts_r_num)
+    {
+        mid_num=pts_r_num;
+    }
+    else
+    {
+        mid_num=pts_l_num;
+    }
+    /*取中线*/
+    for(i=0;i<mid_num;i++)
+    {
+        Mid_line[i][0]=(pts_l[i][0]+pts_r[i][0])/2;
+        Mid_line[i][1]=(pts_l[i][1]+pts_r[i][1])/2;
+    }
+    /*显示*/
+    for(i=0;i<ipts0_num;i++)
+    {
+        if(Mid_line[i][0]<=60)
+        {
+            break;
+        }
+        ips200_draw_point(Mid_line[i][0],Mid_line[i][1],RGB565_RED);
+    }
+    
 }
 
 #define TARGET_ANGEL //目标机械中值对应的角度
@@ -2295,7 +2335,7 @@ float Get_err1(int pts_in[][2], int num)
 {
     float k,err,last_err;
     k=LineRession(Mid_line,mid_num);//对中线线性回归，先对中线进行处理了，所以不会超过80行
-    err=-(k-TARGET_ANGEL);//符合舵机的斜率，左负右正
+    err=-k;//符合舵机的斜率，左负右正
     err=err*0.8+last_err*0.2;//滤波
     last_err=err;//更新上一次的偏差值
     return err;
@@ -3166,3 +3206,49 @@ void Pespective(int pts_in[][2],int int_num ,  float pts_out[][2])
 
 //}
 
+/*左线坐标变换，用于求拐点*/
+void Coordinate_transformation_left(int16 pt0_in[][2],int16 in_num,int16 pt0_out[][2])
+{
+    uint16 i;
+    for(i=0;i<in_num;i++)
+    {
+        pt0_out[i][0] = IMAGE_HEIGHT-pt0_in[i][0]-1;
+    }
+}
+
+/*右线坐标变换，用于求拐点，将左上坐标移到右下坐标*/
+void Coordinate_transformation_right(uint16 pt0_in[][2],uint16 in_num,uint16 pt0_out[][2])
+{
+    uint16 i;
+    for(i=0;i<in_num;i++)
+    {
+        pt0_out[i][0] = IMAGE_HEIGHT-pt0_in[i][0]-1;
+        pt0_out[i][1] = IMAGE_HEIGHT-pt0_in[i][1]-1;
+    }
+}
+
+/*坐标复原，找完十字以后坐标就和以前一样*/
+void Coordinate_restore_left(int16 pt0_in[][2],int16 in_num,int16 pt0_out[][2])
+{
+    uint16 i;
+    for(i=0;i<in_num;i++)
+    {
+        pt0_out[i][0] = IMAGE_HEIGHT-pt0_in[i][0]-1;
+    }
+}
+
+void Coordinate_restore_right(int16 pt0_in[][2],int16 in_num,int16 pt0_out[][2])
+{
+    uint16 i;
+    for(i=0;i<in_num;i++)
+    {
+        pt0_out[i][0] = IMAGE_HEIGHT-pt0_in[i][0]-1;
+        pt0_out[i][1] = IMAGE_HEIGHT-pt0_in[i][1]-1;
+    }
+}
+
+// void Cross_Inflection_point(int16 pt0_in[][2],int16 pt0_num,int16 pt1[][2],int16 pt1_num)
+// {
+//     uint8 i;
+//     if()
+// }
