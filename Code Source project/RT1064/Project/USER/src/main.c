@@ -11,6 +11,7 @@
 #include "pid.h"
 #include "isr.h"
 #include "filter.h"
+#include "SEGGER_RTT.h"
 
 int main(void)
 {
@@ -30,12 +31,16 @@ int main(void)
     //    pit_ms_init(PIT_CH0, 200);
     //    interrupt_set_priority(PIT_IRQn, 0);
     PID_Init();
+    SEGGER_RTT_Init();
+    SEGGER_RTT_printf(0, "Hello world !");
+
     //    Motor_SetPwmL(2000);
     //    Motor_SetPwmR(1888.88);
     while (1)
     {
-        test();
-        ips200_displayimage03x(*Image_Use_Robert, 160, 120);
+        SEGGER_RTT_printf(0, "Hello world !\n");
+        uint8 t;
+        t=100;
         //        Schedule_Run();//任务运行总函数，开始任务调度
     }
 }
