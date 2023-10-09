@@ -130,20 +130,18 @@ float LineRession(int pts_in[][2], int num);
 void Get_Midline2(int pts_l[][2],int pts_l_num,int pts_r[][2],int pts_r_num);
 //W矩阵参数（原图转化成逆透视后图像的参数）
 //60*80
-#define a11 (3.6707f)
-#define a12 (0.0932f)
-#define a13 (-311.3923f)
-#define a21 (-0.5058f)
-#define a22 (-2.5636f)
-#define a23 (4.608447f)
-#define a31 (-0.000049f)
-#define a32 (-0.001130f)
-#define a33 (0.145079f)
+#define a11 (0.077190f)
+#define a12 (-0.076637f)
+#define a13 (13.102759f)
+#define a21 (0.000748f)
+#define a22 (0.004612f)
+#define a23 (4.752768f)
+#define a31 (-0.000035f)
+#define a32 (-0.000852f)
+#define a33 (0.227349f)
 #define getx(u,v) (a11*(u)+a12*(v)+a13)
 #define gety(u,v) (a21*(u)+a22*(v)+a23)
 #define getw(u,v) (a31*(u)+a32*(v)+a33)
-
-
 
 //D矩阵参数
 /*这些宏定义都是给60*80的矩阵*/

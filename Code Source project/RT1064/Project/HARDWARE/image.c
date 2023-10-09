@@ -2170,7 +2170,7 @@ uint8 touch_boundary_up1; // 右边线走到图像上边界
 
 
 #define ROAD_WIDTH (0.39)    // 赛道宽度45cm 适时调整 注意：应用方案三时情况特殊为负数-0.40,正常0.43
-#define POINTS_MAX_LEN (120) // 边线点最多的情况——>num
+#define POINTS_MAX_LEN (150) // 边线点最多的情况——>num
 
 image_t img_raw = DEF_IMAGE(NULL, UCOL, UROW);
 
@@ -2216,7 +2216,7 @@ void test(void)
     Find_Borderline();
 //	bluetooth_ch9141_send_image((const uint8 *)Image_Use_Robert, 19200);
     Pespective(ipts0,ipts0_num,rpts0);
-    Get_Midline(ipts0,ipts0_num,ipts1,ipts1_num);
+//    Get_Midline(ipts0,ipts0_num,ipts1,ipts1_num);
 }
 
 
@@ -2229,7 +2229,8 @@ void test(void)
  * @param pts_r_num 右车道线点数
  */
 /*
-    2023/10/08优化（待测试）：1.判定弯道的丢线问题 2.同时舍弃掉过高以上的中线
+    2023/10/08优化（待测试）：1.判定弯道的丢线问题 2.同时舍弃掉过高以上的中线 
+修改以后测试成功，不过还是要继续优化	
 */
 void Get_Midline(int pts_l[][2],int pts_l_num,int pts_r[][2],int pts_r_num)
 {
@@ -2240,10 +2241,10 @@ void Get_Midline(int pts_l[][2],int pts_l_num,int pts_r[][2],int pts_r_num)
         mid_num=pts_r_num;//中线点数取右边的点数
         for(i=0;i<mid_num;i++)
         {
-            Mid_line[i][0]=pts_r[i][0]/2;
-            Mid_line[i][1]=pts_r[i][1];
-            if(Mid_line[i][0]<=40)//如果中线生长到2/3
-                break;
+			Mid_line[i][0]=pts_r[i][0]/2;
+			Mid_line[i][1]=pts_r[i][1];
+			if(Mid_line[i][0]<=40)//如果中线生长到2/3
+					break;
         }
     }
     /*右边丢线*/
@@ -3146,6 +3147,21 @@ void Pespective(int pts_in[][2],int int_num ,  float pts_out[][2])
         pts_out[i][0] = x / w;
         pts_out[i][1] = y / w;
     }
+	int i;
+	for(i=0;i<int_num;i++)
+	{
+	ips200_draw_point(pts_out[i][0]+20,pts_out[i][1]+20,RGB565_RED);
+	}
+//	for(i=0;i<int_num;i++)
+//	{
+//	ips200_draw_line(0,0,pts_in[i][0]+5,pts_in[i][1],RGB565_RED);
+//	}
+	ips200_show_uint(43,200,int_num,4);
+//	ips200_show_uint(43,160,pts_out[int_num-2][1],4);
+//	ips200_show_uint(43,180,pts_out[int_num-1][1],4);
+//	ips200_show_uint(43,140,pts_out[int_num-2][0],4);
+//	ips200_show_uint(3,180,pts_out[int_num-3][1],4);
+//	ips200_show_uint(3,200,pts_out[int_num-3][0],4);
 }
 
 /*
