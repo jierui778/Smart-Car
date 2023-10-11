@@ -2182,22 +2182,6 @@ int ipts1[POINTS_MAX_LEN][2]; // 存放边线数据（右）
 int ipts0_num;                // 存放边线像素点个数(左)
 int ipts1_num;                // 存放边线像素点个数(右)
 
-// 逆透视变换后左右边线
-float rpts0[POINTS_MAX_LEN][2];
-float rpts1[POINTS_MAX_LEN][2];
-int rpts0_num, rpts1_num;
-
-// 逆透视变换后左右边线再三角滤波后的边线数组
-float rpts0b[POINTS_MAX_LEN][2];
-float rpts1b[POINTS_MAX_LEN][2];
-int rpts0b_num, rpts1b_num;
-
-//逆透视变换后左右边线再三角滤波后再等距采样的数组
-float rpts0s[POINTS_MAX_LEN][2];
-float rpts1s[POINTS_MAX_LEN][2];
-int rpts0s_num, rpts1s_num;
-
-int rpts0_num, rpts1_num;
 int x0_first, y0_first, x1_first, y1_first; // 左右边线第一个点的坐标
 
 int x1, y1;
@@ -2214,8 +2198,20 @@ void test(void)
     uint8 i;
     Image_Compress();
     Find_Borderline();
-//	bluetooth_ch9141_send_image((const uint8 *)Image_Use_Robert, 19200);
-//    Get_Midline(ipts0,ipts0_num,ipts1,ipts1_num);
+	for(i=0;i<ipts0_num;i++)
+	{
+		ips200_draw_line(160,0,ipts0[i][0],ipts0[i][1],RGB565_BLUE);
+	}
+	for(i=0;i<ipts1_num;i++)
+	{
+		ips200_draw_line(0,0,ipts1[i][0],ipts1[i][1],RGB565_RED);
+	}
+	ips200_show_uint(3,140,loseline0,4);
+	ips200_show_uint(3,160,loseline1,4);
+	ips200_show_float(3,180,LineRession(ipts0,ipts0_num),4,4);
+	ips200_show_float(3,200,LineRession(ipts1,ipts1_num),4,4);
+	Image_CheckState(ipts0,ipts0_num,ipts1,ipts1_num);
+//    Get_Midline(ipts0,ipts0_num,ipts1,ipts1_num);LineRession
 }
 
 
@@ -2292,35 +2288,7 @@ void Get_Midline(int pts_l[][2],int pts_l_num,int pts_r[][2],int pts_r_num)
     ips200_show_uint(3,200,loseline1,3);
 }
 
-void Get_Midline2(int pts_l[][2],int pts_l_num,int pts_r[][2],int pts_r_num)
-{
-    int i,mid_num;
-    /*取两个边线中最小的一个做数组*/
-    if(pts_l_num>pts_r_num)
-    {
-        mid_num=pts_r_num;
-    }
-    else
-    {
-        mid_num=pts_l_num;
-    }
-    /*取中线*/
-    for(i=0;i<mid_num;i++)
-    {
-        Mid_line[i][0]=(pts_l[i][0]+pts_r[i][0])/2;
-        Mid_line[i][1]=(pts_l[i][1]+pts_r[i][1])/2;
-    }
-    /*显示*/
-    for(i=0;i<ipts0_num;i++)
-    {
-        if(Mid_line[i][0]<=60)
-        {
-            break;
-        }
-        ips200_draw_point(Mid_line[i][0],Mid_line[i][1],RGB565_RED);
-    }
-    
-}
+
 
 #define TARGET_ANGEL //目标机械中值对应的角度
 
@@ -2833,6 +2801,7 @@ void Coordinate_restore_right(int pt0_in[][2], int in_num, int pt0_out[][2])
 */
 /*检测元素步骤：判断元素是否有标志位-_-->判断拐点是否能找到---->判断是否能补线---->判断补线后再找左右边线*/
 uint8 Cross_State_b;//十字路口前
+uint8 Cross_State_d;//十字路口前中
 uint8 Cross_State_c;//十字路口中
 uint8 Straight_State;//直道
 uint8 Left_Turn;//左弯道
@@ -2861,41 +2830,57 @@ void Image_Clear(void)
  */
 void Image_CheckState(int in_put_l[][2],int in_put_num_l,int in_put_r[][2],int in_put_num_r)
 {
-    /*十字路口前：左边线丢线 右边线丢线 左边线丢线和右边线丢线的列坐标相差较大，行坐标相差较少*/
-    if((loseline0==1&&loseline1==1&&(in_put_r[in_put_num_r-1][0]-in_put_l[in_put_num_l-3][0])>(IMAGE_WIDTH-10))
-    &&(my_abs(in_put_l[in_put_num_l-3][1]-in_put_r[in_put_num_r-1][1])<10))
+    /*十字路口前：左右不丢线 左边线丢线和右边线丢线的列坐标相差较大，行坐标相差较少*/
+    if((loseline0==0&&loseline1==0&&(in_put_r[in_put_num_r-1][0]-in_put_l[in_put_num_l-3][0])>(IMAGE_WIDTH-10))
+    &&(my_abs(in_put_l[in_put_num_l-3][1]-in_put_r[in_put_num_r-1][1])<10)&&Cross_State_d==0)
     {
         Cross_State_b = 1;
-        Image_Clear();
+		Cross_State_c = 0;
+		Cross_State_d = 0;
+//        Image_Clear();
     }
     /*十字路口中：左边线不丢线 右边线不丢线 左边线丢线和右边线丢线的列坐标相差较小，行坐标相差较少*/
-    /*这个条件待确定，不知道最多能扫到哪*/
-    else if(loseline0==0&&loseline1==0&&(my_abs(in_put_l[in_put_num_l-1][0]-in_put_r[in_put_num_r-3][0])<(IMAGE_WIDTH-20))
-    &&(my_abs(in_put_l[in_put_num_l-3][1]-in_put_r[in_put_num_r-1][1])<10)&&Cross_State_b==1)
+	else if(loseline0==0&&loseline1==0&&Cross_State_d==1&&in_put_l[in_put_num_l-1][0]!=0)
     {
         Cross_State_c = 1;
-        Image_Clear();
+		Cross_State_b = 0;
+		Cross_State_d = 0;
     }
+	else if(loseline0==1&&loseline1==1&&Cross_State_b==1)
+    {
+        Cross_State_d = 1;
+		Cross_State_b = 0;
+		Cross_State_c = 0;
+    }
+	
     /*直道：左右不丢线，左线右线斜率大小相等，顶点的距离较小（比十字中更小）*/
     /*先检测能不能求出斜率，再判断状态*/
-    else if(loseline0==0&&loseline1==0&&((LineRession(in_put_l,in_put_num_l)+LineRession(in_put_r,in_put_num_r))<5.0)
-    &&(my_abs(in_put_l[in_put_num_l-1][0]-in_put_r[in_put_num_r-3][0])<(IMAGE_WIDTH/2)))
-    {
-        Straight_State=1;
-        Image_Clear();
-    }
+//    else if(loseline0==0&&loseline1==0&&((LineRession(in_put_l,in_put_num_l)+LineRession(in_put_r,in_put_num_r))<5.0)
+//    &&(my_abs(in_put_l[in_put_num_l-1][0]-in_put_r[in_put_num_r-3][0])<(IMAGE_WIDTH/2)))
+//    {
+//        Straight_State=1;
+//        Image_Clear();
+//    }
     /*左弯道：左丢线，右边不丢线，右边线最大点距离左边小于50个的单位*/
     else if(loseline0==0&&loseline1==1&&in_put_r[in_put_num_r-1][0]<60)
     {
-        Left_Turn=1;
-        Image_Clear();
+        Left_Turn = 1;
+		Right_Turn = 0;
     }
     /*右弯道：右丢线，左边不丢线，左边线最大点距离右边小于50个的单位*/
     else if(loseline0==1&&loseline1==0&&in_put_l[in_put_num_l-1][0]>120)
     {
-        Right_Turn=1;
-        Image_Clear();
+        Right_Turn = 1;
+		Left_Turn = 0;
     }
+	/*显示状态区*/
+	ips200_show_uint(83,140,Cross_State_b,3);
+	ips200_show_uint(83,160,in_put_r[in_put_num_r-1][0]-in_put_l[in_put_num_l-3][0],3);
+	ips200_show_uint(83,180,my_abs(in_put_l[in_put_num_l-3][1]-in_put_r[in_put_num_r-1][1]),3);
+	ips200_show_uint(163,140,Cross_State_d,3);
+	ips200_show_uint(163,160,Cross_State_c,3);
+	ips200_show_uint(163,180,Left_Turn,3);
+	ips200_show_uint(163,200,Right_Turn,3);
 }
 
 

@@ -33,7 +33,7 @@ uint8 Image_Get_LeftPoint(uint8 start_row);//求右边界起始点坐标函数
 void Image_blur_points_Left(int num,int kernel);//三角滤波左边线
 void Image_blur_points_Right(int num,int kernel);//三角滤波右边线
 
-
+void Image_CheckState(int in_put_l[][2],int in_put_num_l,int in_put_r[][2],int in_put_num_r);
 
 
 /*辅助计算*/

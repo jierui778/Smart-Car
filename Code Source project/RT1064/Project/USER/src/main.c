@@ -40,6 +40,7 @@ int main(void)
         {
 			test();
             ips200_displayimage03x(*Image_Use_Robert, 160, 120);
+			
         }
             
 //        test();
