@@ -34,7 +34,7 @@ void Image_blur_points_Left(int num,int kernel);//三角滤波左边线
 void Image_blur_points_Right(int num,int kernel);//三角滤波右边线
 
 void Image_CheckState(int in_put_l[][2],int in_put_num_l,int in_put_r[][2],int in_put_num_r);
-
+void Cross_Drawline(int in_put_l[][2],int in_put_num_l,int in_put_r[][2],int in_put_r_num);
 
 /*辅助计算*/
 float Image_ab_value(float a, float b);                                        // 求浮点型的绝对值

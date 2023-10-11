@@ -2198,19 +2198,9 @@ void test(void)
     uint8 i;
     Image_Compress();
     Find_Borderline();
-	for(i=0;i<ipts0_num;i++)
-	{
-		ips200_draw_line(160,0,ipts0[i][0],ipts0[i][1],RGB565_BLUE);
-	}
-	for(i=0;i<ipts1_num;i++)
-	{
-		ips200_draw_line(0,0,ipts1[i][0],ipts1[i][1],RGB565_RED);
-	}
-	ips200_show_uint(3,140,loseline0,4);
-	ips200_show_uint(3,160,loseline1,4);
-	ips200_show_float(3,180,LineRession(ipts0,ipts0_num),4,4);
-	ips200_show_float(3,200,LineRession(ipts1,ipts1_num),4,4);
+	
 	Image_CheckState(ipts0,ipts0_num,ipts1,ipts1_num);
+	Cross_Drawline(ipts0,ipts0_num,ipts1,ipts1_num);
 //    Get_Midline(ipts0,ipts0_num,ipts1,ipts1_num);LineRession
 }
 
@@ -2273,19 +2263,7 @@ void Get_Midline(int pts_l[][2],int pts_l_num,int pts_r[][2],int pts_r_num)
                 break;
         }
     }
-     /*显示*/
-    for(i=0;i<ipts0_num;i++)
-    {
-        ips200_draw_point(Mid_line[i][0],Mid_line[i][1],RGB565_RED);
-		ips200_show_uint(3,140,Mid_line[i][0],3);
-		ips200_show_uint(3,160,Mid_line[i][1],3);
-    }
-	for(i=0;i<ipts1_num;i++)
-    {
-        ips200_draw_line(0,0,pts_r[i][0],pts_r[i][1],RGB565_RED);
-    }
-    ips200_show_uint(3,180,loseline0,3);
-    ips200_show_uint(3,200,loseline1,3);
+    
 }
 
 
@@ -2756,6 +2734,7 @@ void Coordinate_transformation_left(int pt0_in[][2], int in_num, int pt0_out[][2
     for(i=0;i<in_num;i++)
     {
         pt0_out[i][1] = IMAGE_HEIGHT-pt0_in[i][1]-1;
+		pt0_out[i][0] = pt0_in[i][0];
     }
 }
 
@@ -2873,13 +2852,6 @@ void Image_CheckState(int in_put_l[][2],int in_put_num_l,int in_put_r[][2],int i
         Right_Turn = 1;
 		Left_Turn = 0;
     }
-	/*显示状态区*/
-	ips200_show_uint(83,140,in_put_r[in_put_num_r-1][0],3);
-	ips200_show_uint(83,160,in_put_l[in_put_num_l-1][0],3);
-	ips200_show_uint(83,180,my_abs(in_put_l[in_put_num_l-3][1]-in_put_r[in_put_num_r-1][1]),3);
-	ips200_show_uint(163,160,Cross_State_c,3);
-	ips200_show_uint(163,180,Left_Turn,3);
-	ips200_show_uint(163,200,Right_Turn,3);
 }
 
 
@@ -2892,15 +2864,21 @@ void Cross_Drawline(int in_put_l[][2],int in_put_num_l,int in_put_r[][2],int in_
 {
     uint16 i;
     uint16 left_index,right_index;//左右拐点的坐标
+	uint16 left_highest=0,right_highest=0;
     /*一 坐标转换*/
     Coordinate_transformation_left(in_put_l,in_put_num_l,Left_Change);//左右线坐标变换
     Coordinate_transformation_right(in_put_r,in_put_r_num,Right_Change);
+	
+	
 
+	
+	
     /*二 找拐点*/
     for(i=0;i<in_put_num_l;i++)
     {
-        if((Left_Change[i][0]+Left_Change[i][1])>(Left_Change[i+1][0]+Left_Change[i+1][1]))//拐点的坐标之和最大
+        if((Left_Change[i][0]+Left_Change[i][1])>left_highest)//拐点的坐标之和最大
         {
+			left_highest=(Left_Change[i][0]+Left_Change[i][1]);
             left_index = i;
             //遍历完，不用break
         }
@@ -2908,11 +2886,14 @@ void Cross_Drawline(int in_put_l[][2],int in_put_num_l,int in_put_r[][2],int in_
 
     for(i=0;i<in_put_r_num;i++)
     {
-        if((Right_Change[i][0]+Right_Change[i][1])>(Right_Change[i+1][0]+Right_Change[i+1][1]))//拐点的坐标之和最大
+        if((Right_Change[i][0]+Right_Change[i][1])>right_highest)//拐点的坐标之和最大
         {
+			right_highest=(Right_Change[i][0]+Right_Change[i][1]);
             right_index = i;
             //遍历完，不用break
         }
     }
+	ips200_draw_line(0,0,in_put_l[left_index][0],in_put_l[left_index][1],RGB565_RED);
+	ips200_draw_line(0,0,in_put_r[right_index][0],in_put_r[right_index][1],RGB565_BLUE);
     /*三 补线*/
 }
