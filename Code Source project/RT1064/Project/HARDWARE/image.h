@@ -52,6 +52,8 @@ float Imgae_SlopeLeft(uint8 begin, uint8 end);                                 /
 void Image_CountLeftKB_L(uint8 start, uint8 end);
 float mySqrt(float x); // 计算一个浮点数的平方根
 
+void Pespective(int pts_in[][2],int int_num ,float pts_out[][2]);
+
 /*元素*/
 void Image_FillCross(uint8 (*Image_Use)[IMAGE_WIDTH]); // 十字
 uint8 Image_Stretch_Left(void);                        // 左直道元素判断
@@ -126,7 +128,6 @@ void draw_line2(float pt0[2], float pt1[2], float pts_out[][2], int *num, float 
 void SplicingArray(float pt0[][2], int num1, float pt1[][2], int num2, float pt_out[][2], int *num, uint8 x); // 数组拼接
 void test(void);
 void blur_points(float pts_in[][2], int num, float pts_out[][2], int kernel);
-void Pespective(int pts_in[][2], int int_num, float pts_out[][2]);
 void Get_Midline(int pts_l[][2], int pts_l_num, int pts_r[][2], int pts_r_num);
 float Get_err1(int pts_in[][2], int num);
 float LineRession(int pts_in[][2], int num);
@@ -154,14 +155,14 @@ void Get_Midline2(int pts_l[][2], int pts_l_num, int pts_r[][2], int pts_r_num);
 //#define a32 (0.002450f)
 //#define a33 (-0.433058f)效果较好
 
-#define a11 (-5.6373f)
-#define a12 (-0.6830f)
-#define a13 (483.7160f)
-#define a21 (-0.9852f)
-#define a22 (14.7362f)
-#define a23 (-857.7343f)
-#define a31 (-0.0011f)
-#define a32 (-0.2488f)
+#define a11 (-1.9446)
+#define a12 (-0.0768f)
+#define a13 (152.9928f)
+#define a21 (-0.0901f)
+#define a22 (0.4470f)
+#define a23 (-190.8998f)
+#define a31 (-0.0030f)
+#define a32 (-0.0846f)
 #define a33 (1.0f)
 
 #define getx(u, v) (a11 * (u) + a12 * (v) + a13)

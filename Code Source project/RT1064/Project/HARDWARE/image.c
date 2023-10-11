@@ -2182,6 +2182,8 @@ int ipts1[POINTS_MAX_LEN][2]; // 存放边线数据（右）
 int ipts0_num;                // 存放边线像素点个数(左)
 int ipts1_num;                // 存放边线像素点个数(右)
 
+
+float ipts_out[POINTS_MAX_LEN][2];
 int x0_first, y0_first, x1_first, y1_first; // 左右边线第一个点的坐标
 
 int x1, y1;
@@ -2191,17 +2193,66 @@ int Mid_line[POINTS_MAX_LEN][2];//定义中线数组
 int mid_num;//中线数组点数
 
                       // SOBEL二值化图像
+float rpts0[POINTS_MAX_LEN][2];
+float rpts1[POINTS_MAX_LEN][2];
+int rpts0_num, rpts1_num;
 
 void test(void)
 {
 //    int th;
-    uint8 i;
-    Image_Compress();
-    Find_Borderline();
+//    uint8 i;
+//    Image_Compress();
+//    Find_Borderline();
+//	Pespective(ipts0,ipts0_num,ipts_out);
+	uint8 i;
+	Image_Compress();
+	int TH;
+	TH = OSTU_GetThreshold(Image_Use[0], IMAGE_WIDTH, IMAGE_HEIGHT);
+	//    Image_Binarization(TH, Image_Use);
+	Image_Sobel(Image_Use, Image_Use_Robert, TH); // 全局Sobel得二值图(方案二) 2.8ms
 	
-	Image_CheckState(ipts0,ipts0_num,ipts1,ipts1_num);
-	Cross_Drawline(ipts0,ipts0_num,ipts1,ipts1_num);
-//    Get_Midline(ipts0,ipts0_num,ipts1,ipts1_num);LineRession
+	img_raw.data = *Image_Use_Robert;
+	Find_Borderline();
+	Pespective(ipts0,ipts0_num ,rpts0);
+	for(i=0;i<ipts0_num;i++)
+	{
+	ips200_draw_point(rpts0[i][0]+20,rpts0[i][1]+20,RGB565_RED);
+	}
+	rpts0_num = ipts0_num;
+	Pespective(ipts1,ipts1_num ,rpts1);
+//	Image_CheckState(ipts0,ipts0_num,ipts1,ipts1_num);
+//	Cross_Drawline(ipts0,ipts0_num,ipts1,ipts1_num);
+//    Get_Midline(ipts0,ipts0_num,ipts1,ipts1_num);
+//	ips200_show_float(3,140,)
+}
+
+void Pespective(int pts_in[][2],int int_num ,  float pts_out[][2])
+//带入提取出来的两条边线，得到透视变换后的两条边线
+{
+    float x, y, w;
+    for (int16_t i = 0; i < int_num; i++)
+    {
+        x = getx((pts_in[i][0]), (pts_in[i][1]));
+        y = gety((pts_in[i][0]), (pts_in[i][1]));
+        w = getw((pts_in[i][0]), (pts_in[i][1]));
+        pts_out[i][0] = x / w;
+        pts_out[i][1] = y / w;
+    }
+	int i;
+	for(i=0;i<int_num;i++)
+	{
+	ips200_draw_point(pts_out[i][0]+20,pts_out[i][1]+20,RGB565_RED);
+	}
+//	for(i=0;i<int_num;i++)
+//	{
+//	ips200_draw_line(0,0,pts_in[i][0]+5,pts_in[i][1],RGB565_RED);
+//	}
+	ips200_show_uint(43,200,int_num,4);
+//	ips200_show_uint(43,160,pts_out[int_num-2][1],4);
+//	ips200_show_uint(43,180,pts_out[int_num-1][1],4);
+//	ips200_show_uint(43,140,pts_out[int_num-2][0],4);
+//	ips200_show_uint(3,180,pts_out[int_num-3][1],4);
+//	ips200_show_uint(3,200,pts_out[int_num-3][0],4);
 }
 
 
@@ -2263,7 +2314,6 @@ void Get_Midline(int pts_l[][2],int pts_l_num,int pts_r[][2],int pts_r_num)
                 break;
         }
     }
-    
 }
 
 
@@ -2589,7 +2639,7 @@ void draw_line(image_t *img, int pt0[2], int pt1[2], uint8_t value)
  *
  * @param pts_in 二维数组
  * @param num 数组长度
- * @return float 返回斜率
+ * @return float 返回斜率 row=k*column+b
  */
 /*
     add:这个函数有两处优化的地方：1.如果直线超过60行，就舍弃掉60行以上的部分
@@ -2605,7 +2655,7 @@ float LineRession(int pts_in[][2], int num)
 
     for (i = 0; i < num; i++)
     {
-        SumY += pts_in[i][1];
+        SumY += pts_in[i][1];//
         SumX += pts_in[i][0]; // 对边界X,Y求和
     }
     avrY = SumY / SumLines; // Y的平均值
@@ -2625,6 +2675,36 @@ float LineRession(int pts_in[][2], int num)
     return slope;                         // 返回斜率
 }
 
+
+float LineRession2(int pts_in[][2], int num)
+{
+    float slope;
+    // int num = sizeof(pts_in) / sizeof(pts_in[0]); // 求数组的长度
+    int i = 0, SumX = 0, SumY = 0, SumLines = 0;
+    float SumUp = 0, SumDown = 0, avrX = 0, avrY = 0, A;
+    SumLines = pts_in[0][0] - pts_in[num][0]; // pts_in[0][1] 为开始行， //pts_in[num][1] 结束行 //SumLines
+
+    for (i = 0; i < num; i++)
+    {
+        SumY += pts_in[i][0];//
+        SumX += pts_in[i][1]; // 对边界X,Y求和
+    }
+    avrY = SumY / SumLines; // Y的平均值
+    avrX = SumX / SumLines; // X的平均值
+    SumUp = 0;
+    SumDown = 0;
+    for (i = 0; i < num; i++)
+    {
+        SumUp += (pts_in[i][0] - avrX) * (pts_in[i][1] - avrY);
+        SumDown += (pts_in[i][1] - avrY) * (pts_in[i][1] - avrY);
+    }
+    if (SumDown == 0)
+        slope = 0;
+    else
+        slope = (SumUp / SumDown);
+    A = (SumX - slope * SumY) / SumLines; // 截距
+    return slope;                         // 返回斜率
+}
 
 /**
  * @brief 快速计算 平方根Sqrt(x),牛顿迭代法
@@ -2856,7 +2936,7 @@ void Image_CheckState(int in_put_l[][2],int in_put_num_l,int in_put_r[][2],int i
 
 
 /*
-十字补线函数 ：判断坐标能否正常转换（draw_line）--->判断
+十字状态一补线函数 ：判断坐标能否正常转换（draw_line）--->判断
 */
 int Left_Change [POINTS_MAX_LEN][2];
 int Right_Change [POINTS_MAX_LEN][2];
@@ -2865,12 +2945,11 @@ void Cross_Drawline(int in_put_l[][2],int in_put_num_l,int in_put_r[][2],int in_
     uint16 i;
     uint16 left_index,right_index;//左右拐点的坐标
 	uint16 left_highest=0,right_highest=0;
+	float k_left,k_right;
+	float b_left,b_right;
     /*一 坐标转换*/
     Coordinate_transformation_left(in_put_l,in_put_num_l,Left_Change);//左右线坐标变换
     Coordinate_transformation_right(in_put_r,in_put_r_num,Right_Change);
-	
-	
-
 	
 	
     /*二 找拐点*/
@@ -2886,7 +2965,7 @@ void Cross_Drawline(int in_put_l[][2],int in_put_num_l,int in_put_r[][2],int in_
 
     for(i=0;i<in_put_r_num;i++)
     {
-        if((Right_Change[i][0]+Right_Change[i][1])>right_highest)//拐点的坐标之和最大
+        if((Right_Change[i][0]+Right_Change[i][1])>right_highest)//拐点的坐标之和最大row=k*column+b
         {
 			right_highest=(Right_Change[i][0]+Right_Change[i][1]);
             right_index = i;
@@ -2896,4 +2975,12 @@ void Cross_Drawline(int in_put_l[][2],int in_put_num_l,int in_put_r[][2],int in_
 	ips200_draw_line(0,0,in_put_l[left_index][0],in_put_l[left_index][1],RGB565_RED);
 	ips200_draw_line(0,0,in_put_r[right_index][0],in_put_r[right_index][1],RGB565_BLUE);
     /*三 补线*/
+	k_left=LineRession(in_put_l,left_index);
+	ips200_show_float(3,140,k_left,4,4);
+	
+	b_left=in_put_l[left_index][1]-k_left*in_put_l[left_index][0];
+	
+	//求得的直线方程是row=column*k+b，实际上应该是column=row*k+b
+	k_right=LineRession(in_put_r,right_index);
+	ips200_show_float(43,140,k_right,4,4);
 }
