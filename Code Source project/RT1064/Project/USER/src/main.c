@@ -38,9 +38,14 @@ int main(void)
     //    Motor_SetPwmR(1888.88);
     while (1)
     {
-        SEGGER_RTT_printf(0, "Hello world !\n");
-        uint8 t;
-        t=100;
+
         //        Schedule_Run();//任务运行总函数，开始任务调度
+        test();
+        ips200_displayimage03x(*Image_Use_Robert, 160, 120);
+            
+//        test();
+//        
+//        //        Schedule_Run();//任务运行总函数，开始任务调度
+		//	bluetooth_ch9141_send_image(*Image_Use_Robert, 19200);
     }
 }
