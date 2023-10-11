@@ -2121,30 +2121,6 @@ void Image_blur_points_Left(int num,int kernel)
 		Left_New[i].grow=Left[i].grow;
     }
 }
-/**
- * @brief 右线的三角滤波
- * 
- * @param int num 右线的点数总个数 int kernel 内核大小
- * @return 无
- * @example void Image_blur_points_Left(Left_Count,5);
- */
-void Image_blur_points_Right(int num,int kernel)
-{
-    zf_assert(kernel % 2 == 1);
-    int half = kernel / 2;
-    for (int i = 0; i < num; i++) 
-	{
-        Right_New[i].row = Right_New[i].column = 0;
-        for (int j = -half; j <= half; j++) 
-		{
-            Right_New[i].row += (float)Right[clip(i + j, 0, num - 1)].row * (half + 1 - abs(j));
-            Right_New[i].column += (float)Right[clip(i + j, 0, num - 1)].column * (half + 1 - abs(j));
-        }
-        Right_New[i].row /= (2 * half + 2) * (half + 1) / 2;
-        Right_New[i].column /= (2 * half + 2) * (half + 1) / 2;
-		Right_New[i].grow=Right[i].grow;
-    }
-}
 
 
 uint8 Image_Scan_Column(uint8 (*Image_Use)[IMAGE_WIDTH], uint8 target_column)
@@ -2198,19 +2174,9 @@ void test(void)
     uint8 i;
     Image_Compress();
     Find_Borderline();
-	for(i=0;i<ipts0_num;i++)
-	{
-		ips200_draw_line(160,0,ipts0[i][0],ipts0[i][1],RGB565_BLUE);
-	}
-	for(i=0;i<ipts1_num;i++)
-	{
-		ips200_draw_line(0,0,ipts1[i][0],ipts1[i][1],RGB565_RED);
-	}
-	ips200_show_uint(3,140,loseline0,4);
-	ips200_show_uint(3,160,loseline1,4);
-	ips200_show_float(3,180,LineRession(ipts0,ipts0_num),4,4);
-	ips200_show_float(3,200,LineRession(ipts1,ipts1_num),4,4);
+	
 	Image_CheckState(ipts0,ipts0_num,ipts1,ipts1_num);
+	Cross_Drawline(ipts0,ipts0_num,ipts1,ipts1_num);
 //    Get_Midline(ipts0,ipts0_num,ipts1,ipts1_num);LineRession
 }
 
@@ -2756,6 +2722,7 @@ void Coordinate_transformation_left(int pt0_in[][2], int in_num, int pt0_out[][2
     for(i=0;i<in_num;i++)
     {
         pt0_out[i][1] = IMAGE_HEIGHT-pt0_in[i][1]-1;
+		pt0_out[i][0] = pt0_in[i][0];
     }
 }
 
@@ -2837,6 +2804,9 @@ void Image_CheckState(int in_put_l[][2],int in_put_num_l,int in_put_r[][2],int i
         Cross_State_b = 1;
 		Cross_State_c = 0;
 		Cross_State_d = 0;
+		Right_Turn = 0;
+		Left_Turn = 0;
+		
 //        Image_Clear();
     }
     /*十字路口中：左边线不丢线 右边线不丢线 左边线丢线和右边线丢线的列坐标相差较小，行坐标相差较少*/
@@ -2845,12 +2815,16 @@ void Image_CheckState(int in_put_l[][2],int in_put_num_l,int in_put_r[][2],int i
         Cross_State_c = 1;
 		Cross_State_b = 0;
 		Cross_State_d = 0;
+		Right_Turn = 0;
+		Left_Turn = 0;
     }
 	else if(loseline0==1&&loseline1==1&&Cross_State_b==1)
     {
         Cross_State_d = 1;
 		Cross_State_b = 0;
 		Cross_State_c = 0;
+		Right_Turn = 0;
+		Left_Turn = 0;
     }
 	
     /*直道：左右不丢线，左线右线斜率大小相等，顶点的距离较小（比十字中更小）*/
@@ -2866,20 +2840,20 @@ void Image_CheckState(int in_put_l[][2],int in_put_num_l,int in_put_r[][2],int i
     {
         Left_Turn = 1;
 		Right_Turn = 0;
+		Cross_State_b = 0;
+		Cross_State_c = 0;
+		Cross_State_d = 0;
     }
     /*右弯道：右丢线，左边不丢线，左边线最大点距离右边小于50个的单位*/
     else if(loseline0==0&&loseline1==1&&in_put_l[in_put_num_l-1][0]>120)
     {
         Right_Turn = 1;
 		Left_Turn = 0;
+		Cross_State_b = 0;
+		Cross_State_c = 0;
+		Cross_State_d = 0;
     }
 	/*显示状态区*/
-	ips200_show_uint(83,140,in_put_r[in_put_num_r-1][0],3);
-	ips200_show_uint(83,160,in_put_l[in_put_num_l-1][0],3);
-	ips200_show_uint(83,180,my_abs(in_put_l[in_put_num_l-3][1]-in_put_r[in_put_num_r-1][1]),3);
-	ips200_show_uint(163,160,Cross_State_c,3);
-	ips200_show_uint(163,180,Left_Turn,3);
-	ips200_show_uint(163,200,Right_Turn,3);
 }
 
 
@@ -2892,27 +2866,51 @@ void Cross_Drawline(int in_put_l[][2],int in_put_num_l,int in_put_r[][2],int in_
 {
     uint16 i;
     uint16 left_index,right_index;//左右拐点的坐标
+	uint16 highest_left=0;
+	uint16 highest_right=0;
     /*一 坐标转换*/
     Coordinate_transformation_left(in_put_l,in_put_num_l,Left_Change);//左右线坐标变换
     Coordinate_transformation_right(in_put_r,in_put_r_num,Right_Change);
-
+	
+	
     /*二 找拐点*/
     for(i=0;i<in_put_num_l;i++)
     {
-        if((Left_Change[i][0]+Left_Change[i][1])>(Left_Change[i+1][0]+Left_Change[i+1][1]))//拐点的坐标之和最大
+        if((Left_Change[i][0]+Left_Change[i][1])>highest_left)//拐点的坐标之和最大left_index
         {
+			highest_left=(Left_Change[i][0]+Left_Change[i][1]);
             left_index = i;
             //遍历完，不用break
         }
     }
-
-    for(i=0;i<in_put_r_num;i++)
+	for(i=0;i<in_put_r_num;i++)
     {
-        if((Right_Change[i][0]+Right_Change[i][1])>(Right_Change[i+1][0]+Right_Change[i+1][1]))//拐点的坐标之和最大
+        if((Right_Change[i][0]+Right_Change[i][1])>highest_right)//拐点的坐标之和最大
         {
+			highest_right=(Right_Change[i][0]+Right_Change[i][1]);
             right_index = i;
             //遍历完，不用break
         }
     }
+	
+	ips200_draw_line(0,0,ipts1[right_index][0],ipts1[right_index][1],RGB565_RED);
+	ips200_draw_line(0,0,ipts0[left_index][0],ipts0[left_index][1],RGB565_BLUE);
+//	for(i=0;i<in_put_num_l;i++)
+//    {
+//        ips200_draw_line(0,0,ipts0[left_index][0],ipts0[left_index][1],RGB565_RED);
+//    }
+//	
+//	for(i=0;i<ipts0_num;i++)
+//	{
+//		ips200_draw_line(160,0,ipts0[i][0],ipts0[i][1],RGB565_BLUE);
+//	}
+//    for(i=0;i<in_put_r_num;i++)
+//    {
+//        if((Right_Change[i][0]+Right_Change[i][1])>(Right_Change[i+1][0]+Right_Change[i+1][1]))//拐点的坐标之和最大
+//        {
+//            right_index = i;
+//            //遍历完，不用break
+//        }
+//    }
     /*三 补线*/
 }
