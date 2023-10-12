@@ -174,6 +174,17 @@ void Get_Midline2(int pts_l[][2], int pts_l_num, int pts_r[][2], int pts_r_num);
 //#define a32 (-0.002777f)
 //#define a33 (0.412018f)
 
+//#define a11 (-1.9446f)
+//#define a12 (-0.0768f)
+//#define a13 (152.9928f)
+//#define a21 (-0.0901f)
+//#define a22 (0.4470f)
+//#define a23 (-190.8998f)
+//#define a31 (-0.0030f)
+//#define a32 (-0.0846f)
+//#define a33 (1.0f)
+
+
 #define a11 (-1.9446f)
 #define a12 (-0.0768f)
 #define a13 (152.9928f)
@@ -183,7 +194,6 @@ void Get_Midline2(int pts_l[][2], int pts_l_num, int pts_r[][2], int pts_r_num);
 #define a31 (-0.0030f)
 #define a32 (-0.0846f)
 #define a33 (1.0f)
-
 
 
 
