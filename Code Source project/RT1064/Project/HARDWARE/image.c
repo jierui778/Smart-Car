@@ -3,7 +3,7 @@
 #include "control.h"
 #include "stdlib.h"
 uint8 Image_Use_Robert[120][160];//二值化图像
-
+uint8 Image_Pespective[120][160];
 //flash参数统一定义
 float begin_x = 8;  // 起始点距离图像中心的左右偏移量	8
 float begin_y = 118; // 起始点距离图像底部的上下偏移量 120高度：35;100高	58
@@ -2268,81 +2268,68 @@ void test(void)
 	img_raw.data = *Image_Use_Robert;
 	Find_Borderline();
 	
-    uint8 i;
-    for(i=0;i<ipts0_num;i++)
-    {
-        ips200_draw_line(0,0,ipts0[i][0],ipts0[i][1],RGB565_GREEN);
-    }
-    for(i=0;i<ipts1_num;i++)
-    {
-        ips200_draw_line(160,0,ipts1[i][0],ipts1[i][1],RGB565_RED);
-    }
-	 Pespective(ipts0,ipts0_num ,  rpts0);
-     rpts0_num = ipts0_num;
-     Pespective(ipts1,ipts1_num ,  rpts1);
-     rpts1_num = ipts1_num;
+    Cross_Drawline(ipts0,ipts0_num,ipts1,ipts1_num);
 
-     blur_points(rpts0,rpts0_num,rpts0b,(int) round(line_blur_kernel));
-     rpts0b_num = rpts0_num;
-     blur_points(rpts1,rpts1_num,rpts1b,(int) round(line_blur_kernel));
-     rpts1b_num = rpts1_num;
+    // uint8 i;
+    // for(i=0;i<ipts0_num;i++)
+    // {
+    //     ips200_draw_point(ipts0[i][0]+20,ipts0[i][1],RGB565_BLUE);
+    // }
+    // for(i=0;i<ipts1_num;i++)
+    // {
+    //     ips200_draw_line(160,0,ipts1[i][0],ipts1[i][1],RGB565_RED);
+    // }
+	//  Pespective(ipts0,ipts0_num ,  rpts0);
+    //  rpts0_num = ipts0_num;
+    //  Pespective(ipts1,ipts1_num ,  rpts1);
+    //  rpts1_num = ipts1_num;
+
+//     blur_points(rpts0,rpts0_num,rpts0b,(int) round(line_blur_kernel));
+//     rpts0b_num = rpts0_num;
+//     blur_points(rpts1,rpts1_num,rpts1b,(int) round(line_blur_kernel));
+//     rpts1b_num = rpts1_num;
     
-     rpts0s_num = sizeof(rpts0s) / sizeof(rpts0s[0]);//求数组的长度 即等距采样后边线点个数
-     resample_points(rpts0b, rpts0b_num, rpts0s, &rpts0s_num, sample_dist * pixel_per_meter);
-     rpts1s_num = sizeof(rpts1s) / sizeof(rpts1s[0]);
-     resample_points(rpts1b, rpts1b_num, rpts1s, &rpts1s_num, sample_dist * pixel_per_meter);
-     // 边线局部角度变化率 round():四舍五入
-     local_angle_points(rpts0s, rpts0s_num, rpts0a, (int) round(angle_dist / sample_dist));
-     rpts0a_num = rpts0s_num;
-     local_angle_points(rpts1s, rpts1s_num, rpts1a, (int) round(angle_dist / sample_dist));
-     rpts1a_num = rpts1s_num;
-     // 角度变化率非极大抑制
-     nms_angle(rpts0a, rpts0a_num, rpts0an, (int) round(angle_dist / sample_dist) * 2 + 1);
-     rpts0an_num = rpts0a_num;
-     nms_angle(rpts1a, rpts1a_num, rpts1an, (int) round(angle_dist / sample_dist) * 2 + 1);
-     rpts1an_num = rpts1a_num;
 
+    // for (int i = 0; i < 200; i++)
+    // {
+    //     for (int j = 120; j < 200; j++)
+    //     {
+    //         ips200_draw_point(i, j, RGB565_BLACK); // 0xffff=255区域内显示白点
+    //     }
+    // }
 
-    for (int i = 0; i < 200; i++)
-    {
-        for (int j = 0; j < 200; j++)
-        {
-            ips200_draw_point(i, j, RGB565_BLACK); // 0xffff=255区域内显示白点
-        }
-    }
+    // for(int i = 0 ; i < rpts0_num ; i++)//显示左边线
+    // {
+    //     uint16 x, y;
 
-    for(int i = 0 ; i < rpts0s_num ; i++)//显示左边线
-    {
-        uint16 x, y;
+    //     //[60][80]rpts0s rpts0s_num ipts0_num
 
-        //[60][80]rpts0s rpts0s_num ipts0_num
+    //     x = func_limit_ab (rpts0[i][0] , -99,99);
+    //     y = func_limit_ab (rpts0[i][1] , 0,  199);
 
-        x = func_limit_ab (rpts0s[i][0] , -99,99);
-        y = func_limit_ab (rpts0s[i][1] , 0,  199);
-
-        ips200_draw_point(x  + 100, 200 - y , RGB565_GREEN); // 左线为绿色 
-    }
+    //     ips200_draw_point(x  + 100, 200 - y , RGB565_GREEN); // 左线为绿色 
+    // }
    
-    for(int i = 0 ; i < rpts1s_num ; i++)//显示右边线
-    {
-        uint16 x, y;
-        x = func_limit_ab (rpts1s[i][0] , -99,99);
-        y = func_limit_ab (rpts1s[i][1] , 0,  199);
+    // for(int i = 0 ; i < rpts1_num ; i++)//显示右边线
+    // {
+    //     uint16 x, y;
+    //     x = func_limit_ab (rpts1[i][0] , -99,99);
+    //     y = func_limit_ab (rpts1[i][1] , 0,  199);
 
-        ips200_draw_point(  x+100 , 200-y ,  RGB565_YELLOW);
-        //tft180_draw_point( x/2 +50 -1 , 99-y/2 ,  RGB565_YELLOW);
-        //tft180_draw_point( x/2 +50 +1, 99-y/2 ,  RGB565_YELLOW);
-        //tft180_draw_point( x/2 +50 , 99-y/2 ,  RGB565_YELLOW);
-        /*
-        x = func_limit_ab (ipts0[i][0] , -99,99);
-        y = func_limit_ab (ipts0[i][1] , 0,  199);
-        tft180_draw_point( x , y ,  RGB565_GREEN);
+    //     ips200_draw_point(  x+100 , 200-y ,  RGB565_YELLOW);
+    //     //tft180_draw_point( x/2 +50 -1 , 99-y/2 ,  RGB565_YELLOW);
+    //     //tft180_draw_point( x/2 +50 +1, 99-y/2 ,  RGB565_YELLOW);
+    //     //tft180_draw_point( x/2 +50 , 99-y/2 ,  RGB565_YELLOW);
+    //     /*
+    //     x = func_limit_ab (ipts0[i][0] , -99,99);
+    //     y = func_limit_ab (ipts0[i][1] , 0,  199);
+    //     tft180_draw_point( x , y ,  RGB565_GREEN);
      
-        x = func_limit_ab(rpts1s[i][0] , 0,80);
-        y = func_limit_ab(rpts1s[i][1] , 0,60);
-        tft180_draw_point(x, y,  0x0000);//右线为黄色
-        */
-    }
+    //     x = func_limit_ab(rpts1s[i][0] , 0,80);
+    //     y = func_limit_ab(rpts1s[i][1] , 0,60);
+    //     tft180_draw_point(x, y,  0x0000);//右线为黄色
+    //     */
+    // }
 
     // ips200_show_int(3,140,ipts0_num,3);
         
@@ -2375,7 +2362,21 @@ void Pespective(int pts_in[][2],int int_num ,  float pts_out[][2])
     }
 }
 
-
+void Pespecttive_Image(void)
+{
+    int i,j;
+    float x,y,w;
+    for(i=0;i<IMAGE_HEIGHT;i++)
+    {
+        for(j=0;j<IMAGE_WIDTH;j++)
+        {
+            x=getx(j,i);
+            y=gety(j,i);
+            w=getw(j,i);
+            Image_Pespective[i][j]=x/w;
+        }
+    }
+}
 /**
  * @brief 获取左右车道线的中线
  * 
@@ -3091,15 +3092,44 @@ void Cross_Drawline(int in_put_l[][2],int in_put_num_l,int in_put_r[][2],int in_
     }
 	ips200_draw_line(0,0,in_put_l[left_index][0],in_put_l[left_index][1],RGB565_RED);
 	ips200_draw_line(0,0,in_put_r[right_index][0],in_put_r[right_index][1],RGB565_BLUE);
-    /*三 补线*/
-	k_left=LineRession(in_put_l,left_index);
-	ips200_show_float(3,140,k_left,4,4);
+    /*三 求直线方程*/
+	k_left=LineRession(in_put_l,left_index-5);
 	
 	b_left=in_put_l[left_index][1]-k_left*in_put_l[left_index][0];
 	
 	//求得的直线方程是row=column*k+b，实际上应该是column=row*k+b
-	k_right=LineRession(in_put_r,right_index);
-	ips200_show_float(43,140,k_right,4,4);
+	k_right=LineRession(in_put_r,right_index-5);
+	
+    b_right=in_put_r[right_index][1]-k_right*in_put_r[right_index][0];
+	
+    k_left=(1/k_left);//新斜率取倒数
+    b_left= -b_left*k_left;//新截距取相反数
+
+    k_right=(1/k_right);//新斜率取倒数
+    b_right= -b_right*k_right;//新截距取相反数
+    //新直线方程为 column=k*row+b
+    ips200_show_float(63,140,k_right,4,4);
+	ips200_show_float(63,160,b_right,4,4);
+	ips200_show_float(63,180,k_left,4,4);
+	ips200_show_uint(3,140,in_put_r[right_index][1],4);
+	ips200_show_uint(3,160,in_put_r[right_index][0],4);
+    /*四 补线*/
+    for(i=in_put_l[left_index][1];i>10;i--)
+    {
+        int new_column_l=(int)(k_left*i+b_left);
+        if(new_column_l>0)
+        {
+            Image_Use_Robert[i][new_column_l]=BLACK;
+        }
+    }
+    for(i=in_put_r[right_index][1];i>10;i--)
+    {
+        int new_column_r=(int)(k_right*i+b_right);
+        if(new_column_r>0)
+        {
+            Image_Use_Robert[i][new_column_r]=BLACK;
+        }
+    }
 }
 
 /*************************************************************************
