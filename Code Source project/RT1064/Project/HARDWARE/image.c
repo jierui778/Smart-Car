@@ -2097,52 +2097,18 @@ int clip(int x, int low, int up) {
  *  xi = (0*xi-3 + 1*xi-2 + 2*xi-1 + 3*xi + 2*xi+1 + 1*xi+2 + 0*xi+3)/9
  *  yi 同理
  *************************************************************************/
-/**
- * @brief 左线的三角滤波
- * 
- * @param int num 左线的点数总个数 int kernel 内核大小
-* @return 无，输出值为边线Left_New数组
- * @example void Image_blur_points_Left(Left_Count,5);
- */
-void Image_blur_points_Left(int num,int kernel)
+void blur_points(float pts_in[][2], int num, float pts_out[][2], int kernel)
 {
     zf_assert(kernel % 2 == 1);
     int half = kernel / 2;
-    for (int i = 0; i < num; i++) 
-	{
-        Left_New[i].row = Left_New[i].column = 0;
-        for (int j = -half; j <= half; j++) 
-		{
-            Left_New[i].row += (float)Left[clip(i + j, 0, num - 1)].row * (half + 1 - abs(j));
-            Left_New[i].column += (float)Left[clip(i + j, 0, num - 1)].column * (half + 1 - abs(j));
+    for (int i = 0; i < num; i++) {
+        pts_out[i][0] = pts_out[i][1] = 0;
+        for (int j = -half; j <= half; j++) {
+            pts_out[i][0] += (float)pts_in[clip(i + j, 0, num - 1)][0] * (half + 1 - abs(j));
+            pts_out[i][1] += (float)pts_in[clip(i + j, 0, num - 1)][1] * (half + 1 - abs(j));
         }
-        Left_New[i].row /= (2 * half + 2) * (half + 1) / 2;
-        Left_New[i].column /= (2 * half + 2) * (half + 1) / 2;
-		Left_New[i].grow=Left[i].grow;
-    }
-}
-/**
- * @brief 右线的三角滤波
- * 
- * @param int num 右线的点数总个数 int kernel 内核大小
- * @return 无
- * @example void Image_blur_points_Left(Left_Count,5);
- */
-void Image_blur_points_Right(int num,int kernel)
-{
-    zf_assert(kernel % 2 == 1);
-    int half = kernel / 2;
-    for (int i = 0; i < num; i++) 
-	{
-        Right_New[i].row = Right_New[i].column = 0;
-        for (int j = -half; j <= half; j++) 
-		{
-            Right_New[i].row += (float)Right[clip(i + j, 0, num - 1)].row * (half + 1 - abs(j));
-            Right_New[i].column += (float)Right[clip(i + j, 0, num - 1)].column * (half + 1 - abs(j));
-        }
-        Right_New[i].row /= (2 * half + 2) * (half + 1) / 2;
-        Right_New[i].column /= (2 * half + 2) * (half + 1) / 2;
-		Right_New[i].grow=Right[i].grow;
+        pts_out[i][0] /= (2 * half + 2) * (half + 1) / 2;
+        pts_out[i][1] /= (2 * half + 2) * (half + 1) / 2;
     }
 }
 
@@ -2182,6 +2148,23 @@ int ipts1[POINTS_MAX_LEN][2]; // 存放边线数据（右）
 int ipts0_num;                // 存放边线像素点个数(左)
 int ipts1_num;                // 存放边线像素点个数(右)
 
+// 逆透视变换后左右边线
+float rpts0[POINTS_MAX_LEN][2];
+float rpts1[POINTS_MAX_LEN][2];
+int rpts0_num, rpts1_num;
+
+// 逆透视变换后左右边线再三角滤波后的边线数组
+float rpts0b[POINTS_MAX_LEN][2];
+float rpts1b[POINTS_MAX_LEN][2];
+int rpts0b_num, rpts1b_num;
+
+
+// 逆透视变换后左右边线再三角滤波后再等距采样的数组
+float rpts0s[POINTS_MAX_LEN][2];
+float rpts1s[POINTS_MAX_LEN][2];
+int rpts0s_num, rpts1s_num;
+int rpts0an_num, rpts1an_num;
+int rpts0_num, rpts1_num;
 
 float ipts_out[POINTS_MAX_LEN][2];
 int x0_first, y0_first, x1_first, y1_first; // 左右边线第一个点的坐标
@@ -2197,6 +2180,78 @@ float rpts0[POINTS_MAX_LEN][2];
 float rpts1[POINTS_MAX_LEN][2];
 int rpts0_num, rpts1_num;
 
+int rpts0an_num, rpts1an_num;
+int rpts0_num, rpts1_num;
+
+int rpts0a_num, rpts1a_num;
+
+float rpts0a[POINTS_MAX_LEN];
+float rpts1a[POINTS_MAX_LEN];
+
+
+// 左右边线局部角度变化率+非极大抑制
+float rpts0an[POINTS_MAX_LEN];
+float rpts1an[POINTS_MAX_LEN];
+
+int rptsc0_num, rptsc1_num;
+
+float rpts0a[POINTS_MAX_LEN];
+float rpts1a[POINTS_MAX_LEN];
+int rpts0a_num, rpts1a_num;
+// 左右边线局部角度变化率+非极大抑制
+float rpts0an[POINTS_MAX_LEN];
+float rpts1an[POINTS_MAX_LEN];
+int rpts0an_num, rpts1an_num;
+// 左/右中线
+float rptsc0[POINTS_MAX_LEN][2];
+float rptsc1[POINTS_MAX_LEN][2];
+int rptsc0_num, rptsc1_num;
+// 左右跟踪后的中线
+float (*rpts)[2];
+int rpts_num;
+// 归一化最终中线
+float rptsn[POINTS_MAX_LEN][2];
+int rptsn_num;
+
+// Y角点
+int Ypt0_rpts0s_id, Ypt1_rpts1s_id;
+bool Ypt0_found, Ypt1_found;
+// L角点
+int Lpt0_rpts0s_id, Lpt1_rpts1s_id;
+bool Lpt0_found, Lpt1_found;
+// 内L角点
+int N_Lpt0_rpts0s_id, N_Lpt1_rpts1s_id;
+bool N_Lpt0_found, N_Lpt1_found;
+// 长直道
+bool is_straight0, is_straight1;
+// 弯道
+bool is_turn0, is_turn1;
+
+int N_Xfound_num; // 面向赛道编程，双内L计数
+
+// 当前巡线模式（发车方向）
+enum track_type_e track_type = TRACK_RIGHT;
+
+float error[1];
+float ave_error; // 速度控制输入变量
+// 多个预锚点位置
+int aim_idx[1];
+
+// 计算远锚点偏差值
+float dx[1];
+float dy[1];
+float dn[1];
+
+// 若考虑近点远点,可近似构造Stanley算法,避免撞路肩
+// 计算近锚点偏差值
+float dx_near;
+float dy_near;
+float dn_near;
+float pure_angle;
+
+enum garage_type_e garage_type = GARAGE_NONE; // 初始化为向左出库 调试状态为NONE
+
+
 void test(void)
 {
 //    int th;
@@ -2204,7 +2259,6 @@ void test(void)
 //    Image_Compress();
 //    Find_Borderline();
 //	Pespective(ipts0,ipts0_num,ipts_out);
-	uint8 i;
 	Image_Compress();
 	int TH;
 	TH = OSTU_GetThreshold(Image_Use[0], IMAGE_WIDTH, IMAGE_HEIGHT);
@@ -2213,13 +2267,94 @@ void test(void)
 	
 	img_raw.data = *Image_Use_Robert;
 	Find_Borderline();
-	Pespective(ipts0,ipts0_num ,rpts0);
-	for(i=0;i<ipts0_num;i++)
-	{
-	ips200_draw_point(rpts0[i][0]+20,rpts0[i][1]+20,RGB565_RED);
-	}
-	rpts0_num = ipts0_num;
-	Pespective(ipts1,ipts1_num ,rpts1);
+	
+    uint8 i;
+    for(i=0;i<ipts0_num;i++)
+    {
+        ips200_draw_line(0,0,ipts0[i][0],ipts0[i][1],RGB565_GREEN);
+    }
+    for(i=0;i<ipts1_num;i++)
+    {
+        ips200_draw_line(160,0,ipts1[i][0],ipts1[i][1],RGB565_RED);
+    }
+	 Pespective(ipts0,ipts0_num ,  rpts0);
+     rpts0_num = ipts0_num;
+     Pespective(ipts1,ipts1_num ,  rpts1);
+     rpts1_num = ipts1_num;
+
+     blur_points(rpts0,rpts0_num,rpts0b,(int) round(line_blur_kernel));
+     rpts0b_num = rpts0_num;
+     blur_points(rpts1,rpts1_num,rpts1b,(int) round(line_blur_kernel));
+     rpts1b_num = rpts1_num;
+    
+     rpts0s_num = sizeof(rpts0s) / sizeof(rpts0s[0]);//求数组的长度 即等距采样后边线点个数
+     resample_points(rpts0b, rpts0b_num, rpts0s, &rpts0s_num, sample_dist * pixel_per_meter);
+     rpts1s_num = sizeof(rpts1s) / sizeof(rpts1s[0]);
+     resample_points(rpts1b, rpts1b_num, rpts1s, &rpts1s_num, sample_dist * pixel_per_meter);
+     // 边线局部角度变化率 round():四舍五入
+     local_angle_points(rpts0s, rpts0s_num, rpts0a, (int) round(angle_dist / sample_dist));
+     rpts0a_num = rpts0s_num;
+     local_angle_points(rpts1s, rpts1s_num, rpts1a, (int) round(angle_dist / sample_dist));
+     rpts1a_num = rpts1s_num;
+     // 角度变化率非极大抑制
+     nms_angle(rpts0a, rpts0a_num, rpts0an, (int) round(angle_dist / sample_dist) * 2 + 1);
+     rpts0an_num = rpts0a_num;
+     nms_angle(rpts1a, rpts1a_num, rpts1an, (int) round(angle_dist / sample_dist) * 2 + 1);
+     rpts1an_num = rpts1a_num;
+
+
+    for (int i = 0; i < 200; i++)
+    {
+        for (int j = 0; j < 200; j++)
+        {
+            ips200_draw_point(i, j, RGB565_BLACK); // 0xffff=255区域内显示白点
+        }
+    }
+
+    for(int i = 0 ; i < rpts0s_num ; i++)//显示左边线
+    {
+        uint16 x, y;
+
+        //[60][80]rpts0s rpts0s_num ipts0_num
+
+        x = func_limit_ab (rpts0s[i][0] , -99,99);
+        y = func_limit_ab (rpts0s[i][1] , 0,  199);
+
+        ips200_draw_point(x  + 100, 200 - y , RGB565_GREEN); // 左线为绿色 
+    }
+   
+    for(int i = 0 ; i < rpts1s_num ; i++)//显示右边线
+    {
+        uint16 x, y;
+        x = func_limit_ab (rpts1s[i][0] , -99,99);
+        y = func_limit_ab (rpts1s[i][1] , 0,  199);
+
+        ips200_draw_point(  x+100 , 200-y ,  RGB565_YELLOW);
+        //tft180_draw_point( x/2 +50 -1 , 99-y/2 ,  RGB565_YELLOW);
+        //tft180_draw_point( x/2 +50 +1, 99-y/2 ,  RGB565_YELLOW);
+        //tft180_draw_point( x/2 +50 , 99-y/2 ,  RGB565_YELLOW);
+        /*
+        x = func_limit_ab (ipts0[i][0] , -99,99);
+        y = func_limit_ab (ipts0[i][1] , 0,  199);
+        tft180_draw_point( x , y ,  RGB565_GREEN);
+     
+        x = func_limit_ab(rpts1s[i][0] , 0,80);
+        y = func_limit_ab(rpts1s[i][1] , 0,60);
+        tft180_draw_point(x, y,  0x0000);//右线为黄色
+        */
+    }
+
+    // ips200_show_int(3,140,ipts0_num,3);
+        
+    
+    // ips200_show_int(3,160,loseline0,3);
+    // ips200_show_int(3,180,*num,3);
+    //	tft180_draw_line(0,0,ipts0[20-1][1],ipts0[20-1][0],RGB565_RED);
+    //	tft180_show_int(3,100,ipts0[20-1][1],4);
+
+    //	bluetooth_ch9141_send_image((const uint8 *)Image_Use_Robert, 19200);
+    //    Get_Midline(ipts0,ipts0_num,ipts1,ipts1_num);
+	
 //	Image_CheckState(ipts0,ipts0_num,ipts1,ipts1_num);
 //	Cross_Drawline(ipts0,ipts0_num,ipts1,ipts1_num);
 //    Get_Midline(ipts0,ipts0_num,ipts1,ipts1_num);
@@ -2238,21 +2373,6 @@ void Pespective(int pts_in[][2],int int_num ,  float pts_out[][2])
         pts_out[i][0] = x / w;
         pts_out[i][1] = y / w;
     }
-	int i;
-	for(i=0;i<int_num;i++)
-	{
-	ips200_draw_point(pts_out[i][0]+20,pts_out[i][1]+20,RGB565_RED);
-	}
-//	for(i=0;i<int_num;i++)
-//	{
-//	ips200_draw_line(0,0,pts_in[i][0]+5,pts_in[i][1],RGB565_RED);
-//	}
-	ips200_show_uint(43,200,int_num,4);
-//	ips200_show_uint(43,160,pts_out[int_num-2][1],4);
-//	ips200_show_uint(43,180,pts_out[int_num-1][1],4);
-//	ips200_show_uint(43,140,pts_out[int_num-2][0],4);
-//	ips200_show_uint(3,180,pts_out[int_num-3][1],4);
-//	ips200_show_uint(3,200,pts_out[int_num-3][0],4);
 }
 
 
@@ -2804,9 +2924,6 @@ void SplicingArray(float pt0[][2], int num1, float pt1[][2], int num2, float pt_
 
 
 
-
-
-
 /*左线坐标变换，用于求拐点，左下角为0,0*/
 void Coordinate_transformation_left(int pt0_in[][2], int in_num, int pt0_out[][2])
 {
@@ -2984,3 +3101,126 @@ void Cross_Drawline(int in_put_l[][2],int in_put_num_l,int in_put_r[][2],int in_
 	k_right=LineRession(in_put_r,right_index);
 	ips200_show_float(43,140,k_right,4,4);
 }
+
+/*************************************************************************
+ *  函数名称：void resample_points（）;
+ *  功能说明：点集等距采样
+ *  参数说明：输入边线数组pts_in[][2]，输入原边线总个数num1，输出边线数组pts_out[][2]，获取输出边线数组个数num2，采样距离dist
+ *  函数返回：无
+ *  修改时间：2022年10月27日
+ *  备    注：使走过的采样前折线段的距离为`dist`
+ *            这个函数的作用是对输入的点集进行等距采样处理，输出采样后的点集。
+ *            函数的实现过程是对输入点集中的每个线段进行等距采样，采样后的点集存储在输出点集中。
+ *************************************************************************/
+void resample_points(float pts_in[][2], int num1, float pts_out[][2], int *num2, float dist)
+{
+    int remain = 0, len = 0; // 下一次采样折线段距离
+    for (int i = 0; i < num1 - 1 && len < *num2; i++)
+    {
+        float x0 = pts_in[i][0];
+        float y0 = pts_in[i][1];
+        float dx = pts_in[i + 1][0] - x0;
+        float dy = pts_in[i + 1][1] - y0;
+        float dn = mySqrt(dx * dx + dy * dy); // 求平方根 求弧长积分，即输入线段前后两点距离
+        // float dn = sqrt(dx*dx+dy*dy);//求平方根 求弧长积分，即输入线段前后两点距离
+        dx /= dn; // 此点处的cosθ
+        dy /= dn; // 此点处的sinθ
+
+        // 每次等距采样处理
+        while (remain < dn && len < *num2)
+        {
+            x0 += dx * remain;
+            pts_out[len][0] = x0;
+            y0 += dy * remain;
+            pts_out[len][1] = y0;
+
+            len++;
+            dn -= remain;
+            remain = dist;
+        }
+        remain -= dn; // 当跨越一点采样折线距离近似直线
+    }
+    *num2 = len;
+}
+
+/*************************************************************************
+ *  函数名称：void nms_angle();
+ *  功能说明：角度变化率非极大抑制
+ *  参数说明：输入角度变化率数组，角度变换数组总个数，抑制后的角度变化数组，点集奇数核
+ *  函数返回：无
+ *  修改时间：2022年11月25日
+ *  备    注：上交方案：kernel = 21，保存极大值的数组，即一段范围内斜率变换最大的值，非极大值均设为零
+ *************************************************************************/
+void nms_angle(float angle_in[], int num, float angle_out[], int kernel)
+{
+    zf_assert(kernel % 2 == 1);
+    int half = kernel / 2;
+    for (int i = 0; i < num; i++) {
+        angle_out[i] = angle_in[i];
+        for (int j = -half; j <= half; j++) {
+            //fabs():求绝对值
+            if (fabs(angle_in[clip(i + j, 0, num - 1)]) > fabs(angle_out[i])) {
+                angle_out[i] = 0;
+                break;
+            }
+        }
+    }
+}
+
+/*************************************************************************
+ *  函数名称：void local_angle_points();
+ *  功能说明：点集局部角度变化率
+ *  参数说明：输入边线数组，边线点个数，输出角度变换率数组，两点间固定距离
+ *  函数返回：无
+ *  修改时间：2022年11月23日
+ *  备    注：计算该点前后两点连线的斜率作为该点切线斜率的近似
+ *************************************************************************/
+void local_angle_points(float pts_in[][2], int num, float angle_out[], int dist) 
+{
+    for (int i = 0; i < num; i++) {
+        if (i <= 0 || i >= num - 1) {
+            angle_out[i] = 0;
+            continue;
+        }
+        float dx1 = pts_in[i][0] - pts_in[clip(i - dist, 0, num - 1)][0];
+        float dy1 = pts_in[i][1] - pts_in[clip(i - dist, 0, num - 1)][1];
+        float dn1 = mySqrt(dx1 * dx1 + dy1 * dy1);//此点与前一点间距离
+        //float dn1 = sqrtf(dx1 * dx1 + dy1 * dy1);//此点与前一点间距离
+        float dx2 = pts_in[clip(i + dist, 0, num - 1)][0] - pts_in[i][0];
+        float dy2 = pts_in[clip(i + dist, 0, num - 1)][1] - pts_in[i][1];
+        float dn2 = mySqrt(dx2 * dx2 + dy2 * dy2);//此点与后一点间距离
+        //float dn2 = sqrtf(dx2 * dx2 + dy2 * dy2);//此点与后一点间距离
+        float c1 = dx1 / dn1;//cosθ1
+        float s1 = dy1 / dn1;//sinθ1
+        float c2 = dx2 / dn2;//cosθ2
+        float s2 = dy2 / dn2;//sinθ2
+        //化简展开得到角公式(k1-k2)/(1+k1k2),即tan的差角公式==>得出两点间角度变化==>曲线斜率变化
+        angle_out[i] = atan2f(c1 * s2 - c2 * s1, c2 * c1 + s2 * s1);//atan2f(y,x):返回以弧度表示的y/x反正切
+    }
+}
+
+/**
+ * @brief 右线的三角滤波
+ *
+ * @param int num 右线的点数总个数 int kernel 内核大小
+ * @return 无
+ * @example void Image_blur_points_Left(Left_Count,5);
+ */
+void Image_blur_points_Right(int num, int kernel)
+{
+    zf_assert(kernel % 2 == 1);
+    int half = kernel / 2;
+    for (int i = 0; i < num; i++)
+    {
+        Right_New[i].row = Right_New[i].column = 0;
+        for (int j = -half; j <= half; j++)
+        {
+            Right_New[i].row += (float)Right[clip(i + j, 0, num - 1)].row * (half + 1 - abs(j));
+            Right_New[i].column += (float)Right[clip(i + j, 0, num - 1)].column * (half + 1 - abs(j));
+        }
+        Right_New[i].row /= (2 * half + 2) * (half + 1) / 2;
+        Right_New[i].column /= (2 * half + 2) * (half + 1) / 2;
+        Right_New[i].grow = Right[i].grow;
+    }
+}
+
