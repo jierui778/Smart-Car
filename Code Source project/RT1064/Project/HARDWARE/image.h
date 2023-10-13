@@ -128,7 +128,7 @@ void Get_Midline(int pts_l[][2], int pts_l_num, int pts_r[][2], int pts_r_num);
 float Get_err1(int pts_in[][2], int num);
 float LineRession(int pts_in[][2], int num);
 void Get_Midline2(int pts_l[][2], int pts_l_num, int pts_r[][2], int pts_r_num);
-
+void Find_Borderline_Second(void);
 // W矩阵参数（原图转化成逆透视后图像的参数）
 // 60*80
 // #define a11 (-4.3801f)
@@ -221,6 +221,7 @@ void resample_points(float pts_in[][2], int num1, float pts_out[][2], int *num2,
 
 void local_angle_points(float pts_in[][2], int num, float angle_out[], int dist);
 void nms_angle(float angle_in[], int num, float angle_out[], int kernel);
+void find_corners(void);
 #endif
 
 /*
