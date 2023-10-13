@@ -2289,7 +2289,7 @@ void test(void)
 
         //[60][80]rpts0s rpts0s_num ipts0_num
 
-        x = func_limit_ab(rpts0s[i][0],  0, 200);
+        x = func_limit_ab(rpts0s[i][0], 0, 200);
         y = func_limit_ab(rpts0s[i][1], 0, 199);
 
         ips200_draw_point(x, 200 - y, RGB565_GREEN); // 左线为绿色 不知道为什么改成-x/2+50就能正常先显示

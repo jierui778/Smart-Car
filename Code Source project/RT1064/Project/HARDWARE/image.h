@@ -189,7 +189,19 @@ void Get_Midline2(int pts_l[][2], int pts_l_num, int pts_r[][2], int pts_r_num);
 #define a23 (-190.8998f)
 #define a31 (-0.0030f)
 #define a32 (-0.0846f)
-#define a33 (1.0f)
+#define a33 (1.0f)//世界坐标偏移矩阵
+
+
+//#define a11 (-3.8892f)
+//#define a12 (-0.1535)
+//#define a13 (305.9855f)
+//#define a21 (-0.0901f)
+//#define a22 (0.4470f)
+//#define a23 (-190.8998f)
+//#define a31 (-0.0030f)
+//#define a32 (-0.0846f)
+//#define a33 (1.0f)
+
 
 #define getx(u, v) (a11 * (u) + a12 * (v) + a13)
 #define gety(u, v) (a21 * (u) + a22 * (v) + a23)
