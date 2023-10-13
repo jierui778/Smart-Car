@@ -13,7 +13,7 @@ float block_size = 7; // 自适应阈值的block大小
 float clip_value = 2; // 自适应阈值的阈值裁减量
 
 float thres = 120;                                  // 二值化阈值，主要用于找起始点(边线使用自适应阈值，不使用该阈值)
-float line_blur_kernel = 7;                         // 边线三角滤波核的大小
+float line_blur_kernel = 9;                         // 边线三角滤波核的大小
 float pixel_per_meter = 102;                        // 俯视图中，每个像素对应的长度 (厘米*10^3)/像素个数 调大意味着平移距离增大 原：102
 float sample_dist = 0.022;                          // 边线等距采样的间距 动态调整，使其每两点距离刚好为1cm 为0.02时10个点间隔约为9cm
 float angle_dist = 0.2;                             // 计算边线转角时，三个计算点的距离
@@ -2089,18 +2089,15 @@ int clip(int x, int low, int up)
  *  yi 同理
  *************************************************************************/
 
-
-
-
-
-
 void blur_points(float pts_in[][2], int num, float pts_out[][2], int kernel)
 {
     zf_assert(kernel % 2 == 1);
     int half = kernel / 2;
-    for (int i = 0; i < num; i++) {
+    for (int i = 0; i < num; i++)
+    {
         pts_out[i][0] = pts_out[i][1] = 0;
-        for (int j = -half; j <= half; j++) {
+        for (int j = -half; j <= half; j++)
+        {
             pts_out[i][0] += (float)pts_in[clip(i + j, 0, num - 1)][0] * (half + 1 - abs(j));
             pts_out[i][1] += (float)pts_in[clip(i + j, 0, num - 1)][1] * (half + 1 - abs(j));
         }
@@ -2220,7 +2217,6 @@ int rpts0a_num, rpts1a_num;
 float rpts0a[POINTS_MAX_LEN];
 float rpts1a[POINTS_MAX_LEN];
 
-
 // 左右边线局部角度变化率+非极大抑制
 float rpts0an[POINTS_MAX_LEN];
 float rpts1an[POINTS_MAX_LEN];
@@ -2239,58 +2235,45 @@ void test(void)
     Image_Sobel(Image_Use, Image_Use_Robert, TH); // 全局Sobel得二值图(方案二) 2.8ms
 
     img_raw.data = *Image_Use_Robert;
-    
+
     Find_Borderline();
-    
-    Pespective(ipts0,ipts0_num ,  rpts0);
+
+    Pespective(ipts0, ipts0_num, rpts0);
     rpts0_num = ipts0_num;
-    
-    
-    Pespective(ipts1,ipts1_num ,  rpts1);
+
+    Pespective(ipts1, ipts1_num, rpts1);
     rpts1_num = ipts1_num;
 
-
-
-
-    blur_points(rpts0,rpts0_num,rpts0b,(int) round(line_blur_kernel));
+    // 三角滤波
+    blur_points(rpts0, rpts0_num, rpts0b, (int)round(line_blur_kernel));
     rpts0b_num = rpts0_num;
-    blur_points(rpts1,rpts1_num,rpts1b,(int) round(line_blur_kernel));
+    blur_points(rpts1, rpts1_num, rpts1b, (int)round(line_blur_kernel));
     rpts1b_num = rpts1_num;
-    
-    
-    
-    
-    
-    rpts0s_num = sizeof(rpts0s) / sizeof(rpts0s[0]);//求数组的长度 即等距采样后边线点个数
+
+    // 边线等距采样，num为逆透视后实际距离点，两点间距离为0.02*102=2cm
+    rpts0s_num = sizeof(rpts0s) / sizeof(rpts0s[0]); // 求数组的长度 即等距采样后边线点个数
     resample_points(rpts0b, rpts0b_num, rpts0s, &rpts0s_num, sample_dist * pixel_per_meter);
     rpts1s_num = sizeof(rpts1s) / sizeof(rpts1s[0]);
     resample_points(rpts1b, rpts1b_num, rpts1s, &rpts1s_num, sample_dist * pixel_per_meter);
     // 边线局部角度变化率 round():四舍五入
-    local_angle_points(rpts0s, rpts0s_num, rpts0a, (int) round(angle_dist / sample_dist));
+    local_angle_points(rpts0s, rpts0s_num, rpts0a, (int)round(angle_dist / sample_dist));
     rpts0a_num = rpts0s_num;
-    local_angle_points(rpts1s, rpts1s_num, rpts1a, (int) round(angle_dist / sample_dist));
+    local_angle_points(rpts1s, rpts1s_num, rpts1a, (int)round(angle_dist / sample_dist));
     rpts1a_num = rpts1s_num;
     // 角度变化率非极大抑制
-    nms_angle(rpts0a, rpts0a_num, rpts0an, (int) round(angle_dist / sample_dist) * 2 + 1);
+    nms_angle(rpts0a, rpts0a_num, rpts0an, (int)round(angle_dist / sample_dist) * 2 + 1);
     rpts0an_num = rpts0a_num;
-    nms_angle(rpts1a, rpts1a_num, rpts1an, (int) round(angle_dist / sample_dist) * 2 + 1);
+    nms_angle(rpts1a, rpts1a_num, rpts1an, (int)round(angle_dist / sample_dist) * 2 + 1);
     rpts1an_num = rpts1a_num;
-    
-    
-    
+
     for (i = 0; i < ipts1_num; i++)
     {
-        ips200_draw_line(0, 0, ipts0[i][0],ipts0[i][1]+200, RGB565_RED);
+        ips200_draw_line(0, 0, ipts0[i][0], ipts0[i][1] + 200, RGB565_RED);
     }
-//        for (i = 0; i < ipts1_num; i++)
-//    {
-//        ips200_draw_line(0, 0, ipts1[i][0],ipts1[i][1]+200, RGB565_BLUE);
-//    }
-
-
-
-
-
+    for (i = 0; i < ipts1_num; i++)
+    {
+        ips200_draw_line(0, 0, ipts1[i][0], ipts1[i][1] + 200, RGB565_BLUE);
+    }
 
     for (int i = 0; i < 200; i++)
     {
@@ -2300,20 +2283,20 @@ void test(void)
         }
     }
 
-    for(int i = 0 ; i < rpts0s_num ; i++)//显示左边线
+    for (int i = 0; i < rpts0s_num; i++) // 显示左边线
     {
         uint16 x, y;
 
         //[60][80]rpts0s rpts0s_num ipts0_num
 
-        x = func_limit_ab (rpts0s[i][0] , -99,99);
-        y = func_limit_ab (rpts0s[i][1] , 0,  199);
+        x = func_limit_ab(rpts0s[i][0],  0, 200);
+        y = func_limit_ab(rpts0s[i][1], 0, 199);
 
-        ips200_draw_point(x +100, 200 - y, RGB565_GREEN); // 左线为绿色 不知道为什么改成-x/2+50就能正常先显示
+        ips200_draw_point(x, 200 - y, RGB565_GREEN); // 左线为绿色 不知道为什么改成-x/2+50就能正常先显示
 
-        //tft180_draw_point( x/2 +50 -1 , 99-y/2 ,  RGB565_GREEN);
-        //tft180_draw_point( x/2 +50 +1, 99-y/2 ,  RGB565_GREEN);
-        //tft180_draw_point( x/2 +50 , 99-y/2 ,  RGB565_GREEN);
+        // tft180_draw_point( x/2 +50 -1 , 99-y/2 ,  RGB565_GREEN);
+        // tft180_draw_point( x/2 +50 +1, 99-y/2 ,  RGB565_GREEN);
+        // tft180_draw_point( x/2 +50 , 99-y/2 ,  RGB565_GREEN);
         /*
         x = func_limit_ab (ipts0[i][0] , -99,99);
         y = func_limit_ab (ipts0[i][1] , 0,  199);
@@ -2325,36 +2308,33 @@ void test(void)
         tft180_draw_point(x, y,  0x0000);//左线为绿色
         */
     }
-    
-    
-    
-//        for(int i = 0 ; i < rpts0_num ; i++)//显示右边线
-//    {
-//        uint16 x, y;
 
-//        //[60][80]rpts1s rpts1s_num
+    for (int i = 0; i < rpts0_num; i++) // 显示右边线
+    {
+        uint16 x, y;
 
-//        x = func_limit_ab (rpts1[i][0] , -99,99);
-//        y = func_limit_ab (rpts1[i][1] , 0,  199);
+        //[60][80]rpts1s rpts1s_num
 
-//        ips200_draw_point(x+100 , 200-y ,  RGB565_YELLOW);
-//        //tft180_draw_point( x/2 +50 -1 , 99-y/2 ,  RGB565_YELLOW);
-//        //tft180_draw_point( x/2 +50 +1, 99-y/2 ,  RGB565_YELLOW);
-//        //tft180_draw_point( x/2 +50 , 99-y/2 ,  RGB565_YELLOW);
-//        /*
-//        x = func_limit_ab (ipts0[i][0] , -99,99);
-//        y = func_limit_ab (ipts0[i][1] , 0,  199);
-//        tft180_draw_point( x , y ,  RGB565_GREEN);
-//        
-//        x = func_limit_ab(rpts1s[i][0] , 0,80);
-//        y = func_limit_ab(rpts1s[i][1] , 0,60);
-//        tft180_draw_point(x, y,  0x0000);//右线为黄色
-//        */
-//    }
+        x = func_limit_ab(rpts1s[i][0], 0, 200);
+        y = func_limit_ab(rpts1s[i][1], 0, 199);
+
+        ips200_draw_point(x, 200 - y, RGB565_YELLOW);
+        // tft180_draw_point( x/2 +50 -1 , 99-y/2 ,  RGB565_YELLOW);
+        // tft180_draw_point( x/2 +50 +1, 99-y/2 ,  RGB565_YELLOW);
+        // tft180_draw_point( x/2 +50 , 99-y/2 ,  RGB565_YELLOW);
+        /*
+        x = func_limit_ab (ipts0[i][0] , -99,99);
+        y = func_limit_ab (ipts0[i][1] , 0,  199);
+        tft180_draw_point( x , y ,  RGB565_GREEN);
+
+        x = func_limit_ab(rpts1s[i][0] , 0,80);
+        y = func_limit_ab(rpts1s[i][1] , 0,60);
+        tft180_draw_point(x, y,  0x0000);//右线为黄色
+        */
+    }
 
     // ips200_show_int(3,140,ipts0_num,3);
-        
-    
+
     // ips200_show_int(3,160,loseline0,3);
     // ips200_show_int(3,180,*num,3);
     //	tft180_draw_line(0,0,ipts0[20-1][1],ipts0[20-1][0],RGB565_RED);
@@ -2511,7 +2491,7 @@ void Find_Borderline(void)
 
     ipts0_num = sizeof(ipts0) / sizeof(ipts0[0]); // 求数组的长度
     // 扫底下五行，寻找跳变点
-    for (; y0_first > begin_y - 5; y0_first--) // 从所选的行，向上扫5次，每次从中间向左线扫
+    for (; y0_first > begin_y - 50; y0_first--) // 从所选的行，向上扫5次，每次从中间向左线扫
     {
         for (; x0_first > 0; x0_first--)                             // 在选的每行中，从中间向左线扫
             if (AT_IMAGE(&img_raw, x0_first - 1, y0_first) < uthres) // 如果扫到黑点（灰度值为0），就从该点开始扫线
@@ -2568,75 +2548,76 @@ const int dir_frontright[4][2] = {{1, -1},
 
 #define AT AT_IMAGE
 #define MAX_WIDTH 88 定义图像中
-void Left_Adaptive_Threshold(image_t *img,int block_size,int clip_value,int x,int y,int pts[][2],int *num)
+void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x, int y, int pts[][2], int *num)
 {
-    zf_assert(img && img->data);     // 不满足则退出执行
+    zf_assert(img && img->data); // 不满足则退出执行
     zf_assert(num && *num >= 0);
-    zf_assert(block_size > 1 && block_size % 2 == 1);//保证block_size为奇数
-//    int half = block_size / 2;                       //上交方案
-    int half = 0;                                  //方案二
-    int step = 0, dir = 0, turn = 0; // step表示前进的步数；dir通过改变索引改变当前小人朝向的方向
-    while (step < *num && half < x && x < img->width - half - 1 && half < y && y < img->height - half - 1 && turn < 4)//保证block不出界
+    zf_assert(block_size > 1 && block_size % 2 == 1); // 保证block_size为奇数
+    //    int half = block_size / 2;                       //上交方案
+    int half = 0;                                                                                                      // 方案二
+    int step = 0, dir = 0, turn = 0;                                                                                   // step表示前进的步数；dir通过改变索引改变当前小人朝向的方向
+    while (step < *num && half < x && x < img->width - half - 1 && half < y && y < img->height - half - 1 && turn < 4) // 保证block不出界
     {
         int local_thres = 1;
-//        int local_thres;
-        //自适应二值化
-    /*
-        for (int dy = -half; dy <= half; dy++)  // for循环用来计算block区域的像素值之和（自适应阈值）
-        {
-            for (int dx = -half; dx <= half; dx++)
+        //        int local_thres;
+        // 自适应二值化
+        /*
+            for (int dy = -half; dy <= half; dy++)  // for循环用来计算block区域的像素值之和（自适应阈值）
             {
-                local_thres += AT(img, x + dx, y + dy);
+                for (int dx = -half; dx <= half; dx++)
+                {
+                    local_thres += AT(img, x + dx, y + dy);
+                }
             }
-        }
-        local_thres /= block_size * block_size;
-        local_thres -= clip_value;   // (x,y)点block区域内的阈值
-    */
-        int current_value = AT(img, x, y);//当前像素点灰度值
-        int front_value = AT(img, x + dir_front[dir][0], y + dir_front[dir][1]);//正前方像素点灰度值 （dir=0 下；dir=1 右；dir=2 上；dir=3 左）
-        int frontleft_value = AT(img, x + dir_frontleft[dir][0], y + dir_frontleft[dir][1]);//左前方像素点灰度值 （dir=0左下；dir=1 右下；dir=2 右上；dir=3 左上 ）
+            local_thres /= block_size * block_size;
+            local_thres -= clip_value;   // (x,y)点block区域内的阈值
+        */
+        int current_value = AT(img, x, y);                                                   // 当前像素点灰度值
+        int front_value = AT(img, x + dir_front[dir][0], y + dir_front[dir][1]);             // 正前方像素点灰度值 （dir=0 下；dir=1 右；dir=2 上；dir=3 左）
+        int frontleft_value = AT(img, x + dir_frontleft[dir][0], y + dir_frontleft[dir][1]); // 左前方像素点灰度值 （dir=0左下；dir=1 右下；dir=2 右上；dir=3 左上 ）
         //=======添加部分=======
-        if( (x==1 && y < img->height -20) || x== img->width - 2 || y==1 || (y==58 && step > 19))
+        if ((x == 1 && y < img->height - 10) || x == img->width - 2 || y == 1 || (y == 100 && step > 19))
         {
-            if(x==1 /*|| x== img->width - 2*/)  touch_boundary0  = 1;                //左边界是因为到最左边才停下来的，触碰到最左边，可能是环岛，十字等，
-            if(y==1) touch_boundary_up0 = 1;               //走到顶边，判断坡道or障碍
+            if (x == 1 /*|| x== img->width - 2*/)
+                touch_boundary0 = 1; // 左边界是因为到最左边才停下来的，触碰到最左边，可能是环岛，十字等，
+            if (y == 1)
+                touch_boundary_up0 = 1; // 走到顶边，判断坡道or障碍
 
             break;
         }
         //=======添加部分=======
-        if (front_value < local_thres)  // 前进方向像素为黑色
+        if (front_value < local_thres) // 前进方向像素为黑色
         {
-            dir = (dir + 1) % 4;   // 遇到前方为黑色需要右转一次
+            dir = (dir + 1) % 4; // 遇到前方为黑色需要右转一次
             turn++;
         }
         else if (frontleft_value < local_thres) // 前方像素为白色，且左前方像素为黑色
         {
             x += dir_front[dir][0];
             y += dir_front[dir][1];
-            pts[step][0] = x;   // 用来存放边线坐标信息
+            pts[step][0] = x; // 用来存放边线坐标信息
             pts[step][1] = y;
             step++;
             turn = 0;
-            //AT(img,x,y) = RGB565_GREEN;
+            // AT(img,x,y) = RGB565_GREEN;
         }
-        else  // 前方为白色，左前方为白色（墙角）
+        else // 前方为白色，左前方为白色（墙角）
         {
-            x += dir_frontleft[dir][0];   // 遇到墙角要斜着走
+            x += dir_frontleft[dir][0]; // 遇到墙角要斜着走
             y += dir_frontleft[dir][1];
-            dir = (dir + 3) % 4;   // 遇到墙角要左转一次
+            dir = (dir + 3) % 4; // 遇到墙角要左转一次
             pts[step][0] = x;
             pts[step][1] = y;
             step++;
             turn = 0;
-            //AT(img,x,y) = RGB565_GREEN;
+            // AT(img,x,y) = RGB565_GREEN;
         }
     }
-    //丢线标志，否则由于sobel特殊性会一直往上巡线
-    if(step < 20 && touch_boundary0)
+    // 丢线标志，否则由于sobel特殊性会一直往上巡线
+    if (step < 20 && touch_boundary0)
         loseline0 = 1;
-    //记录边线数目
+    // 记录边线数目
     *num = step;
-
 }
 /*************************************************************************
  *  函数名称：void Right_Adaptive_Threshold();
@@ -2650,51 +2631,60 @@ void Left_Adaptive_Threshold(image_t *img,int block_size,int clip_value,int x,in
  * 3   1
  *   2
  *************************************************************************/
-void Right_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x, int y, int pts[][2], int *num) {
+void Right_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x, int y, int pts[][2], int *num)
+{
     zf_assert(img && img->data);
     zf_assert(num && *num >= 0);
     zf_assert(block_size > 1 && block_size % 2 == 1);
-//    int half = block_size / 2;        //上交方案
-    int half = 0;                     //方案二
+    //    int half = block_size / 2;        //上交方案
+    int half = 0; // 方案二
     int step = 0, dir = 0, turn = 0;
-    while (step < *num && 0 < x && x < img->width - 1 && half < y && y < img->height - half - 1 && turn < 4) {
+    while (step < *num && 0 < x && x < img->width - 1 && half < y && y < img->height - half - 1 && turn < 4)
+    {
         int local_thres = 1;
-//        int local_thres;
-        //自适应二值化
-/*
-        for (int dy = -half; dy <= half; dy++) {
-            for (int dx = -half; dx <= half; dx++) {
-                local_thres += AT(img, x + dx, y + dy);
-            }
-        }
-        local_thres /= block_size * block_size;
-        local_thres -= clip_value;
-*/
+        //        int local_thres;
+        // 自适应二值化
+        /*
+                for (int dy = -half; dy <= half; dy++) {
+                    for (int dx = -half; dx <= half; dx++) {
+                        local_thres += AT(img, x + dx, y + dy);
+                    }
+                }
+                local_thres /= block_size * block_size;
+                local_thres -= clip_value;
+        */
         int current_value = AT(img, x, y);
         int front_value = AT(img, x + dir_front[dir][0], y + dir_front[dir][1]);
         int frontright_value = AT(img, x + dir_frontright[dir][0], y + dir_frontright[dir][1]);
         //=======添加部分=======
-        if( (x==img->width - 2  && y < img->height -20)   || x==1 || y==1 || (y==58 && step > 19)) //丢线标志，否则由于sobel特殊性会一直往上巡线
+        if ((x == img->width - 2 && y < img->height - 20) || x == 1 || y == 1 || (y == 100 && step > 19)) // 丢线标志，否则由于sobel特殊性会一直往上巡线
         {
 
-            if(x==img->width - 2 /*|| x==1*/)  touch_boundary1  = 1;                //右边界是因为到最右边才停下来的，触碰到最右边，可能是环岛，十字等，
-            if(y==1) touch_boundary_up1 = 1;               //走到顶边，判断坡道or障碍
+            if (x == img->width - 2 /*|| x==1*/)
+                touch_boundary1 = 1; // 右边界是因为到最右边才停下来的，触碰到最右边，可能是环岛，十字等，
+            if (y == 1)
+                touch_boundary_up1 = 1; // 走到顶边，判断坡道or障碍
 
             break;
         }
         //=======添加部分=======
-        if (front_value < local_thres) {
+        if (front_value < local_thres)
+        {
             dir = (dir + 3) % 4;
             turn++;
-        } else if (frontright_value < local_thres) {
+        }
+        else if (frontright_value < local_thres)
+        {
             x += dir_front[dir][0];
             y += dir_front[dir][1];
             pts[step][0] = x;
             pts[step][1] = y;
             step++;
             turn = 0;
-            //AT(img,x,y) = RGB565_YELLOW;
-        } else {
+            // AT(img,x,y) = RGB565_YELLOW;
+        }
+        else
+        {
             x += dir_frontright[dir][0];
             y += dir_frontright[dir][1];
             dir = (dir + 1) % 4;
@@ -2702,13 +2692,13 @@ void Right_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int 
             pts[step][1] = y;
             step++;
             turn = 0;
-            //AT(img,x,y) = RGB565_YELLOW;
+            // AT(img,x,y) = RGB565_YELLOW;
         }
     }
-    //丢线标志，否则由于sobel特殊性会一直往上巡线
-    if(step < 20 && touch_boundary1)
+    // 丢线标志，否则由于sobel特殊性会一直往上巡线
+    if (step < 20 && touch_boundary1)
         loseline1 = 1;
-    //记录边线数目
+    // 记录边线数目
     *num = step;
 }
 // 补线 原图
@@ -3364,55 +3354,44 @@ void Coordinate_restore_right(int16 pt0_in[][2], int16 in_num, int16 pt0_out[][2
 //
 // Created by RUPC on 2022/9/20.
 //
-#define RESULT_ROW 60//结果图行列
+#define RESULT_ROW 60 // 结果图行列
 #define RESULT_COL 80
-#define         USED_ROW                120  //用于透视图的行列
-#define         USED_COL                188
-#define PER_IMG     mt9v03x_image//SimBinImage:用于透视变换的图像
-#define Image_Use   *PerImg_ip//*PerImg_ip定义使用的图像，ImageUsed为用于巡线和识别的图像
-typedef unsigned char       uint8_t;                                              // 无符号  8 bits
+#define USED_ROW 120 // 用于透视图的行列
+#define USED_COL 188
+#define PER_IMG mt9v03x_image  // SimBinImage:用于透视变换的图像
+#define Image_Use *PerImg_ip   //*PerImg_ip定义使用的图像，ImageUsed为用于巡线和识别的图像
+typedef unsigned char uint8_t; // 无符号  8 bits
 uint8_t *PerImg_ip[RESULT_ROW][RESULT_COL];
- 
-void ImagePerspective_Init(void) {
- 
+
+void ImagePerspective_Init(void)
+{
+
     static uint8_t BlackColor = 0;
-    double change_un_Mat[3][3] = {          //114w*100h
-            { -0.01609759704190238, 0.01932561893613478, -2.040617594981866 }, {
-                    0.0004352209945470896, -0.000367865364438621,
-                    -0.7035606436969671 }, { 1.115951268069474e-005,
-                    0.0001970185393508392, -0.03104642853440032 }, };
-    for (int i = 0; i < RESULT_COL ;i++) {
-        for (int j = 0; j < RESULT_ROW ;j++) {
-            int local_x = (int) ((change_un_Mat[0][0] * i
-                    + change_un_Mat[0][1] * j + change_un_Mat[0][2])
-                    / (change_un_Mat[2][0] * i + change_un_Mat[2][1] * j
-                            + change_un_Mat[2][2]));
-            int local_y = (int) ((change_un_Mat[1][0] * i
-                    + change_un_Mat[1][1] * j + change_un_Mat[1][2])
-                    / (change_un_Mat[2][0] * i + change_un_Mat[2][1] * j
-                            + change_un_Mat[2][2]));
-            if (local_x
-                    >= 0&& local_y >= 0 && local_y < USED_ROW && local_x < USED_COL){
+    double change_un_Mat[3][3] = {
+        // 114w*100h
+        {-0.01609759704190238, 0.01932561893613478, -2.040617594981866},
+        {0.0004352209945470896, -0.000367865364438621,
+         -0.7035606436969671},
+        {1.115951268069474e-005,
+         0.0001970185393508392, -0.03104642853440032},
+    };
+    for (int i = 0; i < RESULT_COL; i++)
+    {
+        for (int j = 0; j < RESULT_ROW; j++)
+        {
+            int local_x = (int)((change_un_Mat[0][0] * i + change_un_Mat[0][1] * j + change_un_Mat[0][2]) / (change_un_Mat[2][0] * i + change_un_Mat[2][1] * j + change_un_Mat[2][2]));
+            int local_y = (int)((change_un_Mat[1][0] * i + change_un_Mat[1][1] * j + change_un_Mat[1][2]) / (change_un_Mat[2][0] * i + change_un_Mat[2][1] * j + change_un_Mat[2][2]));
+            if (local_x >= 0 && local_y >= 0 && local_y < USED_ROW && local_x < USED_COL)
+            {
                 PerImg_ip[j][i] = &PER_IMG[local_y][local_x];
             }
-            else {
-                PerImg_ip[j][i] = &BlackColor;          //&PER_IMG[0][0];
+            else
+            {
+                PerImg_ip[j][i] = &BlackColor; //&PER_IMG[0][0];
             }
- 
         }
     }
-
- 
 }
- 
-   
-
-
-
-
-
-
-
 
 /*************************************************************************
  *  函数名称：void nms_angle();
@@ -3422,21 +3401,24 @@ void ImagePerspective_Init(void) {
  *  修改时间：2022年11月25日
  *  备    注：上交方案：kernel = 21，保存极大值的数组，即一段范围内斜率变换最大的值，非极大值均设为零
  *************************************************************************/
-void nms_angle(float angle_in[], int num, float angle_out[], int kernel){
+void nms_angle(float angle_in[], int num, float angle_out[], int kernel)
+{
     zf_assert(kernel % 2 == 1);
     int half = kernel / 2;
-    for (int i = 0; i < num; i++) {
+    for (int i = 0; i < num; i++)
+    {
         angle_out[i] = angle_in[i];
-        for (int j = -half; j <= half; j++) {
-            //fabs():求绝对值
-            if (fabs(angle_in[clip(i + j, 0, num - 1)]) > fabs(angle_out[i])) {
+        for (int j = -half; j <= half; j++)
+        {
+            // fabs():求绝对值
+            if (fabs(angle_in[clip(i + j, 0, num - 1)]) > fabs(angle_out[i]))
+            {
                 angle_out[i] = 0;
                 break;
             }
         }
     }
 }
-
 
 /*************************************************************************
  *  函数名称：void local_angle_points();
@@ -3446,26 +3428,29 @@ void nms_angle(float angle_in[], int num, float angle_out[], int kernel){
  *  修改时间：2022年11月23日
  *  备    注：计算该点前后两点连线的斜率作为该点切线斜率的近似
  *************************************************************************/
-void local_angle_points(float pts_in[][2], int num, float angle_out[], int dist) {
-    for (int i = 0; i < num; i++) {
-        if (i <= 0 || i >= num - 1) {
+void local_angle_points(float pts_in[][2], int num, float angle_out[], int dist)
+{
+    for (int i = 0; i < num; i++)
+    {
+        if (i <= 0 || i >= num - 1)
+        {
             angle_out[i] = 0;
             continue;
         }
         float dx1 = pts_in[i][0] - pts_in[clip(i - dist, 0, num - 1)][0];
         float dy1 = pts_in[i][1] - pts_in[clip(i - dist, 0, num - 1)][1];
-        float dn1 = mySqrt(dx1 * dx1 + dy1 * dy1);//此点与前一点间距离
-        //float dn1 = sqrtf(dx1 * dx1 + dy1 * dy1);//此点与前一点间距离
+        float dn1 = mySqrt(dx1 * dx1 + dy1 * dy1); // 此点与前一点间距离
+        // float dn1 = sqrtf(dx1 * dx1 + dy1 * dy1);//此点与前一点间距离
         float dx2 = pts_in[clip(i + dist, 0, num - 1)][0] - pts_in[i][0];
         float dy2 = pts_in[clip(i + dist, 0, num - 1)][1] - pts_in[i][1];
-        float dn2 = mySqrt(dx2 * dx2 + dy2 * dy2);//此点与后一点间距离
-        //float dn2 = sqrtf(dx2 * dx2 + dy2 * dy2);//此点与后一点间距离
-        float c1 = dx1 / dn1;//cosθ1
-        float s1 = dy1 / dn1;//sinθ1
-        float c2 = dx2 / dn2;//cosθ2
-        float s2 = dy2 / dn2;//sinθ2
-        //化简展开得到角公式(k1-k2)/(1+k1k2),即tan的差角公式==>得出两点间角度变化==>曲线斜率变化
-        angle_out[i] = atan2f(c1 * s2 - c2 * s1, c2 * c1 + s2 * s1);//atan2f(y,x):返回以弧度表示的y/x反正切
+        float dn2 = mySqrt(dx2 * dx2 + dy2 * dy2); // 此点与后一点间距离
+        // float dn2 = sqrtf(dx2 * dx2 + dy2 * dy2);//此点与后一点间距离
+        float c1 = dx1 / dn1; // cosθ1
+        float s1 = dy1 / dn1; // sinθ1
+        float c2 = dx2 / dn2; // cosθ2
+        float s2 = dy2 / dn2; // sinθ2
+        // 化简展开得到角公式(k1-k2)/(1+k1k2),即tan的差角公式==>得出两点间角度变化==>曲线斜率变化
+        angle_out[i] = atan2f(c1 * s2 - c2 * s1, c2 * c1 + s2 * s1); // atan2f(y,x):返回以弧度表示的y/x反正切
     }
 }
 /*完成摄像头初始化后，调用一次ImagePerspective_Init，此后，直接调用ImageUsed   即为透视结果*/
