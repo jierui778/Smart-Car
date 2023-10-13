@@ -2197,8 +2197,8 @@ int ipts1_num;                // 存放边线像素点个数(右)
 uint8 loseline00;
 uint8 loseline11;
 
-int ipts00[POINTS_MAX_LEN][2];
-int ipts11[POINTS_MAX_LEN][2];
+int ipts00[100][2];
+int ipts11[100][2];//巡线上边线点的个数
 int ipts00_num;
 int ipts11_num;
 
@@ -2286,7 +2286,7 @@ void test(void)
     }
     for (i = 0; i < ipts11_num; i++)
     {
-        ips200_draw_point(ipts11[i][0]+5, ipts11[i][1] + 200, RGB565_BLUE);
+        ips200_draw_point(ipts11[i][0]+5, ipts11[i][1] + 200, RGB565_RED);
     }
 	
 	for (i = 0; i < ipts0_num; i++)
@@ -2594,26 +2594,38 @@ void Find_Borderline_Second(void)
     img_raw.data = *Image_Use;
 
     // 标记种子起始点(后续元素处理要用到)
-    x0_first = x1;
+    // x0_first = x1;
+    // y0_first = ipts0[ipts0_num-1][1]-5;
+
+    // ipts00_num = sizeof(ipts00) / sizeof(ipts00[0]); // 求数组的长度
+    // // 扫底下五行，寻找跳变点
+    // for (; y0_first >20; y0_first--)//从所选的行，向上扫5次，每次从中间向左线扫
+    // {
+    //     for (; x0_first > 0; x0_first--)//在选的每行中，从中间向左线扫
+    //         if (AT_IMAGE(&img_raw, x0_first - 1, y0_first) < uthres)//如果扫到黑点（灰度值为0），就从该点开始扫线
+    //             goto out1;//开始扫左线
+    //     x0_first = img_raw.width / 2 - begin_x;//每次每一行扫完，都把x0_first归位
+    // }
+    x0_first = 2;
     y0_first = ipts0[ipts0_num-1][1]-5;
 
     ipts00_num = sizeof(ipts00) / sizeof(ipts00[0]); // 求数组的长度
     // 扫底下五行，寻找跳变点
     for (; y0_first >20; y0_first--)//从所选的行，向上扫5次，每次从中间向左线扫
     {
-        for (; x0_first > 0; x0_first--)//在选的每行中，从中间向左线扫
-            if (AT_IMAGE(&img_raw, x0_first - 1, y0_first) < uthres)//如果扫到黑点（灰度值为0），就从该点开始扫线
-                goto out1;//开始扫左线
-        x0_first = img_raw.width / 2 - begin_x;//每次每一行扫完，都把x0_first归位
+        if (AT_IMAGE(&img_raw, x0_first, y0_first) < uthres)//如果扫到黑点（灰度值为0），就从该点开始扫线
+          {  
+            goto out1;//开始扫左线
+          }
     }
     //如果扫不到的话，判定左边的底边丢线
     loseline00 = 1; // 底边丢线
 	out1://从起始点开始执行扫线
 	{
-		if (AT_IMAGE(&img_raw, x0_first, y0_first) >= uthres)//如果这个点是白色（且左边是黑色的话）
+		// if (AT_IMAGE(&img_raw, x0_first+1, y0_first) >= uthres)//如果这个点是白色（且左边是黑色的话）
 			Left_Adaptive_Threshold(&img_raw, block_size, clip_value, x0_first, y0_first, ipts00, &ipts00_num);//开始跑迷宫
-		else
-			ipts00_num = 0;//如果不是的话，就不用跑了，求得的number记为0
+		// else
+		// 	ipts00_num = 0;//如果不是的话，就不用跑了，求得的number记为0
 	}
     }
     if(touch_boundary1==1)
@@ -2622,24 +2634,21 @@ void Find_Borderline_Second(void)
     x2 = img_raw.width / 2 + begin_x, y2 = begin_y;
 
     // 标记种子起始点(后续元素处理要用到)
-    x1_first = x2;
+    x1_first = 156;
     y1_first = ipts1[ipts1_num-1][1]-5;;
 
     ipts11_num = sizeof(ipts11) / sizeof(ipts11[0]);
     for (; y1_first > 20; y1_first--)
     {
-        for (; x1_first < img_raw.width - 1; x1_first++)
-            if (AT_IMAGE(&img_raw, x1_first + 1, y1_first) < uthres)
-                goto out2;
-        x1_first = img_raw.width / 2 + begin_x;
+        if (AT_IMAGE(&img_raw, x1_first , y1_first) < uthres)
+        {
+            goto out2;
+        }
     }
     loseline11 = 1; // 底边丢线
 	out2:
 	{
-		if (AT_IMAGE(&img_raw, x1_first, y1_first) >= uthres)
-			Right_Adaptive_Threshold(&img_raw, block_size, clip_value, x1_first, y1_first, ipts11, &ipts11_num);
-		else
-			ipts11_num = 0;
+		Right_Adaptive_Threshold(&img_raw, block_size, clip_value, x1_first, y1_first, ipts11, &ipts11_num);
 	}
 }
 
