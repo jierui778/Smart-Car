@@ -137,6 +137,9 @@ void nms_angle(float angle_in[], int num, float angle_out[], int kernel);
 void local_angle_points(float pts_in[][2], int num, float angle_out[], int dist);
 void Image_blur_points_Right(int num, int kernel);
 void blur_points(float pts_in[][2], int num, float pts_out[][2], int kernel);
+void Right_Adaptive_Threshold_new(image_t *img, int block_size, int clip_value, int x, int y, int pts[][2], int *num);
+void Left_Adaptive_Threshold_new(image_t *img, int block_size, int clip_value, int x, int y, int pts[][2], int *num);
+void Find_Borderline_new(void);
 // W矩阵参数（原图转化成逆透视后图像的参数）
 // 60*80
 //#define a11 (-4.3801f)
