@@ -1534,7 +1534,7 @@ void test(void)
     rpts0an_num = rpts0a_num;
     nms_angle(rpts1a, rpts1a_num, rpts1an, (int)round(angle_dist / sample_dist) * 2 + 1);
     rpts1an_num = rpts1a_num;
-	find_corners();
+	
     
     // for (i = 0; i < ipts00_num; i++)
     // {
@@ -1600,121 +1600,151 @@ void test(void)
 
        ips200_draw_point(x+20, 200 - y, RGB565_YELLOW);
    }
-	Find_Borderline_Second();
-	ips200_show_uint(160,200,ipts_new_num0,3);
-	// Image_CheckState(ipts0,ipts0_num,ipts1,ipts1_num);//检查状态
-    // Cross_Drawline_plus(ipts0,ipts0_num,ipts1,ipts1_num,ipts00,ipts00_num,ipts11,ipts11_num);//十字补线
+	Find_Borderline_Second();//找到上边线
 
-        //十字根据远线控制 地址平移+数组删减
-        // if (track_type == TRACK_LEFT) {
-        //     track_leftline(far_rpts0s + far_Lpt0_rpts0s_id, far_rpts0s_num - far_Lpt0_rpts0s_id, rpts,
-        //                    (int) round(angle_dist / sample_dist), pixel_per_meter * ROAD_WIDTH / 2);
-        //     rpts_num = far_rpts0s_num - far_Lpt0_rpts0s_id;
-        // } else {
-        //     track_rightline(far_rpts1s + far_Lpt1_rpts1s_id, far_rpts1s_num - far_Lpt1_rpts1s_id, rpts,
-        //                     (int) round(angle_dist / sample_dist), pixel_per_meter * ROAD_WIDTH / 2);
-        //     rpts_num = far_rpts1s_num - far_Lpt1_rpts1s_id;
-        // }
-//        //十字补线方案
-//        if (track_type == TRACK_LEFT) {
-//            rpts = rptsc0;
-//            rpts_num = rptsc0_num;
-//        } else {
-//            rpts  = rptsc1;
-//            rpts_num = rptsc1_num;
-//        }
-     track_leftline(rpts0s, rpts0s_num, rptsc0,
+    find_corners();//找拐点
+
+    //十字根据远线控制 地址平移+数组删减
+    // if (track_type == TRACK_LEFT) {
+    //     track_leftline(far_rpts0s + far_Lpt0_rpts0s_id, far_rpts0s_num - far_Lpt0_rpts0s_id, rpts,
+    //                    (int) round(angle_dist / sample_dist), pixel_per_meter * ROAD_WIDTH / 2);
+    //     rpts_num = far_rpts0s_num - far_Lpt0_rpts0s_id;
+    // } else {
+    //     track_rightline(far_rpts1s + far_Lpt1_rpts1s_id, far_rpts1s_num - far_Lpt1_rpts1s_id, rpts,
+    //                     (int) round(angle_dist / sample_dist), pixel_per_meter * ROAD_WIDTH / 2);
+    //     rpts_num = far_rpts1s_num - far_Lpt1_rpts1s_id;
+    // }
+       //十字补线方案
+    //    if (track_type == TRACK_LEFT) //如果巡的是左线的话，那么就把中线赋值为左线的逆透视数组
+    //    {
+    //        rpts = rptsc0;
+    //        rpts_num = rptsc0_num;
+    //    } else {
+    //        rpts  = rptsc1;
+    //        rpts_num = rptsc1_num;
+    //    }
+
+    //先平移左右线，使左右线拟合（现在默认是直道的状态）,这里的左右线就默认为中线了
+    track_leftline(rpts0s, rpts0s_num, rptsc0,
                        10.0, pixel_per_meter * ROAD_WIDTH / 2);
     track_rightline(rpts1s, rpts1s_num, rptsc1,
-    10.0, pixel_per_meter * ROAD_WIDTH / 2);
-//	for(i=0;i<)
-    //  track_rightline(rpts1, far_rpts1s_num - far_Lpt1_rpts1s_id, rpts,
-    //                         (int) round(angle_dist / sample_dist), pixel_per_meter * ROAD_WIDTH / 2);
+                        10.0, pixel_per_meter * ROAD_WIDTH / 2);
+
+    if(rpts0s_num>rpts1s_num)
+    {
+        rpts_num = rpts1s_num;
+
+    }
+    else
+    {
+        rpts_num=rpts0s_num;
+    }
+
+    for(i=0;i<rpts_num;i++)
+    {
+        rpts[i][0]=(rptsc0[i][0]+rptsc1[i][0])/2;
+        rpts[i][1]=(rptsc0[i][1]+rptsc1[i][1])/2;//行坐标不知道要不要平均
+//		ips200_draw_point(rpts[i][0],rpts[i][1]+200,RGB565_WHITE);
+    }
+	for (int i = 0; i < rpts_num; i++) // 显示中
+    {
+       uint16 x, y;
+       x = func_limit_ab(rpts[i][0], 0, 200);
+       y = func_limit_ab(rpts[i][1], 0, 199);
+
+       ips200_draw_point(x+20, 200 - y, RGB565_WHITE);
+    }
+   
     
     //纯跟踪起始点 根据方案不同调整！
     float cx, cy; //思考：由于逆透视出来的是现实坐标系，考虑把图像最低行中间起始点改为小车重心点会不会好一些；若是重心，则cx，cy为摄像头坐标距重心坐标距离
+    //这里没有赋值，就默认为0
 //    cx = UCOL/2+0.5;//方案一
 //    cy = UROW;
-    Pespective_xy( UCOL/2+0.5 ,begin_y ,  &cx, &cy);//方案二
+
+    Pespective_xy( UCOL/2+0.5 ,begin_y ,  &cx, &cy);//对起始点进行逆透视，得到现实坐标系下的坐标，方便中线拟合，找到起始点
 //    rot_xy( UCOL/2+0.5 ,begin_y ,  &cx, &cy);//方案三
    
-
-
     //找最近点(起始点中线归一化)
-    float min_dist = 1e10;//存储逆透视的最小距离值
+    float min_dist = 1e10;//存储逆透视的最小距离值，待改进
     int   begin_id = -1;//起始点在直线的下标索引
 
-//    for (int i = 0; i < rpts_num; i++) 
-//    {
-//        float dx = rpts[i][0] - cx;
-//        float dy = rpts[i][1] - cy;//求出每个点到x,y变化值
-//        //float dist = mySqrt(dx * dx + dy * dy);
-//        float dist = sqrt(dx * dx + dy * dy);
-//        //计算rpts上每一点到起始点cx,cy的距离
-//        if (dist < min_dist)//如果当前点到起始点的距离小于已知的最小距离，则更新最小距离和最近点的下标索引
-//        {
-//            min_dist = dist;
-//            begin_id = i;
-//        }
-//    }
-//	
+   for (int i = 0; i < rpts_num; i++) 
+   {
+       float dx = rpts[i][0] - cx;
+       float dy = rpts[i][1] - cy;//求出每个点到x,y变化值
+       //float dist = mySqrt(dx * dx + dy * dy);
+       float dist = sqrt(dx * dx + dy * dy);
+       //计算rpts上每一点到起始点cx,cy的距离
+       if (dist < min_dist)//如果当前点到起始点的距离小于已知的最小距离，则更新最小距离和最近点的下标索引
+       {
+           min_dist = dist;
+           begin_id = i;
+       }
+   }
+    
+	
     // 中线有点，同时最近点不是最后几个点
-//    if (begin_id >= 0 && rpts_num - begin_id >= 3)//这个if条件是用来判断中线是否有足够的点数，同时最近点不是最后几个点
-//    {
-//        // 归一化中线
-//        rpts[begin_id][0] = cx;
-//        rpts[begin_id][1] = cy;//选定起始点
-//        rptsn_num = sizeof(rptsn) / sizeof(rptsn[0]);//sizeof(rptsn) 表示 rptsn 数组的总字节数，sizeof(rptsn[0]) 表示 rptsn 数组中每个元素的字节数
-//        resample_points(rpts + begin_id, rpts_num - begin_id, rptsn, &rptsn_num, sample_dist * pixel_per_meter);
+    if (begin_id >= 0 && rpts_num - begin_id >= 3)//这个if条件是用来判断中线是否有足够的点数，同时最近点不是最后几个点
+    {
+        // 归一化中线
+        rpts[begin_id][0] = cx;
+        rpts[begin_id][1] = cy;//选定起始点
+        rptsn_num = sizeof(rptsn) / sizeof(rptsn[0]);//sizeof(rptsn) 表示 rptsn 数组的总字节数，sizeof(rptsn[0]) 表示 rptsn 数组中每个元素的字节数
+        resample_points(rpts + begin_id, rpts_num - begin_id, rptsn, &rptsn_num, sample_dist * pixel_per_meter);
 
 
 
-//        /***************计算远处偏差均值*************/
-//        // 预锚点位置 第34点作为控制偏差 注意：最低行距离车头约10cm距离，距离摄像头25cm距离 故预瞄点现实中为60cm
-////        int i;
-////        for(i = 0;i<5;i++){
-////            aim_idx[i] = clip(round(aim_dist[i] / sample_dist), 0, rptsn_num - 1);
-////
-////
-////            // 计算远锚点偏差值      cx，cy为摄像头坐标距重心坐标距离 0,-7
-////            dx[i] = rptsn[aim_idx[i]][0] - cx;
-////            dy[i] = cy - rptsn[aim_idx[i]][1] ;
-////            dn[i] = sqrt(dx[i] * dx[i] + dy[i] * dy[i]);
-////            //dn = mySqrt(dx * dx + dy * dy);
-////            //error>0 左 error<0 右 以下为角度制换算为弧度制
-////            error[i] = atan2f(dx[i], -dy[i]) * 180 / PI;//1弧度=180/π度 1度=π/180弧度
-////            //assert(!isnan(error));
-////
-////
-////        }
-////        ave_error = error[0]*0.3 + error[1]*0.27 + error[2]*0.21 + error[3]*0.14 + error[4]*0.08;//正态分布
-//        /***************计算远处偏差均值*************/
+        /***************计算远处偏差均值*************/
+        // 预锚点位置 第34点作为控制偏差 注意：最低行距离车头约10cm距离，距离摄像头25cm距离 故预瞄点现实中为60cm
+//        int i;
+//        for(i = 0;i<5;i++){
+//            aim_idx[i] = clip(round(aim_dist[i] / sample_dist), 0, rptsn_num - 1);
+//
+//
+//            // 计算远锚点偏差值      cx，cy为摄像头坐标距重心坐标距离 0,-7
+//            dx[i] = rptsn[aim_idx[i]][0] - cx;
+//            dy[i] = cy - rptsn[aim_idx[i]][1] ;
+//            dn[i] = sqrt(dx[i] * dx[i] + dy[i] * dy[i]);
+//            //dn = mySqrt(dx * dx + dy * dy);
+//            //error>0 左 error<0 右 以下为角度制换算为弧度制
+//            error[i] = atan2f(dx[i], -dy[i]) * 180 / PI;//1弧度=180/π度 1度=π/180弧度
+//            //assert(!isnan(error));
+//
+//
+//        }
+//        ave_error = error[0]*0.3 + error[1]*0.27 + error[2]*0.21 + error[3]*0.14 + error[4]*0.08;//正态分布
+        /***************计算远处偏差均值*************/
 
-////        aim_idx[0] = clip(round(aim_dist[0] / sample_dist), 0, rptsn_num - 1);
+//        aim_idx[0] = clip(round(aim_dist[0] / sample_dist), 0, rptsn_num - 1);
 
-//        aim_idx[0] = clip(round(aim_distance / sample_dist), 0, rptsn_num - 1);
+        aim_idx[0] = clip(round(aim_distance / sample_dist), 0, rptsn_num - 1);
 
 
-//        // 计算远锚点偏差值      cx，cy为摄像头坐标距重心坐标距离 0,-7
-////        dx[0] = rptsn[aim_idx[0]][0] - cx;
-////        dy[0] = rptsn[aim_idx[0]][1] - cy;
-////        dn[0] = sqrt(dx[0] * dx[0] + dy[0] * dy[0]);
-//        //dn = mySqrt(dx * dx + dy * dy);
-//        //error<0(输出为正) 左 error>0(输出为负) 右 以下为角度制换算为弧度制
-//        error[0] = atan2f(dx[0], dy[0]) * 180 / PI;//1弧度=180/π度 1度=π/180弧度
-//        //assert(!isnan(error));
-////        ave_error = 0;
-//        // 远近锚点综合考虑
-//        //angle = pid_solve(&servo_pid, error * far_rate + error_near * (1 - far_rate));
-//        // 根据偏差进行PD计算
-//        //float angle = pid_solve(&servo_pid, error);
+        // 计算远锚点偏差值      cx，cy为摄像头坐标距重心坐标距离 0,-7
+        dx[0] = rptsn[aim_idx[0]][0] - cx;
+        dy[0] = rptsn[aim_idx[0]][1] - cy;
+        dn[0] = sqrt(dx[0] * dx[0] + dy[0] * dy[0]);
+        //dn = mySqrt(dx * dx + dy * dy);
+        //error<0(输出为正) 左 error>0(输出为负) 右 以下为角度制换算为弧度制
+        error[0] = atan2f(dx[0], dy[0]) * 180 / PI;//1弧度=180/π度 1度=π/180弧度
+        //assert(!isnan(error));
+        
 
-//        // 纯跟踪算法(只考虑远点)三轮控制用不到
-////        pure_angle = -atanf(pixel_per_meter * 2 * 0.2 * dx / dn / dn) / PI * 180 / 1;
-//      } else {
-//          // 中线点过少(出现问题)，则不控制舵机
-//          rptsn_num = 0;
-//      }
+
+        ave_error = 0;
+        ips200_show_float(160,240,ave_error,4,4);
+        // 远近锚点综合考虑
+        //angle = pid_solve(&servo_pid, error * far_rate + error_near * (1 - far_rate));
+        // 根据偏差进行PD计算
+        //float angle = pid_solve(&servo_pid, error);
+
+        // 纯跟踪算法(只考虑远点)三轮控制用不到
+//        pure_angle = -atanf(pixel_per_meter * 2 * 0.2 * dx / dn / dn) / PI * 180 / 1;
+      } else {
+          // 中线点过少(出现问题)，则不控制舵机
+          rptsn_num = 0;
+      }
 
     //  end = system_getval_us();
 }
