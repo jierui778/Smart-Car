@@ -129,6 +129,7 @@ float Get_err1(int pts_in[][2], int num);
 float LineRession(int pts_in[][2], int num);
 void Get_Midline2(int pts_l[][2], int pts_l_num, int pts_r[][2], int pts_r_num);
 void Find_Borderline_Second(void);
+void SplicingArray_int(int pt0[][2], int num1, int pt1[][2], int num2, int pt_out[][2],  uint8 x);
 // W矩阵参数（原图转化成逆透视后图像的参数）
 // 60*80
 // #define a11 (-4.3801f)
