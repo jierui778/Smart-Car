@@ -131,6 +131,14 @@ void Get_Midline2(int pts_l[][2], int pts_l_num, int pts_r[][2], int pts_r_num);
 void Find_Borderline_Second(void);
 void SplicingArray_int(int pt0[][2], int num1, int pt1[][2], int num2, int pt_out[][2],  uint8 x);
 float Get_Mid_Cross(void);
+void Pespective_xy(int x_in,int y_in , float* x_out , float* y_out);
+void track_leftline(float pts_in[][2], int num, float pts_out[][2], int approx_num, float dist);
+void track_rightline(float pts_in[][2], int num, float pts_out[][2], int approx_num, float dist);
+void Image_CheckState(int in_put_l[][2],int in_put_num_l,int in_put_r[][2],int in_put_num_r);
+void Cross_Drawline_plus(int in_put_l[][2],int in_put_num_l,int in_put_lnew[][2],int in_put_num_lnew,
+                            int in_put_r[][2],int in_put_r_num, int in_put_rnew[][2],int in_put_r_numnew);
+void Cross_Drawline(int in_put_l[][2],int in_put_num_l,int in_put_r[][2],int in_put_r_num);
+void test_new(void);
 // W矩阵参数（原图转化成逆透视后图像的参数）
 // 60*80
 // #define a11 (-4.3801f)
@@ -183,15 +191,26 @@ float Get_Mid_Cross(void);
 // #define a32 (-0.0846f)
 // #define a33 (1.0f)
 
-#define a11 (-2.2450f)
-#define a12 (-8.5371f)
-#define a13 (252.9928f)
+//#define a11 (-2.2450f)
+//#define a12 (-8.5371f)
+//#define a13 (252.9928f)
+//#define a21 (-0.0901f)
+//#define a22 (0.4470f)
+//#define a23 (-190.8998f)
+//#define a31 (-0.0030f)
+//#define a32 (-0.0846f)
+//#define a33 (1.0f)
+
+#define a11 (-1.9850f)
+#define a12 (-6.8451f)
+#define a13 (232.9928f)
 #define a21 (-0.0901f)
 #define a22 (0.4470f)
 #define a23 (-190.8998f)
 #define a31 (-0.0030f)
-#define a32 (-0.0846f)
+#define a32 (-0.0636f)
 #define a33 (1.0f)
+
 
 #define getx(u, v) (a11 * (u) + a12 * (v) + a13)
 #define gety(u, v) (a21 * (u) + a22 * (v) + a23)
@@ -224,6 +243,105 @@ void resample_points(float pts_in[][2], int num1, float pts_out[][2], int *num2,
 void local_angle_points(float pts_in[][2], int num, float angle_out[], int dist);
 void nms_angle(float angle_in[], int num, float angle_out[], int kernel);
 void find_corners(void);
+
+#define POINTS_MAX_LEN (150) // 边线点最多的情况——>num
+
+//逆透视补线数组
+extern float left_line[POINTS_MAX_LEN][2];
+extern float right_line[POINTS_MAX_LEN][2];
+extern int left_num, right_num;
+//拼接数组
+extern float splicing_leftline[POINTS_MAX_LEN][2];
+extern float splicing_rightline[POINTS_MAX_LEN][2];
+extern int splicing_leftline_num,splicing_rightline_num;
+//拼接数组平移中线
+extern float splicing_leftline_center[POINTS_MAX_LEN][2];
+extern float splicing_rightline_center[POINTS_MAX_LEN][2];
+extern int splicing_leftline_center_num,splicing_rightline_center_num;
+
+//左右边丢线
+extern uint8 loseline0;
+extern uint8 loseline1;
+
+extern int x0_first , y0_first , x1_first ,y1_first;
+extern int x1 , y1 ;
+extern int x2 , y2 ;
+
+extern int begin_x0,begin_y0;              //找线偏移点
+extern int begin_x1,begin_y1;              //找线偏移点
+
+extern uint8  Image_Use[120][160];
+extern uint8 Image_Use_Robert[120][160];
+extern uint8 touch_boundary0;              //左边线走到图像边界
+extern uint8 touch_boundary1;              //右边线走到图像边界
+extern uint8 touch_boundary_up0;              //左边线走到图像左边界
+extern uint8 touch_boundary_up1;              //右边线走到图像右边界
+
+extern float xielv_left_y_to_end,xielv_right_y_to_end;                 //在逆透视后得坐标系建得斜率
+
+// 原图左右边线
+extern int ipts0[POINTS_MAX_LEN][2];
+extern int ipts1[POINTS_MAX_LEN][2];
+extern int ipts0_num, ipts1_num;
+// 变换后左右边线
+extern float rpts0[POINTS_MAX_LEN][2];
+extern float rpts1[POINTS_MAX_LEN][2];
+extern int rpts0_num, rpts1_num;
+// 变换后左右边线+滤波
+extern float rpts0b[POINTS_MAX_LEN][2];
+extern float rpts1b[POINTS_MAX_LEN][2];
+extern int rpts0b_num, rpts1b_num;
+// 变换后左右边线+等距采样
+extern float rpts0s[POINTS_MAX_LEN][2];
+extern float rpts1s[POINTS_MAX_LEN][2];
+extern int rpts0s_num, rpts1s_num;
+// 左右边线局部角度变化率
+extern float rpts0a[POINTS_MAX_LEN];
+extern float rpts1a[POINTS_MAX_LEN];
+extern int rpts0a_num, rpts1a_num;
+// 左右边线局部角度变化率+非极大抑制
+extern float rpts0an[POINTS_MAX_LEN];
+extern float rpts1an[POINTS_MAX_LEN];
+extern int rpts0an_num, rpts1an_num;
+// 左/右中线
+extern float rptsc0[POINTS_MAX_LEN][2];
+extern float rptsc1[POINTS_MAX_LEN][2];
+extern int rptsc0_num, rptsc1_num;
+// 归一化中线
+extern float rptsn[POINTS_MAX_LEN][2];
+extern int rptsn_num;
+
+// Y角点
+extern int Ypt0_rpts0s_id, Ypt1_rpts1s_id;
+extern bool Ypt0_found, Ypt1_found;
+// L角点
+extern int Lpt0_rpts0s_id, Lpt1_rpts1s_id;
+extern bool Lpt0_found, Lpt1_found;
+// 内L角点
+extern int N_Lpt0_rpts0s_id, N_Lpt1_rpts1s_id;
+extern bool N_Lpt0_found, N_Lpt1_found;
+
+extern int N_Xfound_num;//面向赛道编程，双内L计数
+// 长直道
+extern bool is_straight0, is_straight1;
+// 弯道
+extern bool is_turn0, is_turn1;
+
+extern enum track_type_e track_type;       //当前巡线模式
+
+extern float error[1] ;
+extern float ave_error;//ave_error名为平均偏差，实际按正态分布算
+// 远预锚点位置
+extern int aim_idx[1] ;
+
+// 计算远锚点偏差值
+extern float dx[1] ;
+extern float dy[1] ;
+extern float dn[1] ;
+// 若考虑近点远点,可近似构造Stanley算法,避免撞路肩
+
+extern float pure_angle;
+
 #endif
 
 /*
