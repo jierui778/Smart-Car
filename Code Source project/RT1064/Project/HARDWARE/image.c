@@ -1535,6 +1535,7 @@ void test(void)
     nms_angle(rpts1a, rpts1a_num, rpts1an, (int)round(angle_dist / sample_dist) * 2 + 1);
     rpts1an_num = rpts1a_num;
 	
+    aim_distance=aim_distance_flash;//设定预瞄距离
     
     // for (i = 0; i < ipts00_num; i++)
     // {
@@ -1549,6 +1550,11 @@ void test(void)
     {
         ips200_draw_point(ipts0[i][0]+5, ipts0[i][1] + 200, RGB565_RED);
     }
+    for (i = 0; i < ipts1_num; i++)
+    {
+        ips200_draw_point(ipts1[i][0]+5, ipts1[i][1] + 200, RGB565_GREEN);
+    }
+
     // for (i = 0; i < ipts1_num; i++)
     // {
     //     ips200_draw_point(ipts1[i][0]+5, ipts1[i][1] + 200, RGB565_BLUE);
@@ -1600,6 +1606,7 @@ void test(void)
 
        ips200_draw_point(x+20, 200 - y, RGB565_YELLOW);
    }
+   ips200_show_uint(160,260,touch_boundary1,4);
 	Find_Borderline_Second();//找到上边线
 
     find_corners();//找拐点
@@ -1669,12 +1676,13 @@ void test(void)
     float min_dist = 1e10;//存储逆透视的最小距离值，待改进
     int   begin_id = -1;//起始点在直线的下标索引
 
+    //找出起始点，和最小的下标索引
    for (int i = 0; i < rpts_num; i++) 
    {
        float dx = rpts[i][0] - cx;
        float dy = rpts[i][1] - cy;//求出每个点到x,y变化值
        //float dist = mySqrt(dx * dx + dy * dy);
-       float dist = sqrt(dx * dx + dy * dy);
+       float dist = sqrt(dx * dx + dy * dy);//求弧长微分
        //计算rpts上每一点到起始点cx,cy的距离
        if (dist < min_dist)//如果当前点到起始点的距离小于已知的最小距离，则更新最小距离和最近点的下标索引
        {
@@ -1682,7 +1690,7 @@ void test(void)
            begin_id = i;
        }
    }
-    
+//    ips200_show_float(160,240,min_dist,4,4);
 	
     // 中线有点，同时最近点不是最后几个点
     if (begin_id >= 0 && rpts_num - begin_id >= 3)//这个if条件是用来判断中线是否有足够的点数，同时最近点不是最后几个点
@@ -1692,9 +1700,9 @@ void test(void)
         rpts[begin_id][1] = cy;//选定起始点
         rptsn_num = sizeof(rptsn) / sizeof(rptsn[0]);//sizeof(rptsn) 表示 rptsn 数组的总字节数，sizeof(rptsn[0]) 表示 rptsn 数组中每个元素的字节数
         resample_points(rpts + begin_id, rpts_num - begin_id, rptsn, &rptsn_num, sample_dist * pixel_per_meter);
-
-
-
+        //对中线进行采样，以便后续的计算。具体来说，它选定了起始点，然后使用 resample_points 函数对中线进行采样，将采样结果存储在 rptsn 数组中
+        //rpts + begin_id 表示从中线的第 begin_id 个点开始采样，rpts_num - begin_id 表示采样的点数，rptsn 表示采样结果存储的数组，&rptsn_num 表示采样结果的点数
+        
         /***************计算远处偏差均值*************/
         // 预锚点位置 第34点作为控制偏差 注意：最低行距离车头约10cm距离，距离摄像头25cm距离 故预瞄点现实中为60cm
 //        int i;
@@ -1718,22 +1726,22 @@ void test(void)
 
 //        aim_idx[0] = clip(round(aim_dist[0] / sample_dist), 0, rptsn_num - 1);
 
-        aim_idx[0] = clip(round(aim_distance / sample_dist), 0, rptsn_num - 1);
-
-
+        aim_idx[0] = clip(round(aim_distance / sample_dist), 0, rptsn_num - 1);//计算目标点在采样后的中线上的索引位置
+		
+		aim_idx[0]=aim_idx[0]/2;
+        //这个数组只有一个数值，就是目标点在采样后的中线上的索引位置
+        ips200_show_uint(160,260,aim_idx[0],4);
         // 计算远锚点偏差值      cx，cy为摄像头坐标距重心坐标距离 0,-7
-        dx[0] = rptsn[aim_idx[0]][0] - cx;
-        dy[0] = rptsn[aim_idx[0]][1] - cy;
-        dn[0] = sqrt(dx[0] * dx[0] + dy[0] * dy[0]);
+        dx[0] = rptsn[aim_idx[0]][0] - cx;//这里计算了目标点到摄像头的x距离
+        dy[0] = rptsn[aim_idx[0]][1] - cy;//目标点到摄像头的y距离
+        dn[0] = sqrt(dx[0] * dx[0] + dy[0] * dy[0]);//用勾股定理求出目标点到摄像头的距离
         //dn = mySqrt(dx * dx + dy * dy);
         //error<0(输出为正) 左 error>0(输出为负) 右 以下为角度制换算为弧度制
         error[0] = atan2f(dx[0], dy[0]) * 180 / PI;//1弧度=180/π度 1度=π/180弧度
-        //assert(!isnan(error));
-        
-
-
+        //即这两个向量的夹角，返回值的单位是弧度制。然后，将这个弧度值乘以 180 / PI，即将其转换为角度制，最后将结果赋值给 error[0]，表示这两个向量的夹角
+        ips200_show_float(160,240,error[0],4,4);
         ave_error = 0;
-        ips200_show_float(160,240,ave_error,4,4);
+        // ips200_show_float(160,240,ave_error,4,4);
         // 远近锚点综合考虑
         //angle = pid_solve(&servo_pid, error * far_rate + error_near * (1 - far_rate));
         // 根据偏差进行PD计算
@@ -1925,11 +1933,11 @@ void Find_Borderline(void)
     //    uint8 uthres = ostu();
     // 寻左边线
     x1 = img_raw.width / 2 - begin_x, y1 = begin_y;
-    int TH;
+//     int TH;
 //    TH = OSTU_GetThreshold(Image_Use[0], IMAGE_WIDTH, IMAGE_HEIGHT);
-////    Image_Binarization(TH, Image_Use);
+//    Image_Binarization(TH, Image_Use);
 //    Image_Sobel(Image_Use, Image_Use_Robert, TH); // 全局Sobel得二值图(方案二) 2.8ms
-//    img_raw.data = *Image_Use_Robert;
+//    img_raw.data = *Image_Use;
 
     // 标记种子起始点(后续元素处理要用到)
     x0_first = x1;
@@ -2206,7 +2214,7 @@ void Right_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int 
         int front_value = AT(img, x + dir_front[dir][0], y + dir_front[dir][1]);
         int frontright_value = AT(img, x + dir_frontright[dir][0], y + dir_frontright[dir][1]);
         //=======添加部分=======
-        if ((x == img->width - 2 && y < img->height - 30) || x == 1 || y == 1 || (y == 20 && step > 19)) // 丢线标志，否则由于sobel特殊性会一直往上巡线
+        if ((x == img->width - 2 && y < img->height - 70) || x == 1 || y == 1 || (y == 20 && step > 19)) // 丢线标志，否则由于sobel特殊性会一直往上巡线
         {
             if (x == img->width - 2 /*|| x==1*/)
                 touch_boundary1 = 1; // 右边界是因为到最右边才停下来的，触碰到最右边，可能是环岛，十字等，
