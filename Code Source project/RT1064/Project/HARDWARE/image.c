@@ -1642,7 +1642,7 @@ void test(void)
    }
    ips200_show_uint(160,260,touch_boundary1,4);
 	Find_Borderline_Second();//找到上边线
-    if(touch_boundary0==1&&ipts00_num>10&&touch_boundary1==1&&ipts11_num>10)
+    if(touch_boundary0==1&&ipts00_num>10&&touch_boundary1==1&&ipts11_num>10)//加个if以防多次执行
     {
         Pespective(ipts00, ipts00_num, rpts00);
         rpts00_num = ipts00_num;
@@ -1677,7 +1677,10 @@ void test(void)
 		   uint16 x, y;
 		   x = func_limit_ab(rpts00[i][0],  0, 200);
 		   y = func_limit_ab(rpts00[i][1], 0, 199);
-		   ips200_draw_point(x+20, 200 - y, RGB565_RED); // 左线为绿色 不知道为什么改成-x/2+50就能正常先显示
+			if(y>30)
+			{
+				ips200_draw_point(x+20, 200 - y, RGB565_RED); // 左线为绿色 不知道为什么改成-x/2+50就能正常先显示
+			}
 	    }
 		
 		for (int i = 0; i < rpts11_num; i++) // 显示左边线
@@ -1685,7 +1688,10 @@ void test(void)
 		   uint16 x, y;
 		   x = func_limit_ab(rpts11[i][0],  0, 200);
 		   y = func_limit_ab(rpts11[i][1], 0, 199);
+			if(y>30)
+			{
 		   ips200_draw_point(x+20, 200 - y, RGB565_BLUE); // 左线为绿色 不知道为什么改成-x/2+50就能正常先显示
+			}
 	    }
     }
 	ips200_show_uint(160,280,rpts00_num,3);
@@ -2205,7 +2211,7 @@ void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x
         int frontleft_value = AT(img, x + dir_frontleft[dir][0], y + dir_frontleft[dir][1]); // 左前方像素点灰度值 （dir=0左下；dir=1 右下；dir=2 右上；dir=3 左上 ）
         //=======添加部分=======（限制条件）
         /*  当扫点的列坐标到左黑框边界且行坐标小于20    列坐标到右边的黑框边界  行坐标为1   行坐标为88的同时步数已经大于19*/
-        if ((x == 1 && y < img->height - 70) || x == img->width - 2 || y == 1 || (y == 20 && step > 19))//30修改后能扫线
+        if ((x == 1 && y < img->height - 50) || x == img->width - 2 || y == 1 || (y == 20 && step > 19))//30修改后能扫线
         {
             if (x == 1 /*|| x== img->width - 2*/)
                 touch_boundary0 = 1; // 左边界是因为到最左边才停下来的，触碰到最左边，可能是环岛，十字等，
@@ -2297,7 +2303,7 @@ void Right_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int 
         int front_value = AT(img, x + dir_front[dir][0], y + dir_front[dir][1]);
         int frontright_value = AT(img, x + dir_frontright[dir][0], y + dir_frontright[dir][1]);
         //=======添加部分=======
-        if ((x == img->width - 2 && y < img->height - 70) || x == 1 || y == 1 || (y == 20 && step > 19)) // 丢线标志，否则由于sobel特殊性会一直往上巡线
+        if ((x == img->width - 2 && y < img->height - 50) || x == 1 || y == 1 || (y == 20 && step > 19)) // 丢线标志，否则由于sobel特殊性会一直往上巡线
         {
             if (x == img->width - 2 /*|| x==1*/)
                 touch_boundary1 = 1; // 右边界是因为到最右边才停下来的，触碰到最右边，可能是环岛，十字等，
@@ -3089,7 +3095,7 @@ void find_corners(void)
     // 左边线角度
     for (int i = 1; i < rpts0s_num; i++)
     { // 只要数组里的角度符合的，Y或L就为true,然后就不在继续检测Y或L
-        if (rpts0an[i] == 0)
+        if (rpts0an[i] == 0)//如果检测的峰值不存在
             continue; // 以下检测只检测峰值（极大值）
         int im1 = clip(i - (int)round(angle_dist / sample_dist), 0, rpts0s_num - 1);
         int ip1 = clip(i + (int)round(angle_dist / sample_dist), 0, rpts0s_num - 1);
