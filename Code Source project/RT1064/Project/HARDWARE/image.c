@@ -3034,8 +3034,83 @@ void SplicingArray(float pt0[][2], int num1, float pt1[][2], int num2, float pt_
     }
     *num = count;
 }
+/*检测元素步骤：判断元素是否有标志位-_-->判断拐点是否能找到---->判断是否能补线---->判断补线后再找左右边线*/
+uint8 Cross_State_b;//十字路口前
+uint8 Cross_State_d;//十字路口前中
+uint8 Cross_State_c;//十字路口中
+uint8 Straight_State;//直道
+uint8 Left_Turn;//左弯道
+uint8 Right_Turn;//右弯道
 
-/*左线坐标变换，用于求拐点，左下角为0,0*/
+/**
+ * @brief 清空图像状态变量
+ * 
+ */
+void Image_Clear(void)
+{
+    Cross_State_b = 0;
+    Cross_State_c = 0;
+    Straight_State = 0;
+    Left_Turn = 0;
+    Right_Turn = 0;
+}
+
+/**
+ * @brief 检查图像状态，判断当前是否处于十字路口、直道、左弯道或右弯道
+ * 
+ * @param in_put_l 左边线的坐标数组
+ * @param in_put_num_l 左边线的坐标数量
+ * @param in_put_r 右边线的坐标数组
+ * @param in_put_r 右边线的坐标数量
+ */
+void Image_CheckState(int in_put_l[][2],int in_put_num_l,int in_put_r[][2],int in_put_num_r)
+{
+    /*十字路口前：左右不丢线 左边线丢线和右边线丢线的列坐标相差较大，行坐标相差较少*/
+    if((loseline0==0&&loseline1==0&&(in_put_r[in_put_num_r-1][0]-in_put_l[in_put_num_l-3][0])>(IMAGE_WIDTH-10))
+    &&(my_abs(in_put_l[in_put_num_l-3][1]-in_put_r[in_put_num_r-1][1])<10)&&Cross_State_d==0)
+    {
+        Cross_State_b = 1;
+		Cross_State_c = 0;
+		Cross_State_d = 0;
+//        Image_Clear();
+    }
+    /*十字路口中：左边线不丢线 右边线不丢线 左边线丢线和右边线丢线的列坐标相差较小，行坐标相差较少*/
+	else if(loseline0==0&&loseline1==0&&Cross_State_d==1&&in_put_l[in_put_num_l-1][0]!=0)
+    {
+        Cross_State_c = 1;
+		Cross_State_b = 0;
+		Cross_State_d = 0;
+    }
+	else if(loseline0==1&&loseline1==1&&Cross_State_b==1)
+    {
+        Cross_State_d = 1;
+		Cross_State_b = 0;
+		Cross_State_c = 0;
+    }
+	
+    /*直道：左右不丢线，左线右线斜率大小相等，顶点的距离较小（比十字中更小）*/
+    /*先检测能不能求出斜率，再判断状态*/
+//    else if(loseline0==0&&loseline1==0&&((LineRession(in_put_l,in_put_num_l)+LineRession(in_put_r,in_put_num_r))<5.0)
+//    &&(my_abs(in_put_l[in_put_num_l-1][0]-in_put_r[in_put_num_r-3][0])<(IMAGE_WIDTH/2)))
+//    {
+//        Straight_State=1;
+//        Image_Clear();
+//    }
+    /*左弯道：左丢线，右边不丢线，右边线最大点距离左边小于50个的单位*/
+    else if(loseline0==1&&loseline1==0&&in_put_r[in_put_num_r-1][0]<60)
+    {
+        Left_Turn = 1;
+		Right_Turn = 0;
+    }
+    /*右弯道：右丢线，左边不丢线，左边线最大点距离右边小于50个的单位*/
+    else if(loseline0==0&&loseline1==1&&in_put_l[in_put_num_l-1][0]>120)
+    {
+        Right_Turn = 1;
+		Left_Turn = 0;
+    }
+}
+
+/*左下线坐标变换，用于求拐点，左下角为0,0*/
 void Coordinate_transformation_left(int pt0_in[][2], int in_num, int pt0_out[][2])
 {
     int i;
@@ -3046,7 +3121,7 @@ void Coordinate_transformation_left(int pt0_in[][2], int in_num, int pt0_out[][2
     }
 }
 
-/*右线坐标变换，用于求拐点，将左上坐标移到右下坐标，左上角坐标原点迁移到右下角*/
+/*右下线坐标变换，用于求拐点，将左上坐标移到右下坐标，左上角坐标原点迁移到右下角*/
 void Coordinate_transformation_right(int pt0_in[][2], int in_num,int pt0_out[][2])
 {
     int i;
@@ -3054,6 +3129,17 @@ void Coordinate_transformation_right(int pt0_in[][2], int in_num,int pt0_out[][2
     {
         pt0_out[i][0] = IMAGE_WIDTH-pt0_in[i][0]-1;
         pt0_out[i][1] = IMAGE_HEIGHT-pt0_in[i][1]-1;
+    }
+}
+
+/*右上线坐标变换，用于求拐点*/
+void Coordinate_transformation_rightup(int pt0_in[][2], int in_num,int pt0_out[][2])
+{
+    int i;
+    for(i=0;i<in_num;i++)
+    {
+        pt0_out[i][0] = IMAGE_WIDTH-pt0_in[i][0]-1;
+        pt0_out[i][1] = IMAGE_HEIGHT;
     }
 }
 
@@ -3082,6 +3168,7 @@ void Coordinate_restore_right(int pt0_in[][2], int in_num, int pt0_out[][2])
 */
 int Left_Change [POINTS_MAX_LEN][2];
 int Right_Change [POINTS_MAX_LEN][2];
+int Right_Change_new [100][2];
 void Cross_Drawline(int in_put_l[][2],int in_put_num_l,int in_put_r[][2],int in_put_r_num)
 {
     uint16 i;
@@ -3094,7 +3181,7 @@ void Cross_Drawline(int in_put_l[][2],int in_put_num_l,int in_put_r[][2],int in_
     Coordinate_transformation_right(in_put_r,in_put_r_num,Right_Change);
 	
 	
-    /*二 找拐点*/
+    /*二 找下拐点*/
     for(i=0;i<in_put_num_l;i++)
     {
         if((Left_Change[i][0]+Left_Change[i][1])>left_highest)//拐点的坐标之和最大
@@ -3114,6 +3201,7 @@ void Cross_Drawline(int in_put_l[][2],int in_put_num_l,int in_put_r[][2],int in_
             //遍历完，不用break
         }
     }
+
 	ips200_draw_line(0,0,in_put_l[left_index][0],in_put_l[left_index][1],RGB565_RED);
 	ips200_draw_line(0,0,in_put_r[right_index][0],in_put_r[right_index][1],RGB565_BLUE);
     /*三 求直线方程*/
@@ -3155,6 +3243,159 @@ void Cross_Drawline(int in_put_l[][2],int in_put_num_l,int in_put_r[][2],int in_
         }
     }
 }
+
+void Cross_Drawline_plus(int in_put_l[][2],int in_put_num_l,int in_put_lnew[][2],int in_put_num_lnew,
+                            int in_put_r[][2],int in_put_r_num, int in_put_rnew[][2],int in_put_r_numnew)
+{
+    uint16 i;
+    uint16 left_index,right_index;//左右拐点的坐标
+    uint16 left_index_new,right_index_new;//左右上拐点的坐标
+	uint16 left_highest=0,right_highest=0;
+	float k_left,k_right;
+	float b_left,b_right;
+    /*一 坐标转换*/
+    Coordinate_transformation_left(in_put_l,in_put_num_l,Left_Change);//左右下线坐标变换，左右上线坐标不用变换
+    Coordinate_transformation_right(in_put_r,in_put_r_num,Right_Change);
+	Coordinate_transformation_rightup(in_put_rnew,in_put_r_numnew,Right_Change_new);//右上线坐标变换
+	
+    /*二 找左右下拐点*/
+    for(i=0;i<in_put_num_l;i++)
+    {
+        if((Left_Change[i][0]+Left_Change[i][1])>left_highest)//拐点的坐标之和最大
+        {
+			left_highest=(Left_Change[i][0]+Left_Change[i][1]);
+            left_index = i;
+            //遍历完，不用break
+        }
+    }
+    
+    for(i=0;i<in_put_r_num;i++)
+    {
+        if((Right_Change[i][0]+Right_Change[i][1])>right_highest)//拐点的坐标之和最大row=k*column+b
+        {
+			right_highest=(Right_Change[i][0]+Right_Change[i][1]);
+            right_index = i;
+            //遍历完，不用break
+        }
+    }
+    //峰值清零
+    left_highest=0;
+    right_highest=0;
+    /*开始找左右上拐点*/
+    for(i=0;i<in_put_num_lnew;i++)
+    {
+        if((in_put_lnew[i][0]+in_put_lnew[i][1])>left_highest)//拐点的坐标之和最大
+        {
+
+            left_highest=(in_put_lnew[i][0]+in_put_lnew[i][1]);
+            left_index_new = i;
+            //遍历完，不用break
+        }
+    }
+
+    for(i=0;i<in_put_r_numnew;i++)
+    {
+        if((in_put_rnew[i][0]+in_put_rnew[i][1])>right_highest)//拐点的坐标之和最大row=k*column+b
+        {
+            right_highest=(in_put_rnew[i][0]+in_put_rnew[i][1]);
+            right_index_new = i;
+            //遍历完，不用break
+        }
+    }
+
+	ips200_draw_line(0,0,in_put_l[left_index][0],in_put_l[left_index][1],RGB565_RED);
+	ips200_draw_line(0,0,in_put_r[right_index][0],in_put_r[right_index][1],RGB565_BLUE);
+    /*三 求直线方程（已知左右上下拐点）*/
+	k_left=(in_put_l[left_index][0]-in_put_lnew[left_index_new][0]/in_put_l[left_index][1]-in_put_lnew[left_index_new][1]);//斜率
+	
+	b_left=in_put_l[left_index][1]-k_left*in_put_l[left_index][0];//近处点求截距更准确
+	
+	//求得的直线方程是row=column*k+b，实际上应该是column=row*k+b
+	k_right=(in_put_r[right_index][0]-in_put_rnew[right_index_new][0]/in_put_r[right_index][1]-in_put_rnew[right_index_new][1]);//斜率
+	
+    b_right=in_put_r[right_index][1]-k_right*in_put_r[right_index][0];
+	
+    //新直线方程为 column=k*row+b
+    ips200_show_float(63,140,k_right,4,4);
+	ips200_show_float(63,160,b_right,4,4);
+	ips200_show_float(63,180,k_left,4,4);
+	ips200_show_uint(3,140,in_put_r[right_index][1],4);
+	ips200_show_uint(3,160,in_put_r[right_index][0],4);
+    /*四 补线*/
+    for(i=in_put_l[left_index][1];i>10;i--)
+    {
+        int new_column_l=(int)(k_left*i+b_left);
+        if(new_column_l>0)
+        {
+            Image_Use_Robert[i][new_column_l]=BLACK;
+        }
+    }
+    for(i=in_put_r[right_index][1];i>10;i--)
+    {
+        int new_column_r=(int)(k_right*i+b_right);
+        if(new_column_r>0)
+        {
+            Image_Use_Robert[i][new_column_r]=BLACK;
+        }
+    }
+}
+
+int Finnal_left[140][2];
+int Finnal_right[140][2];//定义左右边线扫的数组
+int Finnal_left_num=0;
+int Finnal_right_num=0;
+int Finnal_Mid[90][2];
+int Finnal_Mid_num;
+float Get_Mid(void)
+{
+    uint16 start_x,start_y;
+    start_x=IMAGE_WIDTH/2;
+    start_y=IMAGE_HEIGHT-1;
+    /*一 判断为十字状态*/
+    if(Cross_State_b==1||Cross_State_c==1||Cross_State_d==1)
+    {
+        Cross_Drawline_plus(ipts0,ipts0_num,ipts00,ipts00_num,ipts1,ipts1_num,ipts11,ipts11_num);
+    }
+    /*二 补线以后找中线*/
+    for(start_y;start_y>30;start_y--)
+    {
+        for(start_x;start_x>0;start_x--)
+        {
+            if(Image_Use_Robert[start_y][start_x]==BLACK)
+            {
+                Finnal_left[Finnal_Mid_num][0]=start_x;
+                Finnal_left[Finnal_Mid_num][1]=start_y;
+                Finnal_left_num++;
+                break;
+            }
+        }
+        start_x=IMAGE_WIDTH/2;//复位
+    }
+    for(start_y=IMAGE_HEIGHT-1;start_y>30;start_y--)
+    {
+        for(start_x=IMAGE_WIDTH/2;start_x<IMAGE_WIDTH-1;start_x++)
+        {
+            if(Image_Use_Robert[start_y][start_x]==BLACK)
+            {
+                Finnal_right[Finnal_Mid_num][0]=start_x;
+                Finnal_right[Finnal_Mid_num][1]=start_y;
+                Finnal_right_num++;
+                break;
+            }
+        }
+        start_x=IMAGE_WIDTH/2;//复位
+    }
+    uint8 i;
+    for(i;i<Finnal_left_num;i++)
+    {
+        Finnal_Mid[i][0]=(Finnal_left[i][0]+Finnal_right[i][0])/2;
+        Finnal_Mid[i][1]=(Finnal_left[i][1]+Finnal_right[i][1])/2;
+        Finnal_Mid_num++;//一般都是90个，正常情况下都能扫到
+    }
+    /*三 求中线斜率误差*/
+    return LineRession(Finnal_Mid,Finnal_Mid_num-10);//只取下面80行的点
+}
+
 
 void SplicingArray_int(int pt0[][2], int num1, int pt1[][2], int num2, int pt_out[][2],  uint8 x)
 {
