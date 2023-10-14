@@ -9,6 +9,7 @@
 //枚举ramp的状态
 enum ramp_type_e
 {
+    RAMP_FOUND,//发现坡道
     RAMP_NONE,//非坡道模式
     RAMP_BEGIN,//坡道开始
     RAMP_IN,//开始进入
@@ -20,6 +21,7 @@ enum ramp_type_e
 
 extern enum ramp_type_e ramp_type;//
 
+extern int Ramp_Distance;//记录坡道距离
 
 
 void Ramp_Check(void);//检查坡道
