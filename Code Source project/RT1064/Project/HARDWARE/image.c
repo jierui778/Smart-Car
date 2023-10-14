@@ -1443,18 +1443,54 @@ float rpts0[POINTS_MAX_LEN][2];
 float rpts1[POINTS_MAX_LEN][2];
 int rpts0_num, rpts1_num;
 
+// 逆透视变换后左右边线（上边线）
+float rpts00[POINTS_MAX_LEN][2];
+float rpts11[POINTS_MAX_LEN][2];
+int rpts00_num, rpts11_num;
+
 // 逆透视变换后左右边线再三角滤波后的边线数组
 float rpts0b[POINTS_MAX_LEN][2];
 float rpts1b[POINTS_MAX_LEN][2];
 int rpts0b_num, rpts1b_num;
 
+// 逆透视变换后左右边线再三角滤波后的边线数组（上边线）
+float rpts00b[POINTS_MAX_LEN][2];
+float rpts11b[POINTS_MAX_LEN][2];
+int rpts00b_num, rpts11b_num;
+
 // 逆透视变换后左右边线再三角滤波后再等距采样的数组
 float rpts0s[POINTS_MAX_LEN][2];
 float rpts1s[POINTS_MAX_LEN][2];
-
 int rpts0s_num, rpts1s_num;
+
+// 逆透视变换后左右边线再三角滤波后再等距采样的数组（上边线）
+float rpts00s[100][2];
+float rpts11s[100][2];//限制长度前面的一样
+int rpts00s_num, rpts11s_num;
+
+//局部角度变化率
+float rpts0a[POINTS_MAX_LEN];
+float rpts1a[POINTS_MAX_LEN];
+int rpts0a_num, rpts1a_num;
+
+//局部角度变化率（上边线）
+float rpts00a[POINTS_MAX_LEN];
+float rpts11a[POINTS_MAX_LEN];
+int rpts00a_num, rpts11a_num;
+
+// 左右边线局部角度变化率+非极大抑制
+float rpts0an[POINTS_MAX_LEN];
+float rpts1an[POINTS_MAX_LEN];
+
 int rpts0an_num, rpts1an_num;
-int rpts0_num, rpts1_num;
+
+// 左右边线局部角度变化率+非极大抑制（上边线）
+float rpts00an[POINTS_MAX_LEN];
+float rpts11an[POINTS_MAX_LEN];
+
+int rpts00an_num, rpts11an_num;
+int rpts00_num, rpts11_num;
+
 int x0_first, y0_first, x1_first, y1_first; // 左右边线第一个点的坐标
 
 int x1, y1;
@@ -1463,16 +1499,14 @@ int x2, y2;
 int Mid_line[POINTS_MAX_LEN][2]; // 定义中线数组
 int mid_num;                     // 中线数组点数
 
-int rpts0a_num, rpts1a_num;
 
-float rpts0a[POINTS_MAX_LEN];
-float rpts1a[POINTS_MAX_LEN];
 
-// 左右边线局部角度变化率+非极大抑制
-float rpts0an[POINTS_MAX_LEN];
-float rpts1an[POINTS_MAX_LEN];
+
+
 
 int rptsc0_num, rptsc1_num;
+
+int rptsc00_num, rptsc11_num;
 // SOBEL二值化图像
 // 左右跟踪后的中线
 float (*rpts)[2];
@@ -1537,14 +1571,14 @@ void test(void)
 	
     aim_distance=aim_distance_flash;//设定预瞄距离
     
-    // for (i = 0; i < ipts00_num; i++)
-    // {
-    //     ips200_draw_point(ipts00[i][0]+5, ipts00[i][1] + 200, RGB565_RED);
-    // }
-    // for (i = 0; i < ipts11_num; i++)
-    // {
-    //     ips200_draw_point(ipts11[i][0]+5, ipts11[i][1] + 200, RGB565_BLUE);
-    // }
+    for (i = 0; i < ipts00_num; i++)
+    {
+        ips200_draw_point(ipts00[i][0]+5, ipts00[i][1] + 200, RGB565_RED);
+    }
+    for (i = 0; i < ipts11_num; i++)
+    {
+        ips200_draw_point(ipts11[i][0]+5, ipts11[i][1] + 200, RGB565_BLUE);
+    }
 	
 	for (i = 0; i < ipts0_num; i++)
     {
@@ -1577,28 +1611,28 @@ void test(void)
 
    }
    
-   for (int i = 0; i < rpts0s_num; i++) // 显示左边线
-   {
-       uint16 x, y;
-       x = func_limit_ab(rptsc0[i][0],  0, 200);
-       y = func_limit_ab(rptsc0[i][1], 0, 199);
+//   for (int i = 0; i < rpts0s_num; i++) // 显示左边线
+//   {
+//       uint16 x, y;
+//       x = func_limit_ab(rptsc0[i][0],  0, 200);
+//       y = func_limit_ab(rptsc0[i][1], 0, 199);
 
-       ips200_draw_point(x+20, 200 - y, RGB565_RED); // 左线为绿色 不知道为什么改成-x/2+50就能正常先显示
+//       ips200_draw_point(x+20, 200 - y, RGB565_RED); // 左线为绿色 不知道为什么改成-x/2+50就能正常先显示
 
-   }
+//   }
+//   
+//   for (int i = 0; i < rpts1s_num; i++) // 显示左边线
+//   {
+//       uint16 x, y;
+//       x = func_limit_ab(rptsc1[i][0],  0, 200);
+//       y = func_limit_ab(rptsc1[i][1], 0, 199);
+
+//       ips200_draw_point(x+20, 200 - y, RGB565_BLUE); // 左线为绿色 不知道为什么改成-x/2+50就能正常先显示
+
+//   }
    
-   for (int i = 0; i < rpts1s_num; i++) // 显示左边线
-   {
-       uint16 x, y;
-       x = func_limit_ab(rptsc1[i][0],  0, 200);
-       y = func_limit_ab(rptsc1[i][1], 0, 199);
 
-       ips200_draw_point(x+20, 200 - y, RGB565_BLUE); // 左线为绿色 不知道为什么改成-x/2+50就能正常先显示
-
-   }
-   
-
-   for (int i = 0; i < rpts0_num; i++) // 显示右边线
+   for (int i = 0; i < rpts0_num; i++) // 显示左边线
    {
        uint16 x, y;
        x = func_limit_ab(rpts1s[i][0], 0, 200);
@@ -1608,7 +1642,54 @@ void test(void)
    }
    ips200_show_uint(160,260,touch_boundary1,4);
 	Find_Borderline_Second();//找到上边线
+    if(touch_boundary0==1&&ipts00_num>10&&touch_boundary1==1&&ipts11_num>10)
+    {
+        Pespective(ipts00, ipts00_num, rpts00);
+        rpts00_num = ipts00_num;
 
+        Pespective(ipts11, ipts11_num, rpts11);
+        rpts11_num = ipts11_num;
+
+        // 三角滤波
+        blur_points(rpts00, rpts00_num, rpts00b, (int)round(line_blur_kernel));
+        rpts00b_num = rpts00_num;
+        blur_points(rpts11, rpts11_num, rpts11b, (int)round(line_blur_kernel));
+        rpts11b_num = rpts11_num;
+
+        // 边线等距采样，num为逆透视后实际距离点，两点间距离为0.02*102=2cm
+        rpts00s_num = sizeof(rpts00s) / sizeof(rpts00s[0]); // 求数组的长度 即等距采样后边线点个数
+        resample_points(rpts00b, rpts00b_num, rpts00s, &rpts00s_num, sample_dist * pixel_per_meter);
+        rpts11s_num = sizeof(rpts11s) / sizeof(rpts11s[0]);
+        resample_points(rpts11b, rpts11b_num, rpts11s, &rpts11s_num, sample_dist * pixel_per_meter);
+        // 边线局部角度变化率 round():四舍五入
+        local_angle_points(rpts00s, rpts00s_num, rpts00a, (int)round(angle_dist / sample_dist));
+        rpts00a_num = rpts00s_num;
+        local_angle_points(rpts11s, rpts11s_num, rpts11a, (int)round(angle_dist / sample_dist));
+        rpts11a_num = rpts11s_num;
+        // 角度变化率非极大抑制
+        nms_angle(rpts00a, rpts00a_num, rpts00an, (int)round(angle_dist / sample_dist) * 2 + 1);
+        rpts00an_num = rpts00a_num;
+        nms_angle(rpts11a, rpts11a_num, rpts11an, (int)round(angle_dist / sample_dist) * 2 + 1);
+        rpts11an_num = rpts11a_num;
+		
+		for (int i = 0; i < rpts00_num; i++) // 显示左边线
+	    {
+		   uint16 x, y;
+		   x = func_limit_ab(rpts00[i][0],  0, 200);
+		   y = func_limit_ab(rpts00[i][1], 0, 199);
+		   ips200_draw_point(x+20, 200 - y, RGB565_RED); // 左线为绿色 不知道为什么改成-x/2+50就能正常先显示
+	    }
+		
+		for (int i = 0; i < rpts11_num; i++) // 显示左边线
+	    {
+		   uint16 x, y;
+		   x = func_limit_ab(rpts11[i][0],  0, 200);
+		   y = func_limit_ab(rpts11[i][1], 0, 199);
+		   ips200_draw_point(x+20, 200 - y, RGB565_BLUE); // 左线为绿色 不知道为什么改成-x/2+50就能正常先显示
+	    }
+    }
+	ips200_show_uint(160,280,rpts00_num,3);
+//    ips200_show_uint(160,300,rpts11an_num,3);
     find_corners();//找拐点
 
     //十字根据远线控制 地址平移+数组删减
@@ -1661,6 +1742,8 @@ void test(void)
 
        ips200_draw_point(x+20, 200 - y, RGB565_WHITE);
     }
+//    ips200_show_uint(160,280,rpts0s_num,4);
+//    ips200_show_uint(160,300,rpts1s_num,4);
    
     
     //纯跟踪起始点 根据方案不同调整！
@@ -1728,9 +1811,9 @@ void test(void)
 
         aim_idx[0] = clip(round(aim_distance / sample_dist), 0, rptsn_num - 1);//计算目标点在采样后的中线上的索引位置
 		
-		aim_idx[0]=aim_idx[0]/2;
+		aim_idx[0]=aim_idx[0]/3;
         //这个数组只有一个数值，就是目标点在采样后的中线上的索引位置
-        ips200_show_uint(160,260,aim_idx[0],4);
+//        ips200_show_uint(160,260,aim_idx[0],4);
         // 计算远锚点偏差值      cx，cy为摄像头坐标距重心坐标距离 0,-7
         dx[0] = rptsn[aim_idx[0]][0] - cx;//这里计算了目标点到摄像头的x距离
         dy[0] = rptsn[aim_idx[0]][1] - cy;//目标点到摄像头的y距离
@@ -2122,7 +2205,7 @@ void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x
         int frontleft_value = AT(img, x + dir_frontleft[dir][0], y + dir_frontleft[dir][1]); // 左前方像素点灰度值 （dir=0左下；dir=1 右下；dir=2 右上；dir=3 左上 ）
         //=======添加部分=======（限制条件）
         /*  当扫点的列坐标到左黑框边界且行坐标小于20    列坐标到右边的黑框边界  行坐标为1   行坐标为88的同时步数已经大于19*/
-        if ((x == 1 && y < img->height - 30) || x == img->width - 2 || y == 1 || (y == 20 && step > 19))//30修改后能扫线
+        if ((x == 1 && y < img->height - 70) || x == img->width - 2 || y == 1 || (y == 20 && step > 19))//30修改后能扫线
         {
             if (x == 1 /*|| x== img->width - 2*/)
                 touch_boundary0 = 1; // 左边界是因为到最左边才停下来的，触碰到最左边，可能是环岛，十字等，
