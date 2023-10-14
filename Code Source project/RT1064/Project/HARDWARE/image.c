@@ -3072,7 +3072,9 @@ void Image_CheckState(int in_put_l[][2],int in_put_num_l,int in_put_r[][2],int i
         Cross_State_b = 1;
 		Cross_State_c = 0;
 		Cross_State_d = 0;
-//        Image_Clear();
+        Left_Turn = 0 ;
+		Right_Turn = 0 ;
+        Straight_State = 0;
     }
     /*十字路口中：左边线不丢线 右边线不丢线 左边线丢线和右边线丢线的列坐标相差较小，行坐标相差较少*/
 	else if(loseline0==0&&loseline1==0&&Cross_State_d==1&&in_put_l[in_put_num_l-1][0]!=0)
@@ -3080,33 +3082,49 @@ void Image_CheckState(int in_put_l[][2],int in_put_num_l,int in_put_r[][2],int i
         Cross_State_c = 1;
 		Cross_State_b = 0;
 		Cross_State_d = 0;
+        Left_Turn = 0 ;
+		Right_Turn = 0 ;
+        Straight_State = 0;
     }
 	else if(loseline0==1&&loseline1==1&&Cross_State_b==1)
     {
         Cross_State_d = 1;
 		Cross_State_b = 0;
 		Cross_State_c = 0;
+        Left_Turn = 0 ;
+		Right_Turn = 0 ;
+        Straight_State = 0;
     }
 	
-    /*直道：左右不丢线，左线右线斜率大小相等，顶点的距离较小（比十字中更小）*/
-    /*先检测能不能求出斜率，再判断状态*/
-//    else if(loseline0==0&&loseline1==0&&((LineRession(in_put_l,in_put_num_l)+LineRession(in_put_r,in_put_num_r))<5.0)
-//    &&(my_abs(in_put_l[in_put_num_l-1][0]-in_put_r[in_put_num_r-3][0])<(IMAGE_WIDTH/2)))
-//    {
-//        Straight_State=1;
-//        Image_Clear();
-//    }
+    /*直道：左右线找到的点超过100，左右线的最后一个点的行坐标在30以内*/
+   else if(ipts0_num>100&&ipts1_num>100&&ipts0[ipts0_num-1][1]<30&&ipts1[ipts1_num-1][1]<30)
+   {
+       Straight_State=1;
+       Right_Turn = 0;
+		Left_Turn = 0;
+        Cross_State_b = 0;
+		Cross_State_c = 0;
+		Cross_State_d = 0;
+   }
     /*左弯道：左丢线，右边不丢线，右边线最大点距离左边小于50个的单位*/
     else if(loseline0==1&&loseline1==0&&in_put_r[in_put_num_r-1][0]<60)
     {
         Left_Turn = 1;
 		Right_Turn = 0;
+        Cross_State_b = 0;
+		Cross_State_c = 0;
+		Cross_State_d = 0;
+        Straight_State = 0;
     }
     /*右弯道：右丢线，左边不丢线，左边线最大点距离右边小于50个的单位*/
     else if(loseline0==0&&loseline1==1&&in_put_l[in_put_num_l-1][0]>120)
     {
         Right_Turn = 1;
 		Left_Turn = 0;
+        Cross_State_b = 0;
+		Cross_State_c = 0;
+		Cross_State_d = 0;
+        Straight_State = 0;
     }
 }
 
@@ -3244,6 +3262,9 @@ void Cross_Drawline(int in_put_l[][2],int in_put_num_l,int in_put_r[][2],int in_
     }
 }
 
+/*
+十字补线函数2版：1. 取了上下拐点补线，更稳定
+*/
 void Cross_Drawline_plus(int in_put_l[][2],int in_put_num_l,int in_put_lnew[][2],int in_put_num_lnew,
                             int in_put_r[][2],int in_put_r_num, int in_put_rnew[][2],int in_put_r_numnew)
 {
@@ -3346,9 +3367,13 @@ int Finnal_left_num=0;
 int Finnal_right_num=0;
 int Finnal_Mid[90][2];
 int Finnal_Mid_num;
-float Get_Mid(void)
+/*
+十字补中线，返回值为误差（中线误差）
+*/
+float Get_Mid_Cross(void)
 {
     uint16 start_x,start_y;
+    int i;
     start_x=IMAGE_WIDTH/2;
     start_y=IMAGE_HEIGHT-1;
     /*一 判断为十字状态*/
@@ -3385,8 +3410,8 @@ float Get_Mid(void)
         }
         start_x=IMAGE_WIDTH/2;//复位
     }
-    uint8 i;
-    for(i;i<Finnal_left_num;i++)
+    
+    for(i=0;i<Finnal_left_num;i++)
     {
         Finnal_Mid[i][0]=(Finnal_left[i][0]+Finnal_right[i][0])/2;
         Finnal_Mid[i][1]=(Finnal_left[i][1]+Finnal_right[i][1])/2;
@@ -3395,6 +3420,7 @@ float Get_Mid(void)
     /*三 求中线斜率误差*/
     return LineRession(Finnal_Mid,Finnal_Mid_num-10);//只取下面80行的点
 }
+
 
 
 void SplicingArray_int(int pt0[][2], int num1, int pt1[][2], int num2, int pt_out[][2],  uint8 x)
