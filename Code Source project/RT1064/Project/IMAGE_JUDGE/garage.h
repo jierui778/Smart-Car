@@ -3,6 +3,8 @@
 #define _GARAGE_H_
 #define ZEBRA_THRES 120//斑马线黑点阈值
 #define GARAGE_DISTANCE_THRES 1000 // 车库编码器积分阈值
+#define GARAGE_ANGLE 10//出入库时舵机打角值
+
 
 enum garage_type_e
 {
@@ -24,9 +26,10 @@ extern enum garage_type_e garage_type;//枚举类型全局定义
 extern int Garage_Distance;//记录出库距离
 extern int Zebra_Threshold_Count;//斑马线阈值
 
+
+
 void Garage_Out(void);
 void Garage_In(void);
 void Garage_Check(void);//车库检测函数
-
 
 #endif
