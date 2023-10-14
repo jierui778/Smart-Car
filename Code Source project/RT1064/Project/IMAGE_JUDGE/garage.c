@@ -7,6 +7,7 @@ uint8_t Garage_Cnt = 0;//车库计数器，记录第几个车库
 
 void Garage_Check(void)
 {
+    if()
 
 }
 
@@ -19,7 +20,7 @@ void Garage_Out(void)
 {
         if (garage_type == GARAGE_OUT_RIGHT)
     {
-        
+
     }
 
 }

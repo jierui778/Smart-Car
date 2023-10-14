@@ -9,6 +9,15 @@ typedef struct
     float ki;
     float kd;
 } PID;
+
+
+//无/微分先行，微分低通滤波，积分限幅，梯形积分，变积分
+enum{
+    PID_NONE,
+
+}PID_set_e;
+
+
 extern PID TraceTurnParam;//转向环PID参数
 extern PID SpeedParam;//速度环PID参数
 //位置式PID控制器

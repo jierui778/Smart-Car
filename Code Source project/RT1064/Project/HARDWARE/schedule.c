@@ -1,14 +1,12 @@
 #include "schedule.h"
 #include "encoder.h"
 
-
-
 #define TASK_LIST_END \
     {                 \
         NULL, 0, 0, 0 \
     } // 任务列表结束标志
 
-// 任务执行函数
+// 任务函数
 static void Schedule1(void) // task1:更新编码器数据//周期为10ms
 {
     gpio_toggle_level(B9);
@@ -23,7 +21,12 @@ static void Schedule3(void) // task3
 {
 }
 
-// 任务列表
+
+
+/**
+ * @brief 任务列表
+ *
+ */
 static Task_t Task_List[] =
     {
         {Schedule1, 10, 0, 0}, // 任务1，周期为10ms
@@ -100,9 +103,5 @@ void Schedule_Run(void)
 void pit_handler(void)
 {
     Schedule_Tick();
-    gpio_toggle_level(B9);//test
+    // gpio_toggle_level(B9);//test
 }
-// //void pit_handler(void)
-// //{
-// //    gpio_toggle_level(B9);                                                    // 触发 PIT 中断后翻转 LED 状态
-// //}

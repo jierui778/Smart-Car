@@ -85,7 +85,7 @@ void Speed_Control(float left_speed, float right_speed)
  *
  * @param current_err 角度误差（-90~90）
  */
-void TrackLine_Control(float current_err)
+void Angle_Control(float current_err)
 {
     if (CONTROL_MODE == 0) // 转向控制
     {
@@ -101,5 +101,5 @@ void TrackLine_Control(float current_err)
 void SpeedUp_Control()
 {
 
-    
+
 }

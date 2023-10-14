@@ -42,10 +42,53 @@ int main(void)
         //        Schedule_Run();//任务运行总函数，开始任务调度
         test();
         ips200_displayimage03x(*Image_Use_Robert, 160, 120);
-            
+
 //        test();
-//        
+//
 //        //        Schedule_Run();//任务运行总函数，开始任务调度
 		//	bluetooth_ch9141_send_image(*Image_Use_Robert, 19200);
     }
+}
+
+
+void Turn_Ring(void)//转向环
+{
+
+    //特殊情况处理，起跑打死固定角度
+    if ((garage_type == GARAGE_OUT_LEFT || garage_type == GARAGE_OUT_RIGHT) && Z.all_length < ENCODER_PER_METER * 0.6 && rpts0s_num < 100 && rpts1s_num < 100)
+    {
+        if (garage_type == GARAGE_OUT_LEFT)//左出库打死角度
+        {
+            error[0] = -35;
+        }
+        else if (garage_type == GARAGE_OUT_RIGHT)//右出库打死角度
+        {
+            error[0] = 35;
+        }
+    }
+
+    else if (garage_type == GARAGE_IN_LEFT)//左进库打死角度
+    {
+        //        error[0] = -(0.015*Z.motol.nowspeed*Z.motol.nowspeed + 15);
+        error[0] = -35;
+    }
+    // 右边入库打角
+    else if (garage_type == GARAGE_IN_RIGHT)//右进库打死角度
+    {
+        //        error[0] = 0.015*Z.motol.nowspeed*Z.motol.nowspeed + 15;
+        error[0] = 35;
+    }
+
+    //考虑不同路段给予不同的速度/pid控制
+}
+
+
+void Speed_Ring(void)//速度环
+{
+    //考虑不同路段给予不同的速度/pid控制
+    if()
+
+
+
+
 }
