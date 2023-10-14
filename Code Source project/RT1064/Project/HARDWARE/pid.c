@@ -154,13 +154,14 @@ int Dynamic_IncrementPID(float Deeviation, PID pid)
 /**
  * @brief 动态增量式PID控制器
  *
- * @param Deviation
- * @param pid
+ * @param Deviation 偏差
+ * @param pid pid参数
  */
 void Dynamic_IncrementPID(float Deviation, PID pid)
 {
+    int16 Result;
 
-    
+    return Result;
 }
 
 // 动态PID听说性能较普通PID好，时间充裕再进行补充

@@ -1,6 +1,9 @@
 #include "zf_common_headfile.h"
 #ifndef _CROSS_H_
 #define _CROSS_H_
+#define CROSS_ENCODER_THRES 1000 // 十字编码器积分阈值
+
+
 
 enum cross_type_e
 {

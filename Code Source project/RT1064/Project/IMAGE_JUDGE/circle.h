@@ -1,7 +1,7 @@
 #include "zf_common_headfile.h"
 #ifndef _CIRCLE_H_
 #define _CIRCLE_H_
-
+#define CIRCLE_ENCODER_THRES 1000 // 圆环编码器积分阈值
 
 
 

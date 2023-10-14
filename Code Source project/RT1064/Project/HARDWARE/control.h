@@ -29,6 +29,8 @@ void Speed_Control(float left_speed, float right_speed); // 速度控制
 void SpeedUp_Control(void);                              // 加速控制
 void SpeedDown_Control(void);                            // 减速控制
 
+void Car_Stop(void);//
+
 // 四轮车，后期考虑将误差比例分配舵机与电机进行调节
 
 #endif
