@@ -39,7 +39,7 @@ int main(void)
 		if(mt9v03x_finish_flag)
         {
 			test();
-            ips200_displayimage03x(*Image_Use_Robert, 160, 120);
+//            ips200_displayimage03x(*Image_Use_Robert, 160, 120);
 			
         }
             

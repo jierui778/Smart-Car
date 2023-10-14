@@ -2287,75 +2287,92 @@ void test(void)
     rpts1an_num = rpts1a_num;
 	find_corners();
     
-	
-	
-    for (i = 0; i < ipts1_num; i++)
-    {
-        ips200_draw_point(ipts1[i][0]+5, ipts1[i][1] + 200, RGB565_BLUE);
-    }
-	
-    for (int i = 0; i < 200; i++)
-    {
-        for (int j = 0; j < 200; j++)
-        {
-            ips200_draw_point(i, j, RGB565_BLACK); // 0xffff=255区域内显示白点
-        }
-    }
+//	for (i = 0; i < ipts11_num; i++)
+//    {
+//        ips200_draw_point(ipts11[i][0]+5, ipts11[i][1] + 200, RGB565_RED);
+//    }
+//	for (i = 0; i < ipts0_num; i++)
+//    {
+//        ips200_draw_point(ipts0[i][0]+5, ipts0[i][1] + 200, RGB565_YELLOW);
+//    }
+//	for (i = 0; i < ipts00_num; i++)
+//    {
+//        ips200_draw_point(ipts00[i][0]+5, ipts00[i][1] + 200, RGB565_YELLOW);
+//    }
+//	
+//	
+//    for (i = 0; i < ipts1_num; i++)
+//    {
+//        ips200_draw_point(ipts1[i][0]+5, ipts1[i][1] + 200, RGB565_RED);
+//    }
+//	
+//    for (int i = 0; i < 200; i++)
+//    {
+//        for (int j = 0; j < 200; j++)
+//        {
+//            ips200_draw_point(i, j, RGB565_BLACK); // 0xffff=255区域内显示白点
+//        }
+//    }
 
-    for (int i = 0; i < rpts0s_num; i++) // 显示左边线
-    {
-        uint16 x, y;
+//    for (int i = 0; i < rpts0s_num; i++) // 显示左边线
+//    {
+//        uint16 x, y;
 
-        //[60][80]rpts0s rpts0s_num ipts0_num
+//        //[60][80]rpts0s rpts0s_num ipts0_num
 
-        x = func_limit_ab(rpts0s[i][0],  0, 200);
-        y = func_limit_ab(rpts0s[i][1], 0, 199);
+//        x = func_limit_ab(rpts0s[i][0],  0, 200);
+//        y = func_limit_ab(rpts0s[i][1], 0, 199);
 
-        ips200_draw_point(x, 200 - y, RGB565_GREEN); // 左线为绿色 不知道为什么改成-x/2+50就能正常先显示
+//        ips200_draw_point(x, 200 - y, RGB565_GREEN); // 左线为绿色 不知道为什么改成-x/2+50就能正常先显示
 
-        // tft180_draw_point( x/2 +50 -1 , 99-y/2 ,  RGB565_GREEN);
-        // tft180_draw_point( x/2 +50 +1, 99-y/2 ,  RGB565_GREEN);
-        // tft180_draw_point( x/2 +50 , 99-y/2 ,  RGB565_GREEN);
-        /*
-        x = func_limit_ab (ipts0[i][0] , -99,99);
-        y = func_limit_ab (ipts0[i][1] , 0,  199);
-        tft180_draw_point( x , y ,  RGB565_GREEN);
-        */
-        /*
-        x = func_limit_ab(rpts0s[i][0] , 0,80);
-        y = func_limit_ab(rpts0s[i][1] , 0,60);
-        tft180_draw_point(x, y,  0x0000);//左线为绿色
-        */
-    }
+//        // tft180_draw_point( x/2 +50 -1 , 99-y/2 ,  RGB565_GREEN);
+//        // tft180_draw_point( x/2 +50 +1, 99-y/2 ,  RGB565_GREEN);
+//        // tft180_draw_point( x/2 +50 , 99-y/2 ,  RGB565_GREEN);
+//        /*
+//        x = func_limit_ab (ipts0[i][0] , -99,99);
+//        y = func_limit_ab (ipts0[i][1] , 0,  199);
+//        tft180_draw_point( x , y ,  RGB565_GREEN);
+//        */
+//        /*
+//        x = func_limit_ab(rpts0s[i][0] , 0,80);
+//        y = func_limit_ab(rpts0s[i][1] , 0,60);
+//        tft180_draw_point(x, y,  0x0000);//左线为绿色
+//        */
+//    }
 
-    for (int i = 0; i < rpts0_num; i++) // 显示右边线
-    {
-        uint16 x, y;
+//    for (int i = 0; i < rpts0_num; i++) // 显示右边线
+//    {
+//        uint16 x, y;
 
-        //[60][80]rpts1s rpts1s_num
+//        //[60][80]rpts1s rpts1s_num
 
-        x = func_limit_ab(rpts1s[i][0], 0, 200);
-        y = func_limit_ab(rpts1s[i][1], 0, 199);
+//        x = func_limit_ab(rpts1s[i][0], 0, 200);
+//        y = func_limit_ab(rpts1s[i][1], 0, 199);
 
-        ips200_draw_point(x, 200 - y, RGB565_YELLOW);
-        // tft180_draw_point( x/2 +50 -1 , 99-y/2 ,  RGB565_YELLOW);
-        // tft180_draw_point( x/2 +50 +1, 99-y/2 ,  RGB565_YELLOW);
-        // tft180_draw_point( x/2 +50 , 99-y/2 ,  RGB565_YELLOW);
-        /*
-        x = func_limit_ab (ipts0[i][0] , -99,99);
-        y = func_limit_ab (ipts0[i][1] , 0,  199);
-        tft180_draw_point( x , y ,  RGB565_GREEN);
+//        ips200_draw_point(x, 200 - y, RGB565_YELLOW);
+//        // tft180_draw_point( x/2 +50 -1 , 99-y/2 ,  RGB565_YELLOW);
+//        // tft180_draw_point( x/2 +50 +1, 99-y/2 ,  RGB565_YELLOW);
+//        // tft180_draw_point( x/2 +50 , 99-y/2 ,  RGB565_YELLOW);
+//        /*
+//        x = func_limit_ab (ipts0[i][0] , -99,99);
+//        y = func_limit_ab (ipts0[i][1] , 0,  199);
+//        tft180_draw_point( x , y ,  RGB565_GREEN);
 
-        x = func_limit_ab(rpts1s[i][0] , 0,80);
-        y = func_limit_ab(rpts1s[i][1] , 0,60);
-        
-        tft180_draw_point(x, y,  0x0000);//右线为黄色
-        */
-    }
+//        x = func_limit_ab(rpts1s[i][0] , 0,80);
+//        y = func_limit_ab(rpts1s[i][1] , 0,60);
+//        
+//        tft180_draw_point(x, y,  0x0000);//右线为黄色
+//        */
+//    }
 	Find_Borderline_Second();
 	SplicingArray_int(ipts0, ipts0_num, ipts00, ipts00_num,ipts_new0,1);
-	ips200_show_uint(203,200,ipts_new_num0,3);
-
+	ips200_show_uint(160,200,ipts_new_num0,3);
+	
+	for (i = 0; i < ipts_new_num0; i++)
+   {
+        
+       ips200_draw_line(0,0,func_limit_ab (ipts_new0[i][0] , 0,160), func_limit_ab (ipts_new0[i][1] , 0,120), RGB565_RED);
+   }
     // if (rpts0s_num < rpts1s_num / 2 && rpts0s_num < 60) 
     // {         //如果左边线比右边线少一半，循右
     //     track_type = TRACK_RIGHT;
@@ -2529,10 +2546,10 @@ void Find_Borderline(void)
     // 寻左边线
     x1 = img_raw.width / 2 - begin_x, y1 = begin_y;
     int TH;
-    TH = OSTU_GetThreshold(Image_Use[0], IMAGE_WIDTH, IMAGE_HEIGHT);
-    Image_Binarization(TH, Image_Use);
-    Image_Sobel(Image_Use, Image_Use_Robert, TH); // 全局Sobel得二值图(方案二) 2.8ms
-    img_raw.data = *Image_Use;
+//    TH = OSTU_GetThreshold(Image_Use[0], IMAGE_WIDTH, IMAGE_HEIGHT);
+////    Image_Binarization(TH, Image_Use);
+//    Image_Sobel(Image_Use, Image_Use_Robert, TH); // 全局Sobel得二值图(方案二) 2.8ms
+//    img_raw.data = *Image_Use_Robert;
 
     // 标记种子起始点(后续元素处理要用到)
     x0_first = x1;
@@ -2540,7 +2557,7 @@ void Find_Borderline(void)
 
     ipts0_num = sizeof(ipts0) / sizeof(ipts0[0]); // 求数组的长度
     // 扫底下五行，寻找跳变点
-    for (; y0_first > begin_y - 50; y0_first--)//从所选的行，向上扫5次，每次从中间向左线扫
+    for (; y0_first > begin_y - 100; y0_first--)//从所选的行，向上扫50次，每次从中间向左线扫
     {
         for (; x0_first > 0; x0_first--)//在选的每行中，从中间向左线扫
             if (AT_IMAGE(&img_raw, x0_first - 1, y0_first) < uthres)//如果扫到黑点（灰度值为0），就从该点开始扫线
@@ -2552,7 +2569,10 @@ void Find_Borderline(void)
 	out1://从起始点开始执行扫线
 	{
 		if (AT_IMAGE(&img_raw, x0_first, y0_first) >= uthres)//如果这个点是白色（且左边是黑色的话）
+		{	
+//			while(1);
 			Left_Adaptive_Threshold(&img_raw, block_size, clip_value, x0_first, y0_first, ipts0, &ipts0_num);//开始跑迷宫
+		}
 		else
 			ipts0_num = 0;//如果不是的话，就不用跑了，求得的number记为0
 	}
@@ -2607,10 +2627,10 @@ void Find_Borderline_Second(void)
     // 寻左边线
     x1 = img_raw.width / 2 - begin_x, y1 = begin_y;
     int TH;
-    TH = OSTU_GetThreshold(Image_Use[0], IMAGE_WIDTH, IMAGE_HEIGHT);
-    Image_Binarization(TH, Image_Use);
-    Image_Sobel(Image_Use, Image_Use_Robert, TH); // 全局Sobel得二值图(方案二) 2.8ms
-    img_raw.data = *Image_Use;
+    // TH = OSTU_GetThreshold(Image_Use[0], IMAGE_WIDTH, IMAGE_HEIGHT);
+    // Image_Binarization(TH, Image_Use);
+    // Image_Sobel(Image_Use, Image_Use_Robert, TH); // 全局Sobel得二值图(方案二) 2.8ms
+    // img_raw.data = *Image_Use;
 
     // 标记种子起始点(后续元素处理要用到)
     // x0_first = x1;
@@ -2718,7 +2738,7 @@ void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x
         int frontleft_value = AT(img, x + dir_frontleft[dir][0], y + dir_frontleft[dir][1]); // 左前方像素点灰度值 （dir=0左下；dir=1 右下；dir=2 右上；dir=3 左上 ）
         //=======添加部分=======（限制条件）
         /*  当扫点的列坐标到左黑框边界且行坐标小于20    列坐标到右边的黑框边界  行坐标为1   行坐标为88的同时步数已经大于19*/
-        if ((x == 1 && y < img->height - 10) || x == img->width - 2 || y == 1 || (y == 100 && step > 19))
+        if ((x == 1 && y < img->height - 30) || x == img->width - 2 || y == 1 || (y == 100 && step > 19))//30修改后能扫线
         {
             if (x == 1 /*|| x== img->width - 2*/)
                 touch_boundary0 = 1; // 左边界是因为到最左边才停下来的，触碰到最左边，可能是环岛，十字等，
@@ -2810,7 +2830,7 @@ void Right_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int 
         int front_value = AT(img, x + dir_front[dir][0], y + dir_front[dir][1]);
         int frontright_value = AT(img, x + dir_frontright[dir][0], y + dir_frontright[dir][1]);
         //=======添加部分=======
-        if ((x == img->width - 2 && y < img->height - 20) || x == 1 || y == 1 || (y == 100 && step > 19)) // 丢线标志，否则由于sobel特殊性会一直往上巡线
+        if ((x == img->width - 2 && y < img->height - 30) || x == 1 || y == 1 || (y == 100 && step > 19)) // 丢线标志，否则由于sobel特殊性会一直往上巡线
         {
             if (x == img->width - 2 /*|| x==1*/)
                 touch_boundary1 = 1; // 右边界是因为到最右边才停下来的，触碰到最右边，可能是环岛，十字等，
@@ -3425,8 +3445,8 @@ float Get_Mid_Cross(void)
 
 void SplicingArray_int(int pt0[][2], int num1, int pt1[][2], int num2, int pt_out[][2],  uint8 x)
 {
-    int i, count;              // 用来计数
-    for (i = 0; i < num1; i++) // 复制数组1
+    int i, count;   // 用来计数
+    for (i = 0; i < 10; i++) // 复制数组1
     {
         pt_out[i][0] = pt0[i][0];
         pt_out[i][1] = pt0[i][1];
@@ -3435,7 +3455,7 @@ void SplicingArray_int(int pt0[][2], int num1, int pt1[][2], int num2, int pt_ou
 
     if (x) // 反向拼接
     {
-        for (i = 0; i < num2; i++)
+        for (i = 0; i < 10; i++)
         {
             pt_out[num1 + i][0] = pt1[num2 - i - 1][0];
             pt_out[num1 + i][1] = pt1[num2 - i - 1][1];
@@ -3444,13 +3464,14 @@ void SplicingArray_int(int pt0[][2], int num1, int pt1[][2], int num2, int pt_ou
     }
     else // 正向拼接
     {
-        for (i = 0; i < num2; i++)
+        for (i = 0; i < 10; i++)
         {
             pt_out[num1 + i][0] = pt1[i][0];
             pt_out[num1 + i][1] = pt1[i][1];
             count++;
         }
     }
+	count=30;
     ipts_new_num0 = count;
 }
 
