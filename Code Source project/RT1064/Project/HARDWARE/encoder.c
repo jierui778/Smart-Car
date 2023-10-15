@@ -13,8 +13,8 @@ void Encoder_Init(void)
    encoder_quad_init(ENCODER_L, ENCODER_L_A, ENCODER_L_B); // 初始化编码器模块与引脚 正交解码编码器模式
    encoder_quad_init(ENCODER_R, ENCODER_R_A, ENCODER_R_B); // 初始化编码器模块与引脚 正交解码编码器模式
 
-    pit_ms_init(PIT_CH0, 100);                                                   // 初始化 PIT1 为周期中断 100ms 周期
-    interrupt_set_priority((IRQn_Type)PIT_CH0, 0);                                    // 设置 PIT1 对周期中断的中断优先级为 0
+    // pit_ms_init(PIT_CH0, 100);                                                   // 初始化 PIT1 为周期中断 100ms 周期
+    // interrupt_set_priority((IRQn_Type)PIT_CH0, 0);                                    // 设置 PIT1 对周期中断的中断优先级为 0
 
 //    pit_ms_init((pit_index_enum)PIT_CH1,200);//舵机转向调节周期为200ms
 //    interrupt_set_priority((IRQn_Type)PIT_CH1,1);

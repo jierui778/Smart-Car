@@ -23,6 +23,9 @@ void PID_Init(void)
     TraceTurnParam.kd = 0;
     TraceTurnParam.ki = 0;
     TraceTurnParam.kp = 0;
+    
+
+
 }
 
 /**

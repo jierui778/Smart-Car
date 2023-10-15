@@ -17,6 +17,5 @@ extern int32 Encoder_L_Data, Encoder_R_Data; // 编码器的计数值，全局�
 
 extern void Encoder_Init(void);                     // 初始化编码器
 void Encoder_Update(int32 *Data_D, int32 *Data_R); // 更新编码器计数值
-// void pit_handler (void);
 
 #endif

@@ -2584,7 +2584,6 @@ void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x
                 touch_boundary0 = 1; // 左边界是因为到最左边才停下来的，触碰到最左边，可能是环岛，十字等，
             if (y == 1)
                 touch_boundary_up0 = 1; // 走到顶边，判断坡道or障碍
-
             break;
         }
         //=======添加部分=======
