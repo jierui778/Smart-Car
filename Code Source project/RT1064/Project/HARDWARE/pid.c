@@ -23,7 +23,7 @@ void PID_Init(void)
     TraceTurnParam.kd = 0;
     TraceTurnParam.ki = 0;
     TraceTurnParam.kp = 0;
-    
+
 
 
 }
@@ -39,11 +39,11 @@ int PositionPID(float deviation, PID pid)
 {
     float Position_KP = pid.kp, Position_KI = pid.ki, Position_KD = pid.kd; // PID参数
     int16 Result;
-    static float Bias, Integral_bias, Last_Bias;
-    Bias = deviation;                                                                             // 输入偏差
-    Integral_bias += Bias;                                                                        // 累加误差
-    Result = Position_KP * Bias + Position_KI * Integral_bias + Position_KD * (Bias - Last_Bias); // 位置式PID控制器
-    Last_Bias = Bias;                                                                             // 上一次偏差保存
+    static float Current_Bias, Integral_bias, Last_Bias;
+    Current_Bias = deviation;                                                                             // 输入偏差
+    Integral_bias += Current_Bias;                                                                        // 累加误差
+    Result = Position_KP * Current_Bias + Position_KI * Integral_bias + Position_KD * (Current_Bias - Last_Bias); // 位置式PID控制器
+    Last_Bias = Current_Bias;                                                                             // 上一次偏差保存
     return Result;
 }
 
@@ -55,11 +55,11 @@ int PositionPID(float deviation, PID pid)
 // {
 //     float Position_KP = pid.kp, Position_KI = pid.ki, Position_KD = pid.kd;
 //     float Result;
-//     static float Bias, Integral_bias, Last_Bias;
-//     Bias = deviation;
-//     Integral_bias += Bias;
-//     Result = Position_KP * Bias + Position_KI * Integral_bias + Position_KD * (Bias - Last_Bias);
-//     Last_Bias = Bias;
+//     static float Current_Bias, Integral_bias, Last_Bias;
+//     Current_Bias = deviation;
+//     Integral_bias += Current_Bias;
+//     Result = Position_KP * Current_Bias + Position_KI * Integral_bias + Position_KD * (Current_Bias - Last_Bias);
+//     Last_Bias = Current_Bias;
 //     return Result;
 // }
 /**
@@ -88,7 +88,7 @@ int IncrementPID2(float Deviation, PID pid)
     static float Current_Bias, Last_Bias, Lastlast_Bias;
     static int16 Result;      // 定义静态变量
     Current_Bias = Deviation; // 当前偏差
-    // Integral_bias += Bias;
+    // Integral_bias += Current_Bias;
     Result += (int32)(Increment_KP * (Current_Bias - Last_Bias) + Increment_KI * Current_Bias + Increment_KD * (Current_Bias - 2 * Last_Bias + Lastlast_Bias)); // 增量式PID控制器//累加增量
     Lastlast_Bias = Last_Bias;                                                                                                                                  // 上上一次偏差保存
     Last_Bias = Current_Bias;                                                                                                                                   // 上一次偏差保存
@@ -155,14 +155,17 @@ int Dynamic_IncrementPID(float Deeviation, PID pid)
 }
 
 /**
- * @brief 动态增量式PID控制器
+ * @brief 动态位置式PID控制器
  *
  * @param Deviation 偏差
  * @param pid pid参数
  */
-void Dynamic_IncrementPID(float Deviation, PID pid)
+void Dynamic_PositionPID(float Deviation, PID pid)
 {
+    static float Bias_Last, Bias_Integral, Current_Bias;
     int16 Result;
+    Bias_Integral += Bias_Current;
+    Bias_Last = Bias_Current;
 
     return Result;
 }
