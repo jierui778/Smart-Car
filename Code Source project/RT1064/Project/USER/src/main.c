@@ -39,6 +39,16 @@ int main(void)
 		if(mt9v03x_finish_flag)
         {
 			test();
+//			uint8 i;
+//			Image_Compress();
+//			int TH;
+//			TH = OSTU_GetThreshold(Image_Use[0], IMAGE_WIDTH, IMAGE_HEIGHT);
+//			//    Image_Binarization(TH, Image_Use);
+//			Image_Sobel(Image_Use, Image_Use_Robert, TH); // 全局Sobel得二值图(方案二) 2.8ms
+//        
+//            bluetooth_ch9141_send_image((const uint8 *)Image_Use_Robert, MT9V03X_IMAGE_SIZE);
+//            mt9v03x_finish_flag = 0;
+     
             ips200_displayimage03x(*Image_Use_Robert, 160, 120);
 			
         }

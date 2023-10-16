@@ -6,7 +6,7 @@ uint8 Image_Use_Robert[120][160]; // 二值化图像
 
 // flash参数统一定义
 float begin_x = 5;   // 起始点距离图像中心的左右偏移量	8
-float begin_y = 118; // 起始点距离图像底部的上下偏移量 120高度：35;100高	58
+float begin_y = 115; // 起始点距离图像底部的上下偏移量 120高度：35;100高	58
 /*beginy值越小，初始的生长点与上框越近*/
 
 float block_size = 7; // 自适应阈值的block大小
@@ -1491,7 +1491,7 @@ float rpts11an[POINTS_MAX_LEN];
 int rpts00an_num, rpts11an_num;
 int rpts00_num, rpts11_num;
 
-int x0_first, y0_first, x1_first, y1_first; // 左右边线第一个点的坐标
+
 
 int x1, y1;
 int x2, y2;
@@ -1529,6 +1529,7 @@ float ave_error;//速度控制输入变量
 
 void test(void)
 {
+//    while(1);
     //    int th;
     uint8 i;
     Image_Compress();
@@ -1569,7 +1570,7 @@ void test(void)
     nms_angle(rpts1a, rpts1a_num, rpts1an, (int)round(angle_dist / sample_dist) * 2 + 1);
     rpts1an_num = rpts1a_num;
 	
-    aim_distance=aim_distance_flash;//设定预瞄距离
+    aim_distance=aim_distance_flash;//设定预瞄距离Lpt0_found
     
     for (i = 0; i < ipts00_num; i++)
     {
@@ -1608,29 +1609,10 @@ void test(void)
        y = func_limit_ab(rpts0[i][1], 0, 199);
 
        ips200_draw_point(x+20, 200 - y, RGB565_GREEN); // 左线为绿色 不知道为什么改成-x/2+50就能正常先显示
-
    }
-   
-//   for (int i = 0; i < rpts0s_num; i++) // 显示左边线
-//   {
-//       uint16 x, y;
-//       x = func_limit_ab(rptsc0[i][0],  0, 200);
-//       y = func_limit_ab(rptsc0[i][1], 0, 199);
-
-//       ips200_draw_point(x+20, 200 - y, RGB565_RED); // 左线为绿色 不知道为什么改成-x/2+50就能正常先显示
-
-//   }
-//   
-//   for (int i = 0; i < rpts1s_num; i++) // 显示左边线
-//   {
-//       uint16 x, y;
-//       x = func_limit_ab(rptsc1[i][0],  0, 200);
-//       y = func_limit_ab(rptsc1[i][1], 0, 199);
-
-//       ips200_draw_point(x+20, 200 - y, RGB565_BLUE); // 左线为绿色 不知道为什么改成-x/2+50就能正常先显示
-
-//   }
-   
+//   ips200_show_uint(160,200,x0_first,3);
+//    ips200_draw_line(0,200,x0_first,y0_first+200,RGB565_RED);
+//    ips200_show_uint(160,300,Lpt0_found,2);32131
 
    for (int i = 0; i < rpts0_num; i++) // 显示左边线
    {
@@ -1640,7 +1622,6 @@ void test(void)
 
        ips200_draw_point(x+20, 200 - y, RGB565_YELLOW);
    }
-   ips200_show_uint(160,260,touch_boundary1,4);
 	Find_Borderline_Second();//找到上边线
     if(touch_boundary0==1&&ipts00_num>10&&touch_boundary1==1&&ipts11_num>10)//加个if以防多次执行
     {
@@ -1694,10 +1675,13 @@ void test(void)
 			}
 	    }
     }
-	ips200_show_uint(160,280,rpts00_num,3);
 //    ips200_show_uint(160,300,rpts11an_num,3);
     find_corners();//找拐点
 
+    check_half_left();
+	check_half_right();
+	check_cross();//正常
+    run_cross();
     //十字根据远线控制 地址平移+数组删减
     // if (track_type == TRACK_LEFT) {
     //     track_leftline(far_rpts0s + far_Lpt0_rpts0s_id, far_rpts0s_num - far_Lpt0_rpts0s_id, rpts,
@@ -1779,7 +1763,6 @@ void test(void)
            begin_id = i;
        }
    }
-//    ips200_show_float(160,240,min_dist,4,4);
 	
     // 中线有点，同时最近点不是最后几个点
     if (begin_id >= 0 && rpts_num - begin_id >= 3)//这个if条件是用来判断中线是否有足够的点数，同时最近点不是最后几个点
@@ -2003,6 +1986,8 @@ float Get_err1(int pts_in[][2], int num)
     return err;
 }
 
+int x0_first, y0_first, x1_first, y1_first; // 左右边线第一个点的坐标
+
 void Find_Borderline(void)
 {
     // 迷宫巡线是否走到左右边界
@@ -2031,10 +2016,9 @@ void Find_Borderline(void)
     // 标记种子起始点(后续元素处理要用到)
     x0_first = x1;
     y0_first = y1;
-
     ipts0_num = sizeof(ipts0) / sizeof(ipts0[0]); // 求数组的长度
     // 扫底下五行，寻找跳变点
-    for (; y0_first > begin_y - 100; y0_first--)//从所选的行，向上扫50次，每次从中间向左线扫
+    for (; y0_first > begin_y - 50; y0_first--)//从所选的行，向上扫50次，每次从中间向左线扫
     {
         for (; x0_first > 0; x0_first--)//在选的每行中，从中间向左线扫
             if (AT_IMAGE(&img_raw, x0_first - 1, y0_first) < uthres)//如果扫到黑点（灰度值为0），就从该点开始扫线
@@ -2080,6 +2064,8 @@ void Find_Borderline(void)
 
 }
 
+int x00_first, y00_first, x11_first, y11_first;
+
 void Find_Borderline_Second(void)
 {
     uint8 uthres = 1;
@@ -2118,14 +2104,14 @@ void Find_Borderline_Second(void)
     //             goto out1;//开始扫左线
     //     x0_first = img_raw.width / 2 - begin_x;//每次每一行扫完，都把x0_first归位
     // }
-    x0_first = 2;
-    y0_first = ipts0[ipts0_num-1][1]-5;
+    x00_first = 2;
+    y00_first = ipts0[ipts0_num-1][1]-5;
 
     ipts00_num = sizeof(ipts00) / sizeof(ipts00[0]); // 求数组的长度
     // 扫底下五行，寻找跳变点
-    for (; y0_first >20; y0_first--)//从所选的行，向上扫5次，每次从中间向左线扫
+    for (; y00_first >20; y00_first--)//从所选的行，向上扫5次，每次从中间向左线扫
     {
-        if (AT_IMAGE(&img_raw, x0_first, y0_first) < uthres)//如果扫到黑点（灰度值为0），就从该点开始扫线
+        if (AT_IMAGE(&img_raw, x00_first, y00_first) < uthres)//如果扫到黑点（灰度值为0），就从该点开始扫线
           {  
             goto out1;//开始扫左线
           }
@@ -2135,8 +2121,9 @@ void Find_Borderline_Second(void)
 	out1://从起始点开始执行扫线
 	{
 		// if (AT_IMAGE(&img_raw, x0_first+1, y0_first) >= uthres)//如果这个点是白色（且左边是黑色的话）
-			Left_Adaptive_Threshold(&img_raw, block_size, clip_value, x0_first, y0_first, ipts00, &ipts00_num);//开始跑迷宫
+			Left_Adaptive_Threshold(&img_raw, block_size, clip_value, x00_first, y00_first, ipts00, &ipts00_num);//开始跑迷宫
 		// else
+        
 		// 	ipts00_num = 0;//如果不是的话，就不用跑了，求得的number记为0
 	}
     }
@@ -2146,13 +2133,13 @@ void Find_Borderline_Second(void)
     x2 = img_raw.width / 2 + begin_x, y2 = begin_y;
 
     // 标记种子起始点(后续元素处理要用到)
-    x1_first = 156;
-    y1_first = ipts1[ipts1_num-1][1]-5;;
+    x11_first = 156;
+    y11_first = ipts1[ipts1_num-1][1]-5;;
 
     ipts11_num = sizeof(ipts11) / sizeof(ipts11[0]);
-    for (; y1_first > 20; y1_first--)
+    for (; y11_first > 20; y11_first--)
     {
-        if (AT_IMAGE(&img_raw, x1_first , y1_first) < uthres)
+        if (AT_IMAGE(&img_raw, x11_first , y11_first) < uthres)
         {
             goto out2;
         }
@@ -2160,7 +2147,7 @@ void Find_Borderline_Second(void)
     loseline11 = 1; // 底边丢线
 	out2:
 	{
-		Right_Adaptive_Threshold(&img_raw, block_size, clip_value, x1_first, y1_first, ipts11, &ipts11_num);
+		Right_Adaptive_Threshold(&img_raw, block_size, clip_value, x11_first, y11_first, ipts11, &ipts11_num);
 	}
 }
 
@@ -3371,7 +3358,16 @@ void Pespective(int pts_in[][2], int int_num, float pts_out[][2])
 
 //}
 
-
+void Pespective_anti(int x_in,int y_in , int* x_out , int* y_out)
+//透视求原图
+{
+    float x ,y ,w;
+    x = getx_b(x_in, y_in);
+    y = gety_b(x_in, y_in);
+    w = getw_b(x_in, y_in);
+    *x_out = x / w;
+    *y_out = y / w;
+}
 // void Cross_Inflection_point(int16 pt0_in[][2],int16 pt0_num,int16 pt1[][2],int16 pt1_num)
 // {
 //     uint8 i;
@@ -3505,7 +3501,6 @@ void track_leftline(float pts_in[][2], int num, float pts_out[][2], int approx_n
             pts_out[i][1] = pts_in[i][1] - dx * dist;
             
         }
-        ips200_show_uint(210,210,approx_num,3);
 }
 void track_rightline(float pts_in[][2], int num, float pts_out[][2], int approx_num, float dist){
     for (int i = 0; i < num; i++) {
@@ -3519,3 +3514,642 @@ void track_rightline(float pts_in[][2], int num, float pts_out[][2], int approx_
            pts_out[i][1] = pts_in[i][1] + dx * dist;
        }
 }
+
+enum cross_type_e cross_type = CROSS_NONE;//定义了一个枚举类型 cross_type_e，此时的状态为未进十字
+
+bool far_Lpt0_found, far_Lpt1_found;//其中 far_N_Lpt0_found 表示是否找到了反向逆透视后的左边L角点，far_N_Lpt1_found 表示是否找到了反向逆透视后的右边L角点。
+bool far_N_Lpt0_found,far_N_Lpt1_found;//这个变量用于表示是否找到了逆逆透视后的左边L角点和右边L角点。其中，far_N_Lpt0_found表示左边L角点是否被找到，far_N_Lpt1_found表示右边L角点是否被找到。
+
+int far_Lpt0_rpts0s_id, far_Lpt1_rpts1s_id;//far_Lpt0_rpts0s_id表示左边L角点在rpts0s数组中的索引值
+int far_N_Lpt0_rpts0s_id,far_N_Lpt1_rpts1s_id;//这两个变量是用于记录L角点在反向逆透视后的rpts0s数组中的索引值
+
+int L_x0, L_x1 , L_y0 , L_y1;                       //十字得近处两个L点的坐标
+
+int low_x0,low_y0, low_x1 , low_y1;         //十字得近处两个L点的坐标得下面2个点，用来计算斜率来补线
+
+int far_x0 =0, far_x1 =0 , far_y0 = 0, far_y1 = 0 ;                  //寻找到的远处起始点（现实坐标系）
+float Nfar_x0 =0, Nfar_x1 =0 , Nfar_y0 = 0, Nfar_y1 = 0 ;                  //寻找到的远处逆透视点（逆透视坐标系）
+
+float xielv_left, xielv_right;//左右线的斜率
+
+// 以下定义为十字寻远线设定 L_CROSS为开始40个点，由于图像的需要，改成80个
+int far_ipts0[L_CROSS][2];//变换前的左边线的坐标点
+int far_ipts1[L_CROSS][2];//变换前的右边线的坐标点
+int far_ipts0_num, far_ipts1_num;//坐标点的个数
+
+float far_rpts0[L_CROSS][2];//逆透视变换后的左右边线
+float far_rpts1[L_CROSS][2];
+int far_rpts0_num, far_rpts1_num;
+
+float far_rpts0b[L_CROSS][2];//逆透视之后再三角滤波后的边线数组
+float far_rpts1b[L_CROSS][2];
+int far_rpts0b_num, far_rpts1b_num;
+
+float far_rpts0s[L_CROSS][2];
+float far_rpts1s[L_CROSS][2];//逆透视+三角滤波+等距采样的数组
+int far_rpts0s_num, far_rpts1s_num;
+
+float far_rpts0a[L_CROSS];//采用局部角度变化率的数组
+float far_rpts1a[L_CROSS];
+int far_rpts0a_num, far_rpts1a_num;
+
+float far_rpts0an[L_CROSS];//局部角度变换率+非极大抑制的数组
+float far_rpts1an[L_CROSS];
+int far_rpts0an_num, far_rpts1an_num;
+
+int not_have_line = 0;//未能找到直线的数组
+
+extern float xielv_left_y_to_end,xielv_right_y_to_end;                 //在逆透视后得坐标系建得斜率
+
+int cross_num = 0;//经过十字的数量
+/**
+ * @brief 检测左边的边线，识别十字和圆环，判断左边是否满足条件
+ * 
+ */
+/*判断上拐点是否能找到---->逆透视之后的上拐点是否存在--->斜率是否正常---->显示拐点对应逆透视的id值*/
+void check_half_left()
+{
+    if (Lpt0_found)//左边近的L点存在
+    {
+        Pespective_anti(rpts0s[Lpt0_rpts0s_id][0]  ,  rpts0s[Lpt0_rpts0s_id][1] , &L_x0 , &L_y0 );//将逆透视所得的拐点坐标转换为原图坐标系下的斜率，判断斜率的大小
+        xielv_left = (float) ( L_x0 - x0_first ) * 1.0  / (L_y0 -  y0_first);//直着约为-0.4，斜着约为-1(求出现实坐标系的斜率)
+        /*起始点存在偏差，不能正确求出斜率的大小*/
+    }
+    /*2023/10/15 在误差为0°时的xielv_left为-0.5（-0.55到0.6左右）*/
+    else//如果找不到，就把起始点的坐标平移，再次寻找
+    {
+        L_x0 = 26;
+        L_y0 = 86;
+    }
+	
+//    ips200_show_float(160,220,xielv_left,3,3);
+//    ips200_show_uint(160,200,Lpt0_rpts0s_id,3);
+//    ips200_show_uint(160,260,L_x0,3);
+//    ips200_show_uint(160,280,L_y0,3);
+    //平移一段距离，限幅，防止越界
+    begin_x0 = func_limit_ab( L_x0  , 4, 156 );
+    begin_y0 = func_limit_ab ((int)(L_y0 - 2) , 4, 116 );
+
+    far_ipts0_num = sizeof(far_ipts0) / sizeof(far_ipts0[0]);//计算数组 far_ipts0 的元素个数
+
+    for (; begin_y0 > 0; begin_y0--) 
+    {
+        //先白后黑，先找黑边界
+//        int x = ( begin_y0 - y0_first  )* (xielv_left/2) + x0_first ;      //按斜率搜
+        int x = begin_x0; //直接向上搜
+        if (AT_IMAGE(&img_raw, x, begin_y0-1) < thres) {
+            far_x0 = x;
+            far_y0 = begin_y0;    //这一点是白点，左边为黑点
+            break;
+        }
+    }
+    //找到斜率后再次寻找
+    Left_Adaptive_Threshold(&img_raw, block_size, clip_value, far_x0, far_y0, far_ipts0, &far_ipts0_num);
+
+    //对边线透视变换
+    Pespective(far_ipts0,far_ipts0_num ,  far_rpts0);
+    far_rpts0_num = far_ipts0_num;
+    //边线三角滤波
+    blur_points(far_rpts0,far_rpts0_num,far_rpts0b,(int) round(line_blur_kernel));
+    far_rpts0b_num = far_rpts0_num;
+    // 边线等距采样
+    far_rpts0s_num = sizeof(far_rpts0s) / sizeof(far_rpts0s[0]);
+    resample_points(far_rpts0b, far_rpts0b_num, far_rpts0s, &far_rpts0s_num, sample_dist * pixel_per_meter);
+    // 边线局部角度变化率
+    local_angle_points(far_rpts0s, far_rpts0s_num, far_rpts0a, (int) round(angle_dist / sample_dist));
+    far_rpts0a_num = far_rpts0s_num;
+    // 角度变化率非极大抑制
+    nms_angle(far_rpts0a, far_rpts0a_num, far_rpts0an, (int) round(angle_dist / sample_dist) * 2 + 1);
+    far_rpts0an_num = far_rpts0a_num;
+
+    //远角点识别(确认十字or圆环)
+    far_Lpt0_found = false; //初始化为0，防止上次标志位误判
+    for (int i = 1; i < far_rpts0s_num; i++) 
+    {
+        if (far_rpts0an[i] == 0) continue;//如果找不到对应的拐点，就跳过
+        int im1 = clip(i - (int) round(angle_dist / sample_dist), 0, far_rpts0s_num - 1);
+        int ip1 = clip(i + (int) round(angle_dist / sample_dist), 0, far_rpts0s_num - 1);
+        float conf = fabs(far_rpts0a[i]) - (fabs(far_rpts0a[im1]) + fabs(far_rpts0a[ip1])) / 2;
+        //计算当前点的角度变化率与其相邻两个点的角度变化率的平均值之差，用于判断当前点是否为局部极大值，即为拐点
+        if (far_Lpt0_found == false && 45. / 180. * PI < conf && conf < 140. / 180. * PI && i < 0.8 / sample_dist) //最后一个为限制距离，防止更远处误判
+        {
+            far_Lpt0_rpts0s_id = i;
+            far_Lpt0_found = true;
+            break;
+        }
+    }
+    
+    // if(far_Lpt0_found && circle_type == CIRCLE_NONE && cross_type == CROSS_NONE) //单边十字
+    // {
+    //     // cross_encoder = Z.all_length ;//记录小车是否走过这么多的位置
+    //     cross_type = CROSS_BEGIN;//找到两个L角点，开始进入十字
+    //     cross_num ++;//Number of crosses increase
+    // }
+//    else if(!far_Lpt0_found && cross_type == CROSS_NONE && circle_type == CIRCLE_NONE)  //单边圆环
+//    {
+//        circle_type = CIRCLE_LEFT_BEGIN;
+//        circle_num++;
+//
+//        Z.integral_angle_start_flag = 1;   //开启角度积分
+//    }
+
+}
+
+/**
+ * @brief 检测右边的边线，识别十字和圆环，判断右边是否满足条件，都和上面的一样
+ * 
+ */
+void check_half_right()
+{
+    if (Lpt1_found)                 //左边近的L点存在
+    {
+        Pespective_anti(rpts1s[Lpt1_rpts1s_id][0]  ,  rpts1s[Lpt1_rpts1s_id][1] , &L_x1 , &L_y1 );
+        xielv_right = (float) ( L_x1 - x1_first ) * 1.0  / (L_y1 -  y1_first);     //直走约为0.4，斜入约为1
+    }
+    else
+    {
+        L_x1 = 130;
+        L_y1 = 86;
+    }
+	
+	ips200_show_float(160,220,xielv_left,3,3);
+    ips200_show_float(160,200,xielv_right,3,3);
+    // ips200_show_uint(160,260,L_x1,3);
+    // ips200_show_uint(160,280,L_y1,3);
+    //平移一段距离右10上5
+    begin_x1 = func_limit_ab( L_x1  , 2, 78 );
+    begin_y1 = func_limit_ab ((int)(L_y1 - 2) , 2, 58 );
+
+    for (; begin_y1 > 0; begin_y1--) 
+    {
+        //先白后黑，先找黑边界
+//        int x = ( begin_y1 - y1_first  )* (xielv_right/2) +  x1_first ; //按斜率搜
+        int x = begin_x1;//直接向上搜
+        if (AT_IMAGE(&img_raw, x, begin_y1-1) < thres) {
+            far_x1 = x;
+            far_y1 = begin_y1;    //这一点是白点，左边为黑点
+            break;
+        }
+    }
+    Right_Adaptive_Threshold(&img_raw, block_size, clip_value, far_x1, far_y1, far_ipts1, &far_ipts1_num);
+
+    //对边线透视变换
+    Pespective(far_ipts1,far_ipts1_num ,  far_rpts1);
+    far_rpts1_num = far_ipts1_num;
+    //边线三角滤波
+    blur_points(far_rpts1,far_rpts1_num,far_rpts1b,(int) round(line_blur_kernel));
+    far_rpts1b_num = far_rpts1_num;
+    // 边线等距采样
+    far_rpts1s_num = sizeof(far_rpts1s) / sizeof(far_rpts1s[0]);
+    resample_points(far_rpts1b, far_rpts1b_num, far_rpts1s, &far_rpts1s_num, sample_dist * pixel_per_meter);
+    // 边线局部角度变化率
+    local_angle_points(far_rpts1s, far_rpts1s_num, far_rpts1a, (int) round(angle_dist / sample_dist));
+    far_rpts1a_num = far_rpts1s_num;
+    // 角度变化率非极大抑制
+    nms_angle(far_rpts1a, far_rpts1a_num, far_rpts1an, (int) round(angle_dist / sample_dist) * 2 + 1);
+    far_rpts1an_num = far_rpts1a_num;
+
+    //远角点识别(确认十字or圆环)
+    far_Lpt1_found = false; //初始化为0，防止上次标志位误判
+    for (int i = 1; i < far_rpts1s_num; i++) 
+    {
+        if (far_rpts1an[i] == 0) continue;
+        int im1 = clip(i - (int) round(angle_dist / sample_dist), 0, far_rpts1s_num - 1);
+        int ip1 = clip(i + (int) round(angle_dist / sample_dist), 0, far_rpts1s_num - 1);
+        float conf = fabs(far_rpts1a[i]) - (fabs(far_rpts1a[im1]) + fabs(far_rpts1a[ip1])) / 2;
+        //计算当前点的角度变化率与相邻两个点的角度变化率的平均值的差值，用于判断当前点是否为极大值，即为拐点
+        if (far_Lpt1_found == false && 45. / 180. * PI < conf && conf < 140. / 180. * PI && i < 0.8 / sample_dist)//限制距离，防止更远处误判
+        {
+            far_Lpt1_rpts1s_id = i;
+            far_Lpt1_found = true;
+
+            break;
+        }
+    }
+    // if(far_Lpt1_found && circle_type == CIRCLE_NONE && cross_type == CROSS_NONE) //单边十字
+    // {
+    //     // cross_encoder = Z.all_length ;同上，没有用到编码器，就不做处理
+    //     cross_type = CROSS_BEGIN;
+    //     cross_num ++;
+    // }
+//    else if(!far_Lpt1_found && cross_type == CROSS_NONE && circle_type == CIRCLE_NONE)  //单边圆环
+//    {
+//        circle_type = CIRCLE_RIGHT_BEGIN;
+//        circle_num++;
+//
+//        Z.integral_angle_start_flag = 1;   //开启角度积分
+//    }
+
+}
+
+ int begin_x0,begin_y0;              //找线偏移点
+ int begin_x1,begin_y1;              //找线偏移点
+
+/*确定十字函数*/
+void check_cross(void) 
+{
+    //双边确定十字
+    bool Xfound = Lpt0_found && Lpt1_found;
+    // while(1);
+    if (cross_type == CROSS_NONE && Xfound &&  ( -(xielv_left_y_to_end) + xielv_right_y_to_end <1.0 )
+    //得先执行check_left和check_right再进行check_cross
+            /*&& Z.all_length  > 1*ENCODER_PER_METER*/ )
+    {
+        // cross_encoder = Z.all_length ;
+        cross_type = CROSS_BEGIN;
+        cross_num ++;
+        // if(cross_type == CROSS_BEGIN)
+        // {
+        //     // while(1);
+        // }
+    }
+}
+
+
+
+void run_cross(void) 
+{
+    bool Xfound = Lpt0_found && Lpt1_found;//确定找到十字
+    // int64_t current_encoder = Z.all_length;
+
+    
+    //检测到十字，先按照近线走
+    if (cross_type == CROSS_BEGIN) {
+        //对近处线截断处理，只取id以前的直线的点，其他的都不要
+        if (Lpt0_found) 
+        {
+            rptsc0_num = rpts0s_num = Lpt0_rpts0s_id;
+        }
+        if (Lpt1_found) 
+        {
+            rptsc1_num = rpts1s_num = Lpt1_rpts1s_id;
+        }
+
+        aim_distance = 0.4;//大概在rpts_id=20
+        //近角点过少，进入远线控制 Lpt0_found || Lpt1_found
+        if ((Xfound && (Lpt0_rpts0s_id < 23 || Lpt1_rpts1s_id < 23))/* || (rpts1_num <30 && rpts0_num<30)*/)
+        {
+            cross_type = CROSS_IN_DOUBLE; //双边L十字
+            // cross_encoder = current_encoder;
+        }
+        /*这边只认为存在双边L十字，后面的就不用管了*/
+        else if(Lpt0_found && !Lpt1_found && Lpt0_rpts0s_id < 23 /*&& rpts0s_num > rpts1s_num/2*/)
+//        if(Lpt0_found /*&& !Lpt1_found*/ && Lpt0_rpts0s_id < 23)
+        {
+            cross_type = CROSS_INHALF_LEFT; //单边左L十字
+            // cross_encoder = current_encoder;
+        }
+        else if(Lpt1_found && !Lpt0_found && Lpt1_rpts1s_id < 23)
+        {
+            cross_type = CROSS_INHALF_RIGHT; //单边右L十字
+            // cross_encoder = current_encoder;
+        }
+    }
+        //远线控制进十字,begin_y渐变靠近防丢线
+    if (cross_type == CROSS_IN_DOUBLE) 
+    {
+        // while(1);
+        ips200_show_uint(160,260,888,3);
+        //寻远线,算法与近线相同
+        cross_farline();
+
+        if (rpts1s_num < 20 && rpts0s_num < 20) 
+        { 
+            not_have_line++;
+        }
+        //当找到近处线，跳出十字状态，后面的个数判断可以删了
+        if (not_have_line > 2 && (rpts1s_num > 40 || rpts0s_num > 40)) 
+        {
+            cross_type = CROSS_NONE;
+            not_have_line = 0;
+//            Z.Stop = 1;
+        }
+
+        // if(current_encoder - cross_encoder > 2.0*ENCODER_PER_METER)
+        // {
+        //     cross_type = CROSS_NONE;//跑过1m强制退出
+        // }
+
+        aim_distance = 0.4;
+
+        if (far_Lpt1_found) { track_type = TRACK_RIGHT; }
+        else if (far_Lpt0_found) { track_type = TRACK_LEFT; }
+        else if(far_rpts0s_num > far_rpts1s_num)track_type = TRACK_LEFT;
+        else if(far_rpts1s_num > far_rpts0s_num)track_type = TRACK_RIGHT;
+        else if (not_have_line > 0 && rpts1s_num < 5) { track_type = TRACK_RIGHT; }
+        else if (not_have_line > 0 && rpts0s_num < 5) { track_type = TRACK_LEFT; }
+
+    }
+    if(cross_type == CROSS_INHALF_LEFT)
+    {
+        //寻远线，与单边检测部分相同
+        if ( Lpt0_found   )                 //左边近的L点存在
+        {
+            Pespective_anti(rpts0s[Lpt0_rpts0s_id][0]  ,  rpts0s[Lpt0_rpts0s_id][1] , &L_x0 , &L_y0 );
+
+            xielv_left = (float) ( L_x0 - x0_first ) * 1.0  / (L_y0 -  y0_first);     //直着约为-0.4，斜着约为-1
+
+
+        }
+        else
+        {
+            L_x0 = 10;
+            L_y0 = 53;//应大于60-19
+
+        }
+
+        //平移一段距离
+        begin_x0 = func_limit_ab( L_x0 - 2 , 2, 78 );
+        begin_y0 = func_limit_ab ( (int)(L_y0 - 4 + 5*xielv_left) , 2, 58 );
+
+        far_ipts0_num = sizeof(far_ipts0) / sizeof(far_ipts0[0]);
+
+        for (; begin_y0 > 0; begin_y0--) {
+            //先白后黑，先找黑边界
+
+            int x = ( begin_y0 - y0_first  )* (xielv_left/2) + x0_first ;      //按斜率搜
+//            int x = begin_x0; //直接向上搜
+
+
+            if (AT_IMAGE(&img_raw, x, begin_y0-1) < thres) {
+                far_x0 = x;
+                far_y0 = begin_y0;    //这一点是白点，左边为黑点
+                break;
+            }
+
+
+        }
+
+        Left_Adaptive_Threshold(&img_raw, block_size, clip_value, far_x0, far_y0, far_ipts0, &far_ipts0_num);
+
+        //对边线透视变换
+        Pespective(far_ipts0,far_ipts0_num ,  far_rpts0);
+        far_rpts0_num = far_ipts0_num;
+        //边线三角滤波
+        blur_points(far_rpts0,far_rpts0_num,far_rpts0b,(int) round(line_blur_kernel));
+        far_rpts0b_num = far_rpts0_num;
+        // 边线等距采样
+        far_rpts0s_num = sizeof(far_rpts0s) / sizeof(far_rpts0s[0]);
+        resample_points(far_rpts0b, far_rpts0b_num, far_rpts0s, &far_rpts0s_num, sample_dist * pixel_per_meter);
+
+
+
+        if ( rpts0s_num < 20) { not_have_line++; }
+        //当找到近处线，跳出十字状态
+        if (not_have_line > 2 && rpts0s_num > 40  ) {
+            cross_type = CROSS_NONE;
+            not_have_line = 0;
+//            Z.Stop = 1;
+        }
+        // if(current_encoder - cross_encoder > 2.0*ENCODER_PER_METER)
+        // {
+        //     cross_type = CROSS_NONE;//跑过2m强制退出
+        // }
+        aim_distance = 0.4;
+
+        track_type = TRACK_LEFT;
+
+    }
+    if(cross_type == CROSS_INHALF_RIGHT)
+    {
+        //寻远线，与单边检测部分相同
+        if ( Lpt1_found   )                 //左边近的L点存在
+        {
+            Pespective_anti(rpts1s[Lpt1_rpts1s_id][0]  ,  rpts1s[Lpt1_rpts1s_id][1] , &L_x1 , &L_y1 );
+
+            xielv_right = (float) ( L_x1 - x1_first ) * 1.0  / (L_y1 -  y1_first);     //直走约为0.4，斜入约为1
+
+
+        }
+        else
+        {
+            L_x1 = 69;
+            L_y1 = 53;//应大于60-19
+
+        }
+
+        //平移一段距离右10上5
+        begin_x1 = func_limit_ab( L_x1 + 2 , 2, 78 );
+        begin_y1 = func_limit_ab ((int)(L_y1 - 4 - 5*xielv_right) , 2, 58 );
+
+        for (; begin_y1 > 0; begin_y1--) {
+            //先白后黑，先找黑边界
+
+//            int x = ( begin_y1 - y1_first  )* (xielv_right/2) +  x1_first ; //按斜率搜
+            int x = begin_x1;//直接向上搜
+
+            if (AT_IMAGE(&img_raw, x, begin_y1-1) < thres) {
+                far_x1 = x;
+                far_y1 = begin_y1;    //这一点是白点，左边为黑点
+                break;
+            }
+
+
+        }
+        Right_Adaptive_Threshold(&img_raw, block_size, clip_value, far_x1, far_y1, far_ipts1, &far_ipts1_num);
+
+        //对边线透视变换
+        Pespective(far_ipts1,far_ipts1_num ,  far_rpts1);
+        far_rpts1_num = far_ipts1_num;
+        //边线三角滤波
+        blur_points(far_rpts1,far_rpts1_num,far_rpts1b,(int) round(line_blur_kernel));
+        far_rpts1b_num = far_rpts1_num;
+        // 边线等距采样
+        far_rpts1s_num = sizeof(far_rpts1s) / sizeof(far_rpts1s[0]);
+        resample_points(far_rpts1b, far_rpts1b_num, far_rpts1s, &far_rpts1s_num, sample_dist * pixel_per_meter);
+
+        if ( rpts1s_num < 20) { not_have_line++; }
+        //当找到近处线，跳出十字状态
+        if (not_have_line > 2 && rpts1s_num > 40  ) {
+            cross_type = CROSS_NONE;
+            not_have_line = 0;
+//            Z.Stop = 1;
+        }
+        // if(current_encoder - cross_encoder > 2.0*ENCODER_PER_METER)
+        // {
+        //     cross_type = CROSS_NONE;//跑过1m强制退出
+        // }
+        aim_distance = 0.4;
+
+        track_type = TRACK_RIGHT;
+
+    }
+}
+
+//双边寻远线
+void cross_farline()
+{
+    if (Lpt0_found)                 //左边近的L点存在
+    {
+        Pespective_anti(rpts0s[Lpt0_rpts0s_id][0]  ,  rpts0s[Lpt0_rpts0s_id][1] , &L_x0 , &L_y0 );//透视远线拐点的显示坐标点
+        Pespective_anti(rpts0s[Lpt0_rpts0s_id / 2][0]  ,  rpts0s[Lpt0_rpts0s_id / 2][1] , &low_x0 , &low_y0 );
+        //远线拐点与远线中点的中间点在图像中的坐标转换为实际世界坐标中的坐标（这个点的下标可以换一个，/2不一定找得到）
+        xielv_left = (float) ( L_x0 - x0_first ) * 1.0  / (L_y0 -  y0_first);     //一般情况符号为    +  / -   最后是负
+    }
+    else
+    {
+        L_x0 = 10 ;
+        L_y0 = 100;
+    }
+
+    if (Lpt1_found)//如有右边近的L点存在，和上面一样的操作
+    {
+        Pespective_anti(rpts1s[Lpt1_rpts1s_id][0]  ,  rpts1s[Lpt1_rpts1s_id][1] , &L_x1 , &L_y1 );
+        Pespective_anti(rpts1s[Lpt1_rpts1s_id / 2][0]  ,  rpts1s[Lpt1_rpts1s_id / 2][1] , &low_x1 , &low_y1 );
+        xielv_right = (float)  ( L_x1 - x1_first ) * 1.0  / (L_y1 -  y1_first);     //一般情况符号为    -  / -   最后是正
+    }
+    else
+    {
+        L_x1 = 150;
+        L_y1 = 100;
+    }
+    
+    //对左右起始点进行限幅
+    begin_x0 = func_limit_ab( L_x0 - 2 , 4, 156 );
+    begin_y0 = func_limit_ab ( L_y0 - 2 , 4, 108 );
+
+    begin_x1 = func_limit_ab ( L_x1 + 2, 4, 156 );
+    begin_y1 = func_limit_ab (L_y1 - 2 ,4, 106 );     //开始点
+
+    // 这里应该是在近的L点两侧开始，而不是固定，因为极大是斜入十字
+        if ( Lpt0_found   )                 //左边近的L点存在，先找左边，这两个的目的是先搜能找到近L点的边，
+        {
+            far_ipts0_num = sizeof(far_ipts0) / sizeof(far_ipts0[0]);//显示坐标系下左边线的值
+
+            //全白 从 far_x1 , begin_y,从边界找
+            for (; begin_y0 > 0; begin_y0--)
+            {
+                //先白后黑，先找黑边界
+
+                int x = ( begin_y0 - y0_first  )* xielv_left +  x0_first ;           // x =  delta_y * xielv  +  x_begin，求直线斜率补线
+
+                int temp = x + 3;
+                for ( ; temp  > x  - 5; temp--)
+                {
+                    if (AT_IMAGE(&img_raw, temp, begin_y0-1) < thres) //如果找到黑点的话
+                    {
+                        far_x0 = temp;
+                        far_y0 = begin_y0;    //这一点是白点，上边为黑点
+                        goto out0;
+                    }
+                }
+                //计算出左边近的L点的斜率，然后从该点开始向上搜索，直到找到一条白色的线。一旦找到，它会将该点的坐标存储在far_x0和far_y0变量中，并使用goto语句跳转到标签out0处
+            }
+        out0:
+            //从找到角点位置开始寻找
+//                if (AT_IMAGE(&img_raw, far_x0, far_y0 + 1) >= thres)
+        Left_Adaptive_Threshold(&img_raw, block_size, clip_value, far_x0, far_y0 , far_ipts0, &far_ipts0_num);
+//                else far_ipts0_num = 0;
+
+        }
+
+        if ( Lpt1_found   )                 //右边近的L点存在，这两个的目的是先搜能找到近L点的边，
+        {
+            far_ipts1_num = sizeof(far_ipts1) / sizeof(far_ipts1[0]);
+
+
+            for (; begin_y1 > 0; begin_y1--) {
+
+                int x = ( begin_y1 - y1_first  )* xielv_right +  x1_first ;           // x =  delta_y * xielv  +  x_begin
+
+                int temp = x - 3;
+
+                for (; temp  < x + 3 ; temp++){
+                    //先黑后白，先找white
+                    if (AT_IMAGE(&img_raw, temp, begin_y1-1) <thres) {
+                        far_x1 = temp;
+                        far_y1 = begin_y1; //这一点是白点，上边为黑点
+                        goto out1;
+                    }
+
+                }
+
+            }
+            out1:
+                    //从找到角点位置开始寻找
+//                        if (AT_IMAGE(&img_raw, far_x1, far_y1 + 1) == thres)
+            Right_Adaptive_Threshold(&img_raw, block_size, clip_value, far_x1, far_y1 , far_ipts1, &far_ipts1_num);
+//                        else far_ipts1_num = 0;
+        }
+        if( !Lpt0_found && !Lpt1_found)                 //如果两个近L点都没找到，那么就从起始点向上搜
+        {
+            far_ipts0_num = sizeof(far_ipts0) / sizeof(far_ipts0[0]);
+
+
+            //全白 从 far_x1 , begin_y,从边界找
+            for (; begin_y0 > 0; begin_y0--) {
+                //先白后黑，先找黑边界
+                if (AT_IMAGE(&img_raw, begin_x0, begin_y0-1) < thres) {
+                    far_x0 = begin_x0;
+                    far_y0 = begin_y0;    //这一点是白点，上面是黑点
+                    break;
+                }
+            }
+
+                        //从找到角点位置开始寻找
+//                        if (AT_IMAGE(&img_raw, far_x0, far_y0 + 1) >= thres)
+            Left_Adaptive_Threshold(&img_raw, block_size, clip_value, far_x0, far_y0, far_ipts0, &far_ipts0_num);
+//                        else far_ipts0_num = 0;
+
+
+            far_ipts1_num = sizeof(far_ipts1) / sizeof(far_ipts1[0]);
+
+
+               for (; begin_y1 > 0; begin_y1--) {
+                   //先黑后白，先找white
+                   if (AT_IMAGE(&img_raw, begin_x1, begin_y1-1) <thres) {
+                       far_x1 = begin_x1;
+                       far_y1 = begin_y1;  //这一点是白点，上面是黑点
+                       break;
+                   }
+               }
+
+                           //从找到角点位置开始寻找
+//                           if (AT_IMAGE(&img_raw, far_x1, far_y1 + 1) == thres)
+             Right_Adaptive_Threshold(&img_raw, block_size, clip_value, far_x1, far_y1, far_ipts1, &far_ipts1_num);
+//                           else far_ipts1_num = 0;
+
+        }
+
+
+        far_Lpt0_rpts0s_id = 5 , far_Lpt1_rpts1s_id = 5 ;             //每次如果没找到远方的L点，默认是第5个点
+
+
+        // 去畸变+透视变换
+
+        Pespective(far_ipts0,far_ipts0_num ,  far_rpts0);
+        far_rpts0_num = far_ipts0_num;
+
+        Pespective(far_ipts1,far_ipts1_num ,  far_rpts1);
+        far_rpts1_num = far_ipts1_num;
+
+
+        // 边线滤波
+        blur_points(far_rpts0, far_rpts0_num, far_rpts0b, (int) round(line_blur_kernel));
+        far_rpts0b_num = far_rpts0_num;
+        blur_points(far_rpts1, far_rpts1_num, far_rpts1b, (int) round(line_blur_kernel));
+        far_rpts1b_num = far_rpts1_num;
+
+        // 边线等距采样
+        far_rpts0s_num = sizeof(far_rpts0s) / sizeof(far_rpts0s[0]);
+        resample_points(far_rpts0b, far_rpts0b_num, far_rpts0s, &far_rpts0s_num, sample_dist * pixel_per_meter);
+        far_rpts1s_num = sizeof(far_rpts1s) / sizeof(far_rpts1s[0]);
+        resample_points(far_rpts1b, far_rpts1b_num, far_rpts1s, &far_rpts1s_num, sample_dist * pixel_per_meter);
+
+//        // 边线局部角度变化率
+//        local_angle_points(far_rpts0s, far_rpts0s_num, far_rpts0a, (int) round(angle_dist / sample_dist));
+//        far_rpts0a_num = far_rpts0s_num;
+//        local_angle_points(far_rpts1s, far_rpts1s_num, far_rpts1a, (int) round(angle_dist / sample_dist));
+//        far_rpts1a_num = far_rpts1s_num;
+//
+//        // 角度变化率非极大抑制
+//        nms_angle(far_rpts0a, far_rpts0a_num, far_rpts0an, (int) round(angle_dist / sample_dist) * 2 + 1);
+//        far_rpts0an_num = far_rpts0a_num;
+//        nms_angle(far_rpts1a, far_rpts1a_num, far_rpts1an, (int) round(angle_dist / sample_dist) * 2 + 1);
+//        far_rpts1an_num = far_rpts1a_num;
+
+
+}
+
+
+

@@ -191,25 +191,25 @@ void test_new(void);
 // #define a32 (-0.0846f)
 // #define a33 (1.0f)
 
-//#define a11 (-2.2450f)
-//#define a12 (-8.5371f)
-//#define a13 (252.9928f)
-//#define a21 (-0.0901f)
-//#define a22 (0.4470f)
-//#define a23 (-190.8998f)
-//#define a31 (-0.0030f)
-//#define a32 (-0.0846f)
-//#define a33 (1.0f)
-
-#define a11 (-1.9850f)
-#define a12 (-6.8451f)
-#define a13 (232.9928f)
+#define a11 (-2.2450f)
+#define a12 (-8.5371f)
+#define a13 (252.9928f)
 #define a21 (-0.0901f)
 #define a22 (0.4470f)
 #define a23 (-190.8998f)
 #define a31 (-0.0030f)
-#define a32 (-0.0636f)
+#define a32 (-0.0846f)
 #define a33 (1.0f)
+
+//#define a11 (-1.9850f)
+//#define a12 (-6.8451f)
+//#define a13 (232.9928f)
+//#define a21 (-0.0901f)
+//#define a22 (0.4470f)
+//#define a23 (-190.8998f)
+//#define a31 (-0.0030f)
+//#define a32 (-0.0636f)
+//#define a33 (1.0f)
 
 
 #define getx(u, v) (a11 * (u) + a12 * (v) + a13)
@@ -218,19 +218,19 @@ void test_new(void);
 
 // D矩阵参数
 /*这些宏定义都是给60*80的矩阵*/
-#define b11 (-0.1238f)
-#define b12 (-0.0969f)
-#define b13 (-1.0252f)
+#define b11 (-0.4928f)
+#define b12 (-0.4038f)
+#define b13 (47.5991f)
 
-#define b21 (0.0000f)
+#define b21 (0.0208f)
 
-#define b22 (-0.0097f)
+#define b22 (-0.0466f)
 
-#define b23 (-4.2726f)
+#define b23 (-14.1659f)
 
-#define b31 (-0.0000f)
-#define b32 (-0.0023f)
-#define b33 (-0.0271f)
+#define b31 (0.0003f)
+#define b32 (-0.0052f)
+#define b33 (-0.0556f)
 
 #define getx_b(u, v) (b11 * (u) + b12 * (v) + b13)
 #define gety_b(u, v) (b21 * (u) + b22 * (v) + b23)
@@ -243,7 +243,11 @@ void resample_points(float pts_in[][2], int num1, float pts_out[][2], int *num2,
 void local_angle_points(float pts_in[][2], int num, float angle_out[], int dist);
 void nms_angle(float angle_in[], int num, float angle_out[], int kernel);
 void find_corners(void);
-
+void cross_farline(void);//寻远线
+void check_cross(void) ;
+void check_half_left(void);
+void check_half_right(void);
+void run_cross(void);
 #define POINTS_MAX_LEN (150) // 边线点最多的情况——>num
 
 //逆透视补线数组
@@ -341,6 +345,33 @@ extern float dn[1] ;
 // 若考虑近点远点,可近似构造Stanley算法,避免撞路肩
 
 extern float pure_angle;
+
+#define L_CROSS 80  //十字模式中存储左边线坐标的个数为80
+
+/*圆环状态*/
+enum circle_type_e {
+    CIRCLE_NONE = 0,                            // 非圆环模式
+    CIRCLE_LEFT_BEGIN, CIRCLE_RIGHT_BEGIN,      // 圆环开始，识别到单侧L角点另一侧长直道。
+    CIRCLE_LEFT_IN, CIRCLE_RIGHT_IN,            // 圆环进入，即走到一侧直道，一侧圆环的位置。
+    CIRCLE_LEFT_RUNNING, CIRCLE_RIGHT_RUNNING,  // 圆环内部。
+    CIRCLE_LEFT_OUT, CIRCLE_RIGHT_OUT,          // 准备出圆环，即识别到出环处的L角点。
+    CIRCLE_LEFT_END, CIRCLE_RIGHT_END,          // 圆环结束，即再次走到单侧直道的位置。
+    CIRCLE_NUM,                                 //
+};
+
+
+// enum circle_type_e circle_type = CIRCLE_NONE;
+
+/*十字模式*/
+enum cross_type_e {
+    CROSS_NONE = 0,     // 非十字模式
+    CROSS_BEGIN,        // 找到左or右两个L角点(包括单线情况)
+    CROSS_IN_DOUBLE,    // 双L角点寻远线，两个L角点很近，即进入十字内部(此时切换远线控制)
+    CROSS_INHALF_LEFT,  // 单L角点寻远线(只看得到左边)
+    CROSS_INHALF_RIGHT, // 单L角点寻远线(只看得到右边)
+    CROSS_NUM,
+};
+
 
 #endif
 
