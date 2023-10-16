@@ -245,8 +245,6 @@ void nms_angle(float angle_in[], int num, float angle_out[], int kernel);
 void find_corners(void);
 void cross_farline(void);//寻远线
 void check_cross(void) ;
-void check_half_left(void);
-void check_half_right(void);
 void run_cross(void);
 #define POINTS_MAX_LEN (150) // 边线点最多的情况——>num
 
@@ -367,8 +365,7 @@ enum cross_type_e {
     CROSS_NONE = 0,     // 非十字模式
     CROSS_BEGIN,        // 找到左or右两个L角点(包括单线情况)
     CROSS_IN_DOUBLE,    // 双L角点寻远线，两个L角点很近，即进入十字内部(此时切换远线控制)
-    CROSS_INHALF_LEFT,  // 单L角点寻远线(只看得到左边)
-    CROSS_INHALF_RIGHT, // 单L角点寻远线(只看得到右边)
+    CROSS_FAR,
     CROSS_NUM,
 };
 
