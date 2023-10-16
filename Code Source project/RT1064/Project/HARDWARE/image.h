@@ -201,14 +201,25 @@ void test_new(void);
 //#define a32 (-0.0846f)
 //#define a33 (1.0f)
 
-#define a11 (-1.9850f)
-#define a12 (-6.8451f)
-#define a13 (232.9928f)
-#define a21 (-0.0901f)
-#define a22 (0.4470f)
-#define a23 (-190.8998f)
-#define a31 (-0.0030f)
-#define a32 (-0.0636f)
+//#define a11 (-1.9850f)
+//#define a12 (-6.8451f)
+//#define a13 (232.9928f)
+//#define a21 (-0.0901f)
+//#define a22 (0.4470f)
+//#define a23 (-190.8998f)
+//#define a31 (-0.0030f)
+//#define a32 (-0.0636f)
+//#define a33 (1.0f)//best
+
+
+#define a11 (2.4483f)
+#define a12 (9.9016f)
+#define a13 (-187.3382f)
+#define a21 (-0.0240f)
+#define a22 (-0.9154f)
+#define a23 (308.7282f)
+#define a31 (-0.0062f)
+#define a32 (0.1221f)
 #define a33 (1.0f)
 
 

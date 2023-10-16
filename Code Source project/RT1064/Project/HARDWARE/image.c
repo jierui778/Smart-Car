@@ -1568,9 +1568,9 @@ void test(void)
     rpts0an_num = rpts0a_num;
     nms_angle(rpts1a, rpts1a_num, rpts1an, (int)round(angle_dist / sample_dist) * 2 + 1);
     rpts1an_num = rpts1a_num;
-	
+
     aim_distance=aim_distance_flash;//设定预瞄距离
-    
+
     for (i = 0; i < ipts00_num; i++)
     {
         ips200_draw_point(ipts00[i][0]+5, ipts00[i][1] + 200, RGB565_RED);
@@ -1579,7 +1579,7 @@ void test(void)
     {
         ips200_draw_point(ipts11[i][0]+5, ipts11[i][1] + 200, RGB565_BLUE);
     }
-	
+
 	for (i = 0; i < ipts0_num; i++)
     {
         ips200_draw_point(ipts0[i][0]+5, ipts0[i][1] + 200, RGB565_RED);
@@ -1610,7 +1610,7 @@ void test(void)
        ips200_draw_point(x+20, 200 - y, RGB565_GREEN); // 左线为绿色 不知道为什么改成-x/2+50就能正常先显示
 
    }
-   
+
 //   for (int i = 0; i < rpts0s_num; i++) // 显示左边线
 //   {
 //       uint16 x, y;
@@ -1620,7 +1620,7 @@ void test(void)
 //       ips200_draw_point(x+20, 200 - y, RGB565_RED); // 左线为绿色 不知道为什么改成-x/2+50就能正常先显示
 
 //   }
-//   
+//
 //   for (int i = 0; i < rpts1s_num; i++) // 显示左边线
 //   {
 //       uint16 x, y;
@@ -1630,7 +1630,7 @@ void test(void)
 //       ips200_draw_point(x+20, 200 - y, RGB565_BLUE); // 左线为绿色 不知道为什么改成-x/2+50就能正常先显示
 
 //   }
-   
+
 
    for (int i = 0; i < rpts0_num; i++) // 显示左边线
    {
@@ -1671,7 +1671,7 @@ void test(void)
         rpts00an_num = rpts00a_num;
         nms_angle(rpts11a, rpts11a_num, rpts11an, (int)round(angle_dist / sample_dist) * 2 + 1);
         rpts11an_num = rpts11a_num;
-		
+
 		for (int i = 0; i < rpts00_num; i++) // 显示左边线
 	    {
 		   uint16 x, y;
@@ -1679,7 +1679,7 @@ void test(void)
 		   y = func_limit_ab(rpts00[i][1], 0, 199);
 		   ips200_draw_point(x+20, 200 - y, RGB565_RED); // 左线为绿色 不知道为什么改成-x/2+50就能正常先显示
 	    }
-		
+
 		for (int i = 0; i < rpts11_num; i++) // 显示左边线
 	    {
 		   uint16 x, y;
@@ -1744,8 +1744,8 @@ void test(void)
     }
 //    ips200_show_uint(160,280,rpts0s_num,4);
 //    ips200_show_uint(160,300,rpts1s_num,4);
-   
-    
+
+
     //纯跟踪起始点 根据方案不同调整！
     float cx, cy; //思考：由于逆透视出来的是现实坐标系，考虑把图像最低行中间起始点改为小车重心点会不会好一些；若是重心，则cx，cy为摄像头坐标距重心坐标距离
     //这里没有赋值，就默认为0
@@ -1754,13 +1754,13 @@ void test(void)
 
     Pespective_xy( UCOL/2+0.5 ,begin_y ,  &cx, &cy);//对起始点进行逆透视，得到现实坐标系下的坐标，方便中线拟合，找到起始点
 //    rot_xy( UCOL/2+0.5 ,begin_y ,  &cx, &cy);//方案三
-   
+
     //找最近点(起始点中线归一化)
     float min_dist = 1e10;//存储逆透视的最小距离值，待改进
     int   begin_id = -1;//起始点在直线的下标索引
 
     //找出起始点，和最小的下标索引
-   for (int i = 0; i < rpts_num; i++) 
+   for (int i = 0; i < rpts_num; i++)
    {
        float dx = rpts[i][0] - cx;
        float dy = rpts[i][1] - cy;//求出每个点到x,y变化值
@@ -1774,7 +1774,7 @@ void test(void)
        }
    }
 //    ips200_show_float(160,240,min_dist,4,4);
-	
+
     // 中线有点，同时最近点不是最后几个点
     if (begin_id >= 0 && rpts_num - begin_id >= 3)//这个if条件是用来判断中线是否有足够的点数，同时最近点不是最后几个点
     {
@@ -1785,7 +1785,7 @@ void test(void)
         resample_points(rpts + begin_id, rpts_num - begin_id, rptsn, &rptsn_num, sample_dist * pixel_per_meter);
         //对中线进行采样，以便后续的计算。具体来说，它选定了起始点，然后使用 resample_points 函数对中线进行采样，将采样结果存储在 rptsn 数组中
         //rpts + begin_id 表示从中线的第 begin_id 个点开始采样，rpts_num - begin_id 表示采样的点数，rptsn 表示采样结果存储的数组，&rptsn_num 表示采样结果的点数
-        
+
         /***************计算远处偏差均值*************/
         // 预锚点位置 第34点作为控制偏差 注意：最低行距离车头约10cm距离，距离摄像头25cm距离 故预瞄点现实中为60cm
 //        int i;
@@ -1810,7 +1810,7 @@ void test(void)
 //        aim_idx[0] = clip(round(aim_dist[0] / sample_dist), 0, rptsn_num - 1);
 
         aim_idx[0] = clip(round(aim_distance / sample_dist), 0, rptsn_num - 1);//计算目标点在采样后的中线上的索引位置
-		
+
 		aim_idx[0]=aim_idx[0]/3;
         //这个数组只有一个数值，就是目标点在采样后的中线上的索引位置
 //        ips200_show_uint(160,260,aim_idx[0],4);
@@ -2040,7 +2040,7 @@ void Find_Borderline(void)
 	out1://从起始点开始执行扫线
 	{
 		if (AT_IMAGE(&img_raw, x0_first, y0_first) >= uthres)//如果这个点是白色（且左边是黑色的话）
-		{	
+		{
 //			while(1);
 			Left_Adaptive_Threshold(&img_raw, block_size, clip_value, x0_first, y0_first, ipts0, &ipts0_num);//开始跑迷宫
 		}
@@ -2090,7 +2090,7 @@ void Find_Borderline_Second(void)
     // 底边扫线防止丢线 注意：由于sobel边缘检测特殊性（黑框），此丢线标志仅适用Ostu方案
     loseline00 = 0;
     loseline11 = 0;
-    
+
 	/*添加*/
 //	begin_y=Image_Get_LeftPoint(117);ipts0_num
 
@@ -2120,7 +2120,7 @@ void Find_Borderline_Second(void)
     for (; y0_first >20; y0_first--)//从所选的行，向上扫5次，每次从中间向左线扫
     {
         if (AT_IMAGE(&img_raw, x0_first, y0_first) < uthres)//如果扫到黑点（灰度值为0），就从该点开始扫线
-          {  
+          {
             goto out1;//开始扫左线
           }
     }
@@ -2531,7 +2531,7 @@ uint8 Right_Turn;//右弯道
 
 /**
  * @brief 清空图像状态变量
- * 
+ *
  */
 void Image_Clear(void)
 {
@@ -2544,7 +2544,7 @@ void Image_Clear(void)
 
 /**
  * @brief 检查图像状态，判断当前是否处于十字路口、直道、左弯道或右弯道
- * 
+ *
  * @param in_put_l 左边线的坐标数组
  * @param in_put_num_l 左边线的坐标数量
  * @param in_put_r 右边线的坐标数组
@@ -2582,7 +2582,7 @@ void Image_CheckState(int in_put_l[][2],int in_put_num_l,int in_put_r[][2],int i
 		Right_Turn = 0 ;
         Straight_State = 0;
     }
-	
+
     /*直道：左右线找到的点超过100，左右线的最后一个点的行坐标在30以内*/
    else if(ipts0_num>100&&ipts1_num>100&&ipts0[ipts0_num-1][1]<30&&ipts1[ipts1_num-1][1]<30)
    {
@@ -2685,8 +2685,8 @@ void Cross_Drawline(int in_put_l[][2],int in_put_num_l,int in_put_r[][2],int in_
     /*一 坐标转换*/
     Coordinate_transformation_left(in_put_l,in_put_num_l,Left_Change);//左右下线坐标变换
     Coordinate_transformation_right(in_put_r,in_put_r_num,Right_Change);
-	
-	
+
+
     /*二 找下拐点*/
     for(i=0;i<in_put_num_l;i++)
     {
@@ -2712,14 +2712,14 @@ void Cross_Drawline(int in_put_l[][2],int in_put_num_l,int in_put_r[][2],int in_
 	ips200_draw_line(0,0,in_put_r[right_index][0],in_put_r[right_index][1],RGB565_BLUE);
     /*三 求直线方程*/
 	k_left=LineRession(in_put_l,left_index-5);
-	
+
 	b_left=in_put_l[left_index][1]-k_left*in_put_l[left_index][0];
-	
+
 	//求得的直线方程是row=column*k+b，实际上应该是column=row*k+b
 	k_right=LineRession(in_put_r,right_index-5);
-	
+
     b_right=in_put_r[right_index][1]-k_right*in_put_r[right_index][0];
-	
+
     k_left=(1/k_left);//新斜率取倒数
     b_left= -b_left*k_left;//新截距取相反数
 
@@ -2761,7 +2761,7 @@ void Cross_Drawline_plus(int in_put_l[][2],int in_put_num_l,int in_put_lnew[][2]
     Coordinate_transformation_left(in_put_l,in_put_num_l,Left_Change);//左右下线坐标变换，左右上线坐标不用变换
     Coordinate_transformation_right(in_put_r,in_put_r_num,Right_Change);
 	Coordinate_transformation_rightup(in_put_rnew,in_put_r_numnew,Right_Change_new);//右上线坐标变换
-	
+
     /*二 找左右下拐点*/
     for(i=0;i<in_put_num_l;i++)
     {
@@ -2772,7 +2772,7 @@ void Cross_Drawline_plus(int in_put_l[][2],int in_put_num_l,int in_put_lnew[][2]
             //遍历完，不用break
         }
     }
-    
+
     for(i=0;i<in_put_r_num;i++)
     {
         if((Right_Change[i][0]+Right_Change[i][1])>right_highest)//拐点的坐标之和最大row=k*column+b
@@ -2811,12 +2811,12 @@ void Cross_Drawline_plus(int in_put_l[][2],int in_put_num_l,int in_put_lnew[][2]
 	ips200_draw_line(0,200,in_put_r[right_index][0],in_put_r[right_index][1]+200,RGB565_BLUE);
     /*三 求直线方程（已知左右上下拐点）*/
 	k_left=(in_put_l[left_index][0]-in_put_lnew[left_index_new][0]/in_put_l[left_index][1]-in_put_lnew[left_index_new][1]);//斜率
-	
+
 	b_left=in_put_l[left_index][1]-k_left*in_put_l[left_index][0];//近处点求截距更准确
-	
+
 	//求得的直线方程是row=column*k+b，实际上应该是column=row*k+b
 	k_right=(in_put_r[right_index][0]-in_put_rnew[right_index_new][0]/in_put_r[right_index][1]-in_put_rnew[right_index_new][1]);//斜率
-	
+
     b_right=in_put_r[right_index][1]-k_right*in_put_r[right_index][0];
 
     /*四 补线*/
@@ -2887,7 +2887,7 @@ float Get_Mid_Cross(void)
         }
         start_x=IMAGE_WIDTH/2;//复位
     }
-    
+
     for(i=0;i<Finnal_left_num;i++)
     {
         Finnal_Mid[i][0]=(Finnal_left[i][0]+Finnal_right[i][0])/2;
@@ -3094,7 +3094,7 @@ void find_corners(void)
         int im1 = clip(i - (int)round(angle_dist / sample_dist), 0, rpts0s_num - 1);
         int ip1 = clip(i + (int)round(angle_dist / sample_dist), 0, rpts0s_num - 1);
         float conf = fabs(rpts0a[i]) - (fabs(rpts0a[im1]) + fabs(rpts0a[ip1])) / 2;//计算了当前点的角度与其前后两个点角度平均值的差值，判断拐点及其有用
-        
+
         // Y角点阈值                 (30*  ,   50*)    并且距离在40个点之内 (注：30.转化浮点数)
         // if (Ypt0_found == false && 6. / 180. * PI < conf && conf < 15. / 180. * PI && i < 0.8 / sample_dist)
         // {
@@ -3123,7 +3123,7 @@ void find_corners(void)
             is_straight0 = false; // 只要中间有大角度，就不是长直道
         if (Ypt0_found == true && Lpt0_found == true && is_straight0 == false)
             break;
-		
+
     }
 
     // 右边线角度
@@ -3479,7 +3479,7 @@ void local_angle_points(float pts_in[][2], int num, float angle_out[], int dist)
 /*完成摄像头初始化后，调用一次ImagePerspective_Init，此后，直接调用ImageUsed   即为透视结果*/
 /**
  * @brief 左侧跟踪线函数，这整个函数是起到对输入数组pts_in平移的作用（感觉没什么用的样子）
- * 
+ *
  * @param pts_in 输入的点集数组
  * @param num 点集数组的长度
  * @param pts_out 输出的点集数组
@@ -3497,7 +3497,7 @@ void track_leftline(float pts_in[][2], int num, float pts_out[][2], int approx_n
             dy /= dn;//sinθ
             pts_out[i][0] = pts_in[i][0] + dy * dist;
             pts_out[i][1] = pts_in[i][1] - dx * dist;
-            
+
         }
         ips200_show_uint(210,210,approx_num,3);
 }
