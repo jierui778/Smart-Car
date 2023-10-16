@@ -37,8 +37,8 @@ while (step < 121 ...
     Dir = dir + 1;
     front_value = input_data(y2 + dir_front(Dir,2),x2 + dir_front(Dir,1));
     frontright_value = input_data(y2 + dir_frontright(Dir,2),x2 + dir_frontright(Dir,1));
-    if ((x2==w-2 && y2 < h -20) || x2==1 || y2==1)
-        if x2==1
+    if ((x2==w-2 && y2 < h -40) || x2==half-1 || y2==2)
+        if x2==w-2
             touch_boundary1 =1;
             break;
         end

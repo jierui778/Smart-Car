@@ -45,8 +45,8 @@ while (step < 121 ...%限制边线数组长度
     front_value = input_data(y1 + dir_front(Dir,2),x1 + dir_front(Dir,1));
     frontleft_value = input_data(y1 + dir_frontleft(Dir,2),x1 + dir_frontleft(Dir,1));
     frontright_value = input_data(y1 + dir_frontright(Dir,2),x1 + dir_frontright(Dir,1));
-    if ((x1==3 && y1 < h -20) || x1 == w - 1 || y1==2)
-        if x1==1
+    if (((x1==3 && y1 < h -40) || x1 == w - 1 || y1==2)&&step>30)%限制条件，后期看情况修改
+        if x1==3
             touch_boundary0 =1;%触碰到最左边，可能是环岛，十字
             break;
         end
@@ -85,3 +85,8 @@ while (step < 121 ...%限制边线数组长度
     ipts0 = pts;
 end
 
+
+
+
+
+%tips考虑到后面三角滤波和等距采样会对有十字空白跳跃的数组产生干扰，我们选择迷宫触碰到边界则停止巡线，给予标志位对远线进行迷宫

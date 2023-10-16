@@ -9,20 +9,20 @@ img= imread('888.bmp');%如果是bmp结尾的图片文件需要下面rgb2gray这句话。jpg格式就
 img= rgb2gray(img);
 %img = double(img);  %如果是jpg结尾的图片文件需要double这句话。bmp格式就把他注释掉
 [M , N] = size(img);  %图像宽高
-MM = 120;
+MM = 120;%数组长度
 
-img1 = img;
+% img1 = img;
 
 
-ipts0          = zeros(MM,2);
+ipts0          = zeros(MM,2);%原左边线
 ipts0_num      = MM;
-ipts1          = zeros(MM,2);%原边线
+ipts1          = zeros(MM,2);%原右边线
 ipts1_num      = MM;
 
 
-far_ipts0 = zeros(MM,2);
+far_ipts0 = zeros(MM,2);%远左边线
 far_ipts0_num = MM;
-far_ipts1 = zeros(MM,2);%远线数组
+far_ipts1 = zeros(MM,2);%远右线数组
 far_ipts1_num = MM;
 % inv_ipts0      = zeros(MM,2);
 % inv_ipts0_num  = MM;
@@ -34,17 +34,17 @@ far_ipts1_num = MM;
 
 
 
-rpts0          = zeros(MM,2);%透视后的边线
+rpts0          = zeros(MM,2);%透视后左边线
 rpts0_num      = MM;
-rpts1          = zeros(MM,2);
+rpts1          = zeros(MM,2);%透视后右边线
 rpts1_num      = MM;
 
-rpts0b         = zeros(MM,2);%三角滤波后的数组
+rpts0b         = zeros(MM,2);%透视+三角滤波后的边线
 rpts0b_num     = MM;
 rpts1b         = zeros(MM,2);
 rpts1b_num     = MM;
 
-rpts0s         = zeros(MM,2);%三角滤波+等距采样后的数组
+rpts0s         = zeros(MM,2);%透视+三角滤波+等距采样后的边线
 rpts0s_num     = MM;
 rpts1s         = zeros(MM,2);
 rpts1s_num     = MM;
@@ -90,10 +90,11 @@ is_straight0 = 0;%长直道
 is_straight1 = 0;
 
 sample_dist = 0.032;
-ROAD_WIDTH = 0.40;
+ROAD_WIDTH = 0.40;%赛道宽度
 kernel = 5;%三角滤波的卷积核
-begin_x = 5;
-begin_y = 88;
+begin_x = 5;%起始点
+begin_y = 98;
+
 x1 = N/2 - begin_x;
 x2 = N/2 + begin_x;
 y1 = begin_y;
@@ -109,7 +110,7 @@ y_data1 = zeros(M,1);
 %%
 %上交方案运算仿真
 output_data = img;
-%output_data = Sobel(img,output_data,thres)%边缘提取 得到二值图像(针对灰度图)
+% output_data = Sobel(img,output_data,thres)%边缘提取 得到二值图像(针对灰度图)
 %寻找起始点
 x0_first = x1;    y0_first = y1;
 for x0_first = N/2 - begin_x:-1:2
@@ -253,10 +254,11 @@ end
 %%
 %后续计算
 
-[ rpts0b ] = blur_points(rpts0,rpts0_num,rpts0b,kernel);%三角滤波
-rpts0b_num = rpts0_num; 
-[ rpts1b ] = blur_points(rpts1,rpts1_num,rpts1b,kernel);
-rpts1b_num = rpts1_num;
+[ rpts0b ] = blur_points(rpts0,ipts0_num,rpts0b,kernel);%三角滤波
+rpts0b_num = ipts0_num; 
+[ rpts1b ] = blur_points(rpts1,ipts1_num,rpts1b,kernel);
+rpts1b_num = ipts1_num;
+
 
 dist = sample_dist*45;
 [rpts0s,rpts0s_num] = resample_points(rpts0b,rpts0b_num,rpts0s,rpts0s_num,dist);%等距采样
@@ -285,7 +287,9 @@ rpts0an_num = rpts0a_num;
 [rpts1an] = nms_angle(rpts1a,rpts1a_num,21);
 rpts1an_num = rpts1a_num;
 
-pixel_per_meter = 95;%中线偏移距离
+
+
+pixel_per_meter = 95;%中线偏移量
 [rptsc0] = track_leftline(rpts0s, rpts0s_num, rptsc0, 10.0, pixel_per_meter * ROAD_WIDTH / 2);
 rptsc0_num = rpts0s_num;
 [rptsc1] = track_rightline(rpts1s, rpts1s_num, rptsc1, 10.0, pixel_per_meter * ROAD_WIDTH / 2);
@@ -565,9 +569,9 @@ end
 %     plot(g_far_ipts1(i,1),g_far_ipts1(i,2),'bo');
 % end
 
-subplot(1,3,3)
-imshow(img1);
-hold on
+% subplot(1,3,3)
+% imshow(img1);
+% hold on
 
 
 subplot(1,3,2)
