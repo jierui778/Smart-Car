@@ -1,25 +1,27 @@
 #include "circle.h"
 
 
-enum circle_type_e circle_type = CIRCLE_NONE;//初始化时为非圆环模式
+enum circle_type_e circle_type = CIRCLE_NONE;
 
 void Circle_Check(void)
 {
+    if (touch_boundary0&&circle_type == CIRCLE_NONE && Lpt0_found)//????????????L??????????
+    {
+        circle_type = CIRCLE_LEFT_FOUND;//??????????
+    }
+    if (touch_boundary1 && circle_type == CIRCLE_NONE && Lpt1_found) // ????????????L??????????
+    {
+        circle_type = CIRCLE_RIGHT_FOUND; // ??????????
+    }
 
-
-
+        // if (circle_type == CIRCLE_NONE && Lpt0_found && Lpt1_found && touch_boundary0 && touch_boundary1)
 }
 
-void Circle_In(void)
+void Circle_Run(void)
 {
-
-}
-
-
-
-void Circle_Out(void)
-{
-
-
+    if(circle_type == CIRCLE_LEFT_FOUND)
+    {
+        circle_type = CIRCLE_LEFT_IN;//??????????
+    }
 
 }
