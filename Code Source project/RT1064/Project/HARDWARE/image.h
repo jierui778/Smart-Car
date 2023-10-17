@@ -369,6 +369,16 @@ enum cross_type_e {
     CROSS_NUM,
 };
 
+/*赛道所有的模式都放在里面*/
+enum all_type {
+    CROSS,
+    CIRCLE,
+    STRAIGHT,
+    TURN_RIGHT,
+    TURN_LEFT,
+    GARAGE,
+};
+
 
 #endif
 

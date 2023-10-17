@@ -4,6 +4,7 @@
 #include "stdlib.h"
 
 enum cross_type_e cross_type = CROSS_NONE;
+enum circle_type_e circle_type = CIRCLE_NONE;
 
 uint8 Image_Use_Robert[120][160]; // 二值化图像
 
@@ -25,6 +26,15 @@ float aim_distance_flash = 0.68;                    // 预锚点长度
 float aim_dist[5] = {0.68, 0.78, 0.88, 0.98, 1.08}; // 多个预瞄点长度，间隔5cm，34~54个点，用于速度模糊控制，而不是偏差角计算！
 
 float xielv_left_y_to_end, xielv_right_y_to_end; // 在逆透视后得坐标系建得斜率
+
+
+bool Lpt00_found, Lpt11_found;//其中 far_N_Lpt0_found 表示是否找到了反向逆透视后的左边L角点，far_N_Lpt1_found 表示是否找到了反向逆透视后的右边L角点。
+bool N_Lpt00_found,N_Lpt11_found;//这个变量用于表示是否找到了逆逆透视后的左边L角点和右边L角点。其中，far_N_Lpt0_found表示左边L角点是否被找到，far_N_Lpt1_found表示右边L角点是否被找到。
+
+int Lpt00_rpts00s_id, Lpt11_rpts11s_id;//远角点L角点的数组索引值
+int N_Lpt00_rpts00s_id,Lpt11_rpts11s_id;//这两个变量是用于记录L角点在反向逆透视后的rpts0s数组中的索引值
+
+int cross_num;//十字的个数
 
 void check()
 {
@@ -1416,6 +1426,12 @@ uint8 touch_boundary_up11; // 右边线走到图像上边界
 
 #define ROAD_WIDTH (0.39)    // 赛道宽度45cm 适时调整 注意：应用方案三时情况特殊为负数-0.40,正常0.43
 
+float xielv_left, xielv_right;//找到拐点时左右边线到拐点的斜率
+
+int L_x0, L_x1 , L_y0 , L_y1;//十字得近处两个L点的坐标
+
+int low_x0,low_y0, low_x1 , low_y1;//十字得近处两个L点的坐标得下面2个点，用来计算斜率来补线
+
 
 image_t img_raw = DEF_IMAGE(NULL, UCOL, UROW);
 
@@ -2106,29 +2122,97 @@ void Find_Borderline_Second(void)
     }
     if(touch_boundary1==1)
     {
-    // 寻右边线
-    x2 = img_raw.width / 2 + begin_x, y2 = begin_y;
+        // 寻右边线
+        x2 = img_raw.width / 2 + begin_x, y2 = begin_y;
 
-    // 标记种子起始点(后续元素处理要用到)
-    x1_first = 156;
-    y1_first = ipts1[ipts1_num-1][1]-5;;
+        // 标记种子起始点(后续元素处理要用到)
+        x1_first = 156;
+        y1_first = ipts1[ipts1_num-1][1]-5;;
 
-    ipts11_num = sizeof(ipts11) / sizeof(ipts11[0]);
-    for (; y1_first > 20; y1_first--)
-    {
-        if (AT_IMAGE(&img_raw, x1_first , y1_first) < uthres)
+        ipts11_num = sizeof(ipts11) / sizeof(ipts11[0]);
+        for (; y1_first > 20; y1_first--)
         {
-            goto out2;
+            if (AT_IMAGE(&img_raw, x1_first , y1_first) < uthres)
+            {
+                goto out2;
+            }
+        }
+        loseline11 = 1; // 底边丢线
+        out2:
+        {
+            Right_Adaptive_Threshold(&img_raw, block_size, clip_value, x1_first, y1_first, ipts11, &ipts11_num);
         }
     }
-    loseline11 = 1; // 底边丢线
-	out2:
-	{
-		Right_Adaptive_Threshold(&img_raw, block_size, clip_value, x1_first, y1_first, ipts11, &ipts11_num);
-	}
-}
 
 }
+
+void Find_Borderline_Second_Left(void)
+{
+    uint8 uthres = 1;
+	if(touch_boundary0==1)
+	{
+        // 迷宫巡线是否走到左右边界
+        touch_boundary00 = 0; // 清零
+        touch_boundary_up00 = 0; // 清零
+        loseline00 = 0;
+        x1 = img_raw.width / 2 - begin_x, y1 = begin_y;
+        x0_first = 2;
+        y0_first = ipts0[ipts0_num-1][1]-5;
+
+        ipts00_num = sizeof(ipts00) / sizeof(ipts00[0]); // 求数组的长度
+        // 扫底下五行，寻找跳变点
+        for (; y0_first >20; y0_first--)//从所选的行，向上扫5次，每次从中间向左线扫
+        {
+            if (AT_IMAGE(&img_raw, x0_first, y0_first) < uthres)//如果扫到黑点（灰度值为0），就从该点开始扫线
+            {  
+                goto out1;//开始扫左线
+            }
+        }
+        //如果扫不到的话，判定左边的底边丢线
+        loseline00 = 1; // 底边丢线
+        out1://从起始点开始执行扫线
+        {
+            // if (AT_IMAGE(&img_raw, x0_first+1, y0_first) >= uthres)//如果这个点是白色（且左边是黑色的话）
+                Left_Adaptive_Threshold(&img_raw, block_size, clip_value, x0_first, y0_first, ipts00, &ipts00_num);//开始跑迷宫
+            // else
+            // 	ipts00_num = 0;//如果不是的话，就不用跑了，求得的number记为0
+        }
+    }
+}
+
+void Find_Borderline_Second_Right(void)
+{
+    uint8 uthres = 1;
+	if(touch_boundary1==1)
+	{
+        // 迷宫巡线是否走到左右边界
+        touch_boundary11 = 0; // 清零
+        touch_boundary_up11 = 0; // 清零
+        loseline11 = 0;
+        x1 = img_raw.width / 2 - begin_x, y1 = begin_y;
+        x1_first = 2;
+        y1_first = ipts0[ipts0_num-1][1]-5;
+        ipts11_num = sizeof(ipts11) / sizeof(ipts11[0]); // 求数组的长度
+        // 扫底下五行，寻找跳变点
+        for (; y1_first >20; y1_first--)//从所选的行，向上扫5次，每次从中间向左线扫
+        {
+            if (AT_IMAGE(&img_raw, x1_first, y1_first) < uthres)//如果扫到黑点（灰度值为0），就从该点开始扫线
+            {  
+                goto out1;//开始扫左线
+            }
+        }
+        //如果扫不到的话，判定左边的底边丢线
+        loseline11 = 1; // 底边丢线
+        out1://从起始点开始执行扫线
+        {
+            // if (AT_IMAGE(&img_raw, x0_first+1, y0_first) >= uthres)//如果这个点是白色（且左边是黑色的话）
+                Right_Adaptive_Threshold(&img_raw, block_size, clip_value, x1_first, y1_first, ipts11, &ipts11_num);//开始跑迷宫
+            // else
+            // 	ipts00_num = 0;//如果不是的话，就不用跑了，求得的number记为0
+        }
+    }
+}
+
 
 const int dir_front[4][2] = {{0, -1},
                              {1, 0},
@@ -3587,4 +3671,59 @@ void cross_farline(void)
 	    }
     }
 
+}
+
+void check_half_left()
+{
+    if (Lpt0_found||(ipts0[ipts0_num-1][1]>(IMAGE_WIDTH/2)&&touch_boundary0==1))//左边近的L点存在或左边点数最后一点的y坐标大于图像宽度的一半且到边界
+    {
+        Find_Borderline_Second_Left();//二次寻找左边线
+    }
+    //远角点识别(确认十字or圆环)
+    Lpt00_found = false; //初始化为0，防止上次标志位误判
+    for (int i = 1; i < rpts00s_num; i++) {
+        if (rpts00an[i] == 0) continue;
+        int im1 = clip(i - (int) round(angle_dist / sample_dist), 0, rpts00s_num - 1);
+        int ip1 = clip(i + (int) round(angle_dist / sample_dist), 0, rpts00s_num - 1);
+        float conf = fabs(rpts00a[i]) - (fabs(rpts00a[im1]) + fabs(rpts00a[ip1])) / 2;
+        if (Lpt00_found == false && 45. / 180. * PI < conf && conf < 140. / 180. * PI && i < 0.8 / sample_dist) //限制距离，防止更远处误判
+        {
+            Lpt00_rpts00s_id = i;
+            Lpt00_found = true;
+            break;
+        }
+    }
+    if(Lpt00_found && circle_type == CIRCLE_NONE && cross_type == CROSS_NONE) //单边十字
+    {
+        cross_type = CROSS_BEGIN;
+        cross_num ++;
+    }
+
+}
+
+void check_half_right()
+{
+    if (Lpt11_found || (ipts1[ipts1_num-1][1] > (IMAGE_WIDTH / 2) && touch_boundary1 == 1)) //右边近的L点存在或右边点数第一点的y坐标大于图像宽度的一半且到边界
+    {
+        Find_Borderline_Second_Right(); //二次寻找右边线
+    }
+    //远角点识别(确认十字or圆环)
+    Lpt11_found = false; //初始化为0，防止上次标志位误判
+    for (int i = 1; i < rpts11s_num; i++) {
+        if (rpts11an[i] == 0) continue;
+        int im1 = clip(i - (int) round(angle_dist / sample_dist), 0, rpts11s_num - 1);
+        int ip1 = clip(i + (int) round(angle_dist / sample_dist), 0, rpts11s_num - 1);
+        float conf = fabs(rpts11a[i]) - (fabs(rpts11a[im1]) + fabs(rpts11a[ip1])) / 2;
+        if (Lpt11_found == false && 45. / 180. * PI < conf && conf < 140. / 180. * PI && i < 0.8 / sample_dist) //限制距离，防止更远处误判
+        {
+            Lpt11_rpts11s_id = i;
+            Lpt11_found = true;
+            break;
+        }
+    }
+    if (Lpt11_found && circle_type == CIRCLE_NONE && cross_type == CROSS_NONE) //单边十字
+    {
+        cross_type = CROSS_BEGIN;
+        cross_num++;
+    }
 }
