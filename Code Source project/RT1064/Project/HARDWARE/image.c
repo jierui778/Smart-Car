@@ -2,6 +2,9 @@
 #include "math.h"
 #include "control.h"
 #include "stdlib.h"
+
+enum cross_type_e cross_type = CROSS_NONE;
+
 uint8 Image_Use_Robert[120][160]; // 二值化图像
 
 // flash参数统一定义
@@ -1527,20 +1530,22 @@ float error[1];
 
 float ave_error;//速度控制输入变量
 
+
+
+
 void test(void)
 {
-    //    int th;
     uint8 i;
     Image_Compress();
     int TH;
-    TH = OSTU_GetThreshold(Image_Use[0], IMAGE_WIDTH, IMAGE_HEIGHT);
-    //    Image_Binarization(TH, Image_Use);
+    TH= OSTU_GetThreshold(Image_Use[0], IMAGE_WIDTH, IMAGE_HEIGHT);
     Image_Sobel(Image_Use, Image_Use_Robert, TH); // 全局Sobel得二值图(方案二) 2.8ms
 
-    img_raw.data = *Image_Use_Robert;
-
+    img_raw.data = *Image_Use_Robert;//传入sobel边沿检测图像
+    //寻找左右边线
     Find_Borderline();
-
+    
+    //逆透视左右边线
     Pespective(ipts0, ipts0_num, rpts0);
     rpts0_num = ipts0_num;
 
@@ -1604,8 +1609,8 @@ void test(void)
    for (int i = 0; i < rpts0_num; i++) // 显示左边线
    {
        uint16 x, y;
-       x = func_limit_ab(rpts0[i][0],  0, 200);
-       y = func_limit_ab(rpts0[i][1], 0, 199);
+       x = func_limit_ab(rpts0s[i][0],  0, 200);
+       y = func_limit_ab(rpts0s[i][1], 0, 199);
 
        ips200_draw_point(x+20, 200 - y, RGB565_GREEN); // 左线为绿色 不知道为什么改成-x/2+50就能正常先显示
 
@@ -1632,7 +1637,11 @@ void test(void)
 //   }
 
 
-   for (int i = 0; i < rpts0_num; i++) // 显示左边线
+//   for (int i = 0; i < rpts0_num; i++) // 显示左边线
+
+
+
+   for (int i = 0; i < rpts0_num; i++) // 显示左下边线
    {
        uint16 x, y;
        x = func_limit_ab(rpts1s[i][0], 0, 200);
@@ -1688,35 +1697,21 @@ void test(void)
 		   ips200_draw_point(x+20, 200 - y, RGB565_BLUE); // 左线为绿色 不知道为什么改成-x/2+50就能正常先显示
 	    }
     }
-	ips200_show_uint(160,280,rpts00_num,3);
-//    ips200_show_uint(160,300,rpts11an_num,3);
+    if(cross_type==CROSS_FAR)//十字远线循迹
+    {
+        track_leftline(rpts00s,rpts00s_num,rptsc0,10.0,pixel_per_meter*ROAD_WIDTH/2);
+        track_rightline(rpts11s,rpts11s_num,rptsc1,10.0,pixel_per_meter*ROAD_WIDTH/2);
+    }
     find_corners();//找拐点
-
-    //十字根据远线控制 地址平移+数组删减
-    // if (track_type == TRACK_LEFT) {
-    //     track_leftline(far_rpts0s + far_Lpt0_rpts0s_id, far_rpts0s_num - far_Lpt0_rpts0s_id, rpts,
-    //                    (int) round(angle_dist / sample_dist), pixel_per_meter * ROAD_WIDTH / 2);
-    //     rpts_num = far_rpts0s_num - far_Lpt0_rpts0s_id;
-    // } else {
-    //     track_rightline(far_rpts1s + far_Lpt1_rpts1s_id, far_rpts1s_num - far_Lpt1_rpts1s_id, rpts,
-    //                     (int) round(angle_dist / sample_dist), pixel_per_meter * ROAD_WIDTH / 2);
-    //     rpts_num = far_rpts1s_num - far_Lpt1_rpts1s_id;
-    // }
-       //十字补线方案
-    //    if (track_type == TRACK_LEFT) //如果巡的是左线的话，那么就把中线赋值为左线的逆透视数组
-    //    {
-    //        rpts = rptsc0;
-    //        rpts_num = rptsc0_num;
-    //    } else {
-    //        rpts  = rptsc1;
-    //        rpts_num = rptsc1_num;
-    //    }
-
+    check_cross();
+    run_cross();
     //先平移左右线，使左右线拟合（现在默认是直道的状态）,这里的左右线就默认为中线了
     track_leftline(rpts0s, rpts0s_num, rptsc0,
                        10.0, pixel_per_meter * ROAD_WIDTH / 2);
     track_rightline(rpts1s, rpts1s_num, rptsc1,
                         10.0, pixel_per_meter * ROAD_WIDTH / 2);
+    ips200_show_uint(3,0,Lpt0_found,2);
+    ips200_show_uint(3,20,Lpt1_found,2);
 
     if(rpts0s_num>rpts1s_num)
     {
@@ -1823,6 +1818,7 @@ void test(void)
         error[0] = atan2f(dx[0], dy[0]) * 180 / PI;//1弧度=180/π度 1度=π/180弧度
         //即这两个向量的夹角，返回值的单位是弧度制。然后，将这个弧度值乘以 180 / PI，即将其转换为角度制，最后将结果赋值给 error[0]，表示这两个向量的夹角
         ips200_show_float(160,240,error[0],4,4);
+        TrackLine_Control(error[0]);
         ave_error = 0;
         // ips200_show_float(160,240,ave_error,4,4);
         // 远近锚点综合考虑
@@ -1836,6 +1832,7 @@ void test(void)
           // 中线点过少(出现问题)，则不控制舵机
           rptsn_num = 0;
       }
+      
 
     //  end = system_getval_us();
 }
@@ -2013,21 +2010,14 @@ void Find_Borderline(void)
 	/*添加*/
 //	begin_y=Image_Get_LeftPoint(117);
     uint8 uthres = 1;
-    //    uint8 uthres = ostu();
     // 寻左边线
     x1 = img_raw.width / 2 - begin_x, y1 = begin_y;
-//     int TH;
-//    TH = OSTU_GetThreshold(Image_Use[0], IMAGE_WIDTH, IMAGE_HEIGHT);
-//    Image_Binarization(TH, Image_Use);
-//    Image_Sobel(Image_Use, Image_Use_Robert, TH); // 全局Sobel得二值图(方案二) 2.8ms
-//    img_raw.data = *Image_Use;
-
     // 标记种子起始点(后续元素处理要用到)
     x0_first = x1;
     y0_first = y1;
-
     ipts0_num = sizeof(ipts0) / sizeof(ipts0[0]); // 求数组的长度
     // 扫底下五行，寻找跳变点
+    
     for (; y0_first > begin_y - 100; y0_first--)//从所选的行，向上扫50次，每次从中间向左线扫
     {
         for (; x0_first > 0; x0_first--)//在选的每行中，从中间向左线扫
@@ -2041,7 +2031,6 @@ void Find_Borderline(void)
 	{
 		if (AT_IMAGE(&img_raw, x0_first, y0_first) >= uthres)//如果这个点是白色（且左边是黑色的话）
 		{
-//			while(1);
 			Left_Adaptive_Threshold(&img_raw, block_size, clip_value, x0_first, y0_first, ipts0, &ipts0_num);//开始跑迷宫
 		}
 		else
@@ -2174,7 +2163,7 @@ const int dir_frontright[4][2] = {{1, -1},
                                   {-1, -1}};
 
 #define AT AT_IMAGE
-#define MAX_WIDTH 88 定义图像中
+#define MAX_WIDTH 88 //定义图像中
 void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x, int y, int pts[][2], int *num)
 {
     zf_assert(img && img->data); // 不满足则退出执行
@@ -2207,11 +2196,10 @@ void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x
         /*  当扫点的列坐标到左黑框边界且行坐标小于20    列坐标到右边的黑框边界  行坐标为1   行坐标为88的同时步数已经大于19*/
         if ((x == 1 && y < img->height - 70) || x == img->width - 2 || y == 1 || (y == 20 && step > 19))//30修改后能扫线
         {
-            if (x == 1 /*|| x== img->width - 2*/)
+            if (x == 2 /*|| x== img->width - 2*/)
                 touch_boundary0 = 1; // 左边界是因为到最左边才停下来的，触碰到最左边，可能是环岛，十字等，
-            if (y == 1)
+            if (y == 2)
                 touch_boundary_up0 = 1; // 走到顶边，判断坡道or障碍
-
             break;
         }
         //=======添加部分=======
@@ -2222,12 +2210,17 @@ void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x
         }
         else if (frontleft_value < local_thres) // 前方像素为白色，且左前方像素为黑色
         {
+
             x += dir_front[dir][0];
             y += dir_front[dir][1];
+            if(x>2)//判断起始点
+            {
             pts[step][0] = x; // 用来存放边线坐标信息
             pts[step][1] = y;
             step++;
             turn = 0;
+            }
+            
             // AT(img,x,y) = RGB565_GREEN;
         }
         else // 前方为白色，左前方为白色（墙角）
@@ -2315,10 +2308,13 @@ void Right_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int 
         {
             x += dir_front[dir][0];
             y += dir_front[dir][1];
+            if(x<158)
+            {
             pts[step][0] = x;
             pts[step][1] = y;
             step++;
             turn = 0;
+            }
             // AT(img,x,y) = RGB565_YELLOW;
         }
         else
@@ -3512,4 +3508,109 @@ void track_rightline(float pts_in[][2], int num, float pts_out[][2], int approx_
            pts_out[i][0] = pts_in[i][0] - dy * dist;
            pts_out[i][1] = pts_in[i][1] + dx * dist;
        }
+}
+
+void check_cross(void)
+{
+    bool Xfound=Lpt0_found&&Lpt1_found;
+    if (cross_type == CROSS_NONE && Xfound )
+            /*&& Z.all_length  > 1*ENCODER_PER_METER*/
+    {
+        cross_type = CROSS_BEGIN;
+    }
+}
+
+void run_cross(void)
+{
+    bool Xfound = Lpt0_found && Lpt1_found;
+    //检测到十字，先按照近线走
+    if (cross_type == CROSS_BEGIN)
+    {
+        //对近处线截断处理
+        if (Lpt0_found)
+        {
+            rptsc0_num = rpts0s_num = Lpt0_rpts0s_id;
+        }
+        if (Lpt1_found)
+        {
+            rptsc1_num = rpts1s_num = Lpt1_rpts1s_id;
+        }
+
+        aim_distance = 0.4;//大概在rpts_id=20
+        //近角点过少，进入远线控制 Lpt0_found || Lpt1_found
+        if ((Xfound && (Lpt0_rpts0s_id < 30 || Lpt1_rpts1s_id < 30))/* || (rpts1_num <30 && rpts0_num<30)*/)
+        {
+
+            cross_type = CROSS_IN_DOUBLE; //还是寻近线
+        }
+        ips200_show_uint(43,0,Xfound,2);
+        if(Xfound==0&&cross_type==CROSS_IN_DOUBLE)
+        {
+            cross_type=CROSS_FAR;//开始寻远线模式
+        }
+    }
+        //远线控制进十字,begin_y渐变靠近防丢线
+    if (cross_type == CROSS_FAR)
+    {
+        while(1);
+        //寻远线,算法与近线相同
+        cross_farline();
+        //当找到近处线，跳出十字状态
+        // if(current_encoder - cross_encoder > 2.0*ENCODER_PER_METER)
+        // {
+        //     cross_type = CROSS_NONE;//跑过1m强制退出
+        // }
+        aim_distance = 0.4;
+    }
+}
+
+/*寻远线*/
+void cross_farline(void)
+{
+    if(touch_boundary0==1&&touch_boundary1==1&&ipts00_num>10&&ipts11_num>10)//情况1：左右下线到边界且上面右线
+    {
+        Pespective(ipts00, ipts00_num, rpts00);
+        rpts00_num = ipts00_num;
+
+        Pespective(ipts11, ipts11_num, rpts11);
+        rpts11_num = ipts11_num;
+
+        // 三角滤波
+        blur_points(rpts00, rpts00_num, rpts00b, (int)round(line_blur_kernel));
+        rpts00b_num = rpts00_num;
+        blur_points(rpts11, rpts11_num, rpts11b, (int)round(line_blur_kernel));
+        rpts11b_num = rpts11_num;
+
+        // 边线等距采样，num为逆透视后实际距离点，两点间距离为0.02*102=2cm
+        rpts00s_num = sizeof(rpts00s) / sizeof(rpts00s[0]); // 求数组的长度 即等距采样后边线点个数
+        resample_points(rpts00b, rpts00b_num, rpts00s, &rpts00s_num, sample_dist * pixel_per_meter);
+        rpts11s_num = sizeof(rpts11s) / sizeof(rpts11s[0]);
+        resample_points(rpts11b, rpts11b_num, rpts11s, &rpts11s_num, sample_dist * pixel_per_meter);
+        // 边线局部角度变化率 round():四舍五入
+        // local_angle_points(rpts00s, rpts00s_num, rpts00a, (int)round(angle_dist / sample_dist));
+        // rpts00a_num = rpts00s_num;
+        // local_angle_points(rpts11s, rpts11s_num, rpts11a, (int)round(angle_dist / sample_dist));
+        // rpts11a_num = rpts11s_num;
+        // // 角度变化率非极大抑制
+        // nms_angle(rpts00a, rpts00a_num, rpts00an, (int)round(angle_dist / sample_dist) * 2 + 1);
+        // rpts00an_num = rpts00a_num;
+        // nms_angle(rpts11a, rpts11a_num, rpts11an, (int)round(angle_dist / sample_dist) * 2 + 1);
+        // rpts11an_num = rpts11a_num;
+		for (int i = 0; i < rpts00_num; i++) // 显示左边线
+	    {
+		   uint16 x, y;
+		   x = func_limit_ab(rpts00[i][0],  0, 200);
+		   y = func_limit_ab(rpts00[i][1], 0, 199);
+		   ips200_draw_point(x+20, 200 - y, RGB565_RED); // 左线为绿色 不知道为什么改成-x/2+50就能正常先显示
+	    }
+
+		for (int i = 0; i < rpts11_num; i++) // 显示左边线
+	    {
+		   uint16 x, y;
+		   x = func_limit_ab(rpts11[i][0],  0, 200);
+		   y = func_limit_ab(rpts11[i][1], 0, 199);
+		   ips200_draw_point(x+20, 200 - y, RGB565_BLUE); // 左线为绿色 不知道为什么改成-x/2+50就能正常先显示
+	    }
+    }
+
 }

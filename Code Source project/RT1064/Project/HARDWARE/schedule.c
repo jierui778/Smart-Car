@@ -1,5 +1,6 @@
 #include "schedule.h"
 #include "encoder.h"
+#include "image.h"
 
 // #define CR_BEGIN
 //{
@@ -18,8 +19,8 @@
 // 任务执行函数
 static void Schedule1(void) // task1:更新编码器数据//周期为10ms
 {
-    gpio_toggle_level(B9);
-    Encoder_Update(&Encoder_L_Data, &Encoder_R_Data);
+
+    test();
 }
 
 static void Schedule2(void) // task2:
@@ -33,7 +34,7 @@ static void Schedule3(void) // task3
 // 任务列表
 static Task_t Task_List[] =
     {
-        {Schedule1, 10, 0, 0}, // 任务1，周期为10ms
+        {Schedule1, 1, 0, 0}, // 任务1，周期为10ms
         {Schedule2, 0, 0, 0},
         {Schedule3, 0, 0, 0},
         // 创建

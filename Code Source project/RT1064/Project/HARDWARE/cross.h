@@ -14,7 +14,7 @@ enum cross_type_e {
 };
 extern enum cross_type_e cross_type;
 
-#define L_CROSS 40
+
 
 extern int cross_num;
 extern int L_x0, L_x1 , L_y0 , L_y1;                       //十字得近处两个L点的坐标
