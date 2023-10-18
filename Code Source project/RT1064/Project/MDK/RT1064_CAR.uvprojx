@@ -16,7 +16,7 @@
         <TargetCommonOption>
           <Device>MIMXRT1064DVL6A</Device>
           <Vendor>NXP</Vendor>
-          <PackID>NXP.MIMXRT1064_DFP.17.0.0</PackID>
+          <PackID>NXP.MIMXRT1064_DFP.16.0.0</PackID>
           <PackURL>https://mcuxpresso.nxp.com/cmsis_pack/repo/</PackURL>
           <Cpu>IRAM(0x20000000,0x020000) IRAM2(0x00000000,0x020000) IROM(0x70000000,0x400000) IROM2(0x00200000,0x020000) XRAM(0x20280000,0x040000) XRAM2(0x20200000,0x080000) CPUTYPE("Cortex-M7") FPU3(DFPU) CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -350,7 +350,7 @@
             <thumb>0</thumb>
             <SplitLS>0</SplitLS>
             <SwStkChk>0</SwStkChk>
-            <NoWarn>0</NoWarn>
+            <NoWarn>1</NoWarn>
             <uSurpInc>0</uSurpInc>
             <useXO>0</useXO>
             <ClangAsOpt>1</ClangAsOpt>
@@ -530,6 +530,26 @@
               <FilePath>..\HARDWARE\filter.h</FilePath>
             </File>
             <File>
+              <FileName>key.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\key.c</FilePath>
+            </File>
+            <File>
+              <FileName>key.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\HARDWARE\key.h</FilePath>
+            </File>
+            <File>
+              <FileName>circle.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\circle.c</FilePath>
+            </File>
+            <File>
+              <FileName>circle.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\HARDWARE\circle.h</FilePath>
+            </File>
+            <File>
               <FileName>cross.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\HARDWARE\cross.c</FilePath>
@@ -538,6 +558,16 @@
               <FileName>cross.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\HARDWARE\cross.h</FilePath>
+            </File>
+            <File>
+              <FileName>garage.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\garage.c</FilePath>
+            </File>
+            <File>
+              <FileName>garage.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\HARDWARE\garage.h</FilePath>
             </File>
           </Files>
         </Group>

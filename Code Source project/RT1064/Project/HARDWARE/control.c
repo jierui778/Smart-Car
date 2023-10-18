@@ -87,15 +87,15 @@ void Speed_Control(float left_speed, float right_speed)
  */
 void TrackLine_Control(float current_err)
 {
-    if (CONTROL_MODE == 0) // 转向控制
-    {
-        float Deviation = 0 - current_err;                      // 理想情况应该为误差角度为0
-        Servo_SetAngle(PositionPID(Deviation, TraceTurnParam)); // 根据误差角度进行转向
-    }
-    else
-    {
 
-    }
+        float Deviation = -current_err;                      // 理想情况应该为误差角度为0
+        float x;
+        x= PositionPID(Deviation, TraceTurnParam);
+    
+        Servo_SetAngle(x); // 根据误差角度进行转
+//    MINMAX(IncrementPID(Deviation_L, SpeedParam), -PWM_MAX, PWM_MAX)
+        ips200_show_int(100,100,x,4);
+        ips200_show_int(100,120,Deviation,4);
 }
 
 void SpeedUp_Control()

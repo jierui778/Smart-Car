@@ -20,7 +20,7 @@ void PID_Init(void)
     SpeedParam.ki = 5;
     SpeedParam.kd = 0;
 
-    TraceTurnParam.kd = 0;
+    TraceTurnParam.kd = 0.3;
     TraceTurnParam.ki = 0;
     TraceTurnParam.kp = 0;
 }
@@ -39,7 +39,7 @@ int PositionPID(float deviation, PID pid)
     static float Bias, Integral_bias, Last_Bias;
     Bias = deviation;//输入偏差
     Integral_bias += Bias;//累加误差
-    Result = Position_KP * Bias + Position_KI * Integral_bias + Position_KD * (Bias - Last_Bias);//位置式PID控制器
+    Result = (int16)(Position_KP * Bias + Position_KI * Integral_bias + Position_KD * (Bias - Last_Bias));//位置式PID控制器
     Last_Bias = Bias; // 上一次偏差保存
     return Result;
 }
