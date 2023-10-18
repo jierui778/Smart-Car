@@ -1492,6 +1492,7 @@ void Cross_Drawline(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int 
 	uint16 left_up_highest_index;
     float k_left, k_right;
     float b_left, b_right;
+	float k_left_low,k_right_low;
     /*一 坐标转换*/
     Coordinate_transformation_left(in_put_l, in_put_num_l, Left_Change); // 左右下线坐标变换
     Coordinate_transformation_right(in_put_r, in_put_r_num, Right_Change);
@@ -1512,9 +1513,14 @@ void Cross_Drawline(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int 
 		if ((right_up[i][1]>right_up[i+1][1])&&(right_up[i][0]<right_up[i+1][0])) // 拐点的坐标之和最大
         {
             right_up_highest_index = i;
-			break;
+			if(right_up_highest_index>=5)
+			{
+				break;
+			}
+			
             // 遍历完，不用break
         }
+		
 		ips200_draw_point(right_up[i][0],right_up[i][1]+160,RGB565_RED);
 	}
 	
@@ -1543,20 +1549,24 @@ void Cross_Drawline(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int 
     ips200_draw_line(0, 0, in_put_l[left_index][0], in_put_l[left_index][1], RGB565_RED);
     ips200_draw_line(0, 0, in_put_r[right_index][0], in_put_r[right_index][1], RGB565_BLUE);
     /*三 求直线方程*/
-    k_left = LineRession(in_put_l, left_index - 5);
+    k_left = (float)(in_put_l[left_index][1]-ipts00[left_up_highest_index][1])/(in_put_l[left_index][0]-ipts00[left_up_highest_index][0]);
 
     b_left = in_put_l[left_index][1] - k_left * in_put_l[left_index][0];
 
     // 求得的直线方程是row=column*k+b，实际上应该是column=row*k+b
-    k_right = LineRession(in_put_r, right_index - 5);
+    k_right = (float)(in_put_r[right_index][1]-ipts11[right_up_highest_index][1])/(in_put_r[right_index][0]-ipts11[right_up_highest_index][0]);
 
     b_right = in_put_r[right_index][1] - k_right * in_put_r[right_index][0];
-
+	
     k_left = (1 / k_left);     // 新斜率取倒数
     b_left = -b_left * k_left; // 新截距取相反数
 
     k_right = (1 / k_right);      // 新斜率取倒数
     b_right = -b_right * k_right; // 新截距取相反数
+	
+	/*增加：斜率滤波*/
+
+	
     // 新直线方程为 column=k*row+b
     /*四 补线*/
     for (i = in_put_l[left_index][1]; i > 10; i--)
