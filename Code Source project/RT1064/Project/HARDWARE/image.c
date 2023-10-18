@@ -1003,7 +1003,7 @@ void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x
         int frontleft_value = AT(img, x + dir_frontleft[dir][0], y + dir_frontleft[dir][1]); // 左前方像素点灰度值 （dir=0左下；dir=1 右下；dir=2 右上；dir=3 左上 ）
         //=======添加部分=======（限制条件）
         /*  当扫点的列坐标到左黑框边界且行坐标小于20    列坐标到右边的黑框边界  行坐标为1   行坐标为88的同时步数已经大于19*/
-        if ((x == 2 && y < img->height - 70) || x == img->width - 2 || y == 1 || (y == 20 && step > 19)) // 30修改后能扫线
+        if ((x == 2 && y < img->height - 70) || x == img->width - 2 || y == 1 || (y == 10 && step > 19)) // 30修改后能扫线
         {
             if (x == 2 /*|| x== img->width - 2*/)
                 touch_boundary0 = 1; // 左边界是因为到最左边才停下来的，触碰到最左边，可能是环岛，十字等，
@@ -1049,17 +1049,9 @@ void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x
         loseline0 = 1;
     // 记录边线数目
     *num = step;
-    //    uint8 i;
-    //   	for(i=0;i<ipts0_num;i++)
-    //   	{
-    //   		ips200_draw_line(0,0,ipts0[i][0],ipts0[i][1],RGB565_RED);
-    //   	}
-    // ips200_show_int(3,140,ipts0_num,3);
-    // ips200_show_int(3,160,loseline0,3);
-    // ips200_show_int(3,180,*num,3);
-    //	tft180_draw_line(0,0,ipts0[20-1][1],ipts0[20-1][0],RGB565_RED);
-    //	tft180_show_int(3,100,ipts0[20-1][1],4);
 }
+
+
 /*************************************************************************
  *  函数名称：void Right_Adaptive_Threshold();
  *  功能说明：自定义阈值二值化+迷宫算法（右边线）
@@ -1099,7 +1091,7 @@ void Right_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int 
         int front_value = AT(img, x + dir_front[dir][0], y + dir_front[dir][1]);
         int frontright_value = AT(img, x + dir_frontright[dir][0], y + dir_frontright[dir][1]);
         //=======添加部分=======
-        if ((x == img->width - 2 && y < img->height - 70) || x == 1 || y == 1 || (y == 20 && step > 19)) // 丢线标志，否则由于sobel特殊性会一直往上巡线，直到边线个数达到最大为止
+        if ((x == img->width - 2 && y < img->height - 70) || x == 1 || y == 1 || (y == 10 && step > 19)) // 丢线标志，否则由于sobel特殊性会一直往上巡线，直到边线个数达到最大为止
         {
             if (x == img->width - 2 /*|| x==1*/)
             {
@@ -1155,6 +1147,7 @@ void Right_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int 
     // ips200_show_int(43,160,loseline1,3);
     // ips200_show_int(43,180,*num,3);
 }
+
 
 
 // 补线 原图

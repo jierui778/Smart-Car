@@ -33,6 +33,7 @@ uint8 Image_Get_LeftPoint(uint8 start_row);                                     
 void Image_blur_points_Left(int num, int kernel);                                                                            // 三角滤波左边线
 void Image_blur_points_Right(int num, int kernel);                                                                           // 三角滤波右边线
 
+
 /*辅助计算*/
 float Image_ab_value(float a, float b);                                        // 求浮点型的绝对值
 float Image_Getk(int16 derta_column, int16 derta_row);                         // 简单计算直线斜率
