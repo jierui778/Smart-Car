@@ -3803,7 +3803,7 @@ void run_cross(void)
     {
         rptsc0_num=rpts0s_num;//不做截断处理，因为不太行
     }
-    else if(cross_type==CROSS_FAR)//开始走远线
+    else if(cross_type2==CROSS_FAR)//开始走远线
     {
         cross_farline();
     }
