@@ -742,7 +742,8 @@ void test(void)
     img_raw.data = *Image_Use_Robert; // 传入sobel边沿检测图像
     // 寻找左右边线
     Find_Borderline();
-	Find_Borderline_Second();
+	Image_CheckState(ipts0,ipts0_num,ipts1,ipts1_num);
+//	Find_Borderline_Second();
     int test = 0;
     // test = Is_Straight(ipts0, ipts0_num, sample_dist);
 
@@ -771,7 +772,7 @@ void test(void)
 		func_limit_ab(ipts11[i][1],0,120);
 		ips200_draw_line(160,0,ipts11[i][0],ipts11[i][1],RGB565_RED);
 	}
-    Cross_Drawline(ipts0,ipts0_num,ipts1,ipts1_num);
+//    Cross_Drawline(ipts0,ipts0_num,ipts1,ipts1_num);
 	
     // RoundaboutGetArc(Image_Use_Robert[120][160], 1, ipts0_num, test);
 
@@ -1373,7 +1374,7 @@ void Image_CheckState(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], in
         Straight_State = 0;
     }
     /*十字路口中：左边线不丢线 右边线不丢线 左边线丢线和右边线丢线的列坐标相差较小，行坐标相差较少*/
-    else if (loseline0 == 0 && loseline1 == 0 && Cross_State_d == 1 && in_put_l[in_put_num_l - 1][0] != 0)
+    if (touch_boundary0 == 1 && touch_boundary1 == 1 && Cross_State_b == 1&&(ipts0[ipts0_num-1][1]>50||ipts1[ipts1_num-1][1]>50))
     {
         Cross_State_c = 1;
         Cross_State_b = 0;
@@ -1382,7 +1383,11 @@ void Image_CheckState(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], in
         Right_Turn = 0;
         Straight_State = 0;
     }
-    else if (loseline0 == 1 && loseline1 == 1 && Cross_State_b == 1)
+//	else if(Cross_State_b==1&&(ipts0_num<60||ipts1_num<60))
+//	{
+//		
+//	}
+    if (loseline0 == 1 && loseline1 == 1 && Cross_State_c == 1)
     {
         Cross_State_d = 1;
         Cross_State_b = 0;
@@ -1403,7 +1408,7 @@ void Image_CheckState(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], in
         Cross_State_d = 0;
     }
     /*左弯道：左丢线，右边不丢线，右边线最大点距离左边小于50个的单位*/
-    else if (loseline0 == 1 && loseline1 == 0 && in_put_r[in_put_num_r - 1][0] < 60)
+    else if (touch_boundary0 == 1 && touch_boundary1 == 0 && in_put_r[in_put_num_r - 1][0] < 60)
     {
         Left_Turn = 1;
         Right_Turn = 0;
@@ -1412,8 +1417,17 @@ void Image_CheckState(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], in
         Cross_State_d = 0;
         Straight_State = 0;
     }
+//	else if(in_put_r[in_put_num_r-1][0]-in_put_l[in_put_num_l-1][0]<20&&loseline0==1&&in_put_r[in_put_num_r-1][0]<30)
+//	{
+//		Left_Turn = 1;
+//        Right_Turn = 0;
+//        Cross_State_b = 0;
+//        Cross_State_c = 0;
+//        Cross_State_d = 0;
+//        Straight_State = 0;
+//	}
     /*右弯道：右丢线，左边不丢线，左边线最大点距离右边小于50个的单位*/
-    else if (loseline0 == 0 && loseline1 == 1 && in_put_l[in_put_num_l - 1][0] > 120)
+    else if (touch_boundary0 == 0 && touch_boundary1 == 1 && in_put_l[in_put_num_l - 1][0] > 120)
     {
         Right_Turn = 1;
         Left_Turn = 0;
@@ -1422,6 +1436,26 @@ void Image_CheckState(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], in
         Cross_State_d = 0;
         Straight_State = 0;
     }
+	ips200_draw_line(in_put_l[in_put_num_l-1][0],in_put_l[in_put_num_l-1][1],in_put_r[in_put_num_r-1][0],in_put_r[in_put_num_r-1][1],RGB565_RED);
+	ips200_show_uint(3,200,Cross_State_b,2);
+	ips200_show_uint(3,220,Cross_State_c,2);
+	ips200_show_uint(3,240,Cross_State_d,2);
+	ips200_show_uint(3,260,Straight_State,2);
+	ips200_show_uint(3,280,Left_Turn,2);
+	ips200_show_uint(3,300,Right_Turn,2);
+	
+	ips200_show_uint(43,200,in_put_num_l,3);
+	ips200_show_uint(43,220,in_put_num_r,3);
+	ips200_show_uint(43,240,ipts0_num,3);
+	ips200_show_uint(43,260,ipts1_num,3);
+	ips200_show_uint(43,280,ipts0[ipts0_num-1][1],2);
+	ips200_show_uint(43,300,ipts1[ipts1_num-1][1],2);
+	
+	ips200_show_uint(83,200,touch_boundary0,3);
+	ips200_show_uint(83,220,touch_boundary1,3);
+	ips200_show_uint(83,240,loseline0,3);
+	ips200_show_uint(83,260,loseline1,3);
+	
 }
 
 /*左下线坐标变换，用于求拐点，左下角为0,0*/
@@ -1698,7 +1732,7 @@ float Get_Mid_Cross(void)
     /*一 判断为十字状态*/
     if (Cross_State_b == 1 || Cross_State_c == 1 || Cross_State_d == 1)
     {
-        Cross_Drawline_plus(ipts0, ipts0_num, ipts00, ipts00_num, ipts1, ipts1_num, ipts11, ipts11_num);
+        Cross_Drawline(ipts0, ipts0_num,ipts1, ipts1_num);
     }
     /*二 补线以后找中线*/
     for (start_y = IMAGE_HEIGHT - 1; start_y > 30; start_y--)
