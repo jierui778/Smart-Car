@@ -70,6 +70,7 @@
 #include "zf_driver_spi.h"
 
 #include "zf_device_ips200.h"
+#include "zf_common_function.h"
 
 static uint16                   ips200_pencolor         = IPS200_DEFAULT_PENCOLOR;
 static uint16                   ips200_bgcolor          = IPS200_DEFAULT_BGCOLOR;
@@ -411,6 +412,8 @@ void ips200_draw_point (uint16 x, uint16 y, const uint16 color)
 {
     // 如果程序在输出了断言信息 并且提示出错位置在这里
     // 那么一般是屏幕显示的时候超过屏幕分辨率范围了
+	func_limit_ab(x,0,200);
+	func_limit_ab(y,0,300);
     zf_assert(x < ips200_x_max);
     zf_assert(y < ips200_y_max);
 
@@ -441,6 +444,8 @@ void ips200_draw_line (uint16 x_start, uint16 y_start, uint16 x_end, uint16 y_en
 {
     // 如果程序在输出了断言信息 并且提示出错位置在这里
     // 那么一般是屏幕显示的时候超过屏幕分辨率范围了
+	func_limit_ab(x_end,0,180);
+	func_limit_ab(y_end,0,200);
     zf_assert(x_start < ips200_x_max);
     zf_assert(y_start < ips200_y_max);
     zf_assert(x_end < ips200_x_max);

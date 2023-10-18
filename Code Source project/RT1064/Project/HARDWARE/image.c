@@ -41,6 +41,7 @@ float far_rate = 0.5;                               //
 float aim_distance_flash = 0.68;                    // 预锚点长度
 float aim_dist[5] = {0.68, 0.78, 0.88, 0.98, 1.08}; // 多个预瞄点长度，间隔5cm，34~54个点，用于速度模糊控制，而不是偏差角计算！
 
+
 float xielv_left_y_to_end, xielv_right_y_to_end; // 在逆透视后得坐标系建得斜率
 
 // bool Lpt00_found, Lpt11_found;     // 其中 far_N_Lpt0_found 表示是否找到了反向逆透视后的左边L角点，far_N_Lpt1_found 表示是否找到了反向逆透视后的右边L角点。
@@ -736,19 +737,37 @@ void test(void)
     img_raw.data = *Image_Use_Robert; // 传入sobel边沿检测图像
     // 寻找左右边线
     Find_Borderline();
+	Find_Borderline_Second();
     int test = 0;
     // test = Is_Straight(ipts0, ipts0_num, sample_dist);
 
     for (i = 0; i < ipts0_num; i++)
     {
-        ips200_draw_line(0, 0, ipts0[i][0], ipts0[i][1], RGB565_RED);
+		func_limit_ab(ipts0[i][0],0,160);
+		func_limit_ab(ipts0[i][1],0,120);
+        ips200_draw_point(ipts0[i][0], ipts0[i][1], RGB565_RED);
     }
     for (i = 0; i < ipts1_num; i++)
     {
-        ips200_draw_line(0, 0, ipts1[i][0], ipts1[i][1], RGB565_GREEN);
+		func_limit_ab(ipts1[i][0],0,160);
+		func_limit_ab(ipts1[i][1],0,120);
+        ips200_draw_point(ipts1[i][0], ipts1[i][1], RGB565_GREEN);
     }
-
-    RoundaboutGetArc(Image_Use_Robert[120][160], 1, ipts0_num, test);
+	for(i=0;i<ipts00_num;i++)
+	{
+		func_limit_ab(ipts00[i][0],0,160);
+		func_limit_ab(ipts00[i][1],0,120);
+		ips200_draw_line(0,0,ipts00[i][0],ipts00[i][1],RGB565_BLUE);
+	}
+	
+	for(i=0;i<ipts11_num;i++)
+	{
+		func_limit_ab(ipts11[i][0],0,160);
+		func_limit_ab(ipts11[i][1],0,120);
+		ips200_draw_line(160,0,ipts11[i][0],ipts11[i][1],RGB565_RED);
+	}
+    Cross_Drawline(ipts0,ipts0_num,ipts1,ipts1_num);
+    // RoundaboutGetArc(Image_Use_Robert[120][160], 1, ipts0_num, test);
 
     ips200_show_int(160, 160, touch_boundary0, 1);
     ips200_show_int(160, 180, touch_boundary_up0, 1);
@@ -757,7 +776,10 @@ void test(void)
 
     ips200_show_int(160, 250, loseline0, 1);
     ips200_show_int(160, 280, loseline1, 1);
-
+	
+	ips200_show_int(3, 120, ipts00_num, 2);
+	ips200_show_int(3, 140, ipts11_num, 2);
+	
     ips200_show_int(200, 300, test, 1);
 }
 
@@ -862,6 +884,92 @@ out2:
 //     }
 //     }
 // }
+
+void Find_Borderline_Second(void)
+{
+    uint8 uthres = 1;
+	if(touch_boundary0==1)
+	{
+		// 迷宫巡线是否走到左右边界
+		touch_boundary00 = 0; // 清零
+		touch_boundary11 = 0;
+
+		// 迷宫巡线是否走到上边界
+		touch_boundary_up00 = 0; // 清零
+		touch_boundary_up11 = 0;
+
+		// 底边扫线防止丢线 注意：由于sobel边缘检测特殊性（黑框），此丢线标志仅适用Ostu方案
+		loseline00 = 0;
+		loseline11 = 0;
+		
+		/*添加*/
+	//	begin_y=Image_Get_LeftPoint(117);ipts0_num
+
+		//    uint8 uthres = ostu();
+		// 寻左边线
+		x1 = img_raw.width / 2 - begin_x, y1 = begin_y;
+		int TH;
+
+		// 标记种子起始点(后续元素处理要用到)
+		// x0_first = x1;
+		// y0_first = ipts0[ipts0_num-1][1]-5;
+
+		// ipts00_num = sizeof(ipts00) / sizeof(ipts00[0]); // 求数组的长度
+		// // 扫底下五行，寻找跳变点
+		// for (; y0_first >20; y0_first--)//从所选的行，向上扫5次，每次从中间向左线扫
+		// {
+		//     for (; x0_first > 0; x0_first--)//在选的每行中，从中间向左线扫
+		//         if (AT_IMAGE(&img_raw, x0_first - 1, y0_first) < uthres)//如果扫到黑点（灰度值为0），就从该点开始扫线
+		//             goto out1;//开始扫左线
+		//     x0_first = img_raw.width / 2 - begin_x;//每次每一行扫完，都把x0_first归位
+		// }
+		x0_first = 10;
+		y0_first = ipts0[ipts1_num-0][1]-5;
+
+		ipts00_num = sizeof(ipts00) / sizeof(ipts00[0]); // 求数组的长度
+		// 扫底下五行，寻找跳变点
+		for (; y0_first >10; y0_first--)//从所选的行，向上扫5次，每次从中间向左线扫
+		{
+			if (AT_IMAGE(&img_raw, x0_first, y0_first) < uthres)//如果扫到黑点（灰度值为0），就从该点开始扫线
+			  {  
+				goto out1;//开始扫左线
+			  }
+		}
+		//如果扫不到的话，判定左边的底边丢线
+		loseline00 = 1; // 底边丢线
+		out1://从起始点开始执行扫线
+		{
+			// if (AT_IMAGE(&img_raw, x0_first+1, y0_first) >= uthres)//如果这个点是白色（且左边是黑色的话）
+				Left_Adaptive_Threshold(&img_raw, block_size, clip_value, x0_first, y0_first, ipts00, &ipts00_num);//开始跑迷宫
+			// else
+			// 	ipts00_num = 0;//如果不是的话，就不用跑了，求得的number记为0
+		}
+    }
+    if(touch_boundary1==1)
+    {
+    // 寻右边线
+    x2 = img_raw.width / 2 + begin_x, y2 = begin_y;
+
+    // 标记种子起始点(后续元素处理要用到)
+    x1_first = 149;
+    y1_first = ipts1[ipts1_num-1][1]-5;;
+
+    ipts11_num = sizeof(ipts11) / sizeof(ipts11[0]);
+    for (; y1_first > 10; y1_first--)
+    {
+        if (AT_IMAGE(&img_raw, x1_first , y1_first) < uthres)
+        {
+            goto out2;
+        }
+    }
+    loseline11 = 1; // 底边丢线
+	out2:
+	{
+		Right_Adaptive_Threshold(&img_raw, block_size, clip_value, x1_first, y1_first, ipts11, &ipts11_num);
+	}
+}
+
+}
 
 #define AT AT_IMAGE
 #define MAX_WIDTH 88 // 定义图像中
@@ -1047,6 +1155,8 @@ void Right_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int 
     // ips200_show_int(43,160,loseline1,3);
     // ips200_show_int(43,180,*num,3);
 }
+
+
 // 补线 原图
 
 /**
@@ -1334,7 +1444,6 @@ void Coordinate_transformation_right(int pt0_in[][2], int in_num, int pt0_out[][
     {
         pt0_out[i][0] = IMAGE_WIDTH - pt0_in[i][0] - 1;
         pt0_out[i][1] = IMAGE_HEIGHT - pt0_in[i][1] - 1;
-        ips200_draw_point(pt0_out[i][0], pt0_out[i][1] + 200, RGB565_BLUE);
     }
 }
 
@@ -1537,11 +1646,11 @@ void Cross_Drawline_plus(int in_put_l[][2], int in_put_num_l, int in_put_lnew[][
     }
 }
 
-int Finnal_left[140][2];
-int Finnal_right[140][2]; // 定义左右边线扫的数组
+int Finnal_left[100][2];
+int Finnal_right[100][2]; // 定义左右边线扫的数组
 int Finnal_left_num = 0;
 int Finnal_right_num = 0;
-int Finnal_Mid[90][2];
+int Finnal_Mid[100][2];
 int Finnal_Mid_num;
 /*
 十字补中线，返回值为误差（中线误差）
