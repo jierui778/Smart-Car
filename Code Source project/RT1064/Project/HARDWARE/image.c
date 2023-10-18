@@ -1688,22 +1688,30 @@ void test(void)
 		   ips200_draw_point(x+20, 200 - y, RGB565_BLUE); // 左线为绿色 不知道为什么改成-x/2+50就能正常先显示
 	    }
     }
+
+    track_leftline(rpts0s, rpts0s_num, rptsc0,
+                        10.0, pixel_per_meter * ROAD_WIDTH / 2);
+    
+    track_rightline(rpts1s, rpts1s_num, rptsc1,
+                            10.0, pixel_per_meter * ROAD_WIDTH / 2);
+    find_corners();//找拐点
+    if(cross_type==CROSS_NONE) check_cross();
+    if(cross_type==CROSS_BEGIN) run_cross();
+    
     if(cross_type==CROSS_FAR)//十字远线循迹
     {
         track_leftline(rpts00s,rpts00s_num,rptsc0,10.0,pixel_per_meter*ROAD_WIDTH/2);
         track_rightline(rpts11s,rpts11s_num,rptsc1,10.0,pixel_per_meter*ROAD_WIDTH/2);
     }
-    find_corners();//找拐点
-    check_cross();
-    run_cross();
-    //先平移左右线，使左右线拟合（现在默认是直道的状态）,这里的左右线就默认为中线了
-    track_leftline(rpts0s, rpts0s_num, rptsc0,
-                       10.0, pixel_per_meter * ROAD_WIDTH / 2);
-    track_rightline(rpts1s, rpts1s_num, rptsc1,
-                        10.0, pixel_per_meter * ROAD_WIDTH / 2);
+    else//非十字远线循迹
+    {
+        //先平移左右线，使左右线拟合（现在默认是直道的状态）,这里的左右线就默认为中线了
+        
+    }
+
     ips200_show_uint(3,0,Lpt0_found,2);
     ips200_show_uint(3,20,Lpt1_found,2);
-    
+    if(rpts0s_num>60&&rpts1s_num>60)
     if(rpts0s_num>rpts1s_num)
     {
         rpts_num = rpts1s_num;
@@ -1797,7 +1805,7 @@ void test(void)
 
         aim_idx[0] = clip(round(aim_distance / sample_dist), 0, rptsn_num - 1);//计算目标点在采样后的中线上的索引位置
 		
-		aim_idx[0]=aim_idx[0]/3;
+		aim_idx[0]=aim_idx[0]*0.8;//抛锚点选远一点
         //这个数组只有一个数值，就是目标点在采样后的中线上的索引位置
 //        ips200_show_uint(160,260,aim_idx[0],4);
         // 计算远锚点偏差值      cx，cy为摄像头坐标距重心坐标距离 0,-7
@@ -3568,110 +3576,110 @@ void track_rightline(float pts_in[][2], int num, float pts_out[][2], int approx_
        }
 }
 
-void check_cross(void)
-{
-    bool Xfound=Lpt0_found&&Lpt1_found;
-    if (cross_type == CROSS_NONE && Xfound )
-            /*&& Z.all_length  > 1*ENCODER_PER_METER*/ 
-    {
-        cross_type = CROSS_BEGIN;
-    }
-}
+// void check_cross(void)
+// {
+//     bool Xfound=Lpt0_found&&Lpt1_found;
+//     if (cross_type == CROSS_NONE && Xfound )
+//             /*&& Z.all_length  > 1*ENCODER_PER_METER*/ 
+//     {
+//         cross_type = CROSS_BEGIN;
+//     }
+// }
 
-void run_cross(void) 
-{
-    bool Xfound = Lpt0_found && Lpt1_found;
-    //检测到十字，先按照近线走
-    if (cross_type == CROSS_BEGIN) 
-    {
-        //对近处线截断处理
-        if (Lpt0_found) 
-        {
-            rptsc0_num = rpts0s_num = Lpt0_rpts0s_id;
-        }
-        if (Lpt1_found) 
-        {
-            rptsc1_num = rpts1s_num = Lpt1_rpts1s_id;
-        }
+// void run_cross(void) 
+// {
+//     bool Xfound = Lpt0_found && Lpt1_found;
+//     //检测到十字，先按照近线走
+//     if (cross_type == CROSS_BEGIN) 
+//     {
+//         //对近处线截断处理
+//         if (Lpt0_found) 
+//         {
+//             rptsc0_num = rpts0s_num = Lpt0_rpts0s_id;
+//         }
+//         if (Lpt1_found) 
+//         {
+//             rptsc1_num = rpts1s_num = Lpt1_rpts1s_id;
+//         }
 
-        aim_distance = 0.4;//大概在rpts_id=20
-        //近角点过少，进入远线控制 Lpt0_found || Lpt1_found
-        if ((Xfound && (Lpt0_rpts0s_id < 30 || Lpt1_rpts1s_id < 30))/* || (rpts1_num <30 && rpts0_num<30)*/)
-        {
+//         aim_distance = 0.4;//大概在rpts_id=20
+//         //近角点过少，进入远线控制 Lpt0_found || Lpt1_found
+//         if ((Xfound && (Lpt0_rpts0s_id < 30 || Lpt1_rpts1s_id < 30))/* || (rpts1_num <30 && rpts0_num<30)*/)
+//         {
             
-            cross_type = CROSS_IN_DOUBLE; //还是寻近线
-        }
-        ips200_show_uint(43,0,Xfound,2);
-        if(Xfound==0&&cross_type==CROSS_IN_DOUBLE)
-        {
-            cross_type=CROSS_FAR;//开始寻远线模式
-        }
-    }
-        //远线控制进十字,begin_y渐变靠近防丢线
-    if (cross_type == CROSS_FAR) 
-    {
-        while(1);
-        //寻远线,算法与近线相同
-        cross_farline();
-        //当找到近处线，跳出十字状态
-        // if(current_encoder - cross_encoder > 2.0*ENCODER_PER_METER)
-        // {
-        //     cross_type = CROSS_NONE;//跑过1m强制退出
-        // }
-        aim_distance = 0.4;
-    }
-}
+//             cross_type = CROSS_IN_DOUBLE; //还是寻近线
+//         }
+//         ips200_show_uint(43,0,Xfound,2);
+//         if(Xfound==0&&cross_type==CROSS_IN_DOUBLE)
+//         {
+//             cross_type=CROSS_FAR;//开始寻远线模式
+//         }
+//     }
+//         //远线控制进十字,begin_y渐变靠近防丢线
+//     if (cross_type == CROSS_FAR) 
+//     {
+//         while(1);
+//         //寻远线,算法与近线相同
+//         cross_farline();
+//         //当找到近处线，跳出十字状态
+//         // if(current_encoder - cross_encoder > 2.0*ENCODER_PER_METER)
+//         // {
+//         //     cross_type = CROSS_NONE;//跑过1m强制退出
+//         // }
+//         aim_distance = 0.4;
+//     }
+// }
 
-/*寻远线*/
-void cross_farline(void)
-{
-    if(touch_boundary0==1&&touch_boundary1==1&&ipts00_num>10&&ipts11_num>10)//情况1：左右下线到边界且上面右线
-    {
-        Pespective(ipts00, ipts00_num, rpts00);
-        rpts00_num = ipts00_num;
+// /*寻远线*/
+// void cross_farline(void)
+// {
+//     if(touch_boundary0==1&&touch_boundary1==1&&ipts00_num>10&&ipts11_num>10)//情况1：左右下线到边界且上面右线
+//     {
+//         Pespective(ipts00, ipts00_num, rpts00);
+//         rpts00_num = ipts00_num;
 
-        Pespective(ipts11, ipts11_num, rpts11);
-        rpts11_num = ipts11_num;
+//         Pespective(ipts11, ipts11_num, rpts11);
+//         rpts11_num = ipts11_num;
 
-        // 三角滤波
-        blur_points(rpts00, rpts00_num, rpts00b, (int)round(line_blur_kernel));
-        rpts00b_num = rpts00_num;
-        blur_points(rpts11, rpts11_num, rpts11b, (int)round(line_blur_kernel));
-        rpts11b_num = rpts11_num;
+//         // 三角滤波
+//         blur_points(rpts00, rpts00_num, rpts00b, (int)round(line_blur_kernel));
+//         rpts00b_num = rpts00_num;
+//         blur_points(rpts11, rpts11_num, rpts11b, (int)round(line_blur_kernel));
+//         rpts11b_num = rpts11_num;
 
-        // 边线等距采样，num为逆透视后实际距离点，两点间距离为0.02*102=2cm
-        rpts00s_num = sizeof(rpts00s) / sizeof(rpts00s[0]); // 求数组的长度 即等距采样后边线点个数
-        resample_points(rpts00b, rpts00b_num, rpts00s, &rpts00s_num, sample_dist * pixel_per_meter);
-        rpts11s_num = sizeof(rpts11s) / sizeof(rpts11s[0]);
-        resample_points(rpts11b, rpts11b_num, rpts11s, &rpts11s_num, sample_dist * pixel_per_meter);
-        // 边线局部角度变化率 round():四舍五入
-        // local_angle_points(rpts00s, rpts00s_num, rpts00a, (int)round(angle_dist / sample_dist));
-        // rpts00a_num = rpts00s_num;
-        // local_angle_points(rpts11s, rpts11s_num, rpts11a, (int)round(angle_dist / sample_dist));
-        // rpts11a_num = rpts11s_num;
-        // // 角度变化率非极大抑制
-        // nms_angle(rpts00a, rpts00a_num, rpts00an, (int)round(angle_dist / sample_dist) * 2 + 1);
-        // rpts00an_num = rpts00a_num;
-        // nms_angle(rpts11a, rpts11a_num, rpts11an, (int)round(angle_dist / sample_dist) * 2 + 1);
-        // rpts11an_num = rpts11a_num;
-		for (int i = 0; i < rpts00_num; i++) // 显示左边线
-	    {
-		   uint16 x, y;
-		   x = func_limit_ab(rpts00[i][0],  0, 200);
-		   y = func_limit_ab(rpts00[i][1], 0, 199);
-		   ips200_draw_point(x+20, 200 - y, RGB565_RED); // 左线为绿色 不知道为什么改成-x/2+50就能正常先显示
-	    }
+//         // 边线等距采样，num为逆透视后实际距离点，两点间距离为0.02*102=2cm
+//         rpts00s_num = sizeof(rpts00s) / sizeof(rpts00s[0]); // 求数组的长度 即等距采样后边线点个数
+//         resample_points(rpts00b, rpts00b_num, rpts00s, &rpts00s_num, sample_dist * pixel_per_meter);
+//         rpts11s_num = sizeof(rpts11s) / sizeof(rpts11s[0]);
+//         resample_points(rpts11b, rpts11b_num, rpts11s, &rpts11s_num, sample_dist * pixel_per_meter);
+//         // 边线局部角度变化率 round():四舍五入
+//         // local_angle_points(rpts00s, rpts00s_num, rpts00a, (int)round(angle_dist / sample_dist));
+//         // rpts00a_num = rpts00s_num;
+//         // local_angle_points(rpts11s, rpts11s_num, rpts11a, (int)round(angle_dist / sample_dist));
+//         // rpts11a_num = rpts11s_num;
+//         // // 角度变化率非极大抑制
+//         // nms_angle(rpts00a, rpts00a_num, rpts00an, (int)round(angle_dist / sample_dist) * 2 + 1);
+//         // rpts00an_num = rpts00a_num;
+//         // nms_angle(rpts11a, rpts11a_num, rpts11an, (int)round(angle_dist / sample_dist) * 2 + 1);
+//         // rpts11an_num = rpts11a_num;
+// 		for (int i = 0; i < rpts00_num; i++) // 显示左边线
+// 	    {
+// 		   uint16 x, y;
+// 		   x = func_limit_ab(rpts00[i][0],  0, 200);
+// 		   y = func_limit_ab(rpts00[i][1], 0, 199);
+// 		   ips200_draw_point(x+20, 200 - y, RGB565_RED); // 左线为绿色 不知道为什么改成-x/2+50就能正常先显示
+// 	    }
 		
-		for (int i = 0; i < rpts11_num; i++) // 显示左边线
-	    {
-		   uint16 x, y;
-		   x = func_limit_ab(rpts11[i][0],  0, 200);
-		   y = func_limit_ab(rpts11[i][1], 0, 199);
-		   ips200_draw_point(x+20, 200 - y, RGB565_BLUE); // 左线为绿色 不知道为什么改成-x/2+50就能正常先显示
-	    }
-    }
+// 		for (int i = 0; i < rpts11_num; i++) // 显示左边线
+// 	    {
+// 		   uint16 x, y;
+// 		   x = func_limit_ab(rpts11[i][0],  0, 200);
+// 		   y = func_limit_ab(rpts11[i][1], 0, 199);
+// 		   ips200_draw_point(x+20, 200 - y, RGB565_BLUE); // 左线为绿色 不知道为什么改成-x/2+50就能正常先显示
+// 	    }
+//     }
 
-}
+// }
 
 void check_half_left()
 {
@@ -3725,5 +3733,78 @@ void check_half_right()
     {
         cross_type = CROSS_BEGIN;
         cross_num++;
+    }
+}
+
+//弯道检测
+void check_Turn(void)
+{
+    if(!Lpt0_found&&!Lpt1_found&&!touch_boundary0&&!touch_boundary1)//非十字，圆环
+    {
+        if(ipts1[ipts1_num-1][0]-ipts0[ipts0_num-1][0]<IMAGE_WIDTH/2)//左右线距离小于图像宽度的一半
+        {
+            
+        }
+    }
+}
+void check_cross(void)
+{
+    bool Xfound=Lpt0_found&&Lpt1_found;//左右均找到拐点
+    if(Xfound && cross_type==CROSS_NONE)//不截断处理了，拐点会丢失
+    {
+        cross_type=CROSS_BEGIN;
+    }
+    else if(cross_type==CROSS_BEGIN && Xfound==0&&(ipts0[ipts0_num-1][1]<(IMAGE_WIDTH/2))&&ipts0_num<40&&ipts1_num<40)//左右拐点均丢失
+    {
+        cross_type=CROSS_FAR;//开始寻远线
+    }
+    else if(cross_type==CROSS_FAR && ipts0_num>60 && ipts1_num>60)//左右线又找到了
+    {
+        cross_type=CROSS_NONE;//退出十字
+    }
+}
+
+//双边寻远线
+void cross_farline(void)
+{
+    if(!Lpt0_found)//左边L点丢失
+    {
+        Find_Borderline_Second_Left();//二次寻找左边线
+        Lpt00_rpts00s_id = 5 ;           //每次如果没找到远方的L点，默认是第5个点
+        //逆透视
+        Pespective(ipts00,ipts00_num ,rpts00);
+        rpts00_num = ipts00_num;
+        //三角滤波
+        blur_points(rpts00, rpts00_num, rpts00b, (int) round(line_blur_kernel));
+        rpts0b_num = rpts00_num;
+        // 边线等距采样
+        rpts00s_num = sizeof(rpts00s) / sizeof(rpts00s[0]);
+        resample_points(rpts00b, rpts00b_num, rpts00s, &rpts00s_num, sample_dist * pixel_per_meter);
+    }
+    if(!Lpt1_found)
+    {
+        Find_Borderline_Second_Right();//二次寻找右边线
+        Lpt11_rpts11s_id = 5 ;  
+        //逆透视
+        Pespective(ipts11,ipts11_num ,rpts11);
+        rpts11_num = ipts11_num;
+        //三角滤波
+        blur_points(rpts11, rpts11_num, rpts11b, (int) round(line_blur_kernel));
+        rpts1b_num = rpts11_num;
+        // 边线等距采样
+        rpts11s_num = sizeof(rpts11s) / sizeof(rpts11s[0]);
+        resample_points(rpts11b, rpts1b_num, rpts11s, &rpts11s_num, sample_dist * pixel_per_meter);
+    }
+
+}
+void run_cross(void)
+{
+    if(cross_type==CROSS_BEGIN)//走近线
+    {
+        rptsc0_num=rpts0s_num;//不做截断处理，因为不太行
+    }
+    else if(cross_type==CROSS_FAR)//开始走远线
+    {
+        cross_farline();
     }
 }
