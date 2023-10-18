@@ -2250,8 +2250,8 @@ void test(void)
 //        int32 x,y;
 //        x = func_limit_ab (rpts0s[i][0] , -99,99);
 //        y = func_limit_ab (rpts0s[i][1] , 0,  199);
-//        
-//        
+//
+//
 //        ips200_draw_point(-x/2 + 50 , 99-y/2, RGB565_RED);
 //    }
 
@@ -2260,11 +2260,11 @@ void test(void)
     rpts0b_num = rpts0_num;
     blur_points(rpts1,rpts1_num,rpts1b,(int) round(line_blur_kernel));
     rpts1b_num = rpts1_num;
-    
-    
-    
-    
-    
+
+
+
+
+
     rpts0s_num = sizeof(rpts0s) / sizeof(rpts0s[0]);//求数组的长度 即等距采样后边线点个数
     resample_points(rpts0b, rpts0b_num, rpts0s, &rpts0s_num, sample_dist * pixel_per_meter);
     rpts1s_num = sizeof(rpts1s) / sizeof(rpts1s[0]);
@@ -2279,7 +2279,7 @@ void test(void)
     rpts0an_num = rpts0a_num;
     nms_angle(rpts1a, rpts1a_num, rpts1an, (int) round(angle_dist / sample_dist) * 2 + 1);
     rpts1an_num = rpts1a_num;
-    
+
 //    for (i = 0; i < ipts1_num; i++)
 //    {
 //        ips200_draw_line(0, 0, rpts1[i][1],rpts1[i][0], BLACK);
@@ -2308,9 +2308,9 @@ void test(void)
         x = func_limit_ab (rpts0s[i][0] , -99,99);
         y = func_limit_ab (rpts0s[i][1] , 0,  199);
 
-        ips200_draw_point(-x  + 100, 200 - y , RGB565_GREEN); // 左线为绿色 
+        ips200_draw_point(-x  + 100, 200 - y , RGB565_GREEN); // 左线为绿色
     }
-    
+
         for(int i = 0 ; i < rpts1s_num ; i++)//显示右边线
     {
         uint16 x, y;
@@ -2328,7 +2328,7 @@ void test(void)
         x = func_limit_ab (ipts0[i][0] , -99,99);
         y = func_limit_ab (ipts0[i][1] , 0,  199);
         tft180_draw_point( x , y ,  RGB565_GREEN);
-        
+
         x = func_limit_ab(rpts1s[i][0] , 0,80);
         y = func_limit_ab(rpts1s[i][1] , 0,60);
         tft180_draw_point(x, y,  0x0000);//右线为黄色
@@ -2336,8 +2336,8 @@ void test(void)
     }
 
     // ips200_show_int(3,140,ipts0_num,3);
-        
-    
+
+
     // ips200_show_int(3,160,loseline0,3);
     // ips200_show_int(3,180,*num,3);
     //	tft180_draw_line(0,0,ipts0[20-1][1],ipts0[20-1][0],RGB565_RED);
@@ -3398,9 +3398,9 @@ void Coordinate_restore_right(int16 pt0_in[][2], int16 in_num, int16 pt0_out[][2
 #define Image_Use   *PerImg_ip//*PerImg_ip定义使用的图像，ImageUsed为用于巡线和识别的图像
 typedef unsigned char       uint8_t;                                              // 无符号  8 bits
 uint8_t *PerImg_ip[RESULT_ROW][RESULT_COL];
- 
+
 void ImagePerspective_Init(void) {
- 
+
     static uint8_t BlackColor = 0;
     double change_un_Mat[3][3] = {          //114w*100h
             { -0.01609759704190238, 0.01932561893613478, -2.040617594981866 }, {
@@ -3424,14 +3424,14 @@ void ImagePerspective_Init(void) {
             else {
                 PerImg_ip[j][i] = &BlackColor;          //&PER_IMG[0][0];
             }
- 
+
         }
     }
 
- 
+
 }
- 
-   
+
+
 
 
 
@@ -3495,3 +3495,28 @@ void local_angle_points(float pts_in[][2], int num, float angle_out[], int dist)
     }
 }
 /*完成摄像头初始化后，调用一次ImagePerspective_Init，此后，直接调用ImageUsed   即为透视结果*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * @brief sobel原图补线函数，用于十字，圆环，车库
+ *
+ * @param x_start 起始点x坐标
+ * @param y_start 起始点y坐标
+ * @param x_end 终止点x坐标
+ * @param y_end 终止点y坐标
+ */
+void Image_AddLine(uint8 x_start,uint8 y_start,uint8 x_end,uint8 y_end)
+{
+
+}

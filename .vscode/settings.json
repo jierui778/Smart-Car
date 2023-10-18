@@ -62,6 +62,7 @@
     "garage.h": "c",
     "zf_device_ips200.h": "c",
     "cross.h": "c",
-    "pid.h": "c"
+    "pid.h": "c",
+    "zf_common_headfile.h": "c"
   }
 }
