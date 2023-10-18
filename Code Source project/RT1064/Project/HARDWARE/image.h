@@ -9,7 +9,8 @@
 #define WHITE 255
 #define BLACK 0
 #define IMAGE_WIDTH 160           // 用于处理的图像高度
-#define IMAGE_HEIGHT 120          //用于处理的图像宽度\
+#define IMAGE_HEIGHT 120          //用于处理的图像宽度
+#define MID_LINE 80               //中线为x=80
 
 #define PRIMEVAL_HEIGHT MT9V03X_H // 原始图像高度
 #define PRIMEVAL_WIDTH MT9V03X_W  // 原始图像宽度
@@ -77,6 +78,7 @@ enum track_type_e
 {
     TRACK_LEFT,
     TRACK_RIGHT,
+    TRACK_BOTH,
 };
 
 /*这个得放在车库的.c现在还没建成*/
@@ -97,7 +99,7 @@ enum garage_type_e
     GARAGE_STOP,       // 进库完毕，停车
     GARAGE_NUM,
 };
-extern enum garage_type_e garage_type;
+
 
 #define LLL 60
 
