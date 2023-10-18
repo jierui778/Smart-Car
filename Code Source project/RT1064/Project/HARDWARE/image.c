@@ -2323,14 +2323,14 @@ void cross_farline(void)
         Pespective(ipts00, ipts00_num, rpts00);
         rpts00_num = ipts00_num;
 
-        Pespective(ipts11, ipts11_num, rpts11);
-        rpts11_num = ipts11_num;
+//         Pespective(ipts11, ipts11_num, rpts11);
+//         rpts11_num = ipts11_num;
 
-        // 三角滤波
-        blur_points(rpts00, rpts00_num, rpts00b, (int)round(line_blur_kernel));
-        rpts00b_num = rpts00_num;
-        blur_points(rpts11, rpts11_num, rpts11b, (int)round(line_blur_kernel));
-        rpts11b_num = rpts11_num;
+//         // 三角滤波
+//         blur_points(rpts00, rpts00_num, rpts00b, (int)round(line_blur_kernel));
+//         rpts00b_num = rpts00_num;
+//         blur_points(rpts11, rpts11_num, rpts11b, (int)round(line_blur_kernel));
+//         rpts11b_num = rpts11_num;
 
         // 边线等距采样，num为逆透视后实际距离点，两点间距离为0.02*102=2cm
         rpts00s_num = sizeof(rpts00s) / sizeof(rpts00s[0]); // 求数组的长度 即等距采样后边线点个数
