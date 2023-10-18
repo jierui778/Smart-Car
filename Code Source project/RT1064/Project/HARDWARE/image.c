@@ -769,11 +769,11 @@ void test(void)
 
     for (i = 0; i < ipts0_num; i++)
     {
-        ips200_draw_line(0, 0, ipts0[i][0], ipts0[i][1], RGB565_RED);
+        ips200_draw_point(ipts0[i][0]+3, ipts0[i][1], RGB565_RED);
     }
     for (i = 0; i < ipts1_num; i++)
     {
-        ips200_draw_line(0, 0, ipts1[i][0], ipts1[i][1], RGB565_GREEN);
+        ips200_draw_point(ipts1[i][0]+3, ipts1[i][1], RGB565_GREEN);
     }
 
 //    RoundaboutGetArc(Image_Use_Robert[120][160], 1, ipts0_num, test);

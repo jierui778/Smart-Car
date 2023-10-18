@@ -6,8 +6,6 @@
  */
 #include "garage.h"
 
-
-
 // // 以下定义为车库寻远线设定
 // //int g_far_ipts0[LLL][2];           //种子巡线
 // //int g_far_ipts1[LLL][2];
@@ -54,21 +52,24 @@
 // float (*garage_rpts)[2];
 // int garage_rpts_num;
 
-enum garage_type_e garage_type = GARAGE_NONE;//初始化为向左出库 调试状态为NONE
-
-
-
-void Garage_Check(void)
+enum garage_type_e garage_type = GARAGE_NONE; // 初始化为向左出库 调试状态为NONE
+int Zibra_Thres = 0;
+uint8 touch_boundary0; // 左边线走到图像左边界
+uint8 touch_boundary1; // 右边线走到图像右边界
+void Garage_Check(void)//找到上角点则加入上角点一起判断
 {
-
+    if (touch_boundary0 && Zibra_Thres > ZIBRA_THRES)
+    {
+        garage_type = GARAGE_LEFT_FOUND;
+    }
+    else if (touch_boundary1 && Zibra_Thres > ZIBRA_THRES)
+    {
+        garage_type = GARAGE_RIGHT_FOUND;
+    }
 }
-
-
 
 void Garage_Run(void)
 {
-
-    
 }
 // // 编码器，防止重复触发等情况
 // int64_t garage_encoder = -10000;
@@ -328,9 +329,6 @@ void Garage_Run(void)
 
 // }
 
-
-
-
 // void run_garage(void )
 // {
 
@@ -355,15 +353,12 @@ void Garage_Run(void)
 //     else if(choose_Binarization == 1)
 //         garage_thres = 440;
 
-
-
 //     //路过左车库
 //      if(garage_type == GARAGE_FOUND_LEFT && garage_cnt ==1 && bottom_black_point_num > garage_thres)
 //      {
 //          garage_type = GARAGE_GO_LEFT;
 
 //      }
-
 
 // //     else if(garage_type == GARAGE_PASS_LEFT)
 // //     {
@@ -378,7 +373,6 @@ void Garage_Run(void)
 // //         }
 // //
 // //     }
-
 
 //      //  进左车库
 // //      else if(garage_type == GARAGE_FOUND_LEFT && garage_cnt ==2)
@@ -407,7 +401,6 @@ void Garage_Run(void)
 
 //      }
 
-
 // //    //  进左车库
 // //     else if(garage_type == GARAGE_FOUND_LEFT && garage_cnt ==2)
 // //    {
@@ -433,7 +426,6 @@ void Garage_Run(void)
 // //        ips200_clear(0x07E0);
 // //
 // //    }
-
 
 //      //路过右车库 不用
 // //    else if(garage_type == GARAGE_FOUND_RIGHT  && garage_cnt ==1 )
@@ -465,7 +457,6 @@ void Garage_Run(void)
 // //        }
 // //
 // //    }
-
 
 //     //进右车库
 // //    else if(garage_type == GARAGE_FOUND_RIGHT  && garage_cnt ==2 )
@@ -503,12 +494,6 @@ void Garage_Run(void)
 
 //     }
 
-
-
-
-
-
-
 //     if (garage_type == GARAGE_FOUND_LEFT || garage_type == GARAGE_IN_LEFT || garage_type == GARAGE_PASS_RIGHT ) {
 //         track_type = TRACK_LEFT;
 
@@ -516,7 +501,6 @@ void Garage_Run(void)
 
 //         track_type = TRACK_RIGHT;
 //     }
-
 
 // }
 
@@ -552,7 +536,6 @@ void Garage_Run(void)
 //         }
 //     }
 
-
 //     //规定出发方向
 // //    if( !Z.start_left_or_right)
 // //    {
@@ -562,19 +545,13 @@ void Garage_Run(void)
 // //        track_type = TRACK_RIGHT;
 // //    }
 
-
-
 // }
-
-
-
 
 // /****************************
 // void garage_farline_right(void )
 // {
 
 //         int  L_x1 , L_y1;
-
 
 //         if ( N_Lpt1_found && Lpt0_found  )
 //           Pespective_anti(rpts1s[Lpt1_rpts1s_id][0]  ,  rpts1s[Lpt1_rpts1s_id][1] , &L_x1 , &L_y1 );  //根据近的右L点,找到远处的右边线
@@ -591,16 +568,13 @@ void Garage_Run(void)
 
 //         int  far_x1 =0 , far_y1 = 0;                  //寻找到的点
 
-
 //         image_t img_raw =  {.data=Image_Use_Robert,          .width=UCOL, .height=UROW, .step=UCOL};
 
 //         uint8 thres = 1;
 
-
 //         //右边
 
 //         g_far_ipts1_num = sizeof(g_far_ipts1) / sizeof(g_far_ipts1[0]);
-
 
 //                     //先从下往上找，是为了防止远处初始点是黑点
 //         for (; begin_y1 >0; begin_y1--) {
@@ -627,15 +601,10 @@ void Garage_Run(void)
 //             Right_Adaptive_Threshold(&img_raw, block_size, clip_value, far_x1 -1 , far_y1 , g_far_ipts1, &g_far_ipts1_num);
 //         else g_far_ipts1_num = 0;
 
-
-
 //         // 去畸变+透视变换
-
-
 
 //         Pespective(g_far_ipts1,g_far_ipts1_num ,  g_far_rpts1);
 //         g_far_rpts1_num = g_far_ipts1_num;
-
 
 //         // 边线滤波
 
@@ -660,11 +629,7 @@ void Garage_Run(void)
 // //
 // //
 
-
-
 // }
-
-
 
 // void garage_farline_left(void )         //循左边的远线
 // {
@@ -672,7 +637,6 @@ void Garage_Run(void)
 //     //    far_x1 = cross_width, far_x2 = img_raw.width -cross_width;
 
 //         int L_x0, L_y0 ;
-
 
 //         if ( Lpt1_found  &&  N_Lpt0_found)                 //两个车库点都存在
 
@@ -686,20 +650,15 @@ void Garage_Run(void)
 //         int begin_x0 = clip( L_x0 +15 , 2, 50 );
 //         int begin_y0 = clip(  L_y0 -10 , 2, 58 );
 
-
 //         int far_x0 =0, far_y0 =0 ;                  //寻找到的点
 
 //         image_t img_raw =  {.data=Image_Use_Robert,          .width=UCOL, .height=UROW, .step=UCOL};
 
 //         uint8 thres = 1;
 
-
-
 //     // 这里应该是在近的L点两侧开始，而不是固定，因为极大是斜入十字
 
-
 //         g_far_ipts0_num = sizeof(g_far_ipts0) / sizeof(g_far_ipts0[0]);
-
 
 //         //先从下往上找，是为了防止远处初始点是黑点,因为斑马线的粗细随着距离会变大
 //         for (; begin_y0 > 0; begin_y0--) {
@@ -711,7 +670,6 @@ void Garage_Run(void)
 //             }
 //         }
 
-
 //         //在正常从一行的中间向左搜索
 //         for (; begin_x0 > 0; begin_x0--) {
 
@@ -722,40 +680,23 @@ void Garage_Run(void)
 //              }
 //          }
 
-
-
-
 //         //从找到角点位置开始寻找
 //         if (AT_IMAGE(&img_raw, far_x0 + 1 , far_y0) >= thres)
 //             Left_Adaptive_Threshold(&img_raw, block_size, clip_value, far_x0 + 1, far_y0 , g_far_ipts0, &g_far_ipts0_num);
 //         else g_far_ipts0_num = 0;
-
-
-
-
-
-
 
 //         // 去畸变+透视变换
 
 //         Pespective(g_far_ipts0,g_far_ipts0_num ,  g_far_rpts0);
 //         g_far_rpts0_num = g_far_ipts0_num;
 
-
-
-
 //         // 边线滤波
 //         blur_points(g_far_rpts0, g_far_rpts0_num, g_far_rpts0b, (int) round(line_blur_kernel));
 //         g_far_rpts0b_num = g_far_rpts0_num;
 
-
 //         // 边线等距采样
 //         g_far_rpts0s_num = sizeof(g_far_rpts0s) / sizeof(g_far_rpts0s[0]);
 //         resample_points(g_far_rpts0b, g_far_rpts0b_num, g_far_rpts0s, &g_far_rpts0s_num, sample_dist * pixel_per_meter);
-
-
-
-
 
 // }
 // **********************/
