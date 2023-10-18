@@ -191,7 +191,7 @@ void    ips200_show_chinese             (uint16 x, uint16 y, uint8 size, const u
 // 使用示例     ips200_displayimage03x(mt9v03x_image[0], 94, 60);
 // 备注信息     如果要显示二值化图像就去调用 ips200_show_gray_image 函数
 //-------------------------------------------------------------------------------------------------------------------
-#define ips200_displayimage03x(p, width, height)        (ips200_show_gray_image(0, 200, (p), MT9V03X_W, MT9V03X_H, (width), (height), 0))
+#define ips200_displayimage03x(p, width, height)        (ips200_show_gray_image(0, 0, (p), MT9V03X_W, MT9V03X_H, (width), (height), 0))
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     IPS200 显示凌瞳图像

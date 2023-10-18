@@ -69,13 +69,13 @@ int main(void)
 ////            bluetooth_ch9141_send_image((const uint8 *)Image_Use_Robert, MT9V03X_IMAGE_SIZE);
 ////            mt9v03x_finish_flag = 0;
 //     
-//            ips200_displayimage03x(*Image_Use_Robert, 160, 120);
+            ips200_displayimage03x(*Image_Use_Robert, 160, 120);
 //			
 //        }
             
-//        test();
+        test();
 //        
-        Schedule_Run();//任务运行总函数，开始任务调度
+//        Schedule_Run();//任务运行总函数，开始任务调度
 		//	bluetooth_ch9141_send_image(*Image_Use_Robert, 19200);
 
     }

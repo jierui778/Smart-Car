@@ -350,7 +350,7 @@
             <thumb>0</thumb>
             <SplitLS>0</SplitLS>
             <SwStkChk>0</SwStkChk>
-            <NoWarn>0</NoWarn>
+            <NoWarn>1</NoWarn>
             <uSurpInc>0</uSurpInc>
             <useXO>0</useXO>
             <ClangAsOpt>1</ClangAsOpt>
@@ -530,6 +530,26 @@
               <FilePath>..\HARDWARE\filter.h</FilePath>
             </File>
             <File>
+              <FileName>key.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\key.c</FilePath>
+            </File>
+            <File>
+              <FileName>key.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\HARDWARE\key.h</FilePath>
+            </File>
+            <File>
+              <FileName>circle.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\circle.c</FilePath>
+            </File>
+            <File>
+              <FileName>circle.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\HARDWARE\circle.h</FilePath>
+            </File>
+            <File>
               <FileName>cross.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\HARDWARE\cross.c</FilePath>
@@ -540,24 +560,14 @@
               <FilePath>..\HARDWARE\cross.h</FilePath>
             </File>
             <File>
-              <FileName>circle.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\IMAGE_JUDGE\circle.c</FilePath>
-            </File>
-            <File>
-              <FileName>circle.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\IMAGE_JUDGE\circle.h</FilePath>
-            </File>
-            <File>
               <FileName>garage.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\IMAGE_JUDGE\garage.c</FilePath>
+              <FilePath>..\HARDWARE\garage.c</FilePath>
             </File>
             <File>
               <FileName>garage.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\IMAGE_JUDGE\garage.h</FilePath>
+              <FilePath>..\HARDWARE\garage.h</FilePath>
             </File>
           </Files>
         </Group>

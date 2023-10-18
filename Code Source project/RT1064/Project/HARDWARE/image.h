@@ -81,24 +81,6 @@ enum track_type_e
 
 /*这个得放在车库的.c现在还没建成*/
 
-enum garage_type_e
-{
-    GARAGE_NONE = 0, // 非车库模式
-    GARAGE_OUT_LEFT,
-    GARAGE_OUT_RIGHT, // 出库，陀螺仪转过45°，即出库完毕
-    GARAGE_FOUND_LEFT,
-    GARAGE_FOUND_RIGHT, // 发现车库，即斑马线+单侧L角点(未使用)
-    GARAGE_IN_LEFT,
-    GARAGE_IN_RIGHT, // 进库，发现车库后判断第几次，从而决定是否进库
-    GARAGE_GO_LEFT,
-    GARAGE_GO_RIGHT, // 发出进库指令打角
-    GARAGE_PASS_LEFT,
-    GARAGE_PASS_RIGHT, // 不进库，发现车库后判断第几次，从而决定是否进库
-    GARAGE_STOP,       // 进库完毕，停车
-    GARAGE_NUM,
-};
-extern enum garage_type_e garage_type;
-
 #define LLL 60
 
 extern int16_t garage_cnt;
@@ -129,15 +111,15 @@ float Get_err1(int pts_in[][2], int num);
 float LineRession(int pts_in[][2], int num);
 void Get_Midline2(int pts_l[][2], int pts_l_num, int pts_r[][2], int pts_r_num);
 void Find_Borderline_Second(void);
-void SplicingArray_int(int pt0[][2], int num1, int pt1[][2], int num2, int pt_out[][2],  uint8 x);
+void SplicingArray_int(int pt0[][2], int num1, int pt1[][2], int num2, int pt_out[][2], uint8 x);
 float Get_Mid_Cross(void);
-void Pespective_xy(int x_in,int y_in , float* x_out , float* y_out);
+void Pespective_xy(int x_in, int y_in, float *x_out, float *y_out);
 void track_leftline(float pts_in[][2], int num, float pts_out[][2], int approx_num, float dist);
 void track_rightline(float pts_in[][2], int num, float pts_out[][2], int approx_num, float dist);
-void Image_CheckState(int in_put_l[][2],int in_put_num_l,int in_put_r[][2],int in_put_num_r);
-void Cross_Drawline_plus(int in_put_l[][2],int in_put_num_l,int in_put_lnew[][2],int in_put_num_lnew,
-                            int in_put_r[][2],int in_put_r_num, int in_put_rnew[][2],int in_put_r_numnew);
-void Cross_Drawline(int in_put_l[][2],int in_put_num_l,int in_put_r[][2],int in_put_r_num);
+void Image_CheckState(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int in_put_num_r);
+void Cross_Drawline_plus(int in_put_l[][2], int in_put_num_l, int in_put_lnew[][2], int in_put_num_lnew,
+                         int in_put_r[][2], int in_put_r_num, int in_put_rnew[][2], int in_put_r_numnew);
+void Cross_Drawline(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int in_put_r_num);
 void test_new(void);
 // W矩阵参数（原图转化成逆透视后图像的参数）
 // 60*80
@@ -191,46 +173,44 @@ void test_new(void);
 // #define a32 (-0.0846f)
 // #define a33 (1.0f)
 
+// #define a11 (-2.2450f)
+// #define a12 (-8.5371f)
+// #define a13 (252.9928f)
+// #define a21 (-0.0901f)
+// #define a22 (0.4470f)
+// #define a23 (-190.8998f)
+// #define a31 (-0.0030f)
+// #define a32 (-0.0846f)
+// #define a33 (1.0f)
 
-//#define a11 (-2.2450f)
-//#define a12 (-8.5371f)
-//#define a13 (252.9928f)
-//#define a21 (-0.0901f)
-//#define a22 (0.4470f)
-//#define a23 (-190.8998f)
-//#define a31 (-0.0030f)
-//#define a32 (-0.0846f)
-//#define a33 (1.0f)
+// #define a11 (-1.9850f)
+// #define a12 (-6.8451f)
+// #define a13 (232.9928f)
+// #define a21 (-0.0901f)
+// #define a22 (0.4470f)
+// #define a23 (-190.8998f)
+// #define a31 (-0.0030f)
+// #define a32 (-0.0636f)
+// #define a33 (1.0f)//best
 
-//#define a11 (-1.9850f)
-//#define a12 (-6.8451f)
-//#define a13 (232.9928f)
-//#define a21 (-0.0901f)
-//#define a22 (0.4470f)
-//#define a23 (-190.8998f)
-//#define a31 (-0.0030f)
-//#define a32 (-0.0636f)
-//#define a33 (1.0f)//best
+// #define a11 (2.4483f)
+// #define a12 (9.9016f)
+// #define a13 (-187.3382f)
+// #define a21 (-0.0240f)
+// #define a22 (-0.9154f)
+// #define a23 (308.7282f)
+// #define a31 (-0.0062f)
+// #define a32 (0.1221f)
 
-
-//#define a11 (2.4483f)
-//#define a12 (9.9016f)
-//#define a13 (-187.3382f)
-//#define a21 (-0.0240f)
-//#define a22 (-0.9154f)
-//#define a23 (308.7282f)
-//#define a31 (-0.0062f)
-//#define a32 (0.1221f)
-
-//#define a11 (-2.2450f)
-//#define a12 (-8.5371f)
-//#define a13 (252.9928f)
-//#define a21 (-0.0901f)
-//#define a22 (0.4470f)
-//#define a23 (-190.8998f)
-//#define a31 (-0.0030f)
-//#define a32 (-0.0846f)
-//#define a33 (1.0f)
+// #define a11 (-2.2450f)
+// #define a12 (-8.5371f)
+// #define a13 (252.9928f)
+// #define a21 (-0.0901f)
+// #define a22 (0.4470f)
+// #define a23 (-190.8998f)
+// #define a31 (-0.0030f)
+// #define a32 (-0.0846f)
+// #define a33 (1.0f)
 
 #define a11 (-5.5988f)
 #define a12 (-27.9734f)
@@ -242,17 +222,15 @@ void test_new(void);
 #define a32 (-0.3464f)
 #define a33 (1.0f)
 
-
-//#define a11 (-1.9850f)
-//#define a12 (-6.8451f)
-//#define a13 (232.9928f)
-//#define a21 (-0.0901f)
-//#define a22 (0.4470f)
-//#define a23 (-190.8998f)
-//#define a31 (-0.0030f)
-//#define a32 (-0.0636f)
-//#define a33 (1.0f)
-
+// #define a11 (-1.9850f)
+// #define a12 (-6.8451f)
+// #define a13 (232.9928f)
+// #define a21 (-0.0901f)
+// #define a22 (0.4470f)
+// #define a23 (-190.8998f)
+// #define a31 (-0.0030f)
+// #define a32 (-0.0636f)
+// #define a33 (1.0f)
 
 #define getx(u, v) (a11 * (u) + a12 * (v) + a13)
 #define gety(u, v) (a21 * (u) + a22 * (v) + a23)
@@ -285,43 +263,43 @@ void resample_points(float pts_in[][2], int num1, float pts_out[][2], int *num2,
 void local_angle_points(float pts_in[][2], int num, float angle_out[], int dist);
 void nms_angle(float angle_in[], int num, float angle_out[], int kernel);
 void find_corners(void);
-void cross_farline(void);//寻远线
-void check_cross(void) ;
+void cross_farline(void); // 寻远线
+void check_cross(void);
 void run_cross(void);
 #define POINTS_MAX_LEN (150) // 边线点最多的情况——>num
 
-//逆透视补线数组
+// 逆透视补线数组
 extern float left_line[POINTS_MAX_LEN][2];
 extern float right_line[POINTS_MAX_LEN][2];
 extern int left_num, right_num;
-//拼接数组
+// 拼接数组
 extern float splicing_leftline[POINTS_MAX_LEN][2];
 extern float splicing_rightline[POINTS_MAX_LEN][2];
-extern int splicing_leftline_num,splicing_rightline_num;
-//拼接数组平移中线
+extern int splicing_leftline_num, splicing_rightline_num;
+// 拼接数组平移中线
 extern float splicing_leftline_center[POINTS_MAX_LEN][2];
 extern float splicing_rightline_center[POINTS_MAX_LEN][2];
-extern int splicing_leftline_center_num,splicing_rightline_center_num;
+extern int splicing_leftline_center_num, splicing_rightline_center_num;
 
-//左右边丢线
+// 左右边丢线
 extern uint8 loseline0;
 extern uint8 loseline1;
 
-extern int x0_first , y0_first , x1_first ,y1_first;
-extern int x1 , y1 ;
-extern int x2 , y2 ;
+extern int x0_first, y0_first, x1_first, y1_first;
+extern int x1, y1;
+extern int x2, y2;
 
-extern int begin_x0,begin_y0;              //找线偏移点
-extern int begin_x1,begin_y1;              //找线偏移点
+extern int begin_x0, begin_y0; // 找线偏移点
+extern int begin_x1, begin_y1; // 找线偏移点
 
-extern uint8  Image_Use[120][160];
+extern uint8 Image_Use[120][160];
 extern uint8 Image_Use_Robert[120][160];
-extern uint8 touch_boundary0;              //左边线走到图像边界
-extern uint8 touch_boundary1;              //右边线走到图像边界
-extern uint8 touch_boundary_up0;              //左边线走到图像左边界
-extern uint8 touch_boundary_up1;              //右边线走到图像右边界
+extern uint8 touch_boundary0;    // 左边线走到图像边界
+extern uint8 touch_boundary1;    // 右边线走到图像边界
+extern uint8 touch_boundary_up0; // 左边线走到图像左边界
+extern uint8 touch_boundary_up1; // 右边线走到图像右边界
 
-extern float xielv_left_y_to_end,xielv_right_y_to_end;                 //在逆透视后得坐标系建得斜率
+extern float xielv_left_y_to_end, xielv_right_y_to_end; // 在逆透视后得坐标系建得斜率
 
 // 原图左右边线
 extern int ipts0[POINTS_MAX_LEN][2];
@@ -365,63 +343,30 @@ extern bool Lpt0_found, Lpt1_found;
 extern int N_Lpt0_rpts0s_id, N_Lpt1_rpts1s_id;
 extern bool N_Lpt0_found, N_Lpt1_found;
 
-extern int N_Xfound_num;//面向赛道编程，双内L计数
+extern int N_Xfound_num; // 面向赛道编程，双内L计数
 // 长直道
 extern bool is_straight0, is_straight1;
 // 弯道
 extern bool is_turn0, is_turn1;
 
-extern enum track_type_e track_type;       //当前巡线模式
+extern enum track_type_e track_type; // 当前巡线模式
 
-extern float error[1] ;
-extern float ave_error;//ave_error名为平均偏差，实际按正态分布算
+extern float error[1];
+extern float ave_error; // ave_error名为平均偏差，实际按正态分布算
 // 远预锚点位置
-extern int aim_idx[1] ;
+extern int aim_idx[1];
 
 // 计算远锚点偏差值
-extern float dx[1] ;
-extern float dy[1] ;
-extern float dn[1] ;
+extern float dx[1];
+extern float dy[1];
+extern float dn[1];
 // 若考虑近点远点,可近似构造Stanley算法,避免撞路肩
 
 extern float pure_angle;
 
-#define L_CROSS 80  //十字模式中存储左边线坐标的个数为80
+#define L_CROSS 80 // 十字模式中存储左边线坐标的个数为80
 
-/*圆环状态*/
-enum circle_type_e {
-    CIRCLE_NONE = 0,                            // 非圆环模式
-    CIRCLE_LEFT_BEGIN, CIRCLE_RIGHT_BEGIN,      // 圆环开始，识别到单侧L角点另一侧长直道。
-    CIRCLE_LEFT_IN, CIRCLE_RIGHT_IN,            // 圆环进入，即走到一侧直道，一侧圆环的位置。
-    CIRCLE_LEFT_RUNNING, CIRCLE_RIGHT_RUNNING,  // 圆环内部。
-    CIRCLE_LEFT_OUT, CIRCLE_RIGHT_OUT,          // 准备出圆环，即识别到出环处的L角点。
-    CIRCLE_LEFT_END, CIRCLE_RIGHT_END,          // 圆环结束，即再次走到单侧直道的位置。
-    CIRCLE_NUM,                                 //
-};
-
-
-// enum circle_type_e circle_type = CIRCLE_NONE;
-
-/*十字模式*/
-enum cross_type_e {
-    CROSS_NONE = 0,     // 非十字模式
-    CROSS_BEGIN,        // 找到左or右两个L角点(包括单线情况)
-    CROSS_IN_DOUBLE,    // 双L角点寻远线，两个L角点很近，即进入十字内部(此时切换远线控制)
-    CROSS_FAR,
-    CROSS_NUM,
-};
-
-/*赛道所有的模式都放在里面*/
-enum all_type {
-    CROSS,
-    CIRCLE,
-    STRAIGHT,
-    TURN_RIGHT,
-    TURN_LEFT,
-    GARAGE,
-};
-
-
+uint8_t RoundaboutGetArc(uint8_t imageSide[120][2], uint8_t status, uint8_t num, uint8_t *index);
 #endif
 
 /*
