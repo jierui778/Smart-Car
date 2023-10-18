@@ -1,152 +1,78 @@
-/**
- ******************************************************************************
- * @文件名 pid.c
- * @文件说明：本文件为PID相关函数文件
- ******************************************************************************/
+// /**
+//  ******************************************************************************
+//  * @文件名 pid.c
+//  * @文件说明：本文件为PID相关函数文件
+//  ******************************************************************************/
 #include "pid.h"
-PID SpeedParam;
-PID TraceTurnParam;
+float sPidInfo[2][4] = { // IncrPID{Kp,Ki,Kd,MaxOutput}
+    {0, 0, 0, 0},
+
+    {0, 0, 0, 0}};
+// float PidInfo[2][4] = { // IncrPID{Kp,Ki,Kd,MaxOutput}
+//     {0, 0, 0, 0},
+
+//     {0, 0, 0, 0}};
 /**
- * @brief 初始化两个电机的PID控制器。
+ * @brief PID限幅函数
  *
- * 此函数为两个电机的PID控制器设置初始值。
- * 它将实际值和目标值设置为0，将误差和误差总和设置为0，
- * 将比例、积分和微分增益设置为0。
+ * @param Value 输入值
+ * @param MaxValue 最大值
+ * @return float
+ */
+float PIDInfo_Limit(float Value, float MaxValue)
+{
+    if (fabs(Value) > MaxValue)
+    {
+        if (Value >= 0)
+            Value = MaxValue;
+        else
+            Value = -MaxValue;
+    }
+
+    return Value;
+}
+
+/**
+ * @brief 初始化PID控制器参数
  *
  */
 void PID_Init(void)
 {
-    SpeedParam.kp = 100;
-    SpeedParam.ki = 5;
-    SpeedParam.kd = 0;
-
-    TraceTurnParam.kd = 0;
-    TraceTurnParam.ki = 0;
-    TraceTurnParam.kp = 0;
+    for (uint8 i = 0; i < 2; i++) //
+    {
+    }
 }
-
-/**
- * @brief 位置式PID控制器
- *
- * @param deviation 偏差
- * @param pid PID参数
- * @return int 调节电机的Result
- */
-int PositionPID(float deviation, PID pid)
-{
-    float Position_KP = pid.kp, Position_KI = pid.ki, Position_KD = pid.kd;//PID参数
-    int16 Result;
-    static float Bias, Integral_bias, Last_Bias;
-    Bias = deviation;//输入偏差
-    Integral_bias += Bias;//累加误差
-    Result = Position_KP * Bias + Position_KI * Integral_bias + Position_KD * (Bias - Last_Bias);//位置式PID控制器
-    Last_Bias = Bias; // 上一次偏差保存
-    return Result;
-}
-
-// /*@brief:位置式PID控制器2
-//  *        [in] deviation:偏差
-//  * @return:调节电机的Result
-//  */
-// int PositionPID2(float deviation, PID pid)
-// {
-//     float Position_KP = pid.kp, Position_KI = pid.ki, Position_KD = pid.kd;
-//     float Result;
-//     static float Bias, Integral_bias, Last_Bias;
-//     Bias = deviation;
-//     Integral_bias += Bias;
-//     Result = Position_KP * Bias + Position_KI * Integral_bias + Position_KD * (Bias - Last_Bias);
-//     Last_Bias = Bias;
-//     return Result;
-// }
 /**
  * @brief 增量式PID控制器
  *
- * @param SetValue 期望值
- * @param ActualValue 实际值
- * @param pid PID参数
- * @return int 调节电机的Result
+ * @param IncrPID 增量式PID参数
+ * @param MotorInfo 电机输出参数
  */
-int IncrementPID(float Deviation, PID pid)
+void IncrPID(sIncrPID_Info *IncrPID, sMotor_Info *MotorInfo)
 {
-    float Increment_KP = pid.kp, Increment_KI = pid.ki, Increment_KD = pid.kd;
-    static float Current_Bias, Last_Bias, Lastlast_Bias;
-    static int16 Result;      // 定义静态变量
-    Current_Bias = Deviation; // 当前偏差
-
-    Result += (int32)(Increment_KP * (Current_Bias - Last_Bias) + Increment_KI * Current_Bias + Increment_KD * (Current_Bias - 2 * Last_Bias + Lastlast_Bias)); // 增量式PID控制器
-    Lastlast_Bias = Last_Bias;                                                                                                                                  // 上上一次偏差保存
-    Last_Bias = Current_Bias;                                                                                                                                   // 上一次偏差保存
-    return Result;                                                                                                                                              // 返回结果
+    // 更新误差
+    IncrPID->LastLastErr = IncrPID->LastErr;                  // 上次误差更新为上上次误差
+    IncrPID->LastErr = IncrPID->Err;                          // 误差更新为上次误差
+    IncrPID->Err = MotorInfo->TargetSpeed - MotorInfo->Speed; // 传入新的误差
+    // 计算输出
+    IncrPID->Output += IncrPID->Kp * (IncrPID->Err - IncrPID->LastErr) + IncrPID->Ki * IncrPID->Err + IncrPID->Kd * (IncrPID->Err - 2 * IncrPID->LastErr + IncrPID->LastLastErr);
+    // 限制PID输出
+    IncrPID->Output = PIDInfo_Limit(IncrPID->Output, IncrPID->MaxOutput);
 }
-int IncrementPID2(float Deviation, PID pid)
-{
-    float Increment_KP = pid.kp, Increment_KI = pid.ki, Increment_KD = pid.kd;
-    static float Current_Bias, Last_Bias, Lastlast_Bias;
-    static int16 Result;      // 定义静态变量
-    Current_Bias = Deviation; // 当前偏差
-    // Integral_bias += Bias;
-    Result += (int32)(Increment_KP * (Current_Bias - Last_Bias) + Increment_KI * Current_Bias + Increment_KD * (Current_Bias - 2 * Last_Bias + Lastlast_Bias)); // 增量式PID控制器
-    Lastlast_Bias = Last_Bias;                                                                                                                                  // 上上一次偏差保存
-    Last_Bias = Current_Bias;                                                                                                                                   // 上一次偏差保存
-    return Result;                                                                                                                                              // 返回结果
-}
-
-/*************************************************************************
- *  函数名称：float constrain_float(float amt, float low, float high)
- *  功能说明：pid位置式控制器输出
- *  参数说明：
- * @param    pid     pid参数
- * @param    error   pid输入误差
- *  函数返回：PID输出结果
- *  修改时间：2020年4月1日
- *  备    注：
-//  *************************************************************************/
-// float PidLocCtrl(pid_param_t *pid, float error)
-// {
-//     /* 累积误差 */
-//     pid->integrator += error;
-
-//     /* 误差限幅 */
-//     constrain_float(pid->integrator, -pid->imax, pid->imax);
-
-//     pid->out_p = pid->kp * error;
-//     pid->out_i = pid->ki * pid->integrator;
-//     pid->out_d = pid->kd * (error - pid->last_error);
-
-//     pid->last_error = error;
-
-//     pid->out = pid->out_p + pid->out_i + pid->out_d;
-
-//     return pid->out;
-// }
-
-// /**************************************************************************函数名称：float constrain_float(float amt, float low, float high) * 功能说明：pid增量式控制器输出 *参数说明： *@param pid pid参数 *@param error pid输入误差 *函数返回：PID输出结果 注意输出结果已经包涵了上次结果 *修改时间：2020年4月1日 *备 注： ************************************************************************* /
-//     float PidIncCtrl(pid_param_t *pid, float error)
-// {
-
-//     pid->out_p = pid->kp * (error - pid->last_error);
-//     pid->out_i = pid->ki * error;
-//     pid->out_d = pid->kd * ((error - pid->last_error) - pid->last_derivative);
-
-//     pid->last_derivative = error - pid->last_error;
-//     pid->last_error = error;
-
-//     pid->out += pid->out_p + pid->out_i + pid->out_d;
-
-//     return pid->out;
-// }
 /**
- * @brief 动态增量式PID控制器
- *
- * @param Deviation
- * @param pid
+ * @brief 位置式PID控制器
+ * @param PosPID 位置式PID参数
+ * @param MotorInfo 舵机输出参数
  */
-void Dynamic_IncrementPID(float Deviation, PID pid)
+void PosiPIDPosiPID(sPosiPID_Info *PosiPID, sServo_Info *ServoInfo)
 {
-
+    // 更新误差
+    PosiPID->LastErr = PosiPID->Err;                          // 误差更新为上次误差
+    PosiPID->Err = ServoInfo->TargetAngle - ServoInfo->Angle; // 传入新的误差
+    PosiPID->Integral_Err += PosiPID->Err;                    // 积分误差
+    PosiPID->Integral_Err = PIDInfo_Limit(PosiPID->Integral_Err, PosiPID->MaxIntegral_Err);//积分限幅，否者积分会超出变量最大取值范围
+    // 计算输出
+    PosiPID->Output += PosiPID->Kp * PosiPID->Err + PosiPID->Ki * PosiPID->Integral_Err + PosiPID->Kd * (PosiPID->Err - PosiPID->LastErr);
+    // 限制PID输出
+    PosiPID->Output = PIDInfo_Limit(PosiPID->Output, PosiPID->MaxOutput);
 }
-
-
-
-//动态PID听说性能较普通PID好，时间充裕再进行补充

@@ -61,6 +61,7 @@
     "image.h": "c",
     "garage.h": "c",
     "zf_device_ips200.h": "c",
-    "cross.h": "c"
+    "cross.h": "c",
+    "pid.h": "c"
   }
 }
