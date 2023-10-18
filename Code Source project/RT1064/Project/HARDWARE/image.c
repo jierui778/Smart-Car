@@ -628,6 +628,11 @@ int ipts1[POINTS_MAX_LEN][2]; // 存放边线数据（右）
 int ipts0_num;                // 存放边线像素点个数(左)
 int ipts1_num;                // 存放边线像素点个数(右)
 
+int left_up[80][2];//左上边线数组
+int left_up_num;
+int right_up[POINTS_MAX_LEN][2];
+int right_up_num;
+
 int ipts_new0[250][2]; // 拼接后的总数组
 int ipts_new_num0;
 
@@ -767,6 +772,7 @@ void test(void)
 		ips200_draw_line(160,0,ipts11[i][0],ipts11[i][1],RGB565_RED);
 	}
     Cross_Drawline(ipts0,ipts0_num,ipts1,ipts1_num);
+	
     // RoundaboutGetArc(Image_Use_Robert[120][160], 1, ipts0_num, test);
 
     ips200_show_int(160, 160, touch_boundary0, 1);
@@ -1447,7 +1453,7 @@ void Coordinate_transformation_rightup(int pt0_in[][2], int in_num, int pt0_out[
     for (i = 0; i < in_num; i++)
     {
         pt0_out[i][0] = IMAGE_WIDTH - pt0_in[i][0] - 1;
-        pt0_out[i][1] = IMAGE_HEIGHT;
+        pt0_out[i][1] = pt0_in[i][1];
     }
 }
 
@@ -1482,12 +1488,37 @@ void Cross_Drawline(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int 
     uint16 i;
     uint16 left_index, right_index; // 左右拐点的坐标
     uint16 left_highest = 0, right_highest = 0;
+	uint16 right_up_highest_index;
+	uint16 left_up_highest_index;
     float k_left, k_right;
     float b_left, b_right;
     /*一 坐标转换*/
     Coordinate_transformation_left(in_put_l, in_put_num_l, Left_Change); // 左右下线坐标变换
     Coordinate_transformation_right(in_put_r, in_put_r_num, Right_Change);
-
+	Coordinate_transformation_rightup(ipts11,ipts11_num,right_up);
+	
+	for(i=0;i<ipts00_num;i++)
+	{
+		if ((ipts00[i][1]>ipts00[i+1][1])&&(ipts00[i][0]<ipts00[i+1][0])) // 拐点的坐标之和最大
+        {
+            left_up_highest_index = i;
+			break;
+            // 遍历完，不用break
+        }
+	}
+	ips200_draw_line(80,60,ipts00[left_up_highest_index][0],ipts00[left_up_highest_index][1],RGB565_BLUE);
+	for(i=0;i<ipts11_num;i++)
+	{
+		if ((right_up[i][1]>right_up[i+1][1])&&(right_up[i][0]<right_up[i+1][0])) // 拐点的坐标之和最大
+        {
+            right_up_highest_index = i;
+			break;
+            // 遍历完，不用break
+        }
+		ips200_draw_point(right_up[i][0],right_up[i][1]+160,RGB565_RED);
+	}
+	
+	ips200_draw_line(160,120,ipts11[right_up_highest_index][0],ipts11[right_up_highest_index][1],RGB565_RED);
     /*二 找下拐点*/
     for (i = 0; i < in_put_num_l; i++)
     {
