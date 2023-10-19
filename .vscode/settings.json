@@ -55,14 +55,5 @@
   "C_Cpp_Runner.useLeakSanitizer": false,
   "C_Cpp_Runner.showCompilationTime": false,
   "C_Cpp_Runner.useLinkTimeOptimization": false,
-  "C_Cpp_Runner.msvcSecureNoWarnings": false,
-  "files.associations": {
-    "control.h": "c",
-    "image.h": "c",
-    "garage.h": "c",
-    "zf_device_ips200.h": "c",
-    "cross.h": "c",
-    "pid.h": "c",
-    "zf_common_headfile.h": "c"
-  }
+  "C_Cpp_Runner.msvcSecureNoWarnings": false
 }
