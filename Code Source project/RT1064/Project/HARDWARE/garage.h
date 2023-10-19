@@ -26,6 +26,8 @@ enum garage_type_e
 };
 #define LLL 60
 extern enum garage_type_e garage_type;
+extern uint8 touch_boundary0; // 左边线走到图像左边界
+extern uint8 touch_boundary1; // 右边线走到图像右边界
 // extern int16_t garage_cnt ;
 
 
