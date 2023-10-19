@@ -54,8 +54,7 @@
 
 enum garage_type_e garage_type = GARAGE_NONE; // 初始化为向左出库 调试状态为NONE
 int Zibra_Thres = 0;
-uint8 touch_boundary0; // 左边线走到图像左边界
-uint8 touch_boundary1; // 右边线走到图像右边界
+
 void Garage_Check(void)//找到上角点则加入上角点一起判断
 {
     if (touch_boundary0 && Zibra_Thres > ZIBRA_THRES)
