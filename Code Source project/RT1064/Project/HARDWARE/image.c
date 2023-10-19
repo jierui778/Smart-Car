@@ -1307,7 +1307,6 @@ void Coordinate_restore_right(int pt0_in[][2], int in_num, int pt0_out[][2])
 */
 int Left_Change[POINTS_MAX_LEN][2];
 int Right_Change[POINTS_MAX_LEN][2];
-int Right_Change_new[100][2];
 void Cross_Drawline(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int in_put_r_num)
 {
     uint16 i;
@@ -1412,6 +1411,39 @@ void Cross_Drawline(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int 
     }
 }
 
+int left_index_l;
+int right_index_r; // 左右拐点的坐标
+void Get_guaidian(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int in_put_r_num)
+{
+    uint16 i;
+    uint16 left_index, right_index; // 左右拐点的坐标
+    uint16 left_highest = 0, right_highest = 0;
+	
+    /*一 坐标转换*/
+    Coordinate_transformation_left(in_put_l, in_put_num_l, Left_Change); // 左右下线坐标变换
+    Coordinate_transformation_right(in_put_r, in_put_r_num, Right_Change);
+	
+    /*二 找下拐点*/
+    for (i = 0; i < in_put_num_l; i++)
+    {
+        if ((Left_Change[i][0] + Left_Change[i][1]) > left_highest) // 拐点的坐标之和最大
+        {
+            left_highest = (Left_Change[i][0] + Left_Change[i][1]);
+            left_index_l = i;
+            // 遍历完，不用break
+        }
+    }
+
+    for (i = 0; i < in_put_r_num; i++)
+    {
+        if ((Right_Change[i][0] + Right_Change[i][1]) > right_highest) // 拐点的坐标之和最大row=k*column+b
+        {
+            right_highest = (Right_Change[i][0] + Right_Change[i][1]);
+            right_index_r = i;
+            // 遍历完，不用break
+        }
+    }
+}
 /*
 十字补线函数2版：1. 取了上下拐点补线，更稳定，用不上
 */
@@ -2339,6 +2371,32 @@ float run_left(void)
     return err;
 }
 
+void run_cross_b(void)
+{
+    float err;
+    int mid_line[150][2];//中线
+    mid_line_num=0;
+    uint8 i;
+    if(ipts0_num>ipts1_num)
+    {
+        mid_line_num=right_index_r;//中线赋值
+    }
+    else
+    {
+        mid_line_num=left_index_l;//中线赋值
+    }
+    for(i=0;i<mid_line_num;i++)
+    {
+        mid_line[i][0]=(ipts1[i][0]+ipts0[i][0])/2;
+        mid_line[i][1]=(ipts1[i][1]+ipts0[i][1])/2;
+    }
+    for(i=0;i<mid_line_num;i++)
+    {
+        ips200_draw_point(mid_line[i][0],mid_line[i][1],RGB565_GREEN);
+    }
+    ips200_show_uint(40,120,mid_line_num,3);
+}
+
 // float run_left_new(void)
 // {   
 //     /*一 求中线*/
@@ -2367,8 +2425,19 @@ float run_left(void)
 //     return err;
 // }
 
-
-
+/*找到近拐点直接截断处理*/
+void run_cross(void)
+{
+    if(Cross_State_b==1&&Cross_State_c==0&&Cross_State_d==0)
+    {
+        Get_guaidian(ipts0,ipts0_num,ipts1,ipts1_num);//找到拐点
+        run_cross_b();
+    }
+    if(Cross_State_c==1)
+    {
+        Cross_Drawline(ipts0,ipts0_num,ipts1,ipts1_num);
+    }
+}
 void test(void)
 {
     uint8 i;
@@ -2422,11 +2491,12 @@ void test(void)
 
     Image_CheckState(ipts0,ipts0_num,ipts1,ipts1_num);
     /*根据状态执行*/
-    if(Left_Turn_Mid==1 || Left_Turn==1)
+    if(Cross_State_b==1)
     {
-        //左转弯
+        run_cross();
     }
-	run_left();
+    
+    
 //    Cross_Drawline(ipts0,ipts0_num,ipts1,ipts1_num);
 	
     // RoundaboutGetArc(Image_Use_Robert[120][160], 1, ipts0_num, test);
