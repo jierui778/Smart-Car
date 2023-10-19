@@ -5,9 +5,6 @@
 
 
 
-
-enum circle_type_e {
-    CIRCLE_NONE = 0, // 非圆环模式
 enum circle_type_e
 {
     CIRCLE_NONE, // 非圆环模式

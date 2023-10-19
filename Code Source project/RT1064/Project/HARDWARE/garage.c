@@ -598,8 +598,8 @@ void Garage_Run(void)
 
 //         //从找到角点位置开始寻找
 //         if (AT_IMAGE(&img_raw, far_x1 -1 , far_y1 ) >= thres)
-//             Right_Adaptive_Threshold(&img_raw, block_size, clip_value, far_x1 -1 , far_y1 , g_far_ipts1, &g_far_ipts1_num);
-//         else g_far_ipts1_num = 0;
+//             (&img_raw, block_size, clip_value, far_x1 -1 , far_y1 , g_far_ipts1, &g_far_ipts1_num);
+//         else g_far_ipts1_num = 0;Right_Adaptive_Threshold
 
 //         // 去畸变+透视变换
 

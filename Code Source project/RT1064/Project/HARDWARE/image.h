@@ -26,31 +26,31 @@ void Image_Compress();                                                          
 uint8 OSTU_GetThreshold(uint8 *image, uint16 Width, uint16 Height);                                                          // 优化大津法获取阈值
 void Image_Sobel(uint8 Image_in[IMAGE_HEIGHT][IMAGE_WIDTH], uint8_t Image_out[IMAGE_HEIGHT][IMAGE_WIDTH], uint16 Threshold); // 全局sobel方案
 void Image_Binarization(unsigned char threshold, uint8 (*Image_Use)[IMAGE_WIDTH]);                                           // 根据阈值对图像进行二值化
-void Image_DrawRectangle(void);                                                                                              // 画黑框
-void Image_Get_neighborhoods(uint8 (*Image_Use)[IMAGE_WIDTH]);                                                               // 八邻域巡线
-void Image_Filter(void);                                                                                                     // 腐蚀滤波函数（简单的早点过滤）
-uint8 Image_Get_RightPoint(uint8 start_row);                                                                                 // 求左边界起始点坐标函数
-uint8 Image_Get_LeftPoint(uint8 start_row);                                                                                  // 求右边界起始点坐标函数
-void Image_blur_points_Left(int num, int kernel);                                                                            // 三角滤波左边线
-void Image_blur_points_Right(int num, int kernel);                                                                           // 三角滤波右边线
-void Coordinate_transformation_rightup(int pt0_in[][2], int in_num, int pt0_out[][2]);
+// void Image_DrawRectangle(void);                                                                                              // 画黑框
+// void Image_Get_neighborhoods(uint8 (*Image_Use)[IMAGE_WIDTH]);                                                               // 八邻域巡线
+// void Image_Filter(void);                                                                                                     // 腐蚀滤波函数（简单的早点过滤）
+// uint8 Image_Get_RightPoint(uint8 start_row);                                                                                 // 求左边界起始点坐标函数
+// uint8 Image_Get_LeftPoint(uint8 start_row);                                                                                  // 求右边界起始点坐标函数
+// void Image_blur_points_Left(int num, int kernel);                                                                            // 三角滤波左边线
+// void Image_blur_points_Right(int num, int kernel);                                                                           // 三角滤波右边线
+// void Coordinate_transformation_rightup(int pt0_in[][2], int in_num, int pt0_out[][2]);
 
 
 /*辅助计算*/
-float Image_ab_value(float a, float b);                                        // 求浮点型的绝对值
-float Image_Getk(int16 derta_column, int16 derta_row);                         // 简单计算直线斜率
-float Image_Getb(int16 example_column, int16 example_row, float k);            // 简单计算截距
-int abs_int(int a, int b);                                                     // 求两整型绝对值
-int min(int a, int b);                                                         // 求两整型最小值
-int Image_LeftGrowDirection(uint8 end, uint8 Direction);                       // 计算左边线中生长某方向的总个数
-int Image_RightGrowDirection(uint8 end, uint8 Direction);                      // 计算右边线中生长某方向的总个数
-uint8 Image_Scan_Row(uint8 (*Image_Use)[IMAGE_WIDTH], uint8 target_row);       // 扫某行的黑白跳变点（斑马线判断）
-uint8 Image_Scan_Column(uint8 (*Image_Use)[IMAGE_WIDTH], uint8 target_column); // 扫某列的黑白跳变点（斑马线判断）
-void Image_pointsleft(uint8 x1, uint8 y1, uint8 x2, uint8 y2);                 // 两点坐标求斜率和截距
-void Image_pointsright(uint8 x1, uint8 y1, uint8 x2, uint8 y2);                // 两点坐标求斜率和截距（存的数组不一样）
-float Imgae_SlopeLeft(uint8 begin, uint8 end);                                 // 最小二乘法求左边线斜率
-void Image_CountLeftKB_L(uint8 start, uint8 end);
-float mySqrt(float x); // 计算一个浮点数的平方根
+// float Image_ab_value(float a, float b);                                        // 求浮点型的绝对值
+// float Image_Getk(int16 derta_column, int16 derta_row);                         // 简单计算直线斜率
+// float Image_Getb(int16 example_column, int16 example_row, float k);            // 简单计算截距
+// int abs_int(int a, int b);                                                     // 求两整型绝对值
+// int min(int a, int b);                                                         // 求两整型最小值
+// //int Image_LeftGrowDirection(uint8 end, uint8 Direction);                       // 计算左边线中生长某方向的总个数
+// //int Image_RightGrowDirection(uint8 end, uint8 Direction);                      // 计算右边线中生长某方向的总个数
+// uint8 Image_Scan_Row(uint8 (*Image_Use)[IMAGE_WIDTH], uint8 target_row);       // 扫某行的黑白跳变点（斑马线判断）
+// uint8 Image_Scan_Column(uint8 (*Image_Use)[IMAGE_WIDTH], uint8 target_column); // 扫某列的黑白跳变点（斑马线判断）
+// void Image_pointsleft(uint8 x1, uint8 y1, uint8 x2, uint8 y2);                 // 两点坐标求斜率和截距
+// void Image_pointsright(uint8 x1, uint8 y1, uint8 x2, uint8 y2);                // 两点坐标求斜率和截距（存的数组不一样）
+// float Imgae_SlopeLeft(uint8 begin, uint8 end);                                 // 最小二乘法求左边线斜率
+// void Image_CountLeftKB_L(uint8 start, uint8 end);
+// float mySqrt(float x); // 计算一个浮点数的平方根
 
 /*元素*/
 void Image_FillCross(uint8 (*Image_Use)[IMAGE_WIDTH]); // 十字
@@ -103,12 +103,12 @@ extern image_t img_raw;
 void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x, int y, int pts[][2], int *num);
 void Right_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x, int y, int pts[][2], int *num);
 void Find_Borderline(void);
-void draw_line(image_t *img, int pt0[2], int pt1[2], uint8_t value);                                          // 两点画线
-void draw_line2(float pt0[2], float pt1[2], float pts_out[][2], int *num, float dist);                        // 逆透视等距采样
-void SplicingArray(float pt0[][2], int num1, float pt1[][2], int num2, float pt_out[][2], int *num, uint8 x); // 数组拼接
+// void draw_line(image_t *img, int pt0[2], int pt1[2], uint8_t value);                                          // 两点画线
+// void draw_line2(float pt0[2], float pt1[2], float pts_out[][2], int *num, float dist);                        // 逆透视等距采样
+// void SplicingArray(float pt0[][2], int num1, float pt1[][2], int num2, float pt_out[][2], int *num, uint8 x); // 数组拼接
 void test(void);
-void blur_points(float pts_in[][2], int num, float pts_out[][2], int kernel);
-void Pespective(int pts_in[][2], int int_num, float pts_out[][2]);
+// void blur_points(float pts_in[][2], int num, float pts_out[][2], int kernel);
+// void Pespective(int pts_in[][2], int int_num, float pts_out[][2]);
 void Get_Midline(int pts_l[][2], int pts_l_num, int pts_r[][2], int pts_r_num);
 float Get_err1(int pts_in[][2], int num);
 float LineRession(int pts_in[][2], int num);
@@ -259,21 +259,21 @@ void test_new(void);
 #define b32 (-0.0023f)
 #define b33 (-0.0271f)
 
-// D矩阵参数
-/*这些宏定义都是给60*80的矩阵*/
-#define b11 (-0.4928f)
-#define b12 (-0.4038f)
-#define b13 (47.5991f)
+//// D矩阵参数
+///*这些宏定义都是给60*80的矩阵*/
+//#define b11 (-0.4928f)
+//#define b12 (-0.4038f)
+//#define b13 (47.5991f)
 
-#define b21 (0.0208f)
+//#define b21 (0.0208f)
 
-#define b22 (-0.0466f)
+//#define b22 (-0.0466f)
 
-#define b23 (-14.1659f)
+//#define b23 (-14.1659f)
 
-#define b31 (0.0003f)
-#define b32 (-0.0052f)
-#define b33 (-0.0556f)
+//#define b31 (0.0003f)
+//#define b32 (-0.0052f)
+//#define b33 (-0.0556f)
 
 #define getx_b(u, v) (b11 * (u) + b12 * (v) + b13)
 #define gety_b(u, v) (b21 * (u) + b22 * (v) + b23)
@@ -281,11 +281,6 @@ void test_new(void);
 
 
 
-
-void ImagePerspective_Init(void);
-
-
-void ImagePerspective_Init(void);
 
 void resample_points(float pts_in[][2], int num1, float pts_out[][2], int *num2, float dist);
 
@@ -297,18 +292,18 @@ void check_cross(void);
 void run_cross(void);
 #define POINTS_MAX_LEN (150) // 边线点最多的情况——>num
 
-// 逆透视补线数组
-extern float left_line[POINTS_MAX_LEN][2];
-extern float right_line[POINTS_MAX_LEN][2];
-extern int left_num, right_num;
-// 拼接数组
-extern float splicing_leftline[POINTS_MAX_LEN][2];
-extern float splicing_rightline[POINTS_MAX_LEN][2];
-extern int splicing_leftline_num, splicing_rightline_num;
-// 拼接数组平移中线
-extern float splicing_leftline_center[POINTS_MAX_LEN][2];
-extern float splicing_rightline_center[POINTS_MAX_LEN][2];
-extern int splicing_leftline_center_num, splicing_rightline_center_num;
+//// 逆透视补线数组
+//extern float left_line[POINTS_MAX_LEN][2];
+//extern float right_line[POINTS_MAX_LEN][2];
+//extern int left_num, right_num;
+//// 拼接数组
+//extern float splicing_leftline[POINTS_MAX_LEN][2];
+//extern float splicing_rightline[POINTS_MAX_LEN][2];
+//extern int splicing_leftline_num, splicing_rightline_num;
+//// 拼接数组平移中线
+//extern float splicing_leftline_center[POINTS_MAX_LEN][2];
+//extern float splicing_rightline_center[POINTS_MAX_LEN][2];
+//extern int splicing_leftline_center_num, splicing_rightline_center_num;
 
 // 左右边丢线
 extern uint8 loseline0;
@@ -334,33 +329,33 @@ extern float xielv_left_y_to_end, xielv_right_y_to_end; // 在逆透视后得坐
 extern int ipts0[POINTS_MAX_LEN][2];
 extern int ipts1[POINTS_MAX_LEN][2];
 extern int ipts0_num, ipts1_num;
-// 变换后左右边线
-extern float rpts0[POINTS_MAX_LEN][2];
-extern float rpts1[POINTS_MAX_LEN][2];
-extern int rpts0_num, rpts1_num;
-// 变换后左右边线+滤波
-extern float rpts0b[POINTS_MAX_LEN][2];
-extern float rpts1b[POINTS_MAX_LEN][2];
-extern int rpts0b_num, rpts1b_num;
-// 变换后左右边线+等距采样
-extern float rpts0s[POINTS_MAX_LEN][2];
-extern float rpts1s[POINTS_MAX_LEN][2];
-extern int rpts0s_num, rpts1s_num;
-// 左右边线局部角度变化率
-extern float rpts0a[POINTS_MAX_LEN];
-extern float rpts1a[POINTS_MAX_LEN];
-extern int rpts0a_num, rpts1a_num;
-// 左右边线局部角度变化率+非极大抑制
-extern float rpts0an[POINTS_MAX_LEN];
-extern float rpts1an[POINTS_MAX_LEN];
-extern int rpts0an_num, rpts1an_num;
-// 左/右中线
-extern float rptsc0[POINTS_MAX_LEN][2];
-extern float rptsc1[POINTS_MAX_LEN][2];
-extern int rptsc0_num, rptsc1_num;
-// 归一化中线
-extern float rptsn[POINTS_MAX_LEN][2];
-extern int rptsn_num;
+// // 变换后左右边线
+// extern float rpts0[POINTS_MAX_LEN][2];
+// extern float rpts1[POINTS_MAX_LEN][2];
+// extern int rpts0_num, rpts1_num;
+// // 变换后左右边线+滤波
+// extern float rpts0b[POINTS_MAX_LEN][2];
+// extern float rpts1b[POINTS_MAX_LEN][2];
+// extern int rpts0b_num, rpts1b_num;
+// // 变换后左右边线+等距采样
+// extern float rpts0s[POINTS_MAX_LEN][2];
+// extern float rpts1s[POINTS_MAX_LEN][2];
+// extern int rpts0s_num, rpts1s_num;
+// // 左右边线局部角度变化率
+// extern float rpts0a[POINTS_MAX_LEN];
+// extern float rpts1a[POINTS_MAX_LEN];
+// extern int rpts0a_num, rpts1a_num;
+// // 左右边线局部角度变化率+非极大抑制
+// extern float rpts0an[POINTS_MAX_LEN];
+// extern float rpts1an[POINTS_MAX_LEN];
+// extern int rpts0an_num, rpts1an_num;
+// // 左/右中线
+// extern float rptsc0[POINTS_MAX_LEN][2];
+// extern float rptsc1[POINTS_MAX_LEN][2];
+// extern int rptsc0_num, rptsc1_num;
+// // 归一化中线
+// extern float rptsn[POINTS_MAX_LEN][2];
+// extern int rptsn_num;
 
 // Y角点
 extern int Ypt0_rpts0s_id, Ypt1_rpts1s_id;

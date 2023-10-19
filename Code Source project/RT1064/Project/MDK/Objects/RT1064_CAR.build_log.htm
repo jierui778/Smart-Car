@@ -17,16 +17,38 @@ Library Manager: ArmAr.exe V6.19
 Hex Converter:   FromElf.exe V6.19
 CPU DLL:         SARMCM3.DLL V5.38.0.0
 Dialog DLL:      DCM.DLL V1.17.5.0
-Target DLL:      CMSIS_AGDI.dll V1.33.15.0
+Target DLL:      UL2CM3.DLL V1.164.8.0
 Dialog DLL:      TCM.DLL V1.56.4.0
  
 <h2>Project:</h2>
 C:\Users\JIERUI\Desktop\2023 Smart Car\Smart-Car\Code Source project\RT1064\Project\MDK\RT1064_CAR.uvprojx
-Project File Date:  10/18/2023
+Project File Date:  10/20/2023
 
 <h2>Output:</h2>
 *** Using Compiler 'V6.19', folder: 'C:\Program Files\Keil_v5\ARM\ARMCLANG\Bin'
 Build target 'RT1064_CAR'
+warning: unknown warning option '-Wno-reserved-identifier'; did you mean '-Wno-reserved-id-macro'? [-Wunknown-warning-option]
+../HARDWARE/cross.c(1): warning: In file included from...
+../HARDWARE/cross.h(5): warning: 'PI' macro redefined [-Wmacro-redefined]
+#define PI               3.14159265358979f
+        ^
+../../libraries/zf_device\zf_device_gps_tau1201.h(60): note: previous definition is here
+#define PI                  ( 3.1415926535898 )
+        ^
+../HARDWARE/cross.c(14): warning: '/*' within block comment [-Wcomment]
+/**
+^
+3 warnings generated.
+compiling cross.c...
+warning: unknown warning option '-Wno-reserved-identifier'; did you mean '-Wno-reserved-id-macro'? [-Wunknown-warning-option]
+1 warning generated.
+compiling circle.c...
+warning: unknown warning option '-Wno-reserved-identifier'; did you mean '-Wno-reserved-id-macro'? [-Wunknown-warning-option]
+1 warning generated.
+compiling main.c...
+warning: unknown warning option '-Wno-reserved-identifier'; did you mean '-Wno-reserved-id-macro'? [-Wunknown-warning-option]
+1 warning generated.
+compiling schedule.c...
 warning: unknown warning option '-Wno-reserved-identifier'; did you mean '-Wno-reserved-id-macro'? [-Wunknown-warning-option]
 ../HARDWARE/image.c(5): warning: In file included from...
 ../HARDWARE/cross.h(5): warning: 'PI' macro redefined [-Wmacro-redefined]
@@ -35,12 +57,15 @@ warning: unknown warning option '-Wno-reserved-identifier'; did you mean '-Wno-r
 ../../libraries/zf_device\zf_device_gps_tau1201.h(60): note: previous definition is here
 #define PI                  ( 3.1415926535898 )
         ^
-2 warnings generated.
+../HARDWARE/image.c(1296): warning: incompatible pointer types assigning to 'uint8_t *' (aka 'unsigned char *') from 'uint8 [120][160]' [-Wincompatible-pointer-types]
+    img_raw.data = Image_Use_Robert;
+                 ^ ~~~~~~~~~~~~~~~~
+3 warnings generated.
 compiling image.c...
 linking...
-Program Size: Code=73848 RO-data=7832 RW-data=320 ZI-data=90600  
+Program Size: Code=69824 RO-data=7600 RW-data=288 ZI-data=70164  
 FromELF: creating hex file...
-".\Objects\RT1064_CAR.axf" - 0 Error(s), 2 Warning(s).
+".\Objects\RT1064_CAR.axf" - 0 Error(s), 9 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -53,7 +78,7 @@ Package Vendor: NXP
   C:/Users/JIERUI/AppData/Local/Arm/Packs/NXP/MIMXRT1064_DFP/16.0.0
 
 <h2>Collection of Component Files used:</h2>
-Build Time Elapsed:  00:00:01
+Build Time Elapsed:  00:00:02
 </pre>
 </body>
 </html>

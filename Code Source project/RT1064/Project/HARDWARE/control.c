@@ -46,8 +46,8 @@ void Speed_Control(float left_speed, float right_speed)
     float Deviation_L = left_speed - Speed_L;                // 偏差=目标速度-实际速度
     float Deviation_R = right_speed - Speed_R;               //
 
-    Motor_SetPwmL(MINMAX(IncrementPID(Deviation_L, SpeedParam), -PWM_MAX, PWM_MAX));  // 将累加增量进行限幅输出
-    Motor_SetPwmR(MINMAX(IncrementPID2(Deviation_R, SpeedParam), -PWM_MAX, PWM_MAX)); // 将累加增量进行限幅输出
+//    Motor_SetPwmL(MINMAX(IncrementPID(Deviation_L, SpeedParam), -PWM_MAX, PWM_MAX));  // 将累加增量进行限幅输出
+//    Motor_SetPwmR(MINMAX(IncrementPID2(Deviation_R, SpeedParam), -PWM_MAX, PWM_MAX)); // 将累加增量进行限幅输出
 }
 
 /**
@@ -90,7 +90,7 @@ void TrackLine_Control(float current_err)
 
         float Deviation = -current_err;                      // 理想情况应该为误差角度为0
         float x;
-        x= PositionPID(Deviation, TraceTurnParam);
+//        x= PositionPID(Deviation, TraceTurnParam);
     
         Servo_SetAngle(x); // 根据误差角度进行转
 //    MINMAX(IncrementPID(Deviation_L, SpeedParam), -PWM_MAX, PWM_MAX)

@@ -11,10 +11,8 @@
 #include "pid.h"
 #include "isr.h"
 #include "filter.h"
-<<<<<<< HEAD
+
 #include "SEGGER_RTT.h"
-=======
->>>>>>> e36a3ac3e6359359b5453da94c6696c487dc9b27
 
 int main(void)
 {
@@ -33,14 +31,12 @@ int main(void)
     //    //  Servo_Init();
     //    pit_ms_init(PIT_CH0, 200);
     //    interrupt_set_priority(PIT_IRQn, 0);
-    PID_Init();
-<<<<<<< HEAD
+//    PID_Init();
+
     SEGGER_RTT_Init();
     SEGGER_RTT_printf(0, "Hello world !");
 
-=======
-//    bluetooth_ch9141_init();
->>>>>>> e36a3ac3e6359359b5453da94c6696c487dc9b27
+
     //    Motor_SetPwmL(2000);
     //    Motor_SetPwmR(1888.88);
     Servo_Init();//舵机初始化
@@ -48,16 +44,15 @@ int main(void)
     while (1)
     {
 
-<<<<<<< HEAD
+
         //        Schedule_Run();//任务运行总函数，开始任务调度
-        test();
+//        test();
         ips200_displayimage03x(*Image_Use_Robert, 160, 120);
             
 //        test();
 //        
 //        //        Schedule_Run();//任务运行总函数，开始任务调度
 		//	bluetooth_ch9141_send_image(*Image_Use_Robert, 19200);
-=======
 
 //        if (mt9v03x_finish_flag)
 //        {
@@ -89,15 +84,8 @@ int main(void)
 ////            bluetooth_ch9141_send_image((const uint8 *)Image_Use_Robert, MT9V03X_IMAGE_SIZE);
 ////            mt9v03x_finish_flag = 0;
 //     
-            ips200_displayimage03x(*Image_Use_Robert, 160, 120);
-//			
-//        }
-            
-        test();
 //        
 //        Schedule_Run();//任务运行总函数，开始任务调度
 		//	bluetooth_ch9141_send_image(*Image_Use_Robert, 19200);
-
->>>>>>> e36a3ac3e6359359b5453da94c6696c487dc9b27
     }
 }
