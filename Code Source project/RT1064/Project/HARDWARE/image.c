@@ -106,20 +106,49 @@ uint8 Image_Use_Robert[IMAGE_HEIGHT][IMAGE_WIDTH];
  */
 void Image_Compress(void)
 {
-    int i, j, row, line;
-    const float pro_h = PRIMEVAL_HEIGHT / IMAGE_HEIGHT, pro_w = PRIMEVAL_WIDTH / IMAGE_WIDTH; // 根据原始的图像尺寸和你所需要的图像尺寸确定好压缩比例。
-    if (mt9v03x_finish_flag)                                                                  // 采集完成再进行转换
+//    int i, j, row, line;
+//    const float pro_h = PRIMEVAL_HEIGHT / IMAGE_HEIGHT, pro_w = PRIMEVAL_WIDTH / IMAGE_WIDTH; // 根据原始的图像尺寸和你所需要的图像尺寸确定好压缩比例。
+//    if (mt9v03x_finish_flag)                                                                  // 采集完成再进行转换
+//    {
+//        for (i = 0; i < IMAGE_HEIGHT; i++) // 遍历图像的每一行，从第零行到第59行。
+//        {
+//            row = i * pro_h + 0.5;
+//            for (j = 0; j < IMAGE_WIDTH; j++) // 遍历图像的每一列，从第零列到第79列。
+//            {
+//                line = j * pro_w + 0.5;
+//                Image_Use[i][j] = mt9v03x_image[row][line]; // mt9v03x_image数组里面是原始灰度图像，Image_Use数组存储的是我之后要拿去处理的图像，但依然是灰度图像哦！只是压缩了一下而已。
+//            }
+//        }
+//        mt9v03x_finish_flag = 0; // 清除标志位
+//    }
+    uint8_t div_h, div_w;
+    uint32_t temp_h = 0;
+    uint32_t temp_w = 0;
+    uint32_t row_start = 0;
+    uint32_t lin_start = 0;
+
+    div_h = PRIMEVAL_HEIGHT/IMAGE_HEIGHT;
+    div_w = PRIMEVAL_WIDTH/IMAGE_WIDTH;
+
+    //从中心取图像
+    if(IMAGE_HEIGHT * div_h != PRIMEVAL_HEIGHT)
     {
-        for (i = 0; i < IMAGE_HEIGHT; i++) // 遍历图像的每一行，从第零行到第59行。
+        row_start = (PRIMEVAL_HEIGHT - IMAGE_HEIGHT * div_h)/2;
+        temp_h = row_start;
+    }
+    if(IMAGE_WIDTH * div_w != PRIMEVAL_WIDTH)
+    {
+        lin_start = (PRIMEVAL_WIDTH - IMAGE_WIDTH * div_w)/2;
+    }
+    for(int i = 0; i < IMAGE_HEIGHT; i++)
+    {
+        temp_w = lin_start;
+        for(int j = 0; j < IMAGE_WIDTH; j++)
         {
-            row = i * pro_h + 0.5;
-            for (j = 0; j < IMAGE_WIDTH; j++) // 遍历图像的每一列，从第零列到第79列。
-            {
-                line = j * pro_w + 0.5;
-                Image_Use[i][j] = mt9v03x_image[row][line]; // mt9v03x_image数组里面是原始灰度图像，Image_Use数组存储的是我之后要拿去处理的图像，但依然是灰度图像哦！只是压缩了一下而已。
-            }
+            Image_Use[i][j] = mt9v03x_image[temp_h][temp_w];
+            temp_w += div_w;
         }
-        mt9v03x_finish_flag = 0; // 清除标志位
+        temp_h += div_h;
     }
 }
 /**
@@ -738,7 +767,6 @@ void test(void)
     int TH;
     TH = OSTU_GetThreshold(Image_Use[0], IMAGE_WIDTH, IMAGE_HEIGHT);
     Image_Sobel(Image_Use, Image_Use_Robert, TH); // 全局Sobel得二值图(方案二) 2.8ms
-
     img_raw.data = *Image_Use_Robert; // 传入sobel边沿检测图像
     // 寻找左右边线
     Find_Borderline();
