@@ -357,15 +357,17 @@ extern int ipts0_num, ipts1_num;
 // extern float rptsn[POINTS_MAX_LEN][2];
 // extern int rptsn_num;
 
-// Y角点
-extern int Ypt0_rpts0s_id, Ypt1_rpts1s_id;
-extern bool Ypt0_found, Ypt1_found;
-// L角点
-extern int Lpt0_rpts0s_id, Lpt1_rpts1s_id;
-extern bool Lpt0_found, Lpt1_found;
-// 内L角点
-extern int N_Lpt0_rpts0s_id, N_Lpt1_rpts1s_id;
-extern bool N_Lpt0_found, N_Lpt1_found;
+// // Y角点
+// extern int Ypt0_rpts0s_id, Ypt1_rpts1s_id;
+// extern bool Ypt0_found, Ypt1_found;
+// // L角点
+// extern int Lpt0_rpts0s_id, Lpt1_rpts1s_id;
+// extern bool Lpt0_found, Lpt1_found;
+// // 内L角点
+// extern int N_Lpt0_rpts0s_id, N_Lpt1_rpts1s_id;
+// extern bool N_Lpt0_found, N_Lpt1_found;
+
+extern int Far_Lpt0_found0, Far_Lpt1_found1; // 远角点标志位
 
 extern int N_Xfound_num; // 面向赛道编程，双内L计数
 // 长直道
@@ -393,6 +395,8 @@ void Arc_Check(int pts_in[][2], int pts_num /*,int8 *flag*/);
 uint8_t RoundaboutGetArc(uint8_t imageSide[120][2], uint8_t status, uint8_t num, uint8_t *index);
 
 void LongLine_Check(int pts_in[][2], int pts_num);
+
+void Features_Find(void);
 #endif
 
     /*

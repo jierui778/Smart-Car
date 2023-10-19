@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\RT1064_CAR.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\RT1064_CAR.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6190004: Last Updated: Fri Oct 20 01:42:01 2023
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6190004: Last Updated: Fri Oct 20 02:05:01 2023
 <BR><P>
 <H3>Maximum Stack Usage =       1096 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -1194,16 +1194,16 @@ Global Symbols
 <P><STRONG><a name="[12f]"></a>CLOCK_GetFreq</STRONG> (Thumb, 368 bytes, Stack size 24 bytes, fsl_clock.o(.text.CLOCK_GetFreq))
 <BR><BR>[Stack]<UL><LI>Max Depth = 752<LI>Call Chain = CLOCK_GetFreq &rArr; CLOCK_GetPerClkFreq &rArr; CLOCK_GetIpgFreq &rArr; CLOCK_GetAhbFreq &rArr; CLOCK_GetPeriphClkFreq &rArr; CLOCK_GetSysPfdFreq &rArr; CLOCK_GetPllFreq &rArr; __aeabi_assert &rArr; DbgConsole_Printf &rArr; DbgConsole_Vprintf &rArr; DbgConsole_PrintfFormattedData &rArr; DbgConsole_ConvertFloatRadixNumToString &rArr; __hardfp_pow &rArr; sqrt
 </UL>
-<BR>[Calls]<UL><LI><a href="#[134]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetRtcFreq
-<LI><a href="#[136]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetPllUsb1SWFreq
-<LI><a href="#[133]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetOscFreq
-<LI><a href="#[135]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetUsb1PfdFreq
+<BR>[Calls]<UL><LI><a href="#[135]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetUsb1PfdFreq
 <LI><a href="#[137]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetSysPfdFreq
 <LI><a href="#[130]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetSemcFreq
 <LI><a href="#[10d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetPllFreq
 <LI><a href="#[132]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetPerClkFreq
 <LI><a href="#[131]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetIpgFreq
 <LI><a href="#[12d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetAhbFreq
+<LI><a href="#[134]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetRtcFreq
+<LI><a href="#[136]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetPllUsb1SWFreq
+<LI><a href="#[133]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetOscFreq
 </UL>
 <BR>[Called By]<UL><LI><a href="#[212]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;spi_init
 <LI><a href="#[1b1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pwm_init
@@ -1221,8 +1221,8 @@ Global Symbols
 <P><STRONG><a name="[132]"></a>CLOCK_GetPerClkFreq</STRONG> (Thumb, 68 bytes, Stack size 16 bytes, fsl_clock.o(.text.CLOCK_GetPerClkFreq))
 <BR><BR>[Stack]<UL><LI>Max Depth = 728<LI>Call Chain = CLOCK_GetPerClkFreq &rArr; CLOCK_GetIpgFreq &rArr; CLOCK_GetAhbFreq &rArr; CLOCK_GetPeriphClkFreq &rArr; CLOCK_GetSysPfdFreq &rArr; CLOCK_GetPllFreq &rArr; __aeabi_assert &rArr; DbgConsole_Printf &rArr; DbgConsole_Vprintf &rArr; DbgConsole_PrintfFormattedData &rArr; DbgConsole_ConvertFloatRadixNumToString &rArr; __hardfp_pow &rArr; sqrt
 </UL>
-<BR>[Calls]<UL><LI><a href="#[133]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetOscFreq
-<LI><a href="#[131]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetIpgFreq
+<BR>[Calls]<UL><LI><a href="#[131]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetIpgFreq
+<LI><a href="#[133]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetOscFreq
 </UL>
 <BR>[Called By]<UL><LI><a href="#[12f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetFreq
 </UL>
@@ -1236,19 +1236,19 @@ Global Symbols
 <LI><a href="#[138]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetPllBypassRefClk
 </UL>
 <BR>[Called By]<UL><LI><a href="#[12f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetFreq
-<LI><a href="#[136]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetPllUsb1SWFreq
-<LI><a href="#[12e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetPeriphClkFreq
 <LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BOARD_DebugConsoleSrcFreq
 <LI><a href="#[135]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetUsb1PfdFreq
 <LI><a href="#[137]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetSysPfdFreq
+<LI><a href="#[136]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetPllUsb1SWFreq
+<LI><a href="#[12e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetPeriphClkFreq
 </UL>
 
 <P><STRONG><a name="[130]"></a>CLOCK_GetSemcFreq</STRONG> (Thumb, 104 bytes, Stack size 16 bytes, fsl_clock.o(.text.CLOCK_GetSemcFreq))
 <BR><BR>[Stack]<UL><LI>Max Depth = 712<LI>Call Chain = CLOCK_GetSemcFreq &rArr; CLOCK_GetPeriphClkFreq &rArr; CLOCK_GetSysPfdFreq &rArr; CLOCK_GetPllFreq &rArr; __aeabi_assert &rArr; DbgConsole_Printf &rArr; DbgConsole_Vprintf &rArr; DbgConsole_PrintfFormattedData &rArr; DbgConsole_ConvertFloatRadixNumToString &rArr; __hardfp_pow &rArr; sqrt
 </UL>
-<BR>[Calls]<UL><LI><a href="#[12e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetPeriphClkFreq
-<LI><a href="#[135]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetUsb1PfdFreq
+<BR>[Calls]<UL><LI><a href="#[135]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetUsb1PfdFreq
 <LI><a href="#[137]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetSysPfdFreq
+<LI><a href="#[12e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetPeriphClkFreq
 </UL>
 <BR>[Called By]<UL><LI><a href="#[12f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetFreq
 </UL>
@@ -1259,8 +1259,8 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[10d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetPllFreq
 </UL>
 <BR>[Called By]<UL><LI><a href="#[12f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetFreq
-<LI><a href="#[12e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetPeriphClkFreq
 <LI><a href="#[130]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetSemcFreq
+<LI><a href="#[12e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetPeriphClkFreq
 </UL>
 
 <P><STRONG><a name="[135]"></a>CLOCK_GetUsb1PfdFreq</STRONG> (Thumb, 160 bytes, Stack size 24 bytes, fsl_clock.o(.text.CLOCK_GetUsb1PfdFreq))
@@ -2656,11 +2656,11 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 768<LI>Call Chain = encoder_quad_init &rArr; qtimer_iomuxc &rArr; debug_assert_handler &rArr; debug_protective_handler &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[1ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;debug_assert_handler
-<LI><a href="#[1fa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;QTMR_StartTimer
 <LI><a href="#[1f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;qtimer_iomuxc
 <LI><a href="#[1c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;QTMR_Init
 <LI><a href="#[1bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;QTMR_GetDefaultConfig
 <LI><a href="#[1bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;QTMR_Deinit
+<LI><a href="#[1fa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;QTMR_StartTimer
 </UL>
 <BR>[Called By]<UL><LI><a href="#[16b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Encoder_Init
 </UL>
@@ -3176,13 +3176,13 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[e7]"></a>type_default_callback</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, zf_device_type.o(.text.type_default_callback))
-<BR>[Address Reference Count : 7]<UL><LI> zf_device_type.o(.text.set_camera_type)
-<LI> zf_device_type.o(.data.camera_uart_handler)
+<BR>[Address Reference Count : 7]<UL><LI> zf_device_type.o(.data.camera_uart_handler)
 <LI> zf_device_type.o(.data.flexio_camera_vsync_handler)
 <LI> zf_device_type.o(.data.flexio_camera_uart_handler)
 <LI> zf_device_type.o(.data.wireless_module_uart_handler)
 <LI> zf_device_type.o(.data.wireless_module_spi_handler)
 <LI> zf_device_type.o(.data.tof_module_exti_handler)
+<LI> zf_device_type.o(.text.set_camera_type)
 </UL>
 <P><STRONG><a name="[1f2]"></a>uart_init</STRONG> (Thumb, 158 bytes, Stack size 56 bytes, zf_driver_uart.o(.text.uart_init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 792<LI>Call Chain = uart_init &rArr; uart_iomuxc &rArr; debug_assert_handler &rArr; debug_protective_handler &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
@@ -3866,17 +3866,17 @@ Local Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 4<LI>Call Chain = CLOCK_GetOscFreq
 </UL>
 <BR>[Called By]<UL><LI><a href="#[12f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetFreq
+<LI><a href="#[132]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetPerClkFreq
 <LI><a href="#[138]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetPllBypassRefClk
 <LI><a href="#[12e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetPeriphClkFreq
-<LI><a href="#[132]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetPerClkFreq
 </UL>
 
 <P><STRONG><a name="[12e]"></a>CLOCK_GetPeriphClkFreq</STRONG> (Thumb, 278 bytes, Stack size 24 bytes, fsl_clock.o(.text.CLOCK_GetPeriphClkFreq))
 <BR><BR>[Stack]<UL><LI>Max Depth = 696<LI>Call Chain = CLOCK_GetPeriphClkFreq &rArr; CLOCK_GetSysPfdFreq &rArr; CLOCK_GetPllFreq &rArr; __aeabi_assert &rArr; DbgConsole_Printf &rArr; DbgConsole_Vprintf &rArr; DbgConsole_PrintfFormattedData &rArr; DbgConsole_ConvertFloatRadixNumToString &rArr; __hardfp_pow &rArr; sqrt
 </UL>
-<BR>[Calls]<UL><LI><a href="#[133]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetOscFreq
-<LI><a href="#[137]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetSysPfdFreq
+<BR>[Calls]<UL><LI><a href="#[137]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetSysPfdFreq
 <LI><a href="#[10d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetPllFreq
+<LI><a href="#[133]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetOscFreq
 </UL>
 <BR>[Called By]<UL><LI><a href="#[130]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetSemcFreq
 <LI><a href="#[12d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CLOCK_GetAhbFreq

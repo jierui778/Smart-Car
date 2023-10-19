@@ -11,13 +11,13 @@ int circle_num = 0; // 记录圆环个数
 
 void Circle_Check(void)
 {
-    if (garage_type == GARAGE_NONE && circle_type == CIRCLE_NONE && Lpt0_found && !Lpt1_found && is_straight1 && touch_boundary0)
+    if (1)
     // 非车库模式，非圆环模式且找到左角点，无右角点，左线迷宫触碰到边沿，右边为长直线
     {
         circle_type = CIRCLE_LEFT_FOUND; // 枚举状态置为找到左圆环
         circle_num++;
     }
-    if (circle_type == CIRCLE_NONE && Lpt1_found && !Lpt0_found && is_straight0 && touch_boundary1)
+    if (1)
     // 条件与左圆环模式相反
     {
         circle_type = CIRCLE_RIGHT_FOUND; // 枚举状态为找到右圆环
