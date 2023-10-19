@@ -2371,6 +2371,45 @@ float run_left(void)
     return err;
 }
 
+float run_right(void)
+{   
+    /*一 求中线*/
+    int mid_line[150][2];//中线
+    mid_line_num=0;
+    uint8 i;
+    if(Right_Turn_Mid==1||Right_Turn==0)
+    {
+        mid_line_num=ipts1_num;//中线赋值
+        for(i=0;i<mid_line_num;i++)
+        {
+            mid_line[i][0]=(ipts1[i][0]+ipts0[i][0])/2;
+            mid_line[i][1]=(ipts1[i][1]+ipts0[i][1])/2;
+        }
+    }
+    else if(Right_Turn==1||Right_Turn_Mid==0)
+    {
+        mid_line_num=ipts0_num;//中线赋值
+        for(i=0;i<mid_line_num;i++)
+        {
+            mid_line[i][0]=ipts0[i][0]/2;
+            mid_line[i][1]=ipts0[i][1];
+        }
+    }
+    for(i=0;i<mid_line_num;i++)
+    {
+        ips200_draw_point(mid_line[i][0],mid_line[i][1],RGB565_GREEN);
+    }
+    /*二 求误差*/
+    float err,last_err;
+    last_err=err;
+    err=LineRession(mid_line,mid_line_num-1);
+    ips200_show_uint(0,160,mid_line_num,3);
+    /*三 误差简单滤波*/
+    err=0.8*err+last_err*0.2;
+    ips200_show_float(120,120,err,3,3);
+    return err;
+}
+
 void run_cross_b(void)
 {
     float err;
@@ -2395,6 +2434,13 @@ void run_cross_b(void)
         ips200_draw_point(mid_line[i][0],mid_line[i][1],RGB565_GREEN);
     }
     ips200_show_uint(40,120,mid_line_num,3);
+}
+
+void run_cross_c(void)
+{
+    Cross_Drawline(ipts0,ipts0_num,ipts1,ipts1_num);
+    
+
 }
 
 // float run_left_new(void)
@@ -2435,7 +2481,7 @@ void run_cross(void)
     }
     if(Cross_State_c==1)
     {
-        Cross_Drawline(ipts0,ipts0_num,ipts1,ipts1_num);
+        run_cross_c();
     }
 }
 void test(void)
@@ -2491,7 +2537,7 @@ void test(void)
 
     Image_CheckState(ipts0,ipts0_num,ipts1,ipts1_num);
     /*根据状态执行*/
-    if(Cross_State_b==1)
+    if(Cross_State_b==1||Cross_State_c==1||Cross_State_d==1)
     {
         run_cross();
     }
