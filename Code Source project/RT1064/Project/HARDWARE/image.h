@@ -8,9 +8,9 @@
 
 #define WHITE 255
 #define BLACK 0
-#define IMAGE_WIDTH 160           // 用于处理的图像高度
-#define IMAGE_HEIGHT 120          //用于处理的图像宽度
-#define MID_LINE 80               //中线为x=80
+#define IMAGE_WIDTH 160  // 用于处理的图像高度
+#define IMAGE_HEIGHT 120 // 用于处理的图像宽度
+#define MID_LINE 80      // 中线为x=80
 
 #define PRIMEVAL_HEIGHT MT9V03X_H // 原始图像高度
 #define PRIMEVAL_WIDTH MT9V03X_W  // 原始图像宽度
@@ -34,7 +34,6 @@ void Image_Binarization(unsigned char threshold, uint8 (*Image_Use)[IMAGE_WIDTH]
 // void Image_blur_points_Left(int num, int kernel);                                                                            // 三角滤波左边线
 // void Image_blur_points_Right(int num, int kernel);                                                                           // 三角滤波右边线
 // void Coordinate_transformation_rightup(int pt0_in[][2], int in_num, int pt0_out[][2]);
-
 
 /*辅助计算*/
 // float Image_ab_value(float a, float b);                                        // 求浮点型的绝对值
@@ -80,8 +79,9 @@ enum track_type_e
 {
     TRACK_LEFT,
     TRACK_RIGHT,
+    TRACK_BOTH,
 };
-
+extern enum track_type_e track_type; // 当前巡线模式
 /*这个得放在车库的.c现在还没建成*/
 
 #define LLL 60
@@ -239,10 +239,6 @@ void test_new(void);
 #define gety(u, v) (a21 * (u) + a22 * (v) + a23)
 #define getw(u, v) (a31 * (u) + a32 * (v) + a33)
 
-
-
-
-
 // D矩阵参数
 /*这些宏定义都是给60*80的矩阵*/
 #define b11 (-0.1238f)
@@ -261,26 +257,23 @@ void test_new(void);
 
 //// D矩阵参数
 ///*这些宏定义都是给60*80的矩阵*/
-//#define b11 (-0.4928f)
-//#define b12 (-0.4038f)
-//#define b13 (47.5991f)
+// #define b11 (-0.4928f)
+// #define b12 (-0.4038f)
+// #define b13 (47.5991f)
 
-//#define b21 (0.0208f)
+// #define b21 (0.0208f)
 
-//#define b22 (-0.0466f)
+// #define b22 (-0.0466f)
 
-//#define b23 (-14.1659f)
+// #define b23 (-14.1659f)
 
-//#define b31 (0.0003f)
-//#define b32 (-0.0052f)
-//#define b33 (-0.0556f)
+// #define b31 (0.0003f)
+// #define b32 (-0.0052f)
+// #define b33 (-0.0556f)
 
 #define getx_b(u, v) (b11 * (u) + b12 * (v) + b13)
 #define gety_b(u, v) (b21 * (u) + b22 * (v) + b23)
 #define getw_b(u, v) (b31 * (u) + b32 * (v) + b33)
-
-
-
 
 void resample_points(float pts_in[][2], int num1, float pts_out[][2], int *num2, float dist);
 
@@ -293,25 +286,28 @@ void run_cross(void);
 #define POINTS_MAX_LEN (150) // 边线点最多的情况——>num
 
 //// 逆透视补线数组
-//extern float left_line[POINTS_MAX_LEN][2];
-//extern float right_line[POINTS_MAX_LEN][2];
-//extern int left_num, right_num;
+// extern float left_line[POINTS_MAX_LEN][2];
+// extern float right_line[POINTS_MAX_LEN][2];
+// extern int left_num, right_num;
 //// 拼接数组
-//extern float splicing_leftline[POINTS_MAX_LEN][2];
-//extern float splicing_rightline[POINTS_MAX_LEN][2];
-//extern int splicing_leftline_num, splicing_rightline_num;
+// extern float splicing_leftline[POINTS_MAX_LEN][2];
+// extern float splicing_rightline[POINTS_MAX_LEN][2];
+// extern int splicing_leftline_num, splicing_rightline_num;
 //// 拼接数组平移中线
-//extern float splicing_leftline_center[POINTS_MAX_LEN][2];
-//extern float splicing_rightline_center[POINTS_MAX_LEN][2];
-//extern int splicing_leftline_center_num, splicing_rightline_center_num;
+// extern float splicing_leftline_center[POINTS_MAX_LEN][2];
+// extern float splicing_rightline_center[POINTS_MAX_LEN][2];
+// extern int splicing_leftline_center_num, splicing_rightline_center_num;
 
 // 左右边丢线
 extern uint8 loseline0;
 extern uint8 loseline1;
 
+extern int Far_Lpt0_Found, Far_Lpt1_Found;
+extern int Near_Lpt0_Found, Near_Lpt1_Found;
+
 extern int x0_first, y0_first, x1_first, y1_first;
-extern int x1, y1;
-extern int x2, y2;
+// extern int x1, y1;
+// extern int x2, y2;
 
 extern int begin_x0, begin_y0; // 找线偏移点
 extern int begin_x1, begin_y1; // 找线偏移点
@@ -375,8 +371,6 @@ extern bool is_straight0, is_straight1;
 // 弯道
 extern bool is_turn0, is_turn1;
 
-extern enum track_type_e track_type; // 当前巡线模式
-
 extern float error[1];
 extern float ave_error; // ave_error名为平均偏差，实际按正态分布算
 // 远预锚点位置
@@ -391,41 +385,35 @@ extern float dn[1];
 extern float pure_angle;
 
 #define L_CROSS 80 // 十字模式中存储左边线坐标的个数为80
-void Arc_Check(int pts_in[][2], int pts_num /*,int8 *flag*/);
-uint8_t RoundaboutGetArc(uint8_t imageSide[120][2], uint8_t status, uint8_t num, uint8_t *index);
-void Arc_Rec(int pts_in[][2], int pts_num/*, int pts_out[2][2]*/);
-void LongLine_Check(int pts_in[][2], int pts_num);
-
+void Arc_Rec(int pts_in[][2], int pts_num, int pts_out[2]);
 void Features_Find(void);
-
-bool Is_Straight(int pts_in[][2], int pts_num, int diff_threshold);
-void Straight_Rec(int pts_in[][2], int pts_num);
+void Straight_Rec(int pts_in[][2], int pts_num, int pts_out[2]);
 #endif
 
-    /*
-    学到的思路：
+/*
+学到的思路：
 
-    十字：
-    1. 十字处理中，如何判断为十字状态？（只要有拐点，且两个拐点的行坐标相差不大即为十字
-    同时设置标志位far_Lpt0_found，便于判断）
-    2. 十字处理中，如何补线？（未进十字时，在找到下拐点的时候，再往前找2个拐点，取斜率补线即可）
-    （若已经进入十字，则在找到下拐点的时候，可以取上拐点往后的2个拐点进行斜率补线（或者找下拐点进行补线））
-    3. 十字处理的时候设置一个状态机：未进十字（检测左右拐点且行坐标相差不大）—（左右拐点坐标不断减小最终为0）—进十字（出现两个上下拐点）
-    4. ***通过编码器测距求出跑1m后判断十字结束，直接退出十字状态
-    5.前面几个点的生长方向为4，就判断为第二状态
+十字：
+1. 十字处理中，如何判断为十字状态？（只要有拐点，且两个拐点的行坐标相差不大即为十字
+同时设置标志位far_Lpt0_found，便于判断）
+2. 十字处理中，如何补线？（未进十字时，在找到下拐点的时候，再往前找2个拐点，取斜率补线即可）
+（若已经进入十字，则在找到下拐点的时候，可以取上拐点往后的2个拐点进行斜率补线（或者找下拐点进行补线））
+3. 十字处理的时候设置一个状态机：未进十字（检测左右拐点且行坐标相差不大）—（左右拐点坐标不断减小最终为0）—进十字（出现两个上下拐点）
+4. ***通过编码器测距求出跑1m后判断十字结束，直接退出十字状态
+5.前面几个点的生长方向为4，就判断为第二状态
 
-    车库：
-    1. 扫行，看黑点有多少个（或黑白跳变点）sobel的话有120个黑点
-    2. 转弯时通过偏航角的角度变化来判断出库
+车库：
+1. 扫行，看黑点有多少个（或黑白跳变点）sobel的话有120个黑点
+2. 转弯时通过偏航角的角度变化来判断出库
 
-    新思路：
-    1. 在十字中，如何找到上拐点？
-    ——for循环嵌套遍历，求出每一点与左下角（120,0）的直线的斜率，当斜率最大时：便是上拐点
-    注：在未进十字时，上拐点和下拐点的坐标是一样的，当上拐点和下拐点的行坐标相差较大时，就说明已经处在十字的中央
+新思路：
+1. 在十字中，如何找到上拐点？
+——for循环嵌套遍历，求出每一点与左下角（120,0）的直线的斜率，当斜率最大时：便是上拐点
+注：在未进十字时，上拐点和下拐点的坐标是一样的，当上拐点和下拐点的行坐标相差较大时，就说明已经处在十字的中央
 
-    明天要干的：
-    1. 通过斜率最大法测出上拐点
-    2. 十字不同状态的补线
-    3. 判断十字的不同状态
-    4. 弯道函数判断
-    */
+明天要干的：
+1. 通过斜率最大法测出上拐点
+2. 十字不同状态的补线
+3. 判断十字的不同状态
+4. 弯道函数判断
+*/

@@ -5,7 +5,7 @@
  *      Author: HQC
  */
 #include "garage.h"
-
+#include "image.h"
 // // 以下定义为车库寻远线设定
 // //int g_far_ipts0[LLL][2];           //种子巡线
 // //int g_far_ipts1[LLL][2];
@@ -56,20 +56,39 @@ enum garage_type_e garage_type = GARAGE_NONE; // 初始化为向左出库 调试状态为NONE
 int Zibra_Thres = 0;
 // uint8 touch_boundary0; // 左边线走到图像左边界
 // uint8 touch_boundary1; // 右边线走到图像右边界
-void Garage_Check(void)//找到上角点则加入上角点一起判断
+void Garage_Check(void) // 找到上角点则加入上角点一起判断
 {
-    if (1&& Zibra_Thres > ZIBRA_THRES)
+    if (Zibra_Thres > ZIBRA_THRES)//找到斑马线
     {
-        garage_type = GARAGE_LEFT_FOUND;
+        if (Far_Lpt0_Found && Near_Lpt0_Found && 1) // 单边长直线且另外一边双角点
+        {
+            garage_type = GARAGE_FOUND_LEFT;//左车库
+        }
+        else if (Far_Lpt1_Found && Near_Lpt1_Found && 1)//右车库
+        {
+            garage_type = GARAGE_FOUND_RIGHT;
+        }
     }
-    else if (1&& Zibra_Thres > ZIBRA_THRES)
-    {
-        garage_type = GARAGE_RIGHT_FOUND;
-    }
+    // if (1&& Zibra_Thres > ZIBRA_THRES)
+    // {
+    //     garage_type = GARAGE_LEFT_FOUND;
+    // }
+    // else if (1&& Zibra_Thres > ZIBRA_THRES)
+    // {
+    //     garage_type = GARAGE_RIGHT_FOUND;
+    // }
 }
 
 void Garage_Run(void)
 {
+    if(garage_type = GARAGE_FOUND_LEFT)
+    {
+
+    }
+    else if(garage_type = GARAGE_FOUND_RIGHT)
+    {
+        
+    }
 }
 // // 编码器，防止重复触发等情况
 // int64_t garage_encoder = -10000;
