@@ -85,7 +85,7 @@ void test(void)
     // 寻找左右边线
     Find_Borderline(); // 寻找边线
     NearCorners_Find_Left(ipts0, ipts0_num, test, &test2);
-    NearCorners_Find_Right(ipts1, ipts1_num, test3, &test5);
+    NearCorners_Find_Right(ipts1, ipts1_num, test3, &test5);//近角点正常
     // Features_Find();  // 寻找特征点
 
     // int test = Is_Straight(ipts0, ipts0_num, 100);
