@@ -1314,13 +1314,13 @@ void Image_CheckState(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], in
 	
 }
 
-/*左下线坐标变换，用于求拐点，左下角为0,0*/
+/*左下线坐标变换，用于求拐点，原始坐标原点为左上角，变换后为左下角*/
 void Coordinate_transformation_left(int pt0_in[][2], int in_num, int pt0_out[][2])
 {
     int i;
     for (i = 0; i < in_num; i++)
     {
-        pt0_out[i][1] = IMAGE_HEIGHT - pt0_in[i][1] - 1;
+        pt0_out[i][1] = IMAGE_HEIGHT - pt0_in[i][1] - 1;//y坐标倒置，x坐标保持不变
         pt0_out[i][0] = pt0_in[i][0];
     }
 }
@@ -1331,23 +1331,23 @@ void Coordinate_transformation_right(int pt0_in[][2], int in_num, int pt0_out[][
     int i;
     for (i = 0; i < in_num; i++)
     {
-        pt0_out[i][0] = IMAGE_WIDTH - pt0_in[i][0] - 1;
+        pt0_out[i][0] = IMAGE_WIDTH - pt0_in[i][0] - 1;//y和x坐标均倒置
         pt0_out[i][1] = IMAGE_HEIGHT - pt0_in[i][1] - 1;
     }
 }
 
-/*右上线坐标变换，用于求拐点*/
+/*右上线坐标变换，将左上的坐标原点移到右上*/
 void Coordinate_transformation_rightup(int pt0_in[][2], int in_num, int pt0_out[][2])
 {
     int i;
     for (i = 0; i < in_num; i++)
     {
-        pt0_out[i][0] = IMAGE_WIDTH - pt0_in[i][0] - 1;
+        pt0_out[i][0] = IMAGE_WIDTH - pt0_in[i][0] - 1;//x坐标倒置，y坐标不倒置
         pt0_out[i][1] = pt0_in[i][1];
     }
 }
 
-/*坐标复原，找完十字以后坐标就和以前一样*/
+/*坐标复原，找完十字以后坐标就和以前一样，目前用不到，直接调用ipts0,ipts1即可*/
 void Coordinate_restore_left(int pt0_in[][2], int in_num, int pt0_out[][2])
 {
     int i;
@@ -1481,7 +1481,12 @@ float Cross_Drawline(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int
 }
 
 int left_index_l;
-int right_index_r; // 左右拐点的坐标
+int right_index_r; // 左右拐点在数组的下标
+
+/**
+ * @brief 十字状态b的找左右边线下拐点函数，无返回值，通过全局变量left_index_l,right_index_r进行索引
+ * 
+ */
 void Get_guaidian(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int in_put_r_num)
 {
     uint16 i;
@@ -1489,10 +1494,11 @@ void Get_guaidian(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int in
     uint16 left_highest = 0, right_highest = 0;
 
     /*一 坐标转换*/
-    Coordinate_transformation_left(in_put_l, in_put_num_l, Left_Change); // 左右下线坐标变换
+    Coordinate_transformation_left(in_put_l, in_put_num_l, Left_Change); // 左右下边线坐标变换
     Coordinate_transformation_right(in_put_r, in_put_r_num, Right_Change);
 
-    /*二 找下拐点*/
+    /*二 找拐点*/
+    /*下边线的数组变化之后，只需要求出x+y的最大值即可找到坐标；用输出的Left_Change和Right_Change来找出拐点下标值*/
     for (i = 0; i < in_put_num_l; i++)
     {
         if ((Left_Change[i][0] + Left_Change[i][1]) > left_highest) // 拐点的坐标之和最大
@@ -1514,7 +1520,7 @@ void Get_guaidian(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int in
     }
 }
 
-int ipts0_up_index, ipts1_up_index; // 定义左上和右上拐点
+int ipts0_up_index, ipts1_up_index; // 定义左上和右上拐点的下标
 void Get_Upguaidian(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int in_put_r_num)
 {
     uint16 i;
@@ -1522,9 +1528,10 @@ void Get_Upguaidian(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int 
     uint16 left_highest = 0, right_highest = 0;
 
     /*一 坐标转换*/
-    Coordinate_transformation_rightup(in_put_r, in_put_r_num, Right_Change);
+    Coordinate_transformation_rightup(in_put_r, in_put_r_num, Right_Change);//左上不用变换
 
     /*二 找上拐点*/
+    /*这里和下边线不一样，不能通过x+y的最大值求出拐点，通过某点yi>yi+1&&xi<xi+1即可求出拐点*/
     for(i=0;i<in_put_num_l;i++)
 	{
 		if ((in_put_l[i][1]>in_put_l[i+1][1])&&(in_put_l[i][0]<in_put_l[i+1][0])) // 拐点的坐标之和最大
@@ -2433,22 +2440,28 @@ uint8 mid_line_num;
 //     return err;
 // }
 
+/**
+ * @brief 十字状态d的运行函数
+ * 
+ */
 float Draw_line_cross_d(void)
 {
     float k_r,k_l,b_r,b_l;//定义左右边线斜率和截距
     float k_l_line,k_r_line;//定义左右中线斜率
     k_l=(float)(ipts0[ipts0_up_index][1]-118)/(ipts0[ipts0_up_index][0]-1);
-    b_l=ipts0[ipts0_up_index][1]*k_l-ipts0[ipts0_up_index][0];
-
+    b_l=ipts0[ipts0_up_index][1]*k_l-ipts0[ipts0_up_index][0];//将拐点坐标和左下右下相连，求出斜率
+    //直线方程为 row=k*column+b，但是补线的时候要转化为column=k*row+b（其实后面也没用补线，直接求斜率即可）
     k_l = (1 / k_l);
     b_l = k_l * (-b_l);
 
     k_r = (float)(ipts1[ipts1_up_index][1] - 118) / (ipts1[ipts1_up_index][0] - 158);
     b_r = ipts1[ipts1_up_index][1] * k_r - ipts1[ipts1_up_index][0];
-
+        
     k_r=(1/k_r);
     b_r=-b_r*k_r;
     int i;
+    /*这里是补线，补线后再次扫一次左右边线
+        但是直接用斜率我觉得也是可以的，这部分可以去掉*/
     for (i = ipts0[ipts0_up_index][1]; i > 10; i--)
     {
         int new_column_l = (int)(k_l * i + b_l);
@@ -2465,14 +2478,14 @@ float Draw_line_cross_d(void)
             Image_Use_Robert[i][new_column_r] = BLACK;
         }
     }
-
+    //这里是觉得仅仅靠一个斜率，准确度不够高，所以取拐点的下线和拐点上边线的两个斜率
     k_l_line=(ipts000[ipts0_up_index][0]-ipts0[ipts0_up_index+5][0])/(ipts000[ipts0_up_index][1]-ipts0[ipts0_up_index+5][1]);
     k_r_line=(ipts111[ipts1_up_index][0]-ipts1[ipts1_up_index+5][0])/(ipts111[ipts1_up_index][1]-ipts1[ipts1_up_index+5][1]);
 
-    float percent =(ipts000[ipts0_up_index][1]/120);//按百分比计算斜率 percent最大为0.5
-    k_l= k_l_line*percent+ k_l*(1-percent);
+    float percent =(ipts000[ipts0_up_index][1]/120);//通过拐点的y左边来进行百分比的计算，按百分比计算斜率 percent最大为0.5（因为拐点的y坐标最大为60行）
+    k_l= k_l_line*percent+ k_l*(1-percent);//按百分比进行赋值
 
-    percent =(ipts111[ipts1_up_index][1]/120);
+    percent =(ipts111[ipts1_up_index][1]/120);//右线也一样
 
     k_r= k_r_line*percent+k_r*(1-percent);
 
@@ -2487,13 +2500,13 @@ float run_left(void)
     int mid_line[150][2]; // 中线
     mid_line_num = 0;
     uint8 i;
-    if (Left_Turn_Mid == 1 || Left_Turn == 0)
+    if (Left_Turn_Mid == 1 || Left_Turn == 0)//左转弯边线状态（左边丢线or左边不丢线）
     {
         mid_line_num = ipts0_num; // 中线赋值
         for (i = 0; i < mid_line_num; i++)
         {
             mid_line[i][0] = (ipts1[i][0] + ipts0[i][0]) / 2;
-            mid_line[i][1] = (ipts1[i][1] + ipts0[i][1]) / 2;
+            mid_line[i][1] = (ipts1[i][1] + ipts0[i][1]) / 2;//直接取平均（前面有个更好的函数，但是试过不行，后面再优化）
         }
     }
     else if (Left_Turn == 1 || Left_Turn_Mid == 0)
@@ -2558,38 +2571,44 @@ float run_right(void)
     return err;
 }
 
+/**
+ * @brief 十字状态b的运行函数
+ * 
+ */
 void run_cross_b(void)
 {
-    int mid_line[150][2]; // 中线
-    mid_line_num = 0;
+    int mid_line[150][2]; // 中线数组，150个防止溢出
+    mid_line_num = 0;//中线数组的计数值
     uint8 i;
     if (ipts0_num > ipts1_num)
     {
-        mid_line_num = right_index_r; // 中线赋值
+        mid_line_num = right_index_r; // 中线个数赋值
     }
     else
     {
-        mid_line_num = left_index_l; // 中线赋值
+        mid_line_num = left_index_l; // 中线个数赋值
     }
-    for (i = 0; i < mid_line_num; i++)
+    for (i = 0; i < mid_line_num; i++)//截断处理，从第一个点取到左右边线的最近的一个拐点的下标
     {
         mid_line[i][0] = (ipts1[i][0] + ipts0[i][0]) / 2;
         mid_line[i][1] = (ipts1[i][1] + ipts0[i][1]) / 2;
     }
+    /*显示函数，可以去掉*/
     for (i = 0; i < mid_line_num; i++)
     {
         ips200_draw_point(mid_line[i][0], mid_line[i][1], RGB565_GREEN);
     }
 
-    last_err = err;
-    err = LineRession(mid_line, mid_line_num - 1);
+    last_err = err;//存储上次的误差
 
-    err = 0.8 * err + 0.2 * last_err;
+    err = LineRession(mid_line, mid_line_num - 1);//中线求出误差
 
-    Finnal_err = err;
+    err = 0.8 * err + 0.2 * last_err;//简单滤波处理
+
+    Finnal_err = err;//直接用全局变量，不返回误差
 }
 
-/*中心扫线函数*/
+/*中心扫线函数，用不上*/
 float Center_edge(void)
 {
     int Left_Edge[150][2]; // 实际上只会用到120个，怕越界
@@ -2638,16 +2657,27 @@ float Center_edge(void)
     return err;
 }
 
+/**
+ * @brief 十字状态c的运行函数
+ * 
+ */
 void run_cross_c(void)
 {
-    Finnal_err=Cross_Drawline(ipts0,ipts0_num,ipts1,ipts1_num)*0.06;
-    
+    Finnal_err=Cross_Drawline(ipts0,ipts0_num,ipts1,ipts1_num)*0.06;//直接返回误差（函数里面会有滤波）
 }
 
-void run_cross_d(void) // 左右丢线后，此时ipts0和ipts1就可以扫上去了
+/**
+ * @brief 十字状态d的运行函数，这里会开启三次扫线（为了和二次扫线区别）
+ * 
+ */
+void run_cross_d(void) 
 {
-    Find_Borderline_Third();
-    Get_Upguaidian(ipts000,ipts000_num,ipts111,ipts111_num);
+    Find_Borderline_Third();//当左右丢线后，此时ipts000和ipts111就可以扫上去了
+    /*三次扫线和二次扫线的区别在于： 二次扫线的条件依赖于ipts0是否到达左边界(touch_boundary0)    三次扫线的条件是 左右同时丢线才扫线(loseline)
+        二次扫线的起始点和ipts0的最后一个点的坐标有关                三次扫线的起始点是固定的（因为loseline==1，ipts0的坐标找不到了）
+        二次扫线相对来说更加灵活，能根据ipts0最后一个点的坐标进行二次扫线的灵活变化     三次扫线只能在y属于0-60的范围内扫，相对比较固定
+        二次扫线在十字环岛都能用        三次扫线只能在十字的最后一个状态才能用*/
+    Get_Upguaidian(ipts000,ipts000_num,ipts111,ipts111_num);//找到上拐点
     uint8 i;
     Finnal_err=Draw_line_cross_d();
 }
@@ -2680,11 +2710,15 @@ void run_cross_d(void) // 左右丢线后，此时ipts0和ipts1就可以扫上�
 // }
 
 /*找到近拐点直接截断处理*/
+/**
+ * @brief 运行十字路口函数，根据当前的十字路口状态选择相应的处理函数（分三种状态，每种状态的标志位对应不同的函数）
+ * 
+ */
 void run_cross(void)
 {
-    if (Cross_State_b == 1 && Cross_State_c == 0 && Cross_State_d == 0)
+    if (Cross_State_b == 1 && Cross_State_c == 0 && Cross_State_d == 0)//防止多状态进行
     {
-        Get_guaidian(ipts0, ipts0_num, ipts1, ipts1_num); // 找到拐点
+        Get_guaidian(ipts0, ipts0_num, ipts1, ipts1_num); // 找拐点左下右下拐点
         run_cross_b();
     }
     if (Cross_State_c == 1 && Cross_State_b == 0 && Cross_State_d == 0)
@@ -2697,24 +2731,19 @@ void run_cross(void)
     }
 }
 
-float run_straight(void)
-{
-    float k_l,k_r;//定义左右边线斜率
-    if(Straight_State==1)
-    {
-        k_l=(float)LineRession(ipts0,ipts0_num -5);
-        k_r=(float)LineRession(ipts1,ipts1_num -5);
-    }
-    return (k_l+k_r)/2;
-}
 
+/**
+ * @brief 计算直线情况下左右线斜率并返回左右边线斜率的平均值
+ * 
+ * @return float 左右边线斜率的平均值，即为误差
+ */
 float run_straight(void)
 {
     float k_l,k_r;//定义左右边线斜率
     if(Straight_State==1)
     {
-        k_l=(float)LineRession(ipts0,ipts0_num -5);
-        k_r=(float)LineRession(ipts1,ipts1_num -5);
+        k_l=(float)LineRession(ipts0,ipts0_num*0.75);//减少直线尽头点对斜率的干扰
+        k_r=(float)LineRession(ipts1,ipts1_num*0.75);
     }
     return (k_l+k_r)/2;
 }
@@ -2786,20 +2815,5 @@ void test(void)
     Finnal_err=run_left();
     Finnal_err=run_right();
     Finnal_err=run_straight();
-//    Cross_Drawline(ipts0,ipts0_num,ipts1,ipts1_num);
-	
-    // RoundaboutGetArc(Image_Use_Robert[120][160], 1, ipts0_num, test);
 
-    // ips200_show_int(160, 160, touch_boundary0, 1);
-    // ips200_show_int(160, 180, touch_boundary_up0, 1);
-    // ips200_show_int(160, 200, touch_boundary1, 1);
-    // ips200_show_int(160, 220, touch_boundary_up1, 1);
-
-    // ips200_show_int(160, 250, loseline0, 1);
-    // ips200_show_int(160, 280, loseline1, 1);
-
-    // ips200_show_int(3, 120, ipts00_num, 2);
-    // ips200_show_int(3, 140, ipts11_num, 2);
-
-    // ips200_show_float(80, 120, Finnal_err, 3, 3);
 }
