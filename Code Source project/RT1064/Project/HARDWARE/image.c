@@ -24,6 +24,8 @@ const int dir_frontright[4][2] = {{1, -1},
 
 uint8 Image_Use_Robert[120][160]; // sobel二值化图像
 
+float Finnal_err;
+
 int mid_row_first;//中线行的起点
 // flash参数统一定义
 float begin_x = 5;   // 起始点距离图像中心的左右偏移量	8
@@ -469,10 +471,18 @@ int right_up_num;
 uint8 loseline00;
 uint8 loseline11;
 
+uint8 loseline000;
+uint8 loseline111;
+
 int ipts00[100][2];
 int ipts11[100][2]; // 巡线上边线点的个数
 int ipts00_num;
 int ipts11_num;
+
+int ipts000[POINTS_MAX_LEN][2];
+int ipts111[POINTS_MAX_LEN][2]; // 巡线上边线点的个数
+int ipts000_num;
+int ipts111_num;
 
 // 逆透视变换后左右边线
 float rpts0[POINTS_MAX_LEN][2];
@@ -743,6 +753,70 @@ void Find_Borderline_Second(void)
 		Right_Adaptive_Threshold(&img_raw, block_size, clip_value, x1_first, y1_first, ipts11, &ipts11_num);
 	}
 }
+
+}
+
+/*三次扫线*/
+void Find_Borderline_Third(void)
+{
+    int x1, y1;
+    int x2, y2;
+    uint8 uthres = 1;
+	if(loseline0==1)
+	{
+		loseline000 = 0;
+		loseline111 = 0;
+		
+		// 寻左边线
+		x1 = img_raw.width / 2 - begin_x, y1 = begin_y;
+		int TH;
+
+		x0_first = 10;
+		y0_first = 60;
+
+		ipts000_num = sizeof(ipts000) / sizeof(ipts000[0]); // 求数组的长度
+		// 扫底下五行，寻找跳变点
+		for (; y0_first >10; y0_first--)//从所选的行，向上扫5次，每次从中间向左线扫
+		{
+			if (AT_IMAGE(&img_raw, x0_first, y0_first) < uthres)//如果扫到黑点（灰度值为0），就从该点开始扫线
+			  {  
+				goto out1;//开始扫左线
+			  }
+		}
+		//如果扫不到的话，判定左边的底边丢线
+        ipts000_num=0;
+		loseline000 = 1; // 底边丢线
+		out1://从起始点开始执行扫线
+		{
+			// if (AT_IMAGE(&img_raw, x0_first+1, y0_first) >= uthres)//如果这个点是白色（且左边是黑色的话）
+				Left_Adaptive_Threshold(&img_raw, block_size, clip_value, x0_first, y0_first, ipts000, &ipts000_num);//开始跑迷宫
+			// else
+			// 	ipts00_num = 0;//如果不是的话，就不用跑了，求得的number记为0
+		}
+    }
+    if(loseline1==1)
+    {
+        // 寻右边线
+        x2 = img_raw.width / 2 + begin_x, y2 = begin_y;
+
+        // 标记种子起始点(后续元素处理要用到)
+        x1_first = 149;
+        y1_first = 60;
+
+        ipts111_num = sizeof(ipts111) / sizeof(ipts111[0]);
+        for (; y1_first > 10; y1_first--)
+        {
+            if (AT_IMAGE(&img_raw, x1_first , y1_first) < uthres)
+            {
+                goto out2;
+            }
+        }
+        loseline11 = 1; // 底边丢线
+        out2:
+        {
+            Right_Adaptive_Threshold(&img_raw, block_size, clip_value, x1_first, y1_first, ipts111, &ipts111_num);
+        }
+    }
 
 }
 
@@ -1444,6 +1518,39 @@ void Get_guaidian(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int in
         }
     }
 }
+
+int ipts0_up_index,ipts1_up_index;//定义左上和右上拐点
+void Get_Upguaidian(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int in_put_r_num)
+{
+    uint16 i;
+    uint16 left_index, right_index; // 左右拐点的坐标
+    uint16 left_highest = 0, right_highest = 0;
+	
+    /*一 坐标转换*/
+    Coordinate_transformation_upright(in_put_r, in_put_r_num, Right_Change);
+	
+    /*二 找上拐点*/
+    for(i=0;i<ipts0_num;i++)
+	{
+		if ((ipts0[i][1]>ipts0[i+1][1])&&(ipts0[i][0]<ipts0[i+1][0])) // 拐点的坐标之和最大
+        {
+            ipts0_up_index = i;
+			break;
+        }
+	}
+	for(i=0;i<ipts11_num;i++)
+	{
+		if ((right_up[i][1]>right_up[i+1][1])&&(right_up[i][0]<right_up[i+1][0])) // 拐点的坐标之和最大
+        {
+            ipts1_up_index = i;
+			if(ipts1_up_index>=5)
+			{
+				break;
+			}
+        }
+	}
+}
+
 /*
 十字补线函数2版：1. 取了上下拐点补线，更稳定，用不上
 */
@@ -2332,6 +2439,42 @@ uint8 mid_line_num;
 //     return err;
 // }
 
+void Draw_line_cross_d(void)
+{
+    float k_r,k_l,b_r,b_l;//定义左右边线斜率和截距
+    k_l=(float)(ipts0[ipts0_up_index][1]-118)/(ipts0[ipts0_up_index][0]-1);
+    b_l=ipts0[ipts0_up_index][1]*k_l-ipts0[ipts0_up_index][0];
+
+    k_l=(1/k_l);
+    b_l=k_l*(-b_l);
+
+    k_r=(float)(ipts1[ipts1_up_index][1]-118)/(ipts1[ipts1_up_index][0]-158);
+    b_r=ipts1[ipts1_up_index][1]*k_r-ipts1[ipts1_up_index][0];
+
+    k_r=(1/k_r);
+    b_r=-b_r*k_r;
+
+    int i;
+     for (i = ipts0[ipts0_up_index][1]; i > 10; i--)
+    {
+        int new_column_l = (int)(k_l * i + b_l);
+        if (new_column_l > 0)
+        {
+            Image_Use_Robert[i][new_column_l] = BLACK;
+        }
+    }
+    for (i = ipts1[ipts1_up_index][1]; i > 10; i--)
+    {
+        int new_column_r = (int)(k_r * i + b_r);
+        if (new_column_r > 0)
+        {
+            Image_Use_Robert[i][new_column_r] = BLACK;
+        }
+    }
+}
+
+float err,last_err;
+
 float run_left(void)
 {   
     /*一 求中线*/
@@ -2361,7 +2504,7 @@ float run_left(void)
         ips200_draw_point(mid_line[i][0],mid_line[i][1],RGB565_GREEN);
     }
     /*二 求误差*/
-    float err,last_err;
+    
     last_err=err;
     err=LineRession(mid_line,mid_line_num-1);
     ips200_show_uint(0,160,mid_line_num,3);
@@ -2400,7 +2543,7 @@ float run_right(void)
         ips200_draw_point(mid_line[i][0],mid_line[i][1],RGB565_GREEN);
     }
     /*二 求误差*/
-    float err,last_err;
+
     last_err=err;
     err=LineRession(mid_line,mid_line_num-1);
     ips200_show_uint(0,160,mid_line_num,3);
@@ -2412,7 +2555,6 @@ float run_right(void)
 
 void run_cross_b(void)
 {
-    float err;
     int mid_line[150][2];//中线
     mid_line_num=0;
     uint8 i;
@@ -2433,16 +2575,76 @@ void run_cross_b(void)
     {
         ips200_draw_point(mid_line[i][0],mid_line[i][1],RGB565_GREEN);
     }
-    ips200_show_uint(40,120,mid_line_num,3);
+
+    last_err=err;
+    err=LineRession(mid_line,mid_line_num-1);
+
+    err=0.8*err+0.2*last_err;
+
+    Finnal_err=err;
+}
+
+/*中心扫线函数*/
+float Center_edge(void)
+{
+    int Left_Edge[150][2];//实际上只会用到120个，怕越界
+    int Right_Edge[150][2];
+    int y_l,x_l,y_r,x_r;
+    int i;
+    y_l=119;
+    y_r=119;
+    for(i=0;i<110;i++)//扫100次
+    {
+        for(x_l=IMAGE_WIDTH/2;x_l>0;x_l--)
+        {
+            if(Image_Use_Robert[x_l][y_l]==WHITE&&Image_Use_Robert[x_l-1][y_l]==BLACK)
+            {
+                Left_Edge[i][0]=x_l;
+                Left_Edge[i][1]=y_l;
+                y_l--;
+                break;
+            }
+        }
+        for(x_r=IMAGE_WIDTH/2;x_r<(IMAGE_WIDTH-2);x_r++)
+        {
+            if(Image_Use_Robert[x_r][y_r]==WHITE&&Image_Use_Robert[x_r-1][y_r]==BLACK)
+            {
+                Right_Edge[i][0]=x_r;
+                Right_Edge[i][1]=y_r;
+                y_r--;
+                break;
+            }
+        }
+    }
+
+    int Mid_line[150][2];
+    int Mid_line_num;
+    for(i=0;i<110;i++)
+    {
+        Mid_line[i][0]=(Left_Edge[i][0]+Right_Edge[i][0])/2;
+        Mid_line[i][1]=(Left_Edge[i][1]+Right_Edge[i][1])/2;
+    }
+
+    last_err=err;
+    err=LineRession(Mid_line,109);
+
+    err=last_err*0.2+err*0.8;
+
+    return err;
 }
 
 void run_cross_c(void)
 {
     Cross_Drawline(ipts0,ipts0_num,ipts1,ipts1_num);
-    
-
+    Finnal_err=Center_edge();
 }
 
+void run_cross_d(void)//左右丢线后，此时ipts0和ipts1就可以扫上去了
+{
+    Get_Upguaidian(ipts0,ipts0_num,ipts1,ipts1_num);
+    Draw_line_cross_d();
+    Finnal_err=Center_edge();
+}
 // float run_left_new(void)
 // {   
 //     /*一 求中线*/
@@ -2479,9 +2681,13 @@ void run_cross(void)
         Get_guaidian(ipts0,ipts0_num,ipts1,ipts1_num);//找到拐点
         run_cross_b();
     }
-    if(Cross_State_c==1)
+    if(Cross_State_c==1&&Cross_State_b==0&&Cross_State_d==0)
     {
         run_cross_c();
+    }
+    if(Cross_State_b==0&&Cross_State_c==0&&Cross_State_d==1)
+    {
+        run_cross_d();
     }
 }
 void test(void)
