@@ -124,6 +124,8 @@ void Cross_Drawline_plus(int in_put_l[][2], int in_put_num_l, int in_put_lnew[][
                          int in_put_r[][2], int in_put_r_num, int in_put_rnew[][2], int in_put_r_numnew);
 void Cross_Drawline(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int in_put_r_num);
 void test_new(void);
+
+void MidLine_Get(int pts0[][2], int pts0_num, int pts1[][2], int pts1_num, int pts_out[][2], int pts_out_num);
 // W矩阵参数（原图转化成逆透视后图像的参数）
 // 60*80
 // #define a11 (-4.3801f)
@@ -275,7 +277,7 @@ void test_new(void);
 #define gety_b(u, v) (b21 * (u) + b22 * (v) + b23)
 #define getw_b(u, v) (b31 * (u) + b32 * (v) + b33)
 
-void resample_points(float pts_in[][2], int num1, float pts_out[][2], int *num2, float dist);
+    void resample_points(float pts_in[][2], int num1, float pts_out[][2], int *num2, float dist);
 
 void local_angle_points(float pts_in[][2], int num, float angle_out[], int dist);
 void nms_angle(float angle_in[], int num, float angle_out[], int kernel);

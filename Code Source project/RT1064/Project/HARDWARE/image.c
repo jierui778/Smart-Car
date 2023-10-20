@@ -73,9 +73,9 @@ int Near_Lpt0_Found = 0, Near_Lpt1_Found = 0; // 近线角点标志位
 
 void test(void)
 {
-    int test[2] = {0,0};
+    int test[100][2] = {0};
     int test2;
-    int test3[2] = {0,0};
+    int test3[2] = {0, 0};
     int test5;
     Image_Compress();
     int TH = OSTU_GetThreshold(Image_Use[0], IMAGE_WIDTH, IMAGE_HEIGHT);
@@ -84,8 +84,9 @@ void test(void)
     img_raw.data = *Image_Use_Robert; // 传入sobel边沿检测图像
     // 寻找左右边线
     Find_Borderline(); // 寻找边线
-    NearCorners_Find_Left(ipts0, ipts0_num, test, &test2);
-    NearCorners_Find_Right(ipts1, ipts1_num, test3, &test5);//近角点正常
+    MidLine_Get(ipts0, ipts0_num, ipts1, ipts1_num, test, 2);
+    // NearCorners_Find_Left(ipts0, ipts0_num, test, &test2);
+    // NearCorners_Find_Right(ipts1, ipts1_num, test3, &test5);//近角点正常
     // Features_Find();  // 寻找特征点
 
     // int test = Is_Straight(ipts0, ipts0_num, 100);
@@ -99,6 +100,10 @@ void test(void)
     for (int i = 0; i < ipts1_num; i++)
     {
         ips200_draw_point(ipts1[i][0] - 3, ipts1[i][1], RGB565_RED);
+    }
+    for (int i = 0; i < 50; i++)
+    {
+        ips200_draw_point(test[i][0], test[i][1], RGB565_RED);
     }
 
     //     //检测左下拐点
@@ -163,6 +168,19 @@ void test(void)
     // ips200_show_int(200, 300, test, 1);
 }
 
+void MidLine_Get(int pts0[][2], int pts0_num, int pts1[][2], int pts1_num, int pts_out[][2], int pts_out_num)
+{
+    int test;
+    // func_limit_ab(test, pts0_num, pts1_num);
+    if (1)
+    {
+        for (int i = 0; i < pts0_num; i++)
+        {
+            pts_out[i][0] = (pts0[i][0] + pts1[i][0]) / 2;
+            pts_out[i][1] = (pts0[i][1] + pts1[i][1]) / 2;
+        }
+    }
+}
 void Features_Find(void)
 {
     if (touch_boundary0) // 触碰到左边界
@@ -1631,7 +1649,7 @@ void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x
         int frontleft_value = AT(img, x + dir_frontleft[dir][0], y + dir_frontleft[dir][1]); // 左前方像素点灰度值 （dir=0左下；dir=1 右下；dir=2 右上；dir=3 左上 ）
         //=======添加部分=======（限制条件）
         /*  当扫点的列坐标到左黑框边界且行坐标小于20    列坐标到右边的黑框边界  行坐标为1   行坐标为88的同时步数已经大于19*/
-        if ((x == 2 && y < img->height - 60) || x == img->width - 2 || y == 1 || (y == 20 && step > 19)) // 30修改后能扫线
+        if ((x == 2 && y < img->height - 60) || x == img->width - 2 || y == 1 || (y == 118 && step > 19)) // 30修改后能扫线
         {
             if (x == 2 /*|| x== img->width - 2*/) // 限制迷宫巡线的左边界
                 touch_boundary0 = 1;              // 左边界是因为到最左边才停下来的，触碰到最左边，可能是环岛，十字等，
