@@ -1234,9 +1234,10 @@ void Image_CheckState(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], in
         Right_Turn = 0;
         Straight_State = 0;
         Left_Turn_Mid = 0;
+        
     }
     /*十字状态末：丢线判断*/
-    if (loseline0 == 1 && loseline1 == 1 && Cross_State_c == 1)
+    if ((loseline0 == 1 && loseline1 == 1 )&& Cross_State_c == 1)
     {
         Cross_State_d = 1;
         Cross_State_b = 0;
@@ -1248,8 +1249,9 @@ void Image_CheckState(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], in
     }
 
     /*直道：左右线找到的点超过100，左右线的最后一个点的行坐标在30以内*/
-    if (ipts0_num > 100 && ipts1_num > 100 && ipts0[ipts0_num - 1][1] < 30 && ipts1[ipts1_num - 1][1] < 30)
+    if (ipts0_num > 80 && ipts1_num > 80 && ipts0[ipts0_num - 1][1] < 30 && ipts1[ipts1_num - 1][1] < 30)
     {
+        
         Straight_State = 1;
         Right_Turn = 0;
         Left_Turn = 0;
@@ -1260,7 +1262,7 @@ void Image_CheckState(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], in
     }
 
     /*左弯道中：左边不丢线，右边也不丢线，左边到边界，左右点数差异大*/
-    if(touch_boundary0==1&&in_put_r[in_put_num_r-1][0]<60)
+    if(touch_boundary0==1&&in_put_num_r>80&&Cross_State_c==0)
     {
         Left_Turn_Mid = 1;
         Left_Turn = 0;
@@ -1314,17 +1316,17 @@ void Image_CheckState(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], in
 	ips200_show_uint(3,260,Straight_State,2);
 	ips200_show_uint(3,280,Left_Turn,2);
 	ips200_show_uint(3,300,Left_Turn_Mid,2);
-	// ips200_show_uint(43,200,in_put_num_l,3);
-	// ips200_show_uint(43,220,in_put_num_r,3);
-	// ips200_show_uint(43,240,ipts0_num,3);
-	// ips200_show_uint(43,260,ipts1_num,3);
-	// ips200_show_uint(43,280,ipts0[ipts0_num-1][1],2);
-	// ips200_show_uint(43,300,ipts1[ipts1_num-1][1],2);
+	ips200_show_uint(43,200,in_put_num_l,3);
+	ips200_show_uint(43,220,in_put_num_r,3);
+	ips200_show_uint(43,240,ipts0_num,3);
+	ips200_show_uint(43,260,ipts1_num,3);
+	ips200_show_uint(43,280,ipts0[ipts0_num-1][1],2);
+	ips200_show_uint(43,300,ipts1[ipts1_num-1][1],2);
 	
-	// ips200_show_uint(83,200,touch_boundary0,3);
-	// ips200_show_uint(83,220,touch_boundary1,3);
-	// ips200_show_uint(83,240,loseline0,3);
-	// ips200_show_uint(83,260,loseline1,3);
+	ips200_show_uint(83,200,touch_boundary0,3);
+	ips200_show_uint(83,220,touch_boundary1,3);
+	ips200_show_uint(83,240,loseline0,3);
+	ips200_show_uint(83,260,loseline1,3);
 	
 }
 
@@ -1386,7 +1388,7 @@ void Coordinate_restore_right(int pt0_in[][2], int in_num, int pt0_out[][2])
 */
 int Left_Change[POINTS_MAX_LEN][2];
 int Right_Change[POINTS_MAX_LEN][2];
-void Cross_Drawline(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int in_put_r_num)
+float Cross_Drawline(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int in_put_r_num)
 {
     uint16 i;
     uint16 left_index, right_index; // 左右拐点的坐标
@@ -1490,6 +1492,8 @@ void Cross_Drawline(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int 
             ips200_draw_point(i,new_column_r,RGB565_GREEN);
         }
     }
+
+    return (k_left+k_right)/2;
 }
 
 int left_index_l;
@@ -1537,17 +1541,18 @@ void Get_Upguaidian(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int 
     Coordinate_transformation_rightup(in_put_r, in_put_r_num, Right_Change);
 	
     /*二 找上拐点*/
-    for(i=0;i<ipts0_num;i++)
+    for(i=0;i<in_put_num_l;i++)
 	{
-		if ((ipts0[i][1]>ipts0[i+1][1])&&(ipts0[i][0]<ipts0[i+1][0])) // 拐点的坐标之和最大
+		if ((in_put_l[i][1]>in_put_l[i+1][1])&&(in_put_l[i][0]<in_put_l[i+1][0])) // 拐点的坐标之和最大
         {
             ipts0_up_index = i;
 			break;
         }
 	}
-	for(i=0;i<ipts11_num;i++)
+    ips200_draw_line(0, 0, ipts000[ipts0_up_index][0], ipts000[ipts0_up_index][1], RGB565_RED);
+	for(i=0;i<in_put_r_num;i++)
 	{
-		if ((right_up[i][1]>right_up[i+1][1])&&(right_up[i][0]<right_up[i+1][0])) // 拐点的坐标之和最大
+		if ((Right_Change[i][1]>Right_Change[i+1][1])&&(Right_Change[i][0]<Right_Change[i+1][0])) // 拐点的坐标之和最大
         {
             ipts1_up_index = i;
 			if(ipts1_up_index>=5)
@@ -1556,6 +1561,7 @@ void Get_Upguaidian(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int 
 			}
         }
 	}
+    ips200_draw_line(0, 0, ipts111[ipts1_up_index][0], ipts111[ipts1_up_index][1], RGB565_RED);
 }
 
 /*
@@ -2446,9 +2452,10 @@ uint8 mid_line_num;
 //     return err;
 // }
 
-void Draw_line_cross_d(void)
+float Draw_line_cross_d(void)
 {
     float k_r,k_l,b_r,b_l;//定义左右边线斜率和截距
+    float k_l_line,k_r_line;//定义左右中线斜率
     k_l=(float)(ipts0[ipts0_up_index][1]-118)/(ipts0[ipts0_up_index][0]-1);
     b_l=ipts0[ipts0_up_index][1]*k_l-ipts0[ipts0_up_index][0];
 
@@ -2460,9 +2467,8 @@ void Draw_line_cross_d(void)
 
     k_r=(1/k_r);
     b_r=-b_r*k_r;
-
     int i;
-     for (i = ipts0[ipts0_up_index][1]; i > 10; i--)
+    for (i = ipts0[ipts0_up_index][1]; i > 10; i--)
     {
         int new_column_l = (int)(k_l * i + b_l);
         if (new_column_l > 0)
@@ -2478,6 +2484,18 @@ void Draw_line_cross_d(void)
             Image_Use_Robert[i][new_column_r] = BLACK;
         }
     }
+
+    k_l_line=(ipts000[ipts0_up_index][0]-ipts0[ipts0_up_index+5][0])/(ipts000[ipts0_up_index][1]-ipts0[ipts0_up_index+5][1]);
+    k_r_line=(ipts111[ipts1_up_index][0]-ipts1[ipts1_up_index+5][0])/(ipts111[ipts1_up_index][1]-ipts1[ipts1_up_index+5][1]);
+
+    float percent =(ipts000[ipts0_up_index][1]/120);//按百分比计算斜率 percent最大为0.5
+    k_l= k_l_line*percent+ k_l*(1-percent);
+
+    percent =(ipts111[ipts1_up_index][1]/120);
+
+    k_r= k_r_line*percent+k_r*(1-percent);
+
+    return (k_l+k_r)/2;
 }
 
 float err,last_err;
@@ -2517,7 +2535,6 @@ float run_left(void)
     ips200_show_uint(0,160,mid_line_num,3);
     /*三 误差简单滤波*/
     err=0.8*err+last_err*0.2;
-    ips200_show_float(120,120,err,3,3);
     return err;
 }
 
@@ -2642,15 +2659,16 @@ float Center_edge(void)
 
 void run_cross_c(void)
 {
-    Cross_Drawline(ipts0,ipts0_num,ipts1,ipts1_num);
-    Finnal_err=Center_edge();
+    Finnal_err=Cross_Drawline(ipts0,ipts0_num,ipts1,ipts1_num)*0.06;
+    
 }
 
 void run_cross_d(void)//左右丢线后，此时ipts0和ipts1就可以扫上去了
 {
-    Get_Upguaidian(ipts0,ipts0_num,ipts1,ipts1_num);
-    Draw_line_cross_d();
-    Finnal_err=Center_edge();
+    Find_Borderline_Third();
+    Get_Upguaidian(ipts000,ipts000_num,ipts111,ipts111_num);
+    uint8 i;
+    Finnal_err=Draw_line_cross_d();
 }
 // float run_left_new(void)
 // {   
@@ -2696,6 +2714,17 @@ void run_cross(void)
     {
         run_cross_d();
     }
+}
+
+float run_straight(void)
+{
+    float k_l,k_r;//定义左右边线斜率
+    if(Straight_State==1)
+    {
+        k_l=(float)LineRession(ipts0,ipts0_num -5);
+        k_r=(float)LineRession(ipts1,ipts1_num -5);
+    }
+    return (k_l+k_r)/2;
 }
 
 void run_HD_a(void)
@@ -2775,8 +2804,9 @@ void test(void)
     {
         run_cross();
     }
-    
-    
+    Finnal_err=run_left();
+    Finnal_err=run_right();
+    Finnal_err=run_straight();
 //    Cross_Drawline(ipts0,ipts0_num,ipts1,ipts1_num);
 	
     // RoundaboutGetArc(Image_Use_Robert[120][160], 1, ipts0_num, test);

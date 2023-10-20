@@ -121,7 +121,7 @@ void track_rightline(float pts_in[][2], int num, float pts_out[][2], int approx_
 void Image_CheckState(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int in_put_num_r);
 void Cross_Drawline_plus(int in_put_l[][2], int in_put_num_l, int in_put_lnew[][2], int in_put_num_lnew,
                          int in_put_r[][2], int in_put_r_num, int in_put_rnew[][2], int in_put_r_numnew);
-void Cross_Drawline(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int in_put_r_num);
+float Cross_Drawline(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int in_put_r_num);
 void test_new(void);
 // W矩阵参数（原图转化成逆透视后图像的参数）
 // 60*80
