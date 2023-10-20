@@ -1,62 +1,62 @@
 /*********************************************************************************************************************
-* RT1064DVL6A Opensourec Library ¼´£¨RT1064DVL6A ¿ªÔ´¿â£©ÊÇÒ»¸ö»ùÓÚ¹Ù·½ SDK ½Ó¿ÚµÄµÚÈý·½¿ªÔ´¿â
-* Copyright (c) 2022 SEEKFREE Öð·É¿Æ¼¼
+* RT1064DVL6A Opensourec Library å³ï¼ˆRT1064DVL6A å¼€æºåº“ï¼‰æ˜¯ä¸€ä¸ªåŸºäºŽå®˜æ–¹ SDK æŽ¥å£çš„ç¬¬ä¸‰æ–¹å¼€æºåº“
+* Copyright (c) 2022 SEEKFREE é€é£žç§‘æŠ€
 * 
-* ±¾ÎÄ¼þÊÇ RT1064DVL6A ¿ªÔ´¿âµÄÒ»²¿·Ö
+* æœ¬æ–‡ä»¶æ˜¯ RT1064DVL6A å¼€æºåº“çš„ä¸€éƒ¨åˆ†
 * 
-* RT1064DVL6A ¿ªÔ´¿â ÊÇÃâ·ÑÈí¼þ
-* Äú¿ÉÒÔ¸ù¾Ý×ÔÓÉÈí¼þ»ù½ð»á·¢²¼µÄ GPL£¨GNU General Public License£¬¼´ GNUÍ¨ÓÃ¹«¹²Ðí¿ÉÖ¤£©µÄÌõ¿î
-* ¼´ GPL µÄµÚ3°æ£¨¼´ GPL3.0£©»ò£¨ÄúÑ¡ÔñµÄ£©ÈÎºÎºóÀ´µÄ°æ±¾£¬ÖØÐÂ·¢²¼ºÍ/»òÐÞ¸ÄËü
+* RT1064DVL6A å¼€æºåº“ æ˜¯å…è´¹è½¯ä»¶
+* æ‚¨å¯ä»¥æ ¹æ®è‡ªç”±è½¯ä»¶åŸºé‡‘ä¼šå‘å¸ƒçš„ GPLï¼ˆGNU General Public Licenseï¼Œå³ GNUé€šç”¨å…¬å…±è®¸å¯è¯ï¼‰çš„æ¡æ¬¾
+* å³ GPL çš„ç¬¬3ç‰ˆï¼ˆå³ GPL3.0ï¼‰æˆ–ï¼ˆæ‚¨é€‰æ‹©çš„ï¼‰ä»»ä½•åŽæ¥çš„ç‰ˆæœ¬ï¼Œé‡æ–°å‘å¸ƒå’Œ/æˆ–ä¿®æ”¹å®ƒ
 * 
-* ±¾¿ªÔ´¿âµÄ·¢²¼ÊÇÏ£ÍûËüÄÜ·¢»Ó×÷ÓÃ£¬µ«²¢Î´¶ÔÆä×÷ÈÎºÎµÄ±£Ö¤
-* ÉõÖÁÃ»ÓÐÒþº¬µÄÊÊÏúÐÔ»òÊÊºÏÌØ¶¨ÓÃÍ¾µÄ±£Ö¤
-* ¸ü¶àÏ¸½ÚÇë²Î¼û GPL
+* æœ¬å¼€æºåº“çš„å‘å¸ƒæ˜¯å¸Œæœ›å®ƒèƒ½å‘æŒ¥ä½œç”¨ï¼Œä½†å¹¶æœªå¯¹å…¶ä½œä»»ä½•çš„ä¿è¯
+* ç”šè‡³æ²¡æœ‰éšå«çš„é€‚é”€æ€§æˆ–é€‚åˆç‰¹å®šç”¨é€”çš„ä¿è¯
+* æ›´å¤šç»†èŠ‚è¯·å‚è§ GPL
 * 
-* ÄúÓ¦¸ÃÔÚÊÕµ½±¾¿ªÔ´¿âµÄÍ¬Ê±ÊÕµ½Ò»·Ý GPL µÄ¸±±¾
-* Èç¹ûÃ»ÓÐ£¬Çë²ÎÔÄ<https://www.gnu.org/licenses/>
+* æ‚¨åº”è¯¥åœ¨æ”¶åˆ°æœ¬å¼€æºåº“çš„åŒæ—¶æ”¶åˆ°ä¸€ä»½ GPL çš„å‰¯æœ¬
+* å¦‚æžœæ²¡æœ‰ï¼Œè¯·å‚é˜…<https://www.gnu.org/licenses/>
 * 
-* ¶îÍâ×¢Ã÷£º
-* ±¾¿ªÔ´¿âÊ¹ÓÃ GPL3.0 ¿ªÔ´Ðí¿ÉÖ¤Ð­Òé ÒÔÉÏÐí¿ÉÉêÃ÷ÎªÒëÎÄ°æ±¾
-* Ðí¿ÉÉêÃ÷Ó¢ÎÄ°æÔÚ libraries/doc ÎÄ¼þ¼ÐÏÂµÄ GPL3_permission_statement.txt ÎÄ¼þÖÐ
-* Ðí¿ÉÖ¤¸±±¾ÔÚ libraries ÎÄ¼þ¼ÐÏÂ ¼´¸ÃÎÄ¼þ¼ÐÏÂµÄ LICENSE ÎÄ¼þ
-* »¶Ó­¸÷Î»Ê¹ÓÃ²¢´«²¥±¾³ÌÐò µ«ÐÞ¸ÄÄÚÈÝÊ±±ØÐë±£ÁôÖð·É¿Æ¼¼µÄ°æÈ¨ÉùÃ÷£¨¼´±¾ÉùÃ÷£©
+* é¢å¤–æ³¨æ˜Žï¼š
+* æœ¬å¼€æºåº“ä½¿ç”¨ GPL3.0 å¼€æºè®¸å¯è¯åè®® ä»¥ä¸Šè®¸å¯ç”³æ˜Žä¸ºè¯‘æ–‡ç‰ˆæœ¬
+* è®¸å¯ç”³æ˜Žè‹±æ–‡ç‰ˆåœ¨ libraries/doc æ–‡ä»¶å¤¹ä¸‹çš„ GPL3_permission_statement.txt æ–‡ä»¶ä¸­
+* è®¸å¯è¯å‰¯æœ¬åœ¨ libraries æ–‡ä»¶å¤¹ä¸‹ å³è¯¥æ–‡ä»¶å¤¹ä¸‹çš„ LICENSE æ–‡ä»¶
+* æ¬¢è¿Žå„ä½ä½¿ç”¨å¹¶ä¼ æ’­æœ¬ç¨‹åº ä½†ä¿®æ”¹å†…å®¹æ—¶å¿…é¡»ä¿ç•™é€é£žç§‘æŠ€çš„ç‰ˆæƒå£°æ˜Žï¼ˆå³æœ¬å£°æ˜Žï¼‰
 * 
-* ÎÄ¼þÃû³Æ          zf_device_ips200
-* ¹«Ë¾Ãû³Æ          ³É¶¼Öð·É¿Æ¼¼ÓÐÏÞ¹«Ë¾
-* °æ±¾ÐÅÏ¢          ²é¿´ libraries/doc ÎÄ¼þ¼ÐÄÚ version ÎÄ¼þ °æ±¾ËµÃ÷
-* ¿ª·¢»·¾³          IAR 8.32.4 or MDK 5.33
-* ÊÊÓÃÆ½Ì¨          RT1064DVL6A
-* µêÆÌÁ´½Ó          https://seekfree.taobao.com/
+* æ–‡ä»¶åç§°          zf_device_ips200
+* å…¬å¸åç§°          æˆéƒ½é€é£žç§‘æŠ€æœ‰é™å…¬å¸
+* ç‰ˆæœ¬ä¿¡æ¯          æŸ¥çœ‹ libraries/doc æ–‡ä»¶å¤¹å†… version æ–‡ä»¶ ç‰ˆæœ¬è¯´æ˜Ž
+* å¼€å‘çŽ¯å¢ƒ          IAR 8.32.4 or MDK 5.33
+* é€‚ç”¨å¹³å°          RT1064DVL6A
+* åº—é“ºé“¾æŽ¥          https://seekfree.taobao.com/
 * 
-* ÐÞ¸Ä¼ÇÂ¼
-* ÈÕÆÚ              ×÷Õß                ±¸×¢
+* ä¿®æ”¹è®°å½•
+* æ—¥æœŸ              ä½œè€…                å¤‡æ³¨
 * 2022-09-21        SeekFree            first version
 ********************************************************************************************************************/
 /*********************************************************************************************************************
-* ½ÓÏß¶¨Òå£º
+* æŽ¥çº¿å®šä¹‰ï¼š
 *                   ------------------------------------
-*                   Ä£¿é¹Ü½Å            µ¥Æ¬»ú¹Ü½Å
-*                   // Ë«ÅÅÅÅÕë ²¢¿ÚÁ½´çÆÁ Ó²¼þÒý½Å
-*                   RD                  ²é¿´ zf_device_ips200.h ÖÐ IPS200_RD_PIN_PARALLEL8     ºê¶¨Òå
-*                   WR                  ²é¿´ zf_device_ips200.h ÖÐ IPS200_WR_PIN_PARALLEL8     ºê¶¨Òå
-*                   RS                  ²é¿´ zf_device_ips200.h ÖÐ IPS200_RS_PIN_PARALLEL8     ºê¶¨Òå
-*                   RST                 ²é¿´ zf_device_ips200.h ÖÐ IPS200_RST_PIN_PARALLEL8    ºê¶¨Òå
-*                   CS                  ²é¿´ zf_device_ips200.h ÖÐ IPS200_CS_PIN_PARALLEL8     ºê¶¨Òå
-*                   BL                  ²é¿´ zf_device_ips200.h ÖÐ IPS200_BL_PIN_PARALLEL8     ºê¶¨Òå
-*                   D0-D7               ²é¿´ zf_device_ips200.h ÖÐ IPS200_Dx_PIN_PARALLEL8     ºê¶¨Òå
-*                   VCC                 3.3VµçÔ´
-*                   GND                 µçÔ´µØ
+*                   æ¨¡å—ç®¡è„š            å•ç‰‡æœºç®¡è„š
+*                   // åŒæŽ’æŽ’é’ˆ å¹¶å£ä¸¤å¯¸å± ç¡¬ä»¶å¼•è„š
+*                   RD                  æŸ¥çœ‹ zf_device_ips200.h ä¸­ IPS200_RD_PIN_PARALLEL8     å®å®šä¹‰
+*                   WR                  æŸ¥çœ‹ zf_device_ips200.h ä¸­ IPS200_WR_PIN_PARALLEL8     å®å®šä¹‰
+*                   RS                  æŸ¥çœ‹ zf_device_ips200.h ä¸­ IPS200_RS_PIN_PARALLEL8     å®å®šä¹‰
+*                   RST                 æŸ¥çœ‹ zf_device_ips200.h ä¸­ IPS200_RST_PIN_PARALLEL8    å®å®šä¹‰
+*                   CS                  æŸ¥çœ‹ zf_device_ips200.h ä¸­ IPS200_CS_PIN_PARALLEL8     å®å®šä¹‰
+*                   BL                  æŸ¥çœ‹ zf_device_ips200.h ä¸­ IPS200_BL_PIN_PARALLEL8     å®å®šä¹‰
+*                   D0-D7               æŸ¥çœ‹ zf_device_ips200.h ä¸­ IPS200_Dx_PIN_PARALLEL8     å®å®šä¹‰
+*                   VCC                 3.3Vç”µæº
+*                   GND                 ç”µæºåœ°
 *
-*                   // µ¥ÅÅÅÅÕë SPI Á½´çÆÁ Ó²¼þÒý½Å
-*                   SCL                 ²é¿´ zf_device_ips200.h ÖÐ IPS200_SCL_PIN_SPI  ºê¶¨Òå
-*                   SDA                 ²é¿´ zf_device_ips200.h ÖÐ IPS200_SDA_PIN_SPI  ºê¶¨Òå
-*                   RST                 ²é¿´ zf_device_ips200.h ÖÐ IPS200_RST_PIN_SPI  ºê¶¨Òå
-*                   DC                  ²é¿´ zf_device_ips200.h ÖÐ IPS200_DC_PIN_SPI   ºê¶¨Òå
-*                   CS                  ²é¿´ zf_device_ips200.h ÖÐ IPS200_CS_PIN_SPI   ºê¶¨Òå
-*                   BLk                 ²é¿´ zf_device_ips200.h ÖÐ IPS200_BLk_PIN_SPI  ºê¶¨Òå
-*                   VCC                 3.3VµçÔ´
-*                   GND                 µçÔ´µØ
-*                   ×î´ó·Ö±æÂÊ 320 * 240
+*                   // å•æŽ’æŽ’é’ˆ SPI ä¸¤å¯¸å± ç¡¬ä»¶å¼•è„š
+*                   SCL                 æŸ¥çœ‹ zf_device_ips200.h ä¸­ IPS200_SCL_PIN_SPI  å®å®šä¹‰
+*                   SDA                 æŸ¥çœ‹ zf_device_ips200.h ä¸­ IPS200_SDA_PIN_SPI  å®å®šä¹‰
+*                   RST                 æŸ¥çœ‹ zf_device_ips200.h ä¸­ IPS200_RST_PIN_SPI  å®å®šä¹‰
+*                   DC                  æŸ¥çœ‹ zf_device_ips200.h ä¸­ IPS200_DC_PIN_SPI   å®å®šä¹‰
+*                   CS                  æŸ¥çœ‹ zf_device_ips200.h ä¸­ IPS200_CS_PIN_SPI   å®å®šä¹‰
+*                   BLk                 æŸ¥çœ‹ zf_device_ips200.h ä¸­ IPS200_BLk_PIN_SPI  å®å®šä¹‰
+*                   VCC                 3.3Vç”µæº
+*                   GND                 ç”µæºåœ°
+*                   æœ€å¤§åˆ†è¾¨çŽ‡ 320 * 240
 *                   ------------------------------------
 ********************************************************************************************************************/
 
@@ -89,63 +89,63 @@ gpio_pin_enum                   ips_cs_pin              = IPS200_CS_PIN_SPI;
 #if IPS200_USE_SOFT_SPI
 static soft_spi_info_struct                 ips200_spi;
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é     IPS200 SPI Ð´ 8bit Êý¾Ý
-// ²ÎÊýËµÃ÷     data            Êý¾Ý
-// ·µ»Ø²ÎÊý     void
-// Ê¹ÓÃÊ¾Àý     ips200_write_8bit_data_spi(command);
-// ±¸×¢ÐÅÏ¢     ÄÚ²¿µ÷ÓÃ
+// å‡½æ•°ç®€ä»‹     IPS200 SPI å†™ 8bit æ•°æ®
+// å‚æ•°è¯´æ˜Ž     data            æ•°æ®
+// è¿”å›žå‚æ•°     void
+// ä½¿ç”¨ç¤ºä¾‹     ips200_write_8bit_data_spi(command);
+// å¤‡æ³¨ä¿¡æ¯     å†…éƒ¨è°ƒç”¨
 //-------------------------------------------------------------------------------------------------------------------
 #define ips200_write_8bit_data_spi(data)    (soft_spi_write_8bit(&ips200_spi, (data)))
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é     IPS200 SPI Ð´ 16bit Êý¾Ý
-// ²ÎÊýËµÃ÷     data            Êý¾Ý
-// ·µ»Ø²ÎÊý     void
-// Ê¹ÓÃÊ¾Àý     ips200_write_16bit_data_spi(dat);
-// ±¸×¢ÐÅÏ¢     ÄÚ²¿µ÷ÓÃ
+// å‡½æ•°ç®€ä»‹     IPS200 SPI å†™ 16bit æ•°æ®
+// å‚æ•°è¯´æ˜Ž     data            æ•°æ®
+// è¿”å›žå‚æ•°     void
+// ä½¿ç”¨ç¤ºä¾‹     ips200_write_16bit_data_spi(dat);
+// å¤‡æ³¨ä¿¡æ¯     å†…éƒ¨è°ƒç”¨
 //-------------------------------------------------------------------------------------------------------------------
 #define ips200_write_16bit_data_spi(data)   (soft_spi_write_16bit(&ips200_spi, (data)))
 #else
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é     IPS200 SPI Ð´ 8bit Êý¾Ý
-// ²ÎÊýËµÃ÷     data            Êý¾Ý
-// ·µ»Ø²ÎÊý     void
-// Ê¹ÓÃÊ¾Àý     ips200_write_8bit_data_spi(command);
-// ±¸×¢ÐÅÏ¢     ÄÚ²¿µ÷ÓÃ
+// å‡½æ•°ç®€ä»‹     IPS200 SPI å†™ 8bit æ•°æ®
+// å‚æ•°è¯´æ˜Ž     data            æ•°æ®
+// è¿”å›žå‚æ•°     void
+// ä½¿ç”¨ç¤ºä¾‹     ips200_write_8bit_data_spi(command);
+// å¤‡æ³¨ä¿¡æ¯     å†…éƒ¨è°ƒç”¨
 //-------------------------------------------------------------------------------------------------------------------
 #define ips200_write_8bit_data_spi(data)    (spi_write_8bit(IPS200_SPI, (data)))
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é     IPS200 SPI Ð´ 16bit Êý¾Ý
-// ²ÎÊýËµÃ÷     data            Êý¾Ý
-// ·µ»Ø²ÎÊý     void
-// Ê¹ÓÃÊ¾Àý     ips200_write_16bit_data_spi(dat);
-// ±¸×¢ÐÅÏ¢     ÄÚ²¿µ÷ÓÃ
+// å‡½æ•°ç®€ä»‹     IPS200 SPI å†™ 16bit æ•°æ®
+// å‚æ•°è¯´æ˜Ž     data            æ•°æ®
+// è¿”å›žå‚æ•°     void
+// ä½¿ç”¨ç¤ºä¾‹     ips200_write_16bit_data_spi(dat);
+// å¤‡æ³¨ä¿¡æ¯     å†…éƒ¨è°ƒç”¨
 //-------------------------------------------------------------------------------------------------------------------
 #define ips200_write_16bit_data_spi(data)   (spi_write_16bit(IPS200_SPI, (data)))
 #endif
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é     IPS200 SPI Ð´Êý¾Ý
-// ²ÎÊýËµÃ÷     data            Êý¾Ý
-// ·µ»Ø²ÎÊý     void
-// Ê¹ÓÃÊ¾Àý     ips200_write_16bit_data_spi(dat);
-// ±¸×¢ÐÅÏ¢     ÄÚ²¿µ÷ÓÃ
+// å‡½æ•°ç®€ä»‹     IPS200 SPI å†™æ•°æ®
+// å‚æ•°è¯´æ˜Ž     data            æ•°æ®
+// è¿”å›žå‚æ•°     void
+// ä½¿ç”¨ç¤ºä¾‹     ips200_write_16bit_data_spi(dat);
+// å¤‡æ³¨ä¿¡æ¯     å†…éƒ¨è°ƒç”¨
 //-------------------------------------------------------------------------------------------------------------------
 static void ips200_write_data (const uint8 dat)
 {
-    //ÔÚ·¢ËÍµÍËÄÎ»
+    //åœ¨å‘é€ä½Žå››ä½
     IPS200_DATA_ADD1 = (dat << (IPS200_D0_PIN_PARALLEL8 & 0x1f)) | (IPS200_DATA_ADD1 & ~((uint32)(0x0F << (IPS200_D0_PIN_PARALLEL8 & 0x1f))) );
-    //ÏÈ·¢ËÍ¸ß4Î»
+    //å…ˆå‘é€é«˜4ä½
     IPS200_DATA_ADD2 = ((dat>>4) << (IPS200_D4_PIN_PARALLEL8 & 0x1f)) | (IPS200_DATA_ADD2 & ~((uint32)(0x0F << (IPS200_D4_PIN_PARALLEL8 & 0x1f))) );
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é     IPS200 Ð´ÃüÁî
-// ²ÎÊýËµÃ÷     command         ÃüÁî
-// ·µ»Ø²ÎÊý     void
-// Ê¹ÓÃÊ¾Àý     ips200_write_command(0x2a);
-// ±¸×¢ÐÅÏ¢     ÄÚ²¿µ÷ÓÃ ÓÃ»§ÎÞÐè¹ØÐÄ
+// å‡½æ•°ç®€ä»‹     IPS200 å†™å‘½ä»¤
+// å‚æ•°è¯´æ˜Ž     command         å‘½ä»¤
+// è¿”å›žå‚æ•°     void
+// ä½¿ç”¨ç¤ºä¾‹     ips200_write_command(0x2a);
+// å¤‡æ³¨ä¿¡æ¯     å†…éƒ¨è°ƒç”¨ ç”¨æˆ·æ— éœ€å…³å¿ƒ
 //-------------------------------------------------------------------------------------------------------------------
 static void ips200_write_command (const uint8 command)
 {
@@ -168,11 +168,11 @@ static void ips200_write_command (const uint8 command)
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é     IPS200 ÏòÒº¾§ÆÁÐ´ 8bit Êý¾Ý
-// ²ÎÊýËµÃ÷     dat             Êý¾Ý
-// ·µ»Ø²ÎÊý     void
-// Ê¹ÓÃÊ¾Àý     ips200_write_8bit_data(0x0C);
-// ±¸×¢ÐÅÏ¢     ÄÚ²¿µ÷ÓÃ ÓÃ»§ÎÞÐè¹ØÐÄ
+// å‡½æ•°ç®€ä»‹     IPS200 å‘æ¶²æ™¶å±å†™ 8bit æ•°æ®
+// å‚æ•°è¯´æ˜Ž     dat             æ•°æ®
+// è¿”å›žå‚æ•°     void
+// ä½¿ç”¨ç¤ºä¾‹     ips200_write_8bit_data(0x0C);
+// å¤‡æ³¨ä¿¡æ¯     å†…éƒ¨è°ƒç”¨ ç”¨æˆ·æ— éœ€å…³å¿ƒ
 //-------------------------------------------------------------------------------------------------------------------
 static void ips200_write_8bit_data (const uint8 dat)
 {
@@ -193,11 +193,11 @@ static void ips200_write_8bit_data (const uint8 dat)
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é     IPS200 ÏòÒº¾§ÆÁÐ´ 16bit Êý¾Ý
-// ²ÎÊýËµÃ÷     dat             Êý¾Ý
-// ·µ»Ø²ÎÊý     void
-// Ê¹ÓÃÊ¾Àý     ips200_write_16bit_data(x1);
-// ±¸×¢ÐÅÏ¢     ÄÚ²¿µ÷ÓÃ ÓÃ»§ÎÞÐè¹ØÐÄ
+// å‡½æ•°ç®€ä»‹     IPS200 å‘æ¶²æ™¶å±å†™ 16bit æ•°æ®
+// å‚æ•°è¯´æ˜Ž     dat             æ•°æ®
+// è¿”å›žå‚æ•°     void
+// ä½¿ç”¨ç¤ºä¾‹     ips200_write_16bit_data(x1);
+// å¤‡æ³¨ä¿¡æ¯     å†…éƒ¨è°ƒç”¨ ç”¨æˆ·æ— éœ€å…³å¿ƒ
 //-------------------------------------------------------------------------------------------------------------------
 static void ips200_write_16bit_data (const uint16 dat)
 {
@@ -221,20 +221,20 @@ static void ips200_write_16bit_data (const uint16 dat)
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é     ÉèÖÃÏÔÊ¾ÇøÓò
-// ²ÎÊýËµÃ÷     x1              ÆðÊ¼xÖá×ø±ê
-// ²ÎÊýËµÃ÷     y1              ÆðÊ¼yÖá×ø±ê
-// ²ÎÊýËµÃ÷     x2              ½áÊøxÖá×ø±ê
-// ²ÎÊýËµÃ÷     y2              ½áÊøyÖá×ø±ê
-// ·µ»Ø²ÎÊý     void
-// Ê¹ÓÃÊ¾Àý     ips200_set_region(0, 0, ips200_x_max - 1, ips200_y_max - 1);
-// ±¸×¢ÐÅÏ¢     ÄÚ²¿µ÷ÓÃ ÓÃ»§ÎÞÐè¹ØÐÄ
+// å‡½æ•°ç®€ä»‹     è®¾ç½®æ˜¾ç¤ºåŒºåŸŸ
+// å‚æ•°è¯´æ˜Ž     x1              èµ·å§‹xè½´åæ ‡
+// å‚æ•°è¯´æ˜Ž     y1              èµ·å§‹yè½´åæ ‡
+// å‚æ•°è¯´æ˜Ž     x2              ç»“æŸxè½´åæ ‡
+// å‚æ•°è¯´æ˜Ž     y2              ç»“æŸyè½´åæ ‡
+// è¿”å›žå‚æ•°     void
+// ä½¿ç”¨ç¤ºä¾‹     ips200_set_region(0, 0, ips200_x_max - 1, ips200_y_max - 1);
+// å¤‡æ³¨ä¿¡æ¯     å†…éƒ¨è°ƒç”¨ ç”¨æˆ·æ— éœ€å…³å¿ƒ
 //-------------------------------------------------------------------------------------------------------------------
 static void ips200_set_region (uint16 x1, uint16 y1, uint16 x2, uint16 y2)
 {
-    // Èç¹û³ÌÐòÔÚÊä³öÁË¶ÏÑÔÐÅÏ¢ ²¢ÇÒÌáÊ¾³ö´íÎ»ÖÃÔÚÕâÀï
-    // ÄÇÃ´Ò»°ãÊÇÆÁÄ»ÏÔÊ¾µÄÊ±ºò³¬¹ýÆÁÄ»·Ö±æÂÊ·¶Î§ÁË
-    // ¼ì²éÒ»ÏÂÄãµÄÏÔÊ¾µ÷ÓÃµÄº¯Êý ×Ô¼º¼ÆËãÒ»ÏÂÄÄÀï³¬¹ýÁËÆÁÄ»ÏÔÊ¾·¶Î§
+    // å¦‚æžœç¨‹åºåœ¨è¾“å‡ºäº†æ–­è¨€ä¿¡æ¯ å¹¶ä¸”æç¤ºå‡ºé”™ä½ç½®åœ¨è¿™é‡Œ
+    // é‚£ä¹ˆä¸€èˆ¬æ˜¯å±å¹•æ˜¾ç¤ºçš„æ—¶å€™è¶…è¿‡å±å¹•åˆ†è¾¨çŽ‡èŒƒå›´äº†
+    // æ£€æŸ¥ä¸€ä¸‹ä½ çš„æ˜¾ç¤ºè°ƒç”¨çš„å‡½æ•° è‡ªå·±è®¡ç®—ä¸€ä¸‹å“ªé‡Œè¶…è¿‡äº†å±å¹•æ˜¾ç¤ºèŒƒå›´
     zf_assert(x1 < ips200_x_max);
     zf_assert(y1 < ips200_y_max);
     zf_assert(x2 < ips200_x_max);
@@ -252,11 +252,11 @@ static void ips200_set_region (uint16 x1, uint16 y1, uint16 x2, uint16 y2)
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é     IPS200 ÏÔÊ¾DEBUGÐÅÏ¢³õÊ¼»¯
-// ²ÎÊýËµÃ÷     void
-// ·µ»Ø²ÎÊý     void
-// Ê¹ÓÃÊ¾Àý     ips200_debug_init();
-// ±¸×¢ÐÅÏ¢     ÄÚ²¿Ê¹ÓÃ ÓÃ»§ÎÞÐè¹ØÐÄ
+// å‡½æ•°ç®€ä»‹     IPS200 æ˜¾ç¤ºDEBUGä¿¡æ¯åˆå§‹åŒ–
+// å‚æ•°è¯´æ˜Ž     void
+// è¿”å›žå‚æ•°     void
+// ä½¿ç”¨ç¤ºä¾‹     ips200_debug_init();
+// å¤‡æ³¨ä¿¡æ¯     å†…éƒ¨ä½¿ç”¨ ç”¨æˆ·æ— éœ€å…³å¿ƒ
 //-------------------------------------------------------------------------------------------------------------------
 static void ips200_debug_init (void)
 {
@@ -281,7 +281,7 @@ static void ips200_debug_init (void)
         }break;
         case IPS200_16X16_FONT:
         {
-            // ÔÝ²»Ö§³Ö
+            // æš‚ä¸æ”¯æŒ
         }break;
     }
     info.output_screen = ips200_show_string;
@@ -291,11 +291,11 @@ static void ips200_debug_init (void)
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é     IPS200 ÇåÆÁº¯Êý
-// ²ÎÊýËµÃ÷     void
-// ·µ»Ø²ÎÊý     void
-// Ê¹ÓÃÊ¾Àý     ips200_clear();
-// ±¸×¢ÐÅÏ¢     ½«ÆÁÄ»Çå¿Õ³É±³¾°ÑÕÉ«
+// å‡½æ•°ç®€ä»‹     IPS200 æ¸…å±å‡½æ•°
+// å‚æ•°è¯´æ˜Ž     void
+// è¿”å›žå‚æ•°     void
+// ä½¿ç”¨ç¤ºä¾‹     ips200_clear();
+// å¤‡æ³¨ä¿¡æ¯     å°†å±å¹•æ¸…ç©ºæˆèƒŒæ™¯é¢œè‰²
 //-------------------------------------------------------------------------------------------------------------------
 void ips200_clear (void)
 {
@@ -319,11 +319,11 @@ void ips200_clear (void)
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é     IPS200 ÆÁÄ»Ìî³äº¯Êý
-// ²ÎÊýËµÃ÷     color           ÑÕÉ«¸ñÊ½ RGB565 »òÕß¿ÉÒÔÊ¹ÓÃ zf_common_font.h ÄÚ rgb565_color_enum Ã¶¾ÙÖµ»òÕß×ÔÐÐÐ´Èë
-// ·µ»Ø²ÎÊý     void
-// Ê¹ÓÃÊ¾Àý     ips200_full(RGB565_BLACK);
-// ±¸×¢ÐÅÏ¢     ½«ÆÁÄ»Ìî³ä³ÉÖ¸¶¨ÑÕÉ«
+// å‡½æ•°ç®€ä»‹     IPS200 å±å¹•å¡«å……å‡½æ•°
+// å‚æ•°è¯´æ˜Ž     color           é¢œè‰²æ ¼å¼ RGB565 æˆ–è€…å¯ä»¥ä½¿ç”¨ zf_common_font.h å†… rgb565_color_enum æžšä¸¾å€¼æˆ–è€…è‡ªè¡Œå†™å…¥
+// è¿”å›žå‚æ•°     void
+// ä½¿ç”¨ç¤ºä¾‹     ips200_full(RGB565_BLACK);
+// å¤‡æ³¨ä¿¡æ¯     å°†å±å¹•å¡«å……æˆæŒ‡å®šé¢œè‰²
 //-------------------------------------------------------------------------------------------------------------------
 void ips200_full (const uint16 color)
 {
@@ -347,11 +347,11 @@ void ips200_full (const uint16 color)
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é     ÉèÖÃÏÔÊ¾·½Ïò
-// ²ÎÊýËµÃ÷     dir             ÏÔÊ¾·½Ïò  ²ÎÕÕ zf_device_ips200.h ÄÚ ips200_dir_enum Ã¶¾ÙÌå¶¨Òå
-// ·µ»Ø²ÎÊý     void
-// Ê¹ÓÃÊ¾Àý     ips200_set_dir(IPS200_PORTAIT);
-// ±¸×¢ÐÅÏ¢     Õâ¸öº¯ÊýÖ»ÓÐÔÚ³õÊ¼»¯ÆÁÄ»Ö®Ç°µ÷ÓÃ²ÅÉúÐ§
+// å‡½æ•°ç®€ä»‹     è®¾ç½®æ˜¾ç¤ºæ–¹å‘
+// å‚æ•°è¯´æ˜Ž     dir             æ˜¾ç¤ºæ–¹å‘  å‚ç…§ zf_device_ips200.h å†… ips200_dir_enum æžšä¸¾ä½“å®šä¹‰
+// è¿”å›žå‚æ•°     void
+// ä½¿ç”¨ç¤ºä¾‹     ips200_set_dir(IPS200_PORTAIT);
+// å¤‡æ³¨ä¿¡æ¯     è¿™ä¸ªå‡½æ•°åªæœ‰åœ¨åˆå§‹åŒ–å±å¹•ä¹‹å‰è°ƒç”¨æ‰ç”Ÿæ•ˆ
 //-------------------------------------------------------------------------------------------------------------------
 void ips200_set_dir (ips200_dir_enum dir)
 {
@@ -374,11 +374,11 @@ void ips200_set_dir (ips200_dir_enum dir)
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é     ÉèÖÃÏÔÊ¾×ÖÌå
-// ²ÎÊýËµÃ÷     dir             ÏÔÊ¾·½Ïò  ²ÎÕÕ zf_device_ips200.h ÄÚ ips200_font_size_enum Ã¶¾ÙÌå¶¨Òå
-// ·µ»Ø²ÎÊý     void
-// Ê¹ÓÃÊ¾Àý     ips200_set_font(IPS200_8x16_FONT);
-// ±¸×¢ÐÅÏ¢     ×ÖÌå¿ÉÒÔËæÊ±×ÔÓÉÉèÖÃ ÉèÖÃºóÉúÐ§ ºóÐøÏÔÊ¾¾ÍÊÇÐÂµÄ×ÖÌå´óÐ¡
+// å‡½æ•°ç®€ä»‹     è®¾ç½®æ˜¾ç¤ºå­—ä½“
+// å‚æ•°è¯´æ˜Ž     dir             æ˜¾ç¤ºæ–¹å‘  å‚ç…§ zf_device_ips200.h å†… ips200_font_size_enum æžšä¸¾ä½“å®šä¹‰
+// è¿”å›žå‚æ•°     void
+// ä½¿ç”¨ç¤ºä¾‹     ips200_set_font(IPS200_8x16_FONT);
+// å¤‡æ³¨ä¿¡æ¯     å­—ä½“å¯ä»¥éšæ—¶è‡ªç”±è®¾ç½® è®¾ç½®åŽç”Ÿæ•ˆ åŽç»­æ˜¾ç¤ºå°±æ˜¯æ–°çš„å­—ä½“å¤§å°
 //-------------------------------------------------------------------------------------------------------------------
 void ips200_set_font (ips200_font_size_enum font)
 {
@@ -386,12 +386,12 @@ void ips200_set_font (ips200_font_size_enum font)
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é     ÉèÖÃÏÔÊ¾ÑÕÉ«
-// ²ÎÊýËµÃ÷     pen             ÑÕÉ«¸ñÊ½ RGB565 »òÕß¿ÉÒÔÊ¹ÓÃ zf_common_font.h ÄÚ rgb565_color_enum Ã¶¾ÙÖµ»òÕß×ÔÐÐÐ´Èë
-// ²ÎÊýËµÃ÷     bgcolor         ÑÕÉ«¸ñÊ½ RGB565 »òÕß¿ÉÒÔÊ¹ÓÃ zf_common_font.h ÄÚ rgb565_color_enum Ã¶¾ÙÖµ»òÕß×ÔÐÐÐ´Èë
-// ·µ»Ø²ÎÊý     void
-// Ê¹ÓÃÊ¾Àý     ips200_set_color(RGB565_RED, RGB565_GRAY);
-// ±¸×¢ÐÅÏ¢     ×ÖÌåÑÕÉ«ºÍ±³¾°ÑÕÉ«Ò²¿ÉÒÔËæÊ±×ÔÓÉÉèÖÃ ÉèÖÃºóÉúÐ§
+// å‡½æ•°ç®€ä»‹     è®¾ç½®æ˜¾ç¤ºé¢œè‰²
+// å‚æ•°è¯´æ˜Ž     pen             é¢œè‰²æ ¼å¼ RGB565 æˆ–è€…å¯ä»¥ä½¿ç”¨ zf_common_font.h å†… rgb565_color_enum æžšä¸¾å€¼æˆ–è€…è‡ªè¡Œå†™å…¥
+// å‚æ•°è¯´æ˜Ž     bgcolor         é¢œè‰²æ ¼å¼ RGB565 æˆ–è€…å¯ä»¥ä½¿ç”¨ zf_common_font.h å†… rgb565_color_enum æžšä¸¾å€¼æˆ–è€…è‡ªè¡Œå†™å…¥
+// è¿”å›žå‚æ•°     void
+// ä½¿ç”¨ç¤ºä¾‹     ips200_set_color(RGB565_RED, RGB565_GRAY);
+// å¤‡æ³¨ä¿¡æ¯     å­—ä½“é¢œè‰²å’ŒèƒŒæ™¯é¢œè‰²ä¹Ÿå¯ä»¥éšæ—¶è‡ªç”±è®¾ç½® è®¾ç½®åŽç”Ÿæ•ˆ
 //-------------------------------------------------------------------------------------------------------------------
 void ips200_set_color (const uint16 pen, const uint16 bgcolor)
 {
@@ -400,18 +400,18 @@ void ips200_set_color (const uint16 pen, const uint16 bgcolor)
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é     IPS200 »­µã
-// ²ÎÊýËµÃ÷     x               ×ø±êx·½ÏòµÄÆðµã [0, ips200_x_max-1]
-// ²ÎÊýËµÃ÷     y               ×ø±êy·½ÏòµÄÆðµã [0, ips200_y_max-1]
-// ²ÎÊýËµÃ÷     color           ÑÕÉ«¸ñÊ½ RGB565 »òÕß¿ÉÒÔÊ¹ÓÃ zf_common_font.h ÄÚ rgb565_color_enum Ã¶¾ÙÖµ»òÕß×ÔÐÐÐ´Èë
-// ·µ»Ø²ÎÊý     void
-// Ê¹ÓÃÊ¾Àý     ips200_draw_point(0, 0, RGB565_RED);            //×ø±ê0,0»­Ò»¸öºìÉ«µÄµã
-// ±¸×¢ÐÅÏ¢     
+// å‡½æ•°ç®€ä»‹     IPS200 ç”»ç‚¹
+// å‚æ•°è¯´æ˜Ž     x               åæ ‡xæ–¹å‘çš„èµ·ç‚¹ [0, ips200_x_max-1]
+// å‚æ•°è¯´æ˜Ž     y               åæ ‡yæ–¹å‘çš„èµ·ç‚¹ [0, ips200_y_max-1]
+// å‚æ•°è¯´æ˜Ž     color           é¢œè‰²æ ¼å¼ RGB565 æˆ–è€…å¯ä»¥ä½¿ç”¨ zf_common_font.h å†… rgb565_color_enum æžšä¸¾å€¼æˆ–è€…è‡ªè¡Œå†™å…¥
+// è¿”å›žå‚æ•°     void
+// ä½¿ç”¨ç¤ºä¾‹     ips200_draw_point(0, 0, RGB565_RED);            //åæ ‡0,0ç”»ä¸€ä¸ªçº¢è‰²çš„ç‚¹
+// å¤‡æ³¨ä¿¡æ¯     
 //-------------------------------------------------------------------------------------------------------------------
 void ips200_draw_point (uint16 x, uint16 y, const uint16 color)
 {
-    // Èç¹û³ÌÐòÔÚÊä³öÁË¶ÏÑÔÐÅÏ¢ ²¢ÇÒÌáÊ¾³ö´íÎ»ÖÃÔÚÕâÀï
-    // ÄÇÃ´Ò»°ãÊÇÆÁÄ»ÏÔÊ¾µÄÊ±ºò³¬¹ýÆÁÄ»·Ö±æÂÊ·¶Î§ÁË
+    // å¦‚æžœç¨‹åºåœ¨è¾“å‡ºäº†æ–­è¨€ä¿¡æ¯ å¹¶ä¸”æç¤ºå‡ºé”™ä½ç½®åœ¨è¿™é‡Œ
+    // é‚£ä¹ˆä¸€èˆ¬æ˜¯å±å¹•æ˜¾ç¤ºçš„æ—¶å€™è¶…è¿‡å±å¹•åˆ†è¾¨çŽ‡èŒƒå›´äº†
 	func_limit_ab(x,0,200);
 	func_limit_ab(y,0,300);
     zf_assert(x < ips200_x_max);
@@ -430,20 +430,20 @@ void ips200_draw_point (uint16 x, uint16 y, const uint16 color)
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é     IPS200 »­Ïß
-// ²ÎÊýËµÃ÷     x_start         ×ø±êx·½ÏòµÄÆðµã [0, ips200_x_max-1]
-// ²ÎÊýËµÃ÷     y_start         ×ø±êy·½ÏòµÄÆðµã [0, ips200_y_max-1]
-// ²ÎÊýËµÃ÷     x_end           ×ø±êx·½ÏòµÄÖÕµã [0, ips200_x_max-1]
-// ²ÎÊýËµÃ÷     y_end           ×ø±êy·½ÏòµÄÖÕµã [0, ips200_y_max-1]
-// ²ÎÊýËµÃ÷     color           ÑÕÉ«¸ñÊ½ RGB565 »òÕß¿ÉÒÔÊ¹ÓÃ zf_common_font.h ÄÚ rgb565_color_enum Ã¶¾ÙÖµ»òÕß×ÔÐÐÐ´Èë
-// ·µ»Ø²ÎÊý     void
-// Ê¹ÓÃÊ¾Àý     ips200_draw_line(0, 0, 10, 10, RGB565_RED);     // ×ø±ê 0,0 µ½ 10,10 »­Ò»ÌõºìÉ«µÄÏß
-// ±¸×¢ÐÅÏ¢     
+// å‡½æ•°ç®€ä»‹     IPS200 ç”»çº¿
+// å‚æ•°è¯´æ˜Ž     x_start         åæ ‡xæ–¹å‘çš„èµ·ç‚¹ [0, ips200_x_max-1]
+// å‚æ•°è¯´æ˜Ž     y_start         åæ ‡yæ–¹å‘çš„èµ·ç‚¹ [0, ips200_y_max-1]
+// å‚æ•°è¯´æ˜Ž     x_end           åæ ‡xæ–¹å‘çš„ç»ˆç‚¹ [0, ips200_x_max-1]
+// å‚æ•°è¯´æ˜Ž     y_end           åæ ‡yæ–¹å‘çš„ç»ˆç‚¹ [0, ips200_y_max-1]
+// å‚æ•°è¯´æ˜Ž     color           é¢œè‰²æ ¼å¼ RGB565 æˆ–è€…å¯ä»¥ä½¿ç”¨ zf_common_font.h å†… rgb565_color_enum æžšä¸¾å€¼æˆ–è€…è‡ªè¡Œå†™å…¥
+// è¿”å›žå‚æ•°     void
+// ä½¿ç”¨ç¤ºä¾‹     ips200_draw_line(0, 0, 10, 10, RGB565_RED);     // åæ ‡ 0,0 åˆ° 10,10 ç”»ä¸€æ¡çº¢è‰²çš„çº¿
+// å¤‡æ³¨ä¿¡æ¯     
 //-------------------------------------------------------------------------------------------------------------------
 void ips200_draw_line (uint16 x_start, uint16 y_start, uint16 x_end, uint16 y_end, const uint16 color)
 {
-    // Èç¹û³ÌÐòÔÚÊä³öÁË¶ÏÑÔÐÅÏ¢ ²¢ÇÒÌáÊ¾³ö´íÎ»ÖÃÔÚÕâÀï
-    // ÄÇÃ´Ò»°ãÊÇÆÁÄ»ÏÔÊ¾µÄÊ±ºò³¬¹ýÆÁÄ»·Ö±æÂÊ·¶Î§ÁË
+    // å¦‚æžœç¨‹åºåœ¨è¾“å‡ºäº†æ–­è¨€ä¿¡æ¯ å¹¶ä¸”æç¤ºå‡ºé”™ä½ç½®åœ¨è¿™é‡Œ
+    // é‚£ä¹ˆä¸€èˆ¬æ˜¯å±å¹•æ˜¾ç¤ºçš„æ—¶å€™è¶…è¿‡å±å¹•åˆ†è¾¨çŽ‡èŒƒå›´äº†
 	func_limit_ab(x_end,0,180);
 	func_limit_ab(y_end,0,200);
     zf_assert(x_start < ips200_x_max);
@@ -494,18 +494,18 @@ void ips200_draw_line (uint16 x_start, uint16 y_start, uint16 x_end, uint16 y_en
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é     IPS200 ÏÔÊ¾×Ö·û
-// ²ÎÊýËµÃ÷     x               ×ø±êx·½ÏòµÄÆðµã ²ÎÊý·¶Î§ [0, ips200_x_max-1]
-// ²ÎÊýËµÃ÷     y               ×ø±êy·½ÏòµÄÆðµã ²ÎÊý·¶Î§ [0, ips200_y_max-1]
-// ²ÎÊýËµÃ÷     dat             ÐèÒªÏÔÊ¾µÄ×Ö·û
-// ·µ»Ø²ÎÊý     void
-// Ê¹ÓÃÊ¾Àý     ips200_show_char(0, 0, 'x');                     // ×ø±ê0,0Ð´Ò»¸ö×Ö·ûx
-// ±¸×¢ÐÅÏ¢     
+// å‡½æ•°ç®€ä»‹     IPS200 æ˜¾ç¤ºå­—ç¬¦
+// å‚æ•°è¯´æ˜Ž     x               åæ ‡xæ–¹å‘çš„èµ·ç‚¹ å‚æ•°èŒƒå›´ [0, ips200_x_max-1]
+// å‚æ•°è¯´æ˜Ž     y               åæ ‡yæ–¹å‘çš„èµ·ç‚¹ å‚æ•°èŒƒå›´ [0, ips200_y_max-1]
+// å‚æ•°è¯´æ˜Ž     dat             éœ€è¦æ˜¾ç¤ºçš„å­—ç¬¦
+// è¿”å›žå‚æ•°     void
+// ä½¿ç”¨ç¤ºä¾‹     ips200_show_char(0, 0, 'x');                     // åæ ‡0,0å†™ä¸€ä¸ªå­—ç¬¦x
+// å¤‡æ³¨ä¿¡æ¯     
 //-------------------------------------------------------------------------------------------------------------------
 void ips200_show_char (uint16 x, uint16 y, const char dat)
 {
-    // Èç¹û³ÌÐòÔÚÊä³öÁË¶ÏÑÔÐÅÏ¢ ²¢ÇÒÌáÊ¾³ö´íÎ»ÖÃÔÚÕâÀï
-    // ÄÇÃ´Ò»°ãÊÇÆÁÄ»ÏÔÊ¾µÄÊ±ºò³¬¹ýÆÁÄ»·Ö±æÂÊ·¶Î§ÁË
+    // å¦‚æžœç¨‹åºåœ¨è¾“å‡ºäº†æ–­è¨€ä¿¡æ¯ å¹¶ä¸”æç¤ºå‡ºé”™ä½ç½®åœ¨è¿™é‡Œ
+    // é‚£ä¹ˆä¸€èˆ¬æ˜¯å±å¹•æ˜¾ç¤ºçš„æ—¶å€™è¶…è¿‡å±å¹•åˆ†è¾¨çŽ‡èŒƒå›´äº†
     zf_assert(x < ips200_x_max);
     zf_assert(y < ips200_y_max);
 
@@ -522,7 +522,7 @@ void ips200_show_char (uint16 x, uint16 y, const char dat)
             for(i = 0; 6 > i; i ++)
             {
                 ips200_set_region(x + i, y, x + i, y + 8);
-                // ¼õ 32 ÒòÎªÊÇÈ¡Ä£ÊÇ´Ó¿Õ¸ñ¿ªÊ¼È¡µÃ ¿Õ¸ñÔÚ ascii ÖÐÐòºÅÊÇ 32
+                // å‡ 32 å› ä¸ºæ˜¯å–æ¨¡æ˜¯ä»Žç©ºæ ¼å¼€å§‹å–å¾— ç©ºæ ¼åœ¨ ascii ä¸­åºå·æ˜¯ 32
                 uint8 temp_top = ascii_font_6x8[dat - 32][i];
                 for(j = 0; 8 > j; j ++)
                 {
@@ -543,7 +543,7 @@ void ips200_show_char (uint16 x, uint16 y, const char dat)
             for(i = 0; 8 > i; i ++)
             {
                 ips200_set_region(x + i, y, x + i, y + 15);
-                // ¼õ 32 ÒòÎªÊÇÈ¡Ä£ÊÇ´Ó¿Õ¸ñ¿ªÊ¼È¡µÃ ¿Õ¸ñÔÚ ascii ÖÐÐòºÅÊÇ 32
+                // å‡ 32 å› ä¸ºæ˜¯å–æ¨¡æ˜¯ä»Žç©ºæ ¼å¼€å§‹å–å¾— ç©ºæ ¼åœ¨ ascii ä¸­åºå·æ˜¯ 32
                 uint8 temp_top = ascii_font_8x16[dat - 32][i];
                 uint8 temp_bottom = ascii_font_8x16[dat - 32][i + 8];
                 for(j = 0; 8 > j; j ++)
@@ -574,7 +574,7 @@ void ips200_show_char (uint16 x, uint16 y, const char dat)
         }break;
         case IPS200_16X16_FONT:
         {
-            // ÔÝ²»Ö§³Ö
+            // æš‚ä¸æ”¯æŒ
         }break;
     }
     if(IPS200_TYPE_SPI == ips200_display_type)
@@ -584,18 +584,18 @@ void ips200_show_char (uint16 x, uint16 y, const char dat)
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é     IPS200 ÏÔÊ¾×Ö·û´®
-// ²ÎÊýËµÃ÷     x               ×ø±êx·½ÏòµÄÆðµã ²ÎÊý·¶Î§ [0, ips200_x_max-1]
-// ²ÎÊýËµÃ÷     y               ×ø±êy·½ÏòµÄÆðµã ²ÎÊý·¶Î§ [0, ips200_y_max-1]
-// ²ÎÊýËµÃ÷     dat             ÐèÒªÏÔÊ¾µÄ×Ö·û´®
-// ·µ»Ø²ÎÊý     void
-// Ê¹ÓÃÊ¾Àý     ips200_show_string(0, 0, "seekfree");
-// ±¸×¢ÐÅÏ¢     
+// å‡½æ•°ç®€ä»‹     IPS200 æ˜¾ç¤ºå­—ç¬¦ä¸²
+// å‚æ•°è¯´æ˜Ž     x               åæ ‡xæ–¹å‘çš„èµ·ç‚¹ å‚æ•°èŒƒå›´ [0, ips200_x_max-1]
+// å‚æ•°è¯´æ˜Ž     y               åæ ‡yæ–¹å‘çš„èµ·ç‚¹ å‚æ•°èŒƒå›´ [0, ips200_y_max-1]
+// å‚æ•°è¯´æ˜Ž     dat             éœ€è¦æ˜¾ç¤ºçš„å­—ç¬¦ä¸²
+// è¿”å›žå‚æ•°     void
+// ä½¿ç”¨ç¤ºä¾‹     ips200_show_string(0, 0, "seekfree");
+// å¤‡æ³¨ä¿¡æ¯     
 //-------------------------------------------------------------------------------------------------------------------
 void ips200_show_string (uint16 x, uint16 y, const char dat[])
 {
-    // Èç¹û³ÌÐòÔÚÊä³öÁË¶ÏÑÔÐÅÏ¢ ²¢ÇÒÌáÊ¾³ö´íÎ»ÖÃÔÚÕâÀï
-    // ÄÇÃ´Ò»°ãÊÇÆÁÄ»ÏÔÊ¾µÄÊ±ºò³¬¹ýÆÁÄ»·Ö±æÂÊ·¶Î§ÁË
+    // å¦‚æžœç¨‹åºåœ¨è¾“å‡ºäº†æ–­è¨€ä¿¡æ¯ å¹¶ä¸”æç¤ºå‡ºé”™ä½ç½®åœ¨è¿™é‡Œ
+    // é‚£ä¹ˆä¸€èˆ¬æ˜¯å±å¹•æ˜¾ç¤ºçš„æ—¶å€™è¶…è¿‡å±å¹•åˆ†è¾¨çŽ‡èŒƒå›´äº†
     zf_assert(x < ips200_x_max);
     zf_assert(y < ips200_y_max);
     
@@ -606,26 +606,26 @@ void ips200_show_string (uint16 x, uint16 y, const char dat[])
         {
             case IPS200_6X8_FONT:   ips200_show_char(x + 6 * j, y, dat[j]); break;
             case IPS200_8X16_FONT:  ips200_show_char(x + 8 * j, y, dat[j]); break;
-            case IPS200_16X16_FONT: break;                                      // ÔÝ²»Ö§³Ö
+            case IPS200_16X16_FONT: break;                                      // æš‚ä¸æ”¯æŒ
         }
         j ++;
     }
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é     IPS200 ÏÔÊ¾32Î»ÓÐ·ûºÅ (È¥³ýÕûÊý²¿·ÖÎÞÐ§µÄ0)
-// ²ÎÊýËµÃ÷     x               ×ø±êx·½ÏòµÄÆðµã ²ÎÊý·¶Î§ [0, ips200_x_max-1]
-// ²ÎÊýËµÃ÷     y               ×ø±êy·½ÏòµÄÆðµã ²ÎÊý·¶Î§ [0, ips200_y_max-1]
-// ²ÎÊýËµÃ÷     dat             ÐèÒªÏÔÊ¾µÄ±äÁ¿ Êý¾ÝÀàÐÍ int32
-// ²ÎÊýËµÃ÷     num             ÐèÒªÏÔÊ¾µÄÎ»Êý ×î¸ß10Î»  ²»°üº¬Õý¸ººÅ
-// ·µ»Ø²ÎÊý     void
-// Ê¹ÓÃÊ¾Àý     ips200_show_int(0, 0, x, 3);                    // x ¿ÉÒÔÎª int32 int16 int8 ÀàÐÍ
-// ±¸×¢ÐÅÏ¢     ¸ºÊý»áÏÔÊ¾Ò»¸ö ¡®-¡¯ºÅ
+// å‡½æ•°ç®€ä»‹     IPS200 æ˜¾ç¤º32ä½æœ‰ç¬¦å· (åŽ»é™¤æ•´æ•°éƒ¨åˆ†æ— æ•ˆçš„0)
+// å‚æ•°è¯´æ˜Ž     x               åæ ‡xæ–¹å‘çš„èµ·ç‚¹ å‚æ•°èŒƒå›´ [0, ips200_x_max-1]
+// å‚æ•°è¯´æ˜Ž     y               åæ ‡yæ–¹å‘çš„èµ·ç‚¹ å‚æ•°èŒƒå›´ [0, ips200_y_max-1]
+// å‚æ•°è¯´æ˜Ž     dat             éœ€è¦æ˜¾ç¤ºçš„å˜é‡ æ•°æ®ç±»åž‹ int32
+// å‚æ•°è¯´æ˜Ž     num             éœ€è¦æ˜¾ç¤ºçš„ä½æ•° æœ€é«˜10ä½  ä¸åŒ…å«æ­£è´Ÿå·
+// è¿”å›žå‚æ•°     void
+// ä½¿ç”¨ç¤ºä¾‹     ips200_show_int(0, 0, x, 3);                    // x å¯ä»¥ä¸º int32 int16 int8 ç±»åž‹
+// å¤‡æ³¨ä¿¡æ¯     è´Ÿæ•°ä¼šæ˜¾ç¤ºä¸€ä¸ª â€˜-â€™å·
 //-------------------------------------------------------------------------------------------------------------------
 void ips200_show_int (uint16 x, uint16 y, const int32 dat, uint8 num)
 {
-    // Èç¹û³ÌÐòÔÚÊä³öÁË¶ÏÑÔÐÅÏ¢ ²¢ÇÒÌáÊ¾³ö´íÎ»ÖÃÔÚÕâÀï
-    // ÄÇÃ´Ò»°ãÊÇÆÁÄ»ÏÔÊ¾µÄÊ±ºò³¬¹ýÆÁÄ»·Ö±æÂÊ·¶Î§ÁË
+    // å¦‚æžœç¨‹åºåœ¨è¾“å‡ºäº†æ–­è¨€ä¿¡æ¯ å¹¶ä¸”æç¤ºå‡ºé”™ä½ç½®åœ¨è¿™é‡Œ
+    // é‚£ä¹ˆä¸€èˆ¬æ˜¯å±å¹•æ˜¾ç¤ºçš„æ—¶å€™è¶…è¿‡å±å¹•åˆ†è¾¨çŽ‡èŒƒå›´äº†
     zf_assert(x < ips200_x_max);
     zf_assert(y < ips200_y_max);
     zf_assert(0 < num);
@@ -638,7 +638,7 @@ void ips200_show_int (uint16 x, uint16 y, const int32 dat, uint8 num)
     memset(data_buffer, 0, 12);
     memset(data_buffer, ' ', num+1);
 
-    // ÓÃÀ´¼ÆËãÓàÊýÏÔÊ¾ 123 ÏÔÊ¾ 2 Î»ÔòÓ¦¸ÃÏÔÊ¾ 23
+    // ç”¨æ¥è®¡ç®—ä½™æ•°æ˜¾ç¤º 123 æ˜¾ç¤º 2 ä½åˆ™åº”è¯¥æ˜¾ç¤º 23
     if(10 > num)
     {
         for(; 0 < num; num --)
@@ -652,19 +652,19 @@ void ips200_show_int (uint16 x, uint16 y, const int32 dat, uint8 num)
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é     IPS200 ÏÔÊ¾32Î»ÎÞ·ûºÅ (È¥³ýÕûÊý²¿·ÖÎÞÐ§µÄ0)
-// ²ÎÊýËµÃ÷     x               ×ø±êx·½ÏòµÄÆðµã ²ÎÊý·¶Î§ [0, ips114_x_max-1]
-// ²ÎÊýËµÃ÷     y               ×ø±êy·½ÏòµÄÆðµã ²ÎÊý·¶Î§ [0, ips114_y_max-1]
-// ²ÎÊýËµÃ÷     dat             ÐèÒªÏÔÊ¾µÄ±äÁ¿ Êý¾ÝÀàÐÍ uint32
-// ²ÎÊýËµÃ÷     num             ÐèÒªÏÔÊ¾µÄÎ»Êý ×î¸ß10Î»  ²»°üº¬Õý¸ººÅ
-// ·µ»Ø²ÎÊý     void
-// Ê¹ÓÃÊ¾Àý     ips200_show_uint(0, 0, x, 3);                   // x ¿ÉÒÔÎª uint32 uint16 uint8 ÀàÐÍ
-// ±¸×¢ÐÅÏ¢     
+// å‡½æ•°ç®€ä»‹     IPS200 æ˜¾ç¤º32ä½æ— ç¬¦å· (åŽ»é™¤æ•´æ•°éƒ¨åˆ†æ— æ•ˆçš„0)
+// å‚æ•°è¯´æ˜Ž     x               åæ ‡xæ–¹å‘çš„èµ·ç‚¹ å‚æ•°èŒƒå›´ [0, ips114_x_max-1]
+// å‚æ•°è¯´æ˜Ž     y               åæ ‡yæ–¹å‘çš„èµ·ç‚¹ å‚æ•°èŒƒå›´ [0, ips114_y_max-1]
+// å‚æ•°è¯´æ˜Ž     dat             éœ€è¦æ˜¾ç¤ºçš„å˜é‡ æ•°æ®ç±»åž‹ uint32
+// å‚æ•°è¯´æ˜Ž     num             éœ€è¦æ˜¾ç¤ºçš„ä½æ•° æœ€é«˜10ä½  ä¸åŒ…å«æ­£è´Ÿå·
+// è¿”å›žå‚æ•°     void
+// ä½¿ç”¨ç¤ºä¾‹     ips200_show_uint(0, 0, x, 3);                   // x å¯ä»¥ä¸º uint32 uint16 uint8 ç±»åž‹
+// å¤‡æ³¨ä¿¡æ¯     
 //-------------------------------------------------------------------------------------------------------------------
 void ips200_show_uint (uint16 x, uint16 y, const uint32 dat, uint8 num)
 {
-    // Èç¹û³ÌÐòÔÚÊä³öÁË¶ÏÑÔÐÅÏ¢ ²¢ÇÒÌáÊ¾³ö´íÎ»ÖÃÔÚÕâÀï
-    // ÄÇÃ´Ò»°ãÊÇÆÁÄ»ÏÔÊ¾µÄÊ±ºò³¬¹ýÆÁÄ»·Ö±æÂÊ·¶Î§ÁË
+    // å¦‚æžœç¨‹åºåœ¨è¾“å‡ºäº†æ–­è¨€ä¿¡æ¯ å¹¶ä¸”æç¤ºå‡ºé”™ä½ç½®åœ¨è¿™é‡Œ
+    // é‚£ä¹ˆä¸€èˆ¬æ˜¯å±å¹•æ˜¾ç¤ºçš„æ—¶å€™è¶…è¿‡å±å¹•åˆ†è¾¨çŽ‡èŒƒå›´äº†
     zf_assert(x < ips200_x_max);
     zf_assert(y < ips200_y_max);
     zf_assert(0 < num);
@@ -676,7 +676,7 @@ void ips200_show_uint (uint16 x, uint16 y, const uint32 dat, uint8 num)
     memset(data_buffer, 0, 12);
     memset(data_buffer, ' ', num);
 
-    // ÓÃÀ´¼ÆËãÓàÊýÏÔÊ¾ 123 ÏÔÊ¾ 2 Î»ÔòÓ¦¸ÃÏÔÊ¾ 23
+    // ç”¨æ¥è®¡ç®—ä½™æ•°æ˜¾ç¤º 123 æ˜¾ç¤º 2 ä½åˆ™åº”è¯¥æ˜¾ç¤º 23
     if(10 > num)
     {
         for(; 0 < num; num --)
@@ -690,23 +690,23 @@ void ips200_show_uint (uint16 x, uint16 y, const uint32 dat, uint8 num)
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é     IPS200 ÏÔÊ¾¸¡µãÊý(È¥³ýÕûÊý²¿·ÖÎÞÐ§µÄ0)
-// ²ÎÊýËµÃ÷     x               ×ø±êx·½ÏòµÄÆðµã ²ÎÊý·¶Î§ [0, ips200_x_max-1]
-// ²ÎÊýËµÃ÷     y               ×ø±êy·½ÏòµÄÆðµã ²ÎÊý·¶Î§ [0, ips200_y_max-1]
-// ²ÎÊýËµÃ÷     dat             ÐèÒªÏÔÊ¾µÄ±äÁ¿ Êý¾ÝÀàÐÍ float
-// ²ÎÊýËµÃ÷     num             ÕûÊýÎ»ÏÔÊ¾³¤¶È   ×î¸ß8Î»  
-// ²ÎÊýËµÃ÷     pointnum        Ð¡ÊýÎ»ÏÔÊ¾³¤¶È   ×î¸ß6Î»
-// ·µ»Ø²ÎÊý     void
-// Ê¹ÓÃÊ¾Àý     ips200_show_float(0, 0, x, 2, 3);               // ÏÔÊ¾¸¡µãÊý   ÕûÊýÏÔÊ¾2Î»   Ð¡ÊýÏÔÊ¾ÈýÎ»
-// ±¸×¢ÐÅÏ¢     ÌØ±ð×¢Òâµ±·¢ÏÖÐ¡Êý²¿·ÖÏÔÊ¾µÄÖµÓëÄãÐ´ÈëµÄÖµ²»Ò»ÑùµÄÊ±ºò£¬
-//              ¿ÉÄÜÊÇÓÉÓÚ¸¡µãÊý¾«¶È¶ªÊ§ÎÊÌâµ¼ÖÂµÄ£¬Õâ²¢²»ÊÇÏÔÊ¾º¯ÊýµÄÎÊÌâ£¬
-//              ÓÐ¹ØÎÊÌâµÄÏêÇé£¬Çë×ÔÐÐ°Ù¶ÈÑ§Ï°   ¸¡µãÊý¾«¶È¶ªÊ§ÎÊÌâ¡£
-//              ¸ºÊý»áÏÔÊ¾Ò»¸ö ¡®-¡¯ºÅ
+// å‡½æ•°ç®€ä»‹     IPS200 æ˜¾ç¤ºæµ®ç‚¹æ•°(åŽ»é™¤æ•´æ•°éƒ¨åˆ†æ— æ•ˆçš„0)
+// å‚æ•°è¯´æ˜Ž     x               åæ ‡xæ–¹å‘çš„èµ·ç‚¹ å‚æ•°èŒƒå›´ [0, ips200_x_max-1]
+// å‚æ•°è¯´æ˜Ž     y               åæ ‡yæ–¹å‘çš„èµ·ç‚¹ å‚æ•°èŒƒå›´ [0, ips200_y_max-1]
+// å‚æ•°è¯´æ˜Ž     dat             éœ€è¦æ˜¾ç¤ºçš„å˜é‡ æ•°æ®ç±»åž‹ float
+// å‚æ•°è¯´æ˜Ž     num             æ•´æ•°ä½æ˜¾ç¤ºé•¿åº¦   æœ€é«˜8ä½  
+// å‚æ•°è¯´æ˜Ž     pointnum        å°æ•°ä½æ˜¾ç¤ºé•¿åº¦   æœ€é«˜6ä½
+// è¿”å›žå‚æ•°     void
+// ä½¿ç”¨ç¤ºä¾‹     ips200_show_float(0, 0, x, 2, 3);               // æ˜¾ç¤ºæµ®ç‚¹æ•°   æ•´æ•°æ˜¾ç¤º2ä½   å°æ•°æ˜¾ç¤ºä¸‰ä½
+// å¤‡æ³¨ä¿¡æ¯     ç‰¹åˆ«æ³¨æ„å½“å‘çŽ°å°æ•°éƒ¨åˆ†æ˜¾ç¤ºçš„å€¼ä¸Žä½ å†™å…¥çš„å€¼ä¸ä¸€æ ·çš„æ—¶å€™ï¼Œ
+//              å¯èƒ½æ˜¯ç”±äºŽæµ®ç‚¹æ•°ç²¾åº¦ä¸¢å¤±é—®é¢˜å¯¼è‡´çš„ï¼Œè¿™å¹¶ä¸æ˜¯æ˜¾ç¤ºå‡½æ•°çš„é—®é¢˜ï¼Œ
+//              æœ‰å…³é—®é¢˜çš„è¯¦æƒ…ï¼Œè¯·è‡ªè¡Œç™¾åº¦å­¦ä¹    æµ®ç‚¹æ•°ç²¾åº¦ä¸¢å¤±é—®é¢˜ã€‚
+//              è´Ÿæ•°ä¼šæ˜¾ç¤ºä¸€ä¸ª â€˜-â€™å·
 //-------------------------------------------------------------------------------------------------------------------
 void ips200_show_float (uint16 x, uint16 y, const double dat, uint8 num, uint8 pointnum)
 {
-    // Èç¹û³ÌÐòÔÚÊä³öÁË¶ÏÑÔÐÅÏ¢ ²¢ÇÒÌáÊ¾³ö´íÎ»ÖÃÔÚÕâÀï
-    // ÄÇÃ´Ò»°ãÊÇÆÁÄ»ÏÔÊ¾µÄÊ±ºò³¬¹ýÆÁÄ»·Ö±æÂÊ·¶Î§ÁË
+    // å¦‚æžœç¨‹åºåœ¨è¾“å‡ºäº†æ–­è¨€ä¿¡æ¯ å¹¶ä¸”æç¤ºå‡ºé”™ä½ç½®åœ¨è¿™é‡Œ
+    // é‚£ä¹ˆä¸€èˆ¬æ˜¯å±å¹•æ˜¾ç¤ºçš„æ—¶å€™è¶…è¿‡å±å¹•åˆ†è¾¨çŽ‡èŒƒå›´äº†
     zf_assert(x < ips200_x_max);
     zf_assert(y < ips200_y_max);
     zf_assert(0 < num);
@@ -720,7 +720,7 @@ void ips200_show_float (uint16 x, uint16 y, const double dat, uint8 num, uint8 p
     memset(data_buffer, 0, 17);
     memset(data_buffer, ' ', num+pointnum+2);
 
-    // ÓÃÀ´¼ÆËãÓàÊýÏÔÊ¾ 123 ÏÔÊ¾ 2 Î»ÔòÓ¦¸ÃÏÔÊ¾ 23
+    // ç”¨æ¥è®¡ç®—ä½™æ•°æ˜¾ç¤º 123 æ˜¾ç¤º 2 ä½åˆ™åº”è¯¥æ˜¾ç¤º 23
     for(; 0 < num; num --)
     {
         offset *= 10;
@@ -731,25 +731,25 @@ void ips200_show_float (uint16 x, uint16 y, const double dat, uint8 num, uint8 p
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é     IPS200 ÏÔÊ¾¶þÖµÍ¼Ïñ Êý¾ÝÃ¿°Ë¸öµã×é³ÉÒ»¸ö×Ö½ÚÊý¾Ý
-// ²ÎÊýËµÃ÷     x               ×ø±êx·½ÏòµÄÆðµã ²ÎÊý·¶Î§ [0, ips200_x_max-1]
-// ²ÎÊýËµÃ÷     y               ×ø±êy·½ÏòµÄÆðµã ²ÎÊý·¶Î§ [0, ips200_y_max-1]
-// ²ÎÊýËµÃ÷     *image          Í¼ÏñÊý×éÖ¸Õë
-// ²ÎÊýËµÃ÷     width           Í¼ÏñÊµ¼Ê¿í¶È
-// ²ÎÊýËµÃ÷     height          Í¼ÏñÊµ¼Ê¸ß¶È
-// ²ÎÊýËµÃ÷     dis_width       Í¼ÏñÏÔÊ¾¿í¶È ²ÎÊý·¶Î§ [0, ips200_x_max]
-// ²ÎÊýËµÃ÷     dis_height      Í¼ÏñÏÔÊ¾¸ß¶È ²ÎÊý·¶Î§ [0, ips200_y_max]
-// ·µ»Ø²ÎÊý     void
-// Ê¹ÓÃÊ¾Àý     ips200_show_binary_image(0, 0, ov7725_image_binary[0], OV7725_W, OV7725_H, OV7725_W, OV7725_H);
-// ±¸×¢ÐÅÏ¢     ÓÃÓÚÏÔÊ¾Ð¡×ê·çµÄÎ´½âÑ¹µÄÑ¹Ëõ¶þÖµ»¯Í¼Ïñ
-//              Õâ¸öº¯Êý²»¿ÉÒÔÓÃÀ´Ö±½ÓÏÔÊ¾×Ü×ê·çµÄÎ´Ñ¹ËõµÄ¶þÖµ»¯Í¼Ïñ
-//              Õâ¸öº¯Êý²»¿ÉÒÔÓÃÀ´Ö±½ÓÏÔÊ¾×Ü×ê·çµÄÎ´Ñ¹ËõµÄ¶þÖµ»¯Í¼Ïñ
-//              Õâ¸öº¯Êý²»¿ÉÒÔÓÃÀ´Ö±½ÓÏÔÊ¾×Ü×ê·çµÄÎ´Ñ¹ËõµÄ¶þÖµ»¯Í¼Ïñ
+// å‡½æ•°ç®€ä»‹     IPS200 æ˜¾ç¤ºäºŒå€¼å›¾åƒ æ•°æ®æ¯å…«ä¸ªç‚¹ç»„æˆä¸€ä¸ªå­—èŠ‚æ•°æ®
+// å‚æ•°è¯´æ˜Ž     x               åæ ‡xæ–¹å‘çš„èµ·ç‚¹ å‚æ•°èŒƒå›´ [0, ips200_x_max-1]
+// å‚æ•°è¯´æ˜Ž     y               åæ ‡yæ–¹å‘çš„èµ·ç‚¹ å‚æ•°èŒƒå›´ [0, ips200_y_max-1]
+// å‚æ•°è¯´æ˜Ž     *image          å›¾åƒæ•°ç»„æŒ‡é’ˆ
+// å‚æ•°è¯´æ˜Ž     width           å›¾åƒå®žé™…å®½åº¦
+// å‚æ•°è¯´æ˜Ž     height          å›¾åƒå®žé™…é«˜åº¦
+// å‚æ•°è¯´æ˜Ž     dis_width       å›¾åƒæ˜¾ç¤ºå®½åº¦ å‚æ•°èŒƒå›´ [0, ips200_x_max]
+// å‚æ•°è¯´æ˜Ž     dis_height      å›¾åƒæ˜¾ç¤ºé«˜åº¦ å‚æ•°èŒƒå›´ [0, ips200_y_max]
+// è¿”å›žå‚æ•°     void
+// ä½¿ç”¨ç¤ºä¾‹     ips200_show_binary_image(0, 0, ov7725_image_binary[0], OV7725_W, OV7725_H, OV7725_W, OV7725_H);
+// å¤‡æ³¨ä¿¡æ¯     ç”¨äºŽæ˜¾ç¤ºå°é’»é£Žçš„æœªè§£åŽ‹çš„åŽ‹ç¼©äºŒå€¼åŒ–å›¾åƒ
+//              è¿™ä¸ªå‡½æ•°ä¸å¯ä»¥ç”¨æ¥ç›´æŽ¥æ˜¾ç¤ºæ€»é’»é£Žçš„æœªåŽ‹ç¼©çš„äºŒå€¼åŒ–å›¾åƒ
+//              è¿™ä¸ªå‡½æ•°ä¸å¯ä»¥ç”¨æ¥ç›´æŽ¥æ˜¾ç¤ºæ€»é’»é£Žçš„æœªåŽ‹ç¼©çš„äºŒå€¼åŒ–å›¾åƒ
+//              è¿™ä¸ªå‡½æ•°ä¸å¯ä»¥ç”¨æ¥ç›´æŽ¥æ˜¾ç¤ºæ€»é’»é£Žçš„æœªåŽ‹ç¼©çš„äºŒå€¼åŒ–å›¾åƒ
 //-------------------------------------------------------------------------------------------------------------------
 void ips200_show_binary_image (uint16 x, uint16 y, const uint8 *image, uint16 width, uint16 height, uint16 dis_width, uint16 dis_height)
 {
-    // Èç¹û³ÌÐòÔÚÊä³öÁË¶ÏÑÔÐÅÏ¢ ²¢ÇÒÌáÊ¾³ö´íÎ»ÖÃÔÚÕâÀï
-    // ÄÇÃ´Ò»°ãÊÇÆÁÄ»ÏÔÊ¾µÄÊ±ºò³¬¹ýÆÁÄ»·Ö±æÂÊ·¶Î§ÁË
+    // å¦‚æžœç¨‹åºåœ¨è¾“å‡ºäº†æ–­è¨€ä¿¡æ¯ å¹¶ä¸”æç¤ºå‡ºé”™ä½ç½®åœ¨è¿™é‡Œ
+    // é‚£ä¹ˆä¸€èˆ¬æ˜¯å±å¹•æ˜¾ç¤ºçš„æ—¶å€™è¶…è¿‡å±å¹•åˆ†è¾¨çŽ‡èŒƒå›´äº†
     zf_assert(x < ips200_x_max);
     zf_assert(y < ips200_y_max);
     zf_assert(NULL != image);
@@ -762,7 +762,7 @@ void ips200_show_binary_image (uint16 x, uint16 y, const uint8 *image, uint16 wi
     {
         IPS200_CS(0);
     }
-    ips200_set_region(x, y, x + dis_width - 1, y + dis_height - 1);             // ÉèÖÃÏÔÊ¾ÇøÓò
+    ips200_set_region(x, y, x + dis_width - 1, y + dis_height - 1);             // è®¾ç½®æ˜¾ç¤ºåŒºåŸŸ
 
     for(j = 0; j < dis_height; j ++)
     {
@@ -770,7 +770,7 @@ void ips200_show_binary_image (uint16 x, uint16 y, const uint8 *image, uint16 wi
         for(i = 0; i < dis_width; i ++)
         {
             width_index = i * width / dis_width;
-            temp = *(image + height_index * width / 8 + width_index / 8);       // ¶ÁÈ¡ÏñËØµã
+            temp = *(image + height_index * width / 8 + width_index / 8);       // è¯»å–åƒç´ ç‚¹
             if(0x80 & (temp << (width_index % 8)))
             {
                 ips200_write_16bit_data(RGB565_WHITE);
@@ -788,26 +788,26 @@ void ips200_show_binary_image (uint16 x, uint16 y, const uint8 *image, uint16 wi
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é     IPS200 ÏÔÊ¾ 8bit »Ò¶ÈÍ¼Ïñ ´ø¶þÖµ»¯ãÐÖµ
-// ²ÎÊýËµÃ÷     x               ×ø±êx·½ÏòµÄÆðµã ²ÎÊý·¶Î§ [0, ips200_x_max-1]
-// ²ÎÊýËµÃ÷     y               ×ø±êy·½ÏòµÄÆðµã ²ÎÊý·¶Î§ [0, ips200_y_max-1]
-// ²ÎÊýËµÃ÷     *image          Í¼ÏñÊý×éÖ¸Õë
-// ²ÎÊýËµÃ÷     width           Í¼ÏñÊµ¼Ê¿í¶È
-// ²ÎÊýËµÃ÷     height          Í¼ÏñÊµ¼Ê¸ß¶È
-// ²ÎÊýËµÃ÷     dis_width       Í¼ÏñÏÔÊ¾¿í¶È ²ÎÊý·¶Î§ [0, ips200_x_max]
-// ²ÎÊýËµÃ÷     dis_height      Í¼ÏñÏÔÊ¾¸ß¶È ²ÎÊý·¶Î§ [0, ips200_y_max]
-// ²ÎÊýËµÃ÷     threshold       ¶þÖµ»¯ÏÔÊ¾ãÐÖµ 0-²»¿ªÆô¶þÖµ»¯
-// ·µ»Ø²ÎÊý     void
-// Ê¹ÓÃÊ¾Àý     ips200_show_gray_image(0, 0, mt9v03x_image[0], MT9V03X_W, MT9V03X_H, MT9V03X_W, MT9V03X_H, 0);
-// ±¸×¢ÐÅÏ¢     ÓÃÓÚÏÔÊ¾×Ü×ê·çµÄÍ¼Ïñ
-//              Èç¹ûÒªÏÔÊ¾¶þÖµ»¯Í¼Ïñ Ö±½ÓÐÞ¸Ä×îºóÒ»¸ö²ÎÊýÎªÐèÒªµÄ¶þÖµ»¯ãÐÖµ¼´¿É
-//              Èç¹ûÒªÏÔÊ¾¶þÖµ»¯Í¼Ïñ Ö±½ÓÐÞ¸Ä×îºóÒ»¸ö²ÎÊýÎªÐèÒªµÄ¶þÖµ»¯ãÐÖµ¼´¿É
-//              Èç¹ûÒªÏÔÊ¾¶þÖµ»¯Í¼Ïñ Ö±½ÓÐÞ¸Ä×îºóÒ»¸ö²ÎÊýÎªÐèÒªµÄ¶þÖµ»¯ãÐÖµ¼´¿É
+// å‡½æ•°ç®€ä»‹     IPS200 æ˜¾ç¤º 8bit ç°åº¦å›¾åƒ å¸¦äºŒå€¼åŒ–é˜ˆå€¼
+// å‚æ•°è¯´æ˜Ž     x               åæ ‡xæ–¹å‘çš„èµ·ç‚¹ å‚æ•°èŒƒå›´ [0, ips200_x_max-1]
+// å‚æ•°è¯´æ˜Ž     y               åæ ‡yæ–¹å‘çš„èµ·ç‚¹ å‚æ•°èŒƒå›´ [0, ips200_y_max-1]
+// å‚æ•°è¯´æ˜Ž     *image          å›¾åƒæ•°ç»„æŒ‡é’ˆ
+// å‚æ•°è¯´æ˜Ž     width           å›¾åƒå®žé™…å®½åº¦
+// å‚æ•°è¯´æ˜Ž     height          å›¾åƒå®žé™…é«˜åº¦
+// å‚æ•°è¯´æ˜Ž     dis_width       å›¾åƒæ˜¾ç¤ºå®½åº¦ å‚æ•°èŒƒå›´ [0, ips200_x_max]
+// å‚æ•°è¯´æ˜Ž     dis_height      å›¾åƒæ˜¾ç¤ºé«˜åº¦ å‚æ•°èŒƒå›´ [0, ips200_y_max]
+// å‚æ•°è¯´æ˜Ž     threshold       äºŒå€¼åŒ–æ˜¾ç¤ºé˜ˆå€¼ 0-ä¸å¼€å¯äºŒå€¼åŒ–
+// è¿”å›žå‚æ•°     void
+// ä½¿ç”¨ç¤ºä¾‹     ips200_show_gray_image(0, 0, mt9v03x_image[0], MT9V03X_W, MT9V03X_H, MT9V03X_W, MT9V03X_H, 0);
+// å¤‡æ³¨ä¿¡æ¯     ç”¨äºŽæ˜¾ç¤ºæ€»é’»é£Žçš„å›¾åƒ
+//              å¦‚æžœè¦æ˜¾ç¤ºäºŒå€¼åŒ–å›¾åƒ ç›´æŽ¥ä¿®æ”¹æœ€åŽä¸€ä¸ªå‚æ•°ä¸ºéœ€è¦çš„äºŒå€¼åŒ–é˜ˆå€¼å³å¯
+//              å¦‚æžœè¦æ˜¾ç¤ºäºŒå€¼åŒ–å›¾åƒ ç›´æŽ¥ä¿®æ”¹æœ€åŽä¸€ä¸ªå‚æ•°ä¸ºéœ€è¦çš„äºŒå€¼åŒ–é˜ˆå€¼å³å¯
+//              å¦‚æžœè¦æ˜¾ç¤ºäºŒå€¼åŒ–å›¾åƒ ç›´æŽ¥ä¿®æ”¹æœ€åŽä¸€ä¸ªå‚æ•°ä¸ºéœ€è¦çš„äºŒå€¼åŒ–é˜ˆå€¼å³å¯
 //-------------------------------------------------------------------------------------------------------------------
 void ips200_show_gray_image (uint16 x, uint16 y, const uint8 *image, uint16 width, uint16 height, uint16 dis_width, uint16 dis_height, uint8 threshold)
 {
-    // Èç¹û³ÌÐòÔÚÊä³öÁË¶ÏÑÔÐÅÏ¢ ²¢ÇÒÌáÊ¾³ö´íÎ»ÖÃÔÚÕâÀï
-    // ÄÇÃ´Ò»°ãÊÇÆÁÄ»ÏÔÊ¾µÄÊ±ºò³¬¹ýÆÁÄ»·Ö±æÂÊ·¶Î§ÁË
+    // å¦‚æžœç¨‹åºåœ¨è¾“å‡ºäº†æ–­è¨€ä¿¡æ¯ å¹¶ä¸”æç¤ºå‡ºé”™ä½ç½®åœ¨è¿™é‡Œ
+    // é‚£ä¹ˆä¸€èˆ¬æ˜¯å±å¹•æ˜¾ç¤ºçš„æ—¶å€™è¶…è¿‡å±å¹•åˆ†è¾¨çŽ‡èŒƒå›´äº†
     zf_assert(x < ips200_x_max);
     zf_assert(y < ips200_y_max);
     zf_assert(NULL != image);
@@ -820,7 +820,7 @@ void ips200_show_gray_image (uint16 x, uint16 y, const uint8 *image, uint16 widt
     {
         IPS200_CS(0);
     }
-    ips200_set_region(x, y, x + dis_width - 1, y + dis_height - 1);             // ÉèÖÃÏÔÊ¾ÇøÓò
+    ips200_set_region(x, y, x + dis_width - 1, y + dis_height - 1);             // è®¾ç½®æ˜¾ç¤ºåŒºåŸŸ
 
     for(j = 0; j < dis_height; j ++)
     {
@@ -828,7 +828,7 @@ void ips200_show_gray_image (uint16 x, uint16 y, const uint8 *image, uint16 widt
         for(i = 0; i < dis_width; i ++)
         {
             width_index = i * width / dis_width;
-            temp = *(image + height_index * width + width_index);               // ¶ÁÈ¡ÏñËØµã
+            temp = *(image + height_index * width + width_index);               // è¯»å–åƒç´ ç‚¹
             if(threshold == 0)
             {
                 color = (0x001f & ((temp) >> 3)) << 11;
@@ -853,26 +853,26 @@ void ips200_show_gray_image (uint16 x, uint16 y, const uint8 *image, uint16 widt
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é     IPS200 ÏÔÊ¾ RGB565 ²ÊÉ«Í¼Ïñ
-// ²ÎÊýËµÃ÷     x               ×ø±êx·½ÏòµÄÆðµã ²ÎÊý·¶Î§ [0, ips200_x_max-1]
-// ²ÎÊýËµÃ÷     y               ×ø±êy·½ÏòµÄÆðµã ²ÎÊý·¶Î§ [0, ips200_y_max-1]
-// ²ÎÊýËµÃ÷     *image          Í¼ÏñÊý×éÖ¸Õë
-// ²ÎÊýËµÃ÷     width           Í¼ÏñÊµ¼Ê¿í¶È
-// ²ÎÊýËµÃ÷     height          Í¼ÏñÊµ¼Ê¸ß¶È
-// ²ÎÊýËµÃ÷     dis_width       Í¼ÏñÏÔÊ¾¿í¶È ²ÎÊý·¶Î§ [0, ips200_x_max]
-// ²ÎÊýËµÃ÷     dis_height      Í¼ÏñÏÔÊ¾¸ß¶È ²ÎÊý·¶Î§ [0, ips200_y_max]
-// ²ÎÊýËµÃ÷     color_mode      É«²ÊÄ£Ê½ 0-µÍÎ»ÔÚÇ° 1-¸ßÎ»ÔÚÇ°
-// ·µ»Ø²ÎÊý     void
-// Ê¹ÓÃÊ¾Àý     ips200_show_rgb565_image(0, 0, scc8660_image[0], SCC8660_W, SCC8660_H, SCC8660_W, SCC8660_H, 1);
-// ±¸×¢ÐÅÏ¢     ÓÃÓÚÏÔÊ¾ÁèÍ«µÄ RGB565 µÄÍ¼Ïñ
-//              Èç¹ûÒªÏÔÊ¾µÍÎ»ÔÚÇ°µÄÆäËû RGB565 Í¼Ïñ ÐÞ¸Ä×îºóÒ»¸ö²ÎÊý¼´¿É
-//              Èç¹ûÒªÏÔÊ¾µÍÎ»ÔÚÇ°µÄÆäËû RGB565 Í¼Ïñ ÐÞ¸Ä×îºóÒ»¸ö²ÎÊý¼´¿É
-//              Èç¹ûÒªÏÔÊ¾µÍÎ»ÔÚÇ°µÄÆäËû RGB565 Í¼Ïñ ÐÞ¸Ä×îºóÒ»¸ö²ÎÊý¼´¿É
+// å‡½æ•°ç®€ä»‹     IPS200 æ˜¾ç¤º RGB565 å½©è‰²å›¾åƒ
+// å‚æ•°è¯´æ˜Ž     x               åæ ‡xæ–¹å‘çš„èµ·ç‚¹ å‚æ•°èŒƒå›´ [0, ips200_x_max-1]
+// å‚æ•°è¯´æ˜Ž     y               åæ ‡yæ–¹å‘çš„èµ·ç‚¹ å‚æ•°èŒƒå›´ [0, ips200_y_max-1]
+// å‚æ•°è¯´æ˜Ž     *image          å›¾åƒæ•°ç»„æŒ‡é’ˆ
+// å‚æ•°è¯´æ˜Ž     width           å›¾åƒå®žé™…å®½åº¦
+// å‚æ•°è¯´æ˜Ž     height          å›¾åƒå®žé™…é«˜åº¦
+// å‚æ•°è¯´æ˜Ž     dis_width       å›¾åƒæ˜¾ç¤ºå®½åº¦ å‚æ•°èŒƒå›´ [0, ips200_x_max]
+// å‚æ•°è¯´æ˜Ž     dis_height      å›¾åƒæ˜¾ç¤ºé«˜åº¦ å‚æ•°èŒƒå›´ [0, ips200_y_max]
+// å‚æ•°è¯´æ˜Ž     color_mode      è‰²å½©æ¨¡å¼ 0-ä½Žä½åœ¨å‰ 1-é«˜ä½åœ¨å‰
+// è¿”å›žå‚æ•°     void
+// ä½¿ç”¨ç¤ºä¾‹     ips200_show_rgb565_image(0, 0, scc8660_image[0], SCC8660_W, SCC8660_H, SCC8660_W, SCC8660_H, 1);
+// å¤‡æ³¨ä¿¡æ¯     ç”¨äºŽæ˜¾ç¤ºå‡Œçž³çš„ RGB565 çš„å›¾åƒ
+//              å¦‚æžœè¦æ˜¾ç¤ºä½Žä½åœ¨å‰çš„å…¶ä»– RGB565 å›¾åƒ ä¿®æ”¹æœ€åŽä¸€ä¸ªå‚æ•°å³å¯
+//              å¦‚æžœè¦æ˜¾ç¤ºä½Žä½åœ¨å‰çš„å…¶ä»– RGB565 å›¾åƒ ä¿®æ”¹æœ€åŽä¸€ä¸ªå‚æ•°å³å¯
+//              å¦‚æžœè¦æ˜¾ç¤ºä½Žä½åœ¨å‰çš„å…¶ä»– RGB565 å›¾åƒ ä¿®æ”¹æœ€åŽä¸€ä¸ªå‚æ•°å³å¯
 //-------------------------------------------------------------------------------------------------------------------
 void ips200_show_rgb565_image (uint16 x, uint16 y, const uint16 *image, uint16 width, uint16 height, uint16 dis_width, uint16 dis_height, uint8 color_mode)
 {
-    // Èç¹û³ÌÐòÔÚÊä³öÁË¶ÏÑÔÐÅÏ¢ ²¢ÇÒÌáÊ¾³ö´íÎ»ÖÃÔÚÕâÀï
-    // ÄÇÃ´Ò»°ãÊÇÆÁÄ»ÏÔÊ¾µÄÊ±ºò³¬¹ýÆÁÄ»·Ö±æÂÊ·¶Î§ÁË
+    // å¦‚æžœç¨‹åºåœ¨è¾“å‡ºäº†æ–­è¨€ä¿¡æ¯ å¹¶ä¸”æç¤ºå‡ºé”™ä½ç½®åœ¨è¿™é‡Œ
+    // é‚£ä¹ˆä¸€èˆ¬æ˜¯å±å¹•æ˜¾ç¤ºçš„æ—¶å€™è¶…è¿‡å±å¹•åˆ†è¾¨çŽ‡èŒƒå›´äº†
     zf_assert(x < ips200_x_max);
     zf_assert(y < ips200_y_max);
     zf_assert(NULL != image);
@@ -885,7 +885,7 @@ void ips200_show_rgb565_image (uint16 x, uint16 y, const uint16 *image, uint16 w
     {
         IPS200_CS(0);
     }
-    ips200_set_region(x, y, x + dis_width - 1, y + dis_height - 1);             // ÉèÖÃÏÔÊ¾ÇøÓò
+    ips200_set_region(x, y, x + dis_width - 1, y + dis_height - 1);             // è®¾ç½®æ˜¾ç¤ºåŒºåŸŸ
 
     for(j = 0; j < dis_height; j ++)
     {
@@ -893,7 +893,7 @@ void ips200_show_rgb565_image (uint16 x, uint16 y, const uint16 *image, uint16 w
         for(i = 0; i < dis_width; i ++)
         {
             width_index = i * width / dis_width;
-            color = *(image + height_index * width + width_index);              // ¶ÁÈ¡ÏñËØµã
+            color = *(image + height_index * width + width_index);              // è¯»å–åƒç´ ç‚¹
             if(color_mode)
             {
                 color = ((color & 0xff) << 8) | (color >> 8);
@@ -908,22 +908,22 @@ void ips200_show_rgb565_image (uint16 x, uint16 y, const uint16 *image, uint16 w
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é     IPS200 ÏÔÊ¾²¨ÐÎ
-// ²ÎÊýËµÃ÷     x               ×ø±êx·½ÏòµÄÆðµã ²ÎÊý·¶Î§ [0, ips200_x_max-1]
-// ²ÎÊýËµÃ÷     y               ×ø±êy·½ÏòµÄÆðµã ²ÎÊý·¶Î§ [0, ips200_y_max-1]
-// ²ÎÊýËµÃ÷     *wave           ²¨ÐÎÊý×éÖ¸Õë
-// ²ÎÊýËµÃ÷     width           ²¨ÐÎÊµ¼Ê¿í¶È
-// ²ÎÊýËµÃ÷     value_max       ²¨ÐÎÊµ¼Ê×î´óÖµ
-// ²ÎÊýËµÃ÷     dis_width       ²¨ÐÎÏÔÊ¾¿í¶È ²ÎÊý·¶Î§ [0, ips200_x_max]
-// ²ÎÊýËµÃ÷     dis_value_max   ²¨ÐÎÏÔÊ¾×î´óÖµ ²ÎÊý·¶Î§ [0, ips200_y_max]
-// ·µ»Ø²ÎÊý     void
-// Ê¹ÓÃÊ¾Àý     ips200_show_wave(0, 0, data, 128, 64, 64, 32);
-// ±¸×¢ÐÅÏ¢     
+// å‡½æ•°ç®€ä»‹     IPS200 æ˜¾ç¤ºæ³¢å½¢
+// å‚æ•°è¯´æ˜Ž     x               åæ ‡xæ–¹å‘çš„èµ·ç‚¹ å‚æ•°èŒƒå›´ [0, ips200_x_max-1]
+// å‚æ•°è¯´æ˜Ž     y               åæ ‡yæ–¹å‘çš„èµ·ç‚¹ å‚æ•°èŒƒå›´ [0, ips200_y_max-1]
+// å‚æ•°è¯´æ˜Ž     *wave           æ³¢å½¢æ•°ç»„æŒ‡é’ˆ
+// å‚æ•°è¯´æ˜Ž     width           æ³¢å½¢å®žé™…å®½åº¦
+// å‚æ•°è¯´æ˜Ž     value_max       æ³¢å½¢å®žé™…æœ€å¤§å€¼
+// å‚æ•°è¯´æ˜Ž     dis_width       æ³¢å½¢æ˜¾ç¤ºå®½åº¦ å‚æ•°èŒƒå›´ [0, ips200_x_max]
+// å‚æ•°è¯´æ˜Ž     dis_value_max   æ³¢å½¢æ˜¾ç¤ºæœ€å¤§å€¼ å‚æ•°èŒƒå›´ [0, ips200_y_max]
+// è¿”å›žå‚æ•°     void
+// ä½¿ç”¨ç¤ºä¾‹     ips200_show_wave(0, 0, data, 128, 64, 64, 32);
+// å¤‡æ³¨ä¿¡æ¯     
 //-------------------------------------------------------------------------------------------------------------------
 void ips200_show_wave (uint16 x, uint16 y, const uint16 *wave, uint16 width, uint16 value_max, uint16 dis_width, uint16 dis_value_max)
 {
-    // Èç¹û³ÌÐòÔÚÊä³öÁË¶ÏÑÔÐÅÏ¢ ²¢ÇÒÌáÊ¾³ö´íÎ»ÖÃÔÚÕâÀï
-    // ÄÇÃ´Ò»°ãÊÇÆÁÄ»ÏÔÊ¾µÄÊ±ºò³¬¹ýÆÁÄ»·Ö±æÂÊ·¶Î§ÁË
+    // å¦‚æžœç¨‹åºåœ¨è¾“å‡ºäº†æ–­è¨€ä¿¡æ¯ å¹¶ä¸”æç¤ºå‡ºé”™ä½ç½®åœ¨è¿™é‡Œ
+    // é‚£ä¹ˆä¸€èˆ¬æ˜¯å±å¹•æ˜¾ç¤ºçš„æ—¶å€™è¶…è¿‡å±å¹•åˆ†è¾¨çŽ‡èŒƒå›´äº†
     zf_assert(x < ips200_x_max);
     zf_assert(y < ips200_y_max);
     zf_assert(NULL != wave);
@@ -935,7 +935,7 @@ void ips200_show_wave (uint16 x, uint16 y, const uint16 *wave, uint16 width, uin
     {
         IPS200_CS(0);
     }
-    ips200_set_region(x, y, x + dis_width - 1, y + dis_value_max - 1);          // ÉèÖÃÏÔÊ¾ÇøÓò
+    ips200_set_region(x, y, x + dis_width - 1, y + dis_value_max - 1);          // è®¾ç½®æ˜¾ç¤ºåŒºåŸŸ
     for(i = 0; i < dis_value_max; i ++)
     {
         for(j = 0; j < dis_width; j ++)
@@ -957,21 +957,21 @@ void ips200_show_wave (uint16 x, uint16 y, const uint16 *wave, uint16 width, uin
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é     ºº×ÖÏÔÊ¾
-// ²ÎÊýËµÃ÷     x               ×ø±êx·½ÏòµÄÆðµã ²ÎÊý·¶Î§ [0, ips200_x_max-1]
-// ²ÎÊýËµÃ÷     y               ×ø±êy·½ÏòµÄÆðµã ²ÎÊý·¶Î§ [0, ips200_y_max-1]
-// ²ÎÊýËµÃ÷     size            È¡Ä£µÄÊ±ºòÉèÖÃµÄºº×Ö×ÖÌå´óÐ¡ Ò²¾ÍÊÇÒ»¸öºº×ÖÕ¼ÓÃµÄµãÕó³¤¿íÎª¶àÉÙ¸öµã È¡Ä£µÄÊ±ºòÐèÒª³¤¿íÊÇÒ»ÑùµÄ
-// ²ÎÊýËµÃ÷     *chinese_buffer ÐèÒªÏÔÊ¾µÄºº×ÖÊý×é
-// ²ÎÊýËµÃ÷     number          ÐèÒªÏÔÊ¾¶àÉÙÎ»
-// ²ÎÊýËµÃ÷     color           ÑÕÉ«¸ñÊ½ RGB565 »òÕß¿ÉÒÔÊ¹ÓÃ zf_common_font.h ÄÚ rgb565_color_enum Ã¶¾ÙÖµ»òÕß×ÔÐÐÐ´Èë
-// ·µ»Ø²ÎÊý     void
-// Ê¹ÓÃÊ¾Àý     ips200_show_chinese(0, 0, 16, chinese_test[0], 4, RGB565_RED);//ÏÔÊ¾fontÎÄ¼þÀïÃæµÄ Ê¾Àý
-// ±¸×¢ÐÅÏ¢     Ê¹ÓÃPCtoLCD2002Èí¼þÈ¡Ä£           ÒõÂë¡¢ÖðÐÐÊ½¡¢Ë³Ïò   16*16
+// å‡½æ•°ç®€ä»‹     æ±‰å­—æ˜¾ç¤º
+// å‚æ•°è¯´æ˜Ž     x               åæ ‡xæ–¹å‘çš„èµ·ç‚¹ å‚æ•°èŒƒå›´ [0, ips200_x_max-1]
+// å‚æ•°è¯´æ˜Ž     y               åæ ‡yæ–¹å‘çš„èµ·ç‚¹ å‚æ•°èŒƒå›´ [0, ips200_y_max-1]
+// å‚æ•°è¯´æ˜Ž     size            å–æ¨¡çš„æ—¶å€™è®¾ç½®çš„æ±‰å­—å­—ä½“å¤§å° ä¹Ÿå°±æ˜¯ä¸€ä¸ªæ±‰å­—å ç”¨çš„ç‚¹é˜µé•¿å®½ä¸ºå¤šå°‘ä¸ªç‚¹ å–æ¨¡çš„æ—¶å€™éœ€è¦é•¿å®½æ˜¯ä¸€æ ·çš„
+// å‚æ•°è¯´æ˜Ž     *chinese_buffer éœ€è¦æ˜¾ç¤ºçš„æ±‰å­—æ•°ç»„
+// å‚æ•°è¯´æ˜Ž     number          éœ€è¦æ˜¾ç¤ºå¤šå°‘ä½
+// å‚æ•°è¯´æ˜Ž     color           é¢œè‰²æ ¼å¼ RGB565 æˆ–è€…å¯ä»¥ä½¿ç”¨ zf_common_font.h å†… rgb565_color_enum æžšä¸¾å€¼æˆ–è€…è‡ªè¡Œå†™å…¥
+// è¿”å›žå‚æ•°     void
+// ä½¿ç”¨ç¤ºä¾‹     ips200_show_chinese(0, 0, 16, chinese_test[0], 4, RGB565_RED);//æ˜¾ç¤ºfontæ–‡ä»¶é‡Œé¢çš„ ç¤ºä¾‹
+// å¤‡æ³¨ä¿¡æ¯     ä½¿ç”¨PCtoLCD2002è½¯ä»¶å–æ¨¡           é˜´ç ã€é€è¡Œå¼ã€é¡ºå‘   16*16
 //-------------------------------------------------------------------------------------------------------------------
 void ips200_show_chinese (uint16 x, uint16 y, uint8 size, const uint8 *chinese_buffer, uint8 number, const uint16 color)
 {
-    // Èç¹û³ÌÐòÔÚÊä³öÁË¶ÏÑÔÐÅÏ¢ ²¢ÇÒÌáÊ¾³ö´íÎ»ÖÃÔÚÕâÀï
-    // ÄÇÃ´Ò»°ãÊÇÆÁÄ»ÏÔÊ¾µÄÊ±ºò³¬¹ýÆÁÄ»·Ö±æÂÊ·¶Î§ÁË
+    // å¦‚æžœç¨‹åºåœ¨è¾“å‡ºäº†æ–­è¨€ä¿¡æ¯ å¹¶ä¸”æç¤ºå‡ºé”™ä½ç½®åœ¨è¿™é‡Œ
+    // é‚£ä¹ˆä¸€èˆ¬æ˜¯å±å¹•æ˜¾ç¤ºçš„æ—¶å€™è¶…è¿‡å±å¹•åˆ†è¾¨çŽ‡èŒƒå›´äº†
     zf_assert(x < ips200_x_max);
     zf_assert(y < ips200_y_max);
     zf_assert(NULL != chinese_buffer);
@@ -1020,11 +1020,11 @@ void ips200_show_chinese (uint16 x, uint16 y, uint8 size, const uint8 *chinese_b
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-// º¯Êý¼ò½é     2´ç IPSÒº¾§³õÊ¼»¯
-// ²ÎÊýËµÃ÷     type_select     Á½´çÆÁ½Ó¿ÚÀàÐÍ IPS200_TYPE_SPI Îª SPI ½Ó¿Ú´®¿ÚÁ½´çÆÁ IPS200_TYPE_PARALLEL8 Îª 8080 Ð­Òé°ËÎ»²¢¿ÚÁ½´çÆÁ
-// ·µ»Ø²ÎÊý     void
-// Ê¹ÓÃÊ¾Àý     ips200_init(IPS200_TYPE_PARALLEL8);
-// ±¸×¢ÐÅÏ¢     
+// å‡½æ•°ç®€ä»‹     2å¯¸ IPSæ¶²æ™¶åˆå§‹åŒ–
+// å‚æ•°è¯´æ˜Ž     type_select     ä¸¤å¯¸å±æŽ¥å£ç±»åž‹ IPS200_TYPE_SPI ä¸º SPI æŽ¥å£ä¸²å£ä¸¤å¯¸å± IPS200_TYPE_PARALLEL8 ä¸º 8080 åè®®å…«ä½å¹¶å£ä¸¤å¯¸å±
+// è¿”å›žå‚æ•°     void
+// ä½¿ç”¨ç¤ºä¾‹     ips200_init(IPS200_TYPE_PARALLEL8);
+// å¤‡æ³¨ä¿¡æ¯     
 //-------------------------------------------------------------------------------------------------------------------
 void ips200_init (ips200_type_enum type_select)
 {
@@ -1169,6 +1169,6 @@ void ips200_init (ips200_type_enum type_select)
         IPS200_CS(1);
     }
 
-    ips200_clear();                                                             // ³õÊ¼»¯Îª°×ÆÁ
+    ips200_clear();                                                             // åˆå§‹åŒ–ä¸ºç™½å±
     ips200_debug_init();
 }

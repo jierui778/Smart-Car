@@ -48,30 +48,29 @@ int ipts1_num;                // 存放边线像素点个数(右)
 
 int Far_Lpt0_found0 = 0, Far_Lpt1_found0 = 0;
 
-    // float thres = 120;                                  // 二值化阈值，主要用于找起始点(边线使用自适应阈值，不使用该阈值)
-    // float line_blur_kernel = 9;                         // 边线三角滤波核的大小
-    // float pixel_per_meter = 110;                        // 俯视图中，每个像素对应的长度 (厘米*10^3)/像素个数 调大意味着平移距离增大 原：102
-    // float sample_dist = 0.022;                          // 边线等距采样的间距 动态调整，使其每两点距离刚好为1cm 为0.02时10个点间隔约为9cm
-    // float angle_dist = 0.2;                             // 计算边线转角时，三个计算点的距离
-    // float far_rate = 0.5;                               //
-    // float aim_distance_flash = 0.68;                    // 预锚点长度
-    // float aim_dist[5] = {0.68, 0.78, 0.88, 0.98, 1.08}; // 多个预瞄点长度，间隔5cm，34~54个点，用于速度模糊控制，而不是偏差角计算！
+// float thres = 120;                                  // 二值化阈值，主要用于找起始点(边线使用自适应阈值，不使用该阈值)
+// float line_blur_kernel = 9;                         // 边线三角滤波核的大小
+// float pixel_per_meter = 110;                        // 俯视图中，每个像素对应的长度 (厘米*10^3)/像素个数 调大意味着平移距离增大 原：102
+// float sample_dist = 0.022;                          // 边线等距采样的间距 动态调整，使其每两点距离刚好为1cm 为0.02时10个点间隔约为9cm
+// float angle_dist = 0.2;                             // 计算边线转角时，三个计算点的距离
+// float far_rate = 0.5;                               //
+// float aim_distance_flash = 0.68;                    // 预锚点长度
+// float aim_dist[5] = {0.68, 0.78, 0.88, 0.98, 1.08}; // 多个预瞄点长度，间隔5cm，34~54个点，用于速度模糊控制，而不是偏差角计算！
 
-    // float xielv_left_y_to_end, xielv_right_y_to_end; // 在逆透视后得坐标系建得斜率
+// float xielv_left_y_to_end, xielv_right_y_to_end; // 在逆透视后得坐标系建得斜率
 
-    // bool Lpt00_found, Lpt11_found;     // 其中 far_N_Lpt0_found 表示是否找到了反向逆透视后的左边L角点，far_N_Lpt1_found 表示是否找到了反向逆透视后的右边L角点。
-    // bool N_Lpt00_found, N_Lpt11_found; // 这个变量用于表示是否找到了逆逆透视后的左边L角点和右边L角点。其中，far_N_Lpt0_found表示左边L角点是否被找到，far_N_Lpt1_found表示右边L角点是否被找到。
+// bool Lpt00_found, Lpt11_found;     // 其中 far_N_Lpt0_found 表示是否找到了反向逆透视后的左边L角点，far_N_Lpt1_found 表示是否找到了反向逆透视后的右边L角点。
+// bool N_Lpt00_found, N_Lpt11_found; // 这个变量用于表示是否找到了逆逆透视后的左边L角点和右边L角点。其中，far_N_Lpt0_found表示左边L角点是否被找到，far_N_Lpt1_found表示右边L角点是否被找到。
 
-    // int Lpt00_rpts00s_id, Lpt11_rpts11s_id;   // 远角点L角点的数组索引值
-    // int N_Lpt00_rpts00s_id, Lpt11_rpts11s_id; // 这两个变量是用于记录L角点在反向逆透视后的rpts0s数组中的索引值
+// int Lpt00_rpts00s_id, Lpt11_rpts11s_id;   // 远角点L角点的数组索引值
+// int N_Lpt00_rpts00s_id, Lpt11_rpts11s_id; // 这两个变量是用于记录L角点在反向逆透视后的rpts0s数组中的索引值
 
-    /**
-     * @brief 压缩图像为我们需要的大小，这里我们采用不压缩，即直接对原图进行处理
-     * @param uint8 (*InImg)[IMGW] 输入图像地址
-     * @param uint8 (*OutImg)[IMGW] 输出图像地址
-     */
-    void
-    Image_Compress(void)
+/**
+ * @brief 压缩图像为我们需要的大小，这里我们采用不压缩，即直接对原图进行处理
+ * @param uint8 (*InImg)[IMGW] 输入图像地址
+ * @param uint8 (*OutImg)[IMGW] 输出图像地址
+ */
+void Image_Compress(void)
 {
     uint8_t div_h, div_w;
     uint32_t temp_h = 0;
@@ -1293,7 +1292,6 @@ void Find_Borderline(void)
     // 寻左边线
     x1 = img_raw.width / 2 - begin_x, y1 = begin_y;
 
-
     // 标记种子起始点(后续元素处理要用到)
     x0_first = x1;
     y0_first = y1;
@@ -1365,6 +1363,7 @@ void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x
     int half = 0;                                                                                                      // 方案二
     int step = 0, dir = 0, turn = 0;                                                                                   // step表示前进的步数；dir通过改变索引改变当前小人朝向的方向
     while (step < *num && half < x && x < img->width - half - 1 && half < y && y < img->height - half - 1 && turn < 4) // 保证block不出界
+    /*保证step步数小于Num   保证x（列）坐标>0同时小于宽度-1   保证y（行）坐标大于0小于高度-1*/
     {
         int local_thres = 1;
         //        int local_thres;
@@ -1383,14 +1382,14 @@ void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x
         int current_value = AT(img, x, y);                                                   // 当前像素点灰度值
         int front_value = AT(img, x + dir_front[dir][0], y + dir_front[dir][1]);             // 正前方像素点灰度值 （dir=0 下；dir=1 右；dir=2 上；dir=3 左）
         int frontleft_value = AT(img, x + dir_frontleft[dir][0], y + dir_frontleft[dir][1]); // 左前方像素点灰度值 （dir=0左下；dir=1 右下；dir=2 右上；dir=3 左上 ）
-        //=======添加部分=======
-        if ((x == 1 && y < img->height - 20) || x == img->width - 2 || y == 1 || (y == 58 && step > 19))
+        //=======添加部分=======（限制条件）
+        /*  当扫点的列坐标到左黑框边界且行坐标小于20    列坐标到右边的黑框边界  行坐标为1   行坐标为88的同时步数已经大于19*/
+        if ((x == 2 && y < img->height - 50) || x == img->width - 2 || y == 1 || (y == 20 && step > 19)) // 30修改后能扫线
         {
-            if (x == 1 /*|| x== img->width - 2*/)
+            if (x == 2 /*|| x== img->width - 2*/)
                 touch_boundary0 = 1; // 左边界是因为到最左边才停下来的，触碰到最左边，可能是环岛，十字等，
-            if (y == 1)
+            if (y == 2)
                 touch_boundary_up0 = 1; // 走到顶边，判断坡道or障碍
-
             break;
         }
         //=======添加部分=======
@@ -1401,12 +1400,17 @@ void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x
         }
         else if (frontleft_value < local_thres) // 前方像素为白色，且左前方像素为黑色
         {
+
             x += dir_front[dir][0];
             y += dir_front[dir][1];
-            pts[step][0] = x; // 用来存放边线坐标信息
-            pts[step][1] = y;
-            step++;
-            turn = 0;
+            if (x > 2) // 判断起始点
+            {
+                pts[step][0] = x; // 用来存放边线坐标信息
+                pts[step][1] = y;
+                step++;
+                turn = 0;
+            }
+
             // AT(img,x,y) = RGB565_GREEN;
         }
         else // 前方为白色，左前方为白色（墙角）
@@ -1426,15 +1430,14 @@ void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x
         loseline0 = 1;
     // 记录边线数目
     *num = step;
-    uint8 i;
-    //	for(i=0;i<ipts0_num;i++)
-    //	{
-    //		tft180_draw_point(ipts0[i][1]/2,ipts0[i][0]/2,RGB565_RED);
-    //	}
-    for (i = 0; i < ipts1_num; i++)
-    {
-        ips200_draw_point(ipts0[i][0] + 2, ipts0[i][1] + 2, RGB565_RED);
-    }
+    //    uint8 i;
+    //   	for(i=0;i<ipts0_num;i++)
+    //   	{
+    //   		ips200_draw_line(0,0,ipts0[i][0],ipts0[i][1],RGB565_RED);
+    //   	}
+    // ips200_show_int(3,140,ipts0_num,3);
+    // ips200_show_int(3,160,loseline0,3);
+    // ips200_show_int(3,180,*num,3);
     //	tft180_draw_line(0,0,ipts0[20-1][1],ipts0[20-1][0],RGB565_RED);
     //	tft180_show_int(3,100,ipts0[20-1][1],4);
 }
@@ -1466,7 +1469,7 @@ void Right_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int 
         int front_value = AT(img, x + dir_front[dir][0], y + dir_front[dir][1]);
         int frontright_value = AT(img, x + dir_frontright[dir][0], y + dir_frontright[dir][1]);
         //=======添加部分=======
-        if ((x == img->width - 2 && y < img->height - 70) || x == 1 || y == 1 || (y == 20 && step > 19)) // 丢线标志，否则由于sobel特殊性会一直往上巡线，直到边线个数达到最大为止
+        if ((x == img->width - 2 && y < img->height - 50) || x == 1 || y == 1 || (y == 10 && step > 19)) // 丢线标志，否则由于sobel特殊性会一直往上巡线，直到边线个数达到最大为止
         {
             if (x == img->width - 2 /*|| x==1*/)
             {
@@ -2217,7 +2220,7 @@ float pure_angle;
 //{
 // }
 //  判断边线数组是否为长直道，返回值判断
-// uint8 RoadImageSide_Mono(uint8 pts_in[][2], int num)
+// uint8 Roadipts0_Mono(uint8 pts_in[][2], int num)
 //{
 //     uint8_t i = 0;
 //     // uint8_t State;
@@ -2260,38 +2263,65 @@ void test(void)
 
     img_raw.data = *Image_Use_Robert; // 传入sobel边沿检测图像
     // 寻找左右边线
-    Find_Borderline();//寻找边线
-    Features_Find();  // 寻找特征点
+    Find_Borderline(); // 寻找边线
+    // Features_Find();  // 寻找特征点
 
-    int test = 0;
+    // int test = Is_Straight(ipts0, ipts0_num, 100);
     // test = Is_Straight(ipts0, ipts0_num, sample_dist);
-
+    // Straight_Rec(ipts1, ipts1_num);
+    Arc_Rec(ipts0, ipts0_num);
     for (int i = 0; i < ipts0_num; i++)
     {
-        ips200_draw_line(0, 0, ipts0[i][0], ipts0[i][1], RGB565_RED);
+        ips200_draw_point(ipts0[i][0] + 3, ipts0[i][1], RGB565_RED);
     }
     for (int i = 0; i < ipts1_num; i++)
     {
-        ips200_draw_line(0, 0, ipts1[i][0], ipts1[i][1], RGB565_GREEN);
+        ips200_draw_point(ipts1[i][0] - 3, ipts1[i][1], RGB565_GREEN);
     }
 
-    // 单侧线少，切换巡线方向  切外向圆
-    if (ipts0_num < ipts1_num / 2 && ipts0_num < 60)
-    { // 如果左边线比右边线少一半，循右
-        track_type = TRACK_RIGHT;
-    }
-    else if (ipts1_num < ipts0_num / 2 && ipts1_num < 60)
-    { // 如果右边线比左边线少一半，循左
-        track_type = TRACK_LEFT;
-    }
-    else if (ipts0_num < 20 && ipts1_num > ipts0_num)
-    { // 如果左边线少于20，且右边数大于左边，循右
-        track_type = TRACK_RIGHT;
-    }
-    else if (ipts1_num < 20 && ipts0_num > ipts1_num)
-    { // 如果右边线少于20，且左边数大于右边，循左
-        track_type = TRACK_LEFT;
-    }
+    //     //检测左下拐点
+    //     for (int j = 0; j < ipts0_num; j++)
+    //     {
+    //         int test6 = 0;
+    //         int x, y;
+    //         // 找左边突变(下拐点)
+    //         if (
+    //             abs(ipts0[j][0] - ipts0[j + 1][0]) <= 3 && abs(ipts0[j + 1][0] - ipts0[j + 2][0]) <= 3 &&
+    //             abs(ipts0[j][0] - ipts0[j + 2][0]) <= 3 &&
+    //             ipts0[j][0] - ipts0[j - 2][0] > 3 && ipts0[j][0] - ipts0[j - 3][0] > 3 &&
+    //             ipts0[j][0] - ipts0[j - 4][0] > 3 &&
+    //             ipts0[j - 4][0] < 5 && ipts0[j - 3][0] < 5 && ipts0[j - 2][0] < 5 &&
+    //             ipts0[j][0] > 3 && ipts0[j + 1][0] > 3 && ipts0[j + 2][0] > 3)
+    //         {
+    //             x = j; // 同上
+    //             y = ipts0[j][0];
+    //             test6 = 1;
+    // //            break;
+    //         }
+    //         else
+    //         {
+    //             test6 = 0;
+    //         }
+    //         ips200_show_uint(200,200,test6,1);
+    //     }
+
+    // // 单侧线少，切换巡线方向  切外向圆
+    // if (ipts0_num < ipts1_num / 2 && ipts0_num < 60)
+    // { // 如果左边线比右边线少一半，循右
+    //     track_type = TRACK_RIGHT;
+    // }
+    // else if (ipts1_num < ipts0_num / 2 && ipts1_num < 60)
+    // { // 如果右边线比左边线少一半，循左
+    //     track_type = TRACK_LEFT;
+    // }
+    // else if (ipts0_num < 20 && ipts1_num > ipts0_num)
+    // { // 如果左边线少于20，且右边数大于左边，循右
+    //     track_type = TRACK_RIGHT;
+    // }
+    // else if (ipts1_num < 20 && ipts0_num > ipts1_num)
+    // { // 如果右边线少于20，且左边数大于右边，循左
+    //     track_type = TRACK_LEFT;
+    // }
 
     // 前0.6m执行出库
     // if (garage_type != GARAGE_NONE && Z.all_length < ENCODER_PER_METER * 0 && podao_type == podao_NONE && block_type == BLOCK_NONE)
@@ -2300,39 +2330,107 @@ void test(void)
     // }
     //    RoundaboutGetArc(Image_Use_Robert[120][160], 1, ipts0_num, test);
 
-    ips200_show_int(160, 160, touch_boundary0, 1);
-    ips200_show_int(160, 180, touch_boundary_up0, 1);
-    ips200_show_int(160, 200, touch_boundary1, 1);
-    ips200_show_int(160, 220, touch_boundary_up1, 1);
+    // ips200_show_int(160, 160, touch_boundary0, 1);
+    // ips200_show_int(160, 180, touch_boundary_up0, 1);
+    // ips200_show_int(160, 200, touch_boundary1, 1);
+    // ips200_show_int(160, 220, touch_boundary_up1, 1);
 
-    ips200_show_int(160, 250, loseline0, 1);
-    ips200_show_int(160, 280, loseline1, 1);
+    // ips200_show_int(160, 250, loseline0, 1);
+    // ips200_show_int(160, 280, loseline1, 1);
 
-    ips200_show_int(200, 300, test, 1);
+    // ips200_show_int(200, 300, test, 1);
 }
 
 void Features_Find(void)
 {
-
 }
-//角点检测
-void Corners_Find(void)
-{
+// 角点检测
+// void Corners_Find(void)
+// {
+//     int Is_Corner = 0; // 角点判断标志位
+//     for (int i = 0;i<)
+// }
 
-}
-
-//圆弧检测
+// 圆弧检测
 /**
- * @brief 圆弧检测,返回圆弧的极边界
+ * @brief 圆弧检测,取出圆弧的极边界坐标
  *
  * @param pts_in 边线坐标数组
  * @param pts_num 边线坐标数组长度
  * @param pts_out 极边界坐标数组
  */
-void Arc_Rec(int pts_in[][2],int pts_num,int pts_out[2][2])
+void Arc_Rec(int pts_in[][2], int pts_num /*, int pts_out[2][2]*/)
 {
-    int Is_Arc = 0;//圆环判断标志位
+    //     int Is_Arc = 0; // 圆环判断标志位
+    //     int j;
+    //     int test6 = 0;
+    //     int cross;
+    //     for (j = 3; j < pts_num - 3; j++)
+    //     {
+    //         // 判断是否为圆弧
+    //         float dx1 = pts_in[j][0] - pts_in[j - 1][0];
+    //         float dy1 = pts_in[j][1] - pts_in[j - 1][1];
+    //         float dx2 = pts_in[j + 1][0] - pts_in[j][0];
+    //         float dy2 = pts_in[j + 1][1] - pts_in[j][1];
+    //         cross = dx1 * dy2 - dx2 * dy1;
+    //         if (cross > 0)
+    //         {
+    //             dx1 = pts_in[j - 1][0] - pts_in[j - 2][0];
+    //             dy1 = pts_in[j - 1][1] - pts_in[j - 2][1];
+    //             dx2 = pts_in[j][0] - pts_in[j - 1][0];
+    //             dy2 = pts_in[j][1] - pts_in[j - 1][1];
+    //             cross = dx1 * dy2 - dx2 * dy1;
+    //             if (cross > 0)
+    //             {
+    //                 dx1 = pts_in[j + 2][0] - pts_in[j + 1][0];
+    //                 dy1 = pts_in[j + 2][1] - pts_in[j + 1][1];
+    //                 dx2 = pts_in[j + 1][0] - pts_in[j][0];
+    //                 dy2 = pts_in[j + 1][1] - pts_in[j][1];
+    //                 cross = dx1 * dy2 - dx2 * dy1;
+    //                 if (cross > 0)
+    //                 {
+    //                     dx1 = pts_in[j + 3][0] - pts_in[j + 2][0];
+    //                     dy1 = pts_in[j + 3][1] - pts_in[j + 2][1];
+    //                     dx2 = pts_in[j + 2][0] - pts_in[j + 1][0];
+    //                     dy2 = pts_in[j + 2][1] - pts_in[j + 1][1];
+    //                     cross = dx1 * dy2 - dx2 * dy1;
+    //                     if (cross > 0)
+    //                     {
+    //                         Is_Arc = 1;
+    //                         break;
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    int Is_Arc = 0; // 圆环判断标志位
+    int j;
+    int x, y;
+    int test6 = 0;
+    for (j = 0; j < pts_num; j++)
+    {
+        // 圆弧
+        if (
+            ipts0[j][0] - ipts0[j - 1][0] >= 0 && ipts0[j][0] - ipts0[j - 2][0] >= 0 && ipts0[j][0] - ipts0[j - 3][0] >= 0 &&
+            ipts0[j][0] - ipts0[j + 1][0] >= 0 && ipts0[j][0] - ipts0[j + 2][0] > 0 && ipts0[j][0] - ipts0[j + 3][0] >= 0) // 感觉可以加条件进行二次强判断
+        {
+            x = ipts0[j][0];
+            y = ipts0[j][1];
+            test6 = 1;
+            break;
+        }
+        else
+        {
+            // leftcircle_guai = 0;
+            test6 = 0;
+        }
+    }
+    ips200_show_uint(120, 200, test6, 2);
 
+    ips200_show_uint(120, 220, x, 2);
+
+    ips200_show_uint(120, 240, y, 2);
+    ips200_draw_line(0, 0, x, y, RGB565_BLUE);
 }
 
 /**
@@ -2416,17 +2514,18 @@ void Arc_Rec(int pts_in[][2],int pts_num,int pts_out[2][2])
 
 //     return is_circle;
 // }
-//长直道检测
-void Straight_Rec(int pts_in[][2],int pts_num)
+// 长直道检测
+void Straight_Rec(int pts_in[][2], int pts_num)
 {
-    int Is_Straight = 0;//长直道判断标志位
-    for(int i = 0;i < ipts0_num;i++)
+    int Is_Straight = 0; // 长直道判断标志位
+    for (int i = 0; i < pts_num; i++)
     {
-        if(ipts0[i][0] == ipts0[i+1][0])
+        if (pts_in[i][0] - pts_in[i - 1][0] == pts_in[i + 1][0] - pts_in[i][0] && pts_in[i][0] - pts_in[i - 5][0] == pts_in[i + 5][0] - pts_in[i][0])
         {
             Is_Straight++;
         }
     }
+    ips200_show_uint(40, 40, Is_Straight, 3);
 
     // /**
     //  * @brief 递归求差值判断差值范围来判断左右数组是否为长直线
@@ -2437,73 +2536,90 @@ void Straight_Rec(int pts_in[][2],int pts_num)
     //  * @return true 坐标数组为长直线
     //  * @return false 坐标数组不为长直线
     //  */
-    // bool Is_Straight(int pts_in[][2], int pts_num, int diff_threshold)
-    // {
-    //     bool is_straight = false;
-    //     int min_pts_num = 3; // 最小坐标点数，用于判断是否为长直线
+}
 
-    //     if (pts_num > min_pts_num)
-    //     {
-    //         // 判断坐标单调性的变化
-    //         bool is_monotonic = true;
-    //         int direction = 0;
-    //         for (int i = 1; i < pts_num - 1; i++)
-    //         {
-    //             float dx1 = pts_in[i][0] - pts_in[i - 1][0];
-    //             float dy1 = pts_in[i][1] - pts_in[i - 1][1];
-    //             float dx2 = pts_in[i + 1][0] - pts_in[i][0];
-    //             float dy2 = pts_in[i + 1][1] - pts_in[i][1];
-    //             float cross = dx1 * dy2 - dx2 * dy1;
-    //             if (cross > 0)
-    //             {
-    //                 if (direction < 0)
-    //                 {
-    //                     is_monotonic = false;
-    //                     break;
-    //                 }
-    //                 direction = 1;
-    //             }
-    //             else if (cross < 0)
-    //             {
-    //                 if (direction > 0)
-    //                 {
-    //                     is_monotonic = false;
-    //                     break;
-    //                 }
-    //                 direction = -1;
-    //             }
-    //         }
-    //         if (is_monotonic)
-    //         {
-    //             // 递归求差值判断差值范围
-    //             int diff = 0;
-    //             for (int i = 1; i < pts_num; i++)
-    //             {
-    //                 int dx = pts_in[i][0] - pts_in[i - 1][0];
-    //                 int dy = pts_in[i][1] - pts_in[i - 1][1];
-    //                 int cur_diff = abs(dx) + abs(dy);
-    //                 if (cur_diff > diff)
-    //                 {
-    //                     diff = cur_diff;
-    //                 }
-    //             }
-    //             if (diff <= diff_threshold)
-    //             {
-    //                 is_straight = true;
-    //             }
-    //             else
-    //             {
-    //                 int mid = pts_num / 2;
-    //                 bool is_left_straight = Is_Straight(pts_in, mid, diff_threshold);
-    //                 bool is_right_straight = Is_Straight(pts_in + mid, pts_num - mid, diff_threshold);
-    //                 if (is_left_straight && is_right_straight)
-    //                 {
-    //                     is_straight = true;
-    //                 }
-    //             }
-    //         }
-    //     }
+bool Is_Straight(int pts_in[][2], int pts_num, int diff_threshold)
+{
+    bool is_straight = false;
+    int min_pts_num = 3; // 最小坐标点数，用于判断是否为长直线
 
-    //     return is_straight;
-    // }
+    if (pts_num > min_pts_num)
+    {
+        // 判断坐标单调性的变化
+        bool is_monotonic = true;
+        int direction = 0;
+        for (int i = 1; i < pts_num - 1; i++)
+        {
+            float dx1 = pts_in[i][0] - pts_in[i - 1][0];
+            float dy1 = pts_in[i][1] - pts_in[i - 1][1];
+            float dx2 = pts_in[i + 1][0] - pts_in[i][0];
+            float dy2 = pts_in[i + 1][1] - pts_in[i][1];
+            float cross = dx1 * dy2 - dx2 * dy1;
+            if (cross > 0)
+            {
+                if (direction < 0)
+                {
+                    is_monotonic = false;
+                    break;
+                }
+                direction = 1;
+            }
+            else if (cross < 0)
+            {
+                if (direction > 0)
+                {
+                    is_monotonic = false;
+                    break;
+                }
+                direction = -1;
+            }
+        }
+        if (is_monotonic)
+        {
+            // 递归求差值判断差值范围
+            int diff = 0;
+            for (int i = 1; i < pts_num; i++)
+            {
+                int dx = pts_in[i][0] - pts_in[i - 1][0];
+                int dy = pts_in[i][1] - pts_in[i - 1][1];
+                int cur_diff = abs(dx) + abs(dy);
+                if (cur_diff > diff)
+                {
+                    diff = cur_diff;
+                }
+            }
+            ips200_show_uint(120, 120, diff, 3);
+            if (diff <= diff_threshold)
+            {
+                is_straight = true;
+            }
+            else
+            {
+                int mid = pts_num / 2;
+                bool is_left_straight = Is_Straight(pts_in, mid, diff_threshold);
+                bool is_right_straight = Is_Straight(pts_in + mid, pts_num - mid, diff_threshold);
+                if (is_left_straight && is_right_straight)
+                {
+                    is_straight = true;
+                }
+            }
+        }
+    }
+
+    return is_straight;
+}
+
+#define MID_LINE 80 // 定义中线y=80
+#define PROS_NUM 20 //  前瞻点数
+const uint8 Weight[IMAGE_HEIGHT] =
+    {
+        0,
+}; // 定义误差权重
+float Err_Get(int pts0_in[][2], int pts0_num, int pts1_in[][2], int pts1_num)
+{
+    float Err = 0;
+    for (int i = 0; i < pts0_num; i++)
+    {
+        Err += MID_LINE - pts0_in[i][0];
+    }
 }

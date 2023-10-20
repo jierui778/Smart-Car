@@ -46,11 +46,11 @@ int main(void)
 
 
         //        Schedule_Run();//任务运行总函数，开始任务调度
-//        test();
+       test();
         ips200_displayimage03x(*Image_Use_Robert, 160, 120);
-            
+
 //        test();
-//        
+//
 //        //        Schedule_Run();//任务运行总函数，开始任务调度
 		//	bluetooth_ch9141_send_image(*Image_Use_Robert, 19200);
 
@@ -80,11 +80,11 @@ int main(void)
 ////			TH = OSTU_GetThreshold(Image_Use[0], IMAGE_WIDTH, IMAGE_HEIGHT);
 ////			//    Image_Binarization(TH, Image_Use);
 ////			Image_Sobel(Image_Use, Image_Use_Robert, TH); // 全局Sobel得二值图(方案二) 2.8ms
-////        
+////
 ////            bluetooth_ch9141_send_image((const uint8 *)Image_Use_Robert, MT9V03X_IMAGE_SIZE);
 ////            mt9v03x_finish_flag = 0;
-//     
-//        
+//
+//
 //        Schedule_Run();//任务运行总函数，开始任务调度
 		//	bluetooth_ch9141_send_image(*Image_Use_Robert, 19200);
     }
