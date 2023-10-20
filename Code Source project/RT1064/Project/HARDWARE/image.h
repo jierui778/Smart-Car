@@ -19,7 +19,7 @@
 
 #define LINE_K 0.5                                 // 斜率，判断是否为直道
 extern uint8 Image_Use[IMAGE_HEIGHT][IMAGE_WIDTH]; // 全局声明用于处理的图像数组
-
+extern float Finnal_err;
 /*图像处理*/
 void Image_Compress();                                                                                                       // 对原始图像进行压缩
 uint8 OSTU_GetThreshold(uint8 *image, uint16 Width, uint16 Height);                                                          // 优化大津法获取阈值
