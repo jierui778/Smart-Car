@@ -46,6 +46,12 @@ int ipts1[POINTS_MAX_LEN][2]; // 存放边线数据（右）
 int ipts0_num;                // 存放边线像素点个数(左)
 int ipts1_num;                // 存放边线像素点个数(右)
 
+int Far_iptr0[POINTS_MAX_LEN][2]; // 存放远边线数据（左）
+int Far_iptr1[POINTS_MAX_LEN][2]; // 存放远边线数据（右）
+
+int Far_ipts0_num; // 存放远边线像素点个数(左)
+int Far_ipts1_num; // 存放远边线像素点个数(右)
+
 int Far_Lpt0_Found = 0, Far_Lpt1_Found = 0;   // 远线L角点标志位
 int Near_Lpt0_Found = 0, Near_Lpt1_Found = 0; // 近线角点标志位
 // float thres = 120;                                  // 二值化阈值，主要用于找起始点(边线使用自适应阈值，不使用该阈值)
@@ -67,6 +73,10 @@ int Near_Lpt0_Found = 0, Near_Lpt1_Found = 0; // 近线角点标志位
 
 void test(void)
 {
+    int test[2] = {0,0};
+    int test2;
+    int test3[2] = {0,0};
+    int test5;
     Image_Compress();
     int TH = OSTU_GetThreshold(Image_Use[0], IMAGE_WIDTH, IMAGE_HEIGHT);
     Image_Sobel(Image_Use, Image_Use_Robert, TH); // 全局Sobel得二值图(方案二) 2.8ms
@@ -74,19 +84,21 @@ void test(void)
     img_raw.data = *Image_Use_Robert; // 传入sobel边沿检测图像
     // 寻找左右边线
     Find_Borderline(); // 寻找边线
+    NearCorners_Find_Left(ipts0, ipts0_num, test, &test2);
+    NearCorners_Find_Right(ipts1, ipts1_num, test3, &test5);
     // Features_Find();  // 寻找特征点
 
     // int test = Is_Straight(ipts0, ipts0_num, 100);
     // test = Is_Straight(ipts0, ipts0_num, sample_dist);
     // Straight_Rec(ipts1, ipts1_num);
-//    Arc_Rec(ipts0, ipts0_num);
+    //    Arc_Rec(ipts0, ipts0_num);
     for (int i = 0; i < ipts0_num; i++)
     {
         ips200_draw_point(ipts0[i][0] + 3, ipts0[i][1], RGB565_RED);
     }
     for (int i = 0; i < ipts1_num; i++)
     {
-        ips200_draw_point(ipts1[i][0] - 3, ipts1[i][1], RGB565_GREEN);
+        ips200_draw_point(ipts1[i][0] - 3, ipts1[i][1], RGB565_RED);
     }
 
     //     //检测左下拐点
@@ -155,19 +167,19 @@ void Features_Find(void)
 {
     if (touch_boundary0) // 触碰到左边界
     {
-//        Arc_Rec(ipts0, ipts0_num); // 检测左边线是否为圆弧
+        //        Arc_Rec(ipts0, ipts0_num); // 检测左边线是否为圆弧
     }
     else // 长直道一定不会触碰到边界
     {
-//        Straight_Rec(ipts0, ipts0_num); // 检测左边线是否为直线
+        //        Straight_Rec(ipts0, ipts0_num); // 检测左边线是否为直线
     }
     if (touch_boundary1) // 迷宫触碰到右边界
     {
-//        Arc_Rec(ipts1, ipts1_num); // 检测右边线是否为圆弧
+        //        Arc_Rec(ipts1, ipts1_num); // 检测右边线是否为圆弧
     }
     else
     {
-//        Straight_Rec(ipts1, ipts1_num); // 检测右边线是否为直线
+        //        Straight_Rec(ipts1, ipts1_num); // 检测右边线是否为直线
     }
 }
 /**
@@ -178,19 +190,21 @@ void Features_Find(void)
  * @param pts_out 输出角点坐标
  * @param flag 角点判断标志位
  */
-void Corners_Find(int pts_in[][2], int pts_num, int pts_out[2], int *flag)
+void NearCorners_Find_Left(int pts_in[][2], int pts_num, int pts_out[2], int *flag)
 {
     int Is_Corner = 0; // 角点判断标志位
     int Is_Arc = 0;    // 圆环判断标志位
-    for (int i = 0; i < pts_num; i++)
+    // pts_out[0] = 0;
+    // pts_out[1] = 0;
+    for (int i = 5; i < pts_num - 5; i++)
     {
         // 圆弧
         if (
-            ipts0[i][0] - ipts0[i - 1][0] >= 0 && ipts0[i][0] - ipts0[i - 2][0] >= 0 && ipts0[i][0] - ipts0[i - 3][0] >= 0 &&
-            ipts0[i][0] - ipts0[i + 1][0] >= 0 && ipts0[i][0] - ipts0[i + 2][0] > 0 && ipts0[i][0] - ipts0[i + 3][0] >= 0) // 感觉可以加条件进行二次强判断
+            pts_in[i][0] - pts_in[i - 1][0] >= 0 && pts_in[i][0] - pts_in[i - 2][0] >= 0 && pts_in[i][0] - pts_in[i - 3][0] >= 0 &&
+            pts_in[i][0] - pts_in[i - 4][0] >= 0 && pts_in[i][0] - pts_in[i - 5][0] >= 0 && pts_in[i][0] - pts_in[i - 6][0] >= 0 && pts_in[i][0] - pts_in[i + 1][0] >= 0 && pts_in[i][0] - pts_in[i + 2][0] > 0 && pts_in[i][0] - pts_in[i + 3][0] >= 0 && pts_in[i][0] - pts_in[i + 4][0] >= 0 && pts_in[i][0] - pts_in[i + 5][0] > 0 && pts_in[i][0] - pts_in[i + 6][0] >= 0 && my_abs(pts_in[i][1] - pts_in[i + 1][1]) < 5 && my_abs(pts_in[i][1] - pts_in[i + 2][1]) < 5 && my_abs(pts_in[i][1] - pts_in[i + 3][1]) < 5 && my_abs(pts_in[i][1] - pts_in[i + 4][1]) < 5 && my_abs(pts_in[i][1] - pts_in[i + 5][1]) < 5) // 感觉可以加条件进行二次强判断
         {
-            pts_out[0] = ipts0[i][0];
-            pts_out[1] = ipts0[i][1];
+            pts_out[0] = pts_in[i][0];
+            pts_out[1] = pts_in[i][1];
             *flag = 1;
             break;
         }
@@ -199,6 +213,37 @@ void Corners_Find(int pts_in[][2], int pts_num, int pts_out[2], int *flag)
             *flag = 0;
         }
     }
+    ips200_show_uint(100, 200, pts_out[0], 3);
+    ips200_show_uint(100, 220, pts_out[1], 3);
+    ips200_draw_line(0, 0, pts_out[0], pts_out[1], RGB565_BLUE);
+    ips200_show_uint(100, 250, *flag, 2);
+}
+
+void NearCorners_Find_Right(int pts_in[][2], int pts_num, int pts_out[2], int *flag)
+{
+    int Is_Corner = 0; // 角点判断标志位
+    int Is_Arc = 0;    // 圆环判断标志位
+    for (int i = 5; i < pts_num - 5; i++)
+    {
+        // 圆弧
+        if (
+            pts_in[i][0] - pts_in[i - 1][0] <= 0 && pts_in[i][0] - pts_in[i - 2][0] <= 0 && pts_in[i][0] - pts_in[i - 3][0] <= 0 &&
+            pts_in[i][0] - pts_in[i - 4][0] <= 0 && pts_in[i][0] - pts_in[i - 5][0] <= 0 && pts_in[i][0] - pts_in[i - 6][0] <= 0 && pts_in[i][0] - pts_in[i + 1][0] <= 0 && pts_in[i][0] - pts_in[i + 2][0] < 0 && pts_in[i][0] - pts_in[i + 3][0] <= 0 && pts_in[i][0] - pts_in[i + 4][0] <= 0 && pts_in[i][0] - pts_in[i + 5][0] < 0 && pts_in[i][0] - pts_in[i + 6][0] <= 0 && my_abs(pts_in[i][1] - pts_in[i + 1][1]) < 5 && my_abs(pts_in[i][1] - pts_in[i + 2][1]) < 5 && my_abs(pts_in[i][1] - pts_in[i + 3][1]) < 5 && my_abs(pts_in[i][1] - pts_in[i + 4][1]) < 5 && my_abs(pts_in[i][1] - pts_in[i + 5][1]) < 5) // 感觉可以加条件进行二次强判断
+        {
+            pts_out[0] = pts_in[i][0];
+            pts_out[1] = pts_in[i][1];
+            *flag = 1;
+            break;
+        }
+        else
+        {
+            *flag = 0;
+        }
+    }
+    ips200_show_uint(200, 200, pts_out[0], 3);
+    ips200_show_uint(200, 220, pts_out[1], 3);
+    ips200_draw_line(0, 0, pts_out[0], pts_out[1], RGB565_BLUE);
+    ips200_show_uint(200, 250, *flag, 2);
 }
 /**
  * @brief 圆弧检测,取出圆弧的极边界坐标
@@ -257,7 +302,7 @@ const uint8 Weight[IMAGE_HEIGHT] =
  * @param pts_num
  * @return float
  */
-float Err_Get(int pts_in[][2],int pts_num)
+float Err_Get(int pts_in[][2], int pts_num)
 {
     float Err = 0;
     for (int i = 0; i < pts_num; i++)
@@ -1586,7 +1631,7 @@ void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x
         int frontleft_value = AT(img, x + dir_frontleft[dir][0], y + dir_frontleft[dir][1]); // 左前方像素点灰度值 （dir=0左下；dir=1 右下；dir=2 右上；dir=3 左上 ）
         //=======添加部分=======（限制条件）
         /*  当扫点的列坐标到左黑框边界且行坐标小于20    列坐标到右边的黑框边界  行坐标为1   行坐标为88的同时步数已经大于19*/
-        if ((x == 2 && y < img->height - 50) || x == img->width - 2 || y == 1 || (y == 20 && step > 19)) // 30修改后能扫线
+        if ((x == 2 && y < img->height - 60) || x == img->width - 2 || y == 1 || (y == 20 && step > 19)) // 30修改后能扫线
         {
             if (x == 2 /*|| x== img->width - 2*/) // 限制迷宫巡线的左边界
                 touch_boundary0 = 1;              // 左边界是因为到最左边才停下来的，触碰到最左边，可能是环岛，十字等，
@@ -1661,7 +1706,7 @@ void Right_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int 
         int front_value = AT(img, x + dir_front[dir][0], y + dir_front[dir][1]);
         int frontright_value = AT(img, x + dir_frontright[dir][0], y + dir_frontright[dir][1]);
         //=======添加部分=======
-        if ((x == img->width - 2 && y < img->height - 50) || x == 1 || y == 1 || (y == 10 && step > 19)) // 丢线标志，否则由于sobel特殊性会一直往上巡线，直到边线个数达到最大为止
+        if ((x == img->width - 2 && y < img->height - 60) || x == 1 || y == 1 || (y == 10 && step > 19)) // 丢线标志，否则由于sobel特殊性会一直往上巡线，直到边线个数达到最大为止
         {
             if (x == img->width - 2 /*|| x==1*/) // 限制迷宫巡线的右边界
             {

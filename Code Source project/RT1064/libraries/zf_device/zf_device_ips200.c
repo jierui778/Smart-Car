@@ -1,33 +1,33 @@
 /*********************************************************************************************************************
 * RT1064DVL6A Opensourec Library 即（RT1064DVL6A 开源库）是一个基于官方 SDK 接口的第三方开源库
 * Copyright (c) 2022 SEEKFREE 逐飞科技
-* 
+*
 * 本文件是 RT1064DVL6A 开源库的一部分
-* 
+*
 * RT1064DVL6A 开源库 是免费软件
 * 您可以根据自由软件基金会发布的 GPL（GNU General Public License，即 GNU通用公共许可证）的条款
 * 即 GPL 的第3版（即 GPL3.0）或（您选择的）任何后来的版本，重新发布和/或修改它
-* 
+*
 * 本开源库的发布是希望它能发挥作用，但并未对其作任何的保证
 * 甚至没有隐含的适销性或适合特定用途的保证
 * 更多细节请参见 GPL
-* 
+*
 * 您应该在收到本开源库的同时收到一份 GPL 的副本
 * 如果没有，请参阅<https://www.gnu.org/licenses/>
-* 
+*
 * 额外注明：
 * 本开源库使用 GPL3.0 开源许可证协议 以上许可申明为译文版本
 * 许可申明英文版在 libraries/doc 文件夹下的 GPL3_permission_statement.txt 文件中
 * 许可证副本在 libraries 文件夹下 即该文件夹下的 LICENSE 文件
 * 欢迎各位使用并传播本程序 但修改内容时必须保留逐飞科技的版权声明（即本声明）
-* 
+*
 * 文件名称          zf_device_ips200
 * 公司名称          成都逐飞科技有限公司
 * 版本信息          查看 libraries/doc 文件夹内 version 文件 版本说明
 * 开发环境          IAR 8.32.4 or MDK 5.33
 * 适用平台          RT1064DVL6A
 * 店铺链接          https://seekfree.taobao.com/
-* 
+*
 * 修改记录
 * 日期              作者                备注
 * 2022-09-21        SeekFree            first version
@@ -157,12 +157,12 @@ static void ips200_write_command (const uint8 command)
     }
     else
     {
-        IPS200_CS(0); 
+        IPS200_CS(0);
         IPS200_RS(0);
         IPS200_RD(1);
         IPS200_WR(0);
         ips200_write_data(command);
-        IPS200_WR(1);	
+        IPS200_WR(1);
         IPS200_CS(1);
     }
 }
@@ -182,13 +182,13 @@ static void ips200_write_8bit_data (const uint8 dat)
     }
     else
     {
-        IPS200_CS(0); 
+        IPS200_CS(0);
         IPS200_RS(1);
         IPS200_RD(1);
         IPS200_WR(0);
         ips200_write_data(dat);
         IPS200_WR(1);
-        IPS200_CS(1); 
+        IPS200_CS(1);
     }
 }
 
@@ -207,7 +207,7 @@ static void ips200_write_16bit_data (const uint16 dat)
     }
     else
     {
-        IPS200_CS(0); 
+        IPS200_CS(0);
         IPS200_RS(1);
         IPS200_RD(1);
         IPS200_WR(0);
@@ -243,11 +243,11 @@ static void ips200_set_region (uint16 x1, uint16 y1, uint16 x2, uint16 y2)
     ips200_write_command(0x2a);
     ips200_write_16bit_data(x1);
     ips200_write_16bit_data(x2);
-    
+
     ips200_write_command(0x2b);
     ips200_write_16bit_data(y1);
     ips200_write_16bit_data(y2);
-    
+
     ips200_write_command(0x2c);
 }
 
@@ -286,7 +286,7 @@ static void ips200_debug_init (void)
     }
     info.output_screen = ips200_show_string;
     info.output_screen_clear = ips200_clear;
-        
+
     debug_output_init(&info);
 }
 
@@ -309,7 +309,7 @@ void ips200_clear (void)
     {
         for (j = 0; j < ips200_y_max; j ++)
         {
-            ips200_write_16bit_data(ips200_bgcolor);                 
+            ips200_write_16bit_data(ips200_bgcolor);
         }
     }
     if(IPS200_TYPE_SPI == ips200_display_type)
@@ -337,7 +337,7 @@ void ips200_full (const uint16 color)
     {
         for (j = 0; j < ips200_y_max; j ++)
         {
-            ips200_write_16bit_data(color);                 
+            ips200_write_16bit_data(color);
         }
     }
     if(IPS200_TYPE_SPI == ips200_display_type)
@@ -406,7 +406,7 @@ void ips200_set_color (const uint16 pen, const uint16 bgcolor)
 // 参数说明     color           颜色格式 RGB565 或者可以使用 zf_common_font.h 内 rgb565_color_enum 枚举值或者自行写入
 // 返回参数     void
 // 使用示例     ips200_draw_point(0, 0, RGB565_RED);            //坐标0,0画一个红色的点
-// 备注信息     
+// 备注信息
 //-------------------------------------------------------------------------------------------------------------------
 void ips200_draw_point (uint16 x, uint16 y, const uint16 color)
 {
@@ -438,7 +438,7 @@ void ips200_draw_point (uint16 x, uint16 y, const uint16 color)
 // 参数说明     color           颜色格式 RGB565 或者可以使用 zf_common_font.h 内 rgb565_color_enum 枚举值或者自行写入
 // 返回参数     void
 // 使用示例     ips200_draw_line(0, 0, 10, 10, RGB565_RED);     // 坐标 0,0 到 10,10 画一条红色的线
-// 备注信息     
+// 备注信息
 //-------------------------------------------------------------------------------------------------------------------
 void ips200_draw_line (uint16 x_start, uint16 y_start, uint16 x_end, uint16 y_end, const uint16 color)
 {
@@ -500,7 +500,7 @@ void ips200_draw_line (uint16 x_start, uint16 y_start, uint16 x_end, uint16 y_en
 // 参数说明     dat             需要显示的字符
 // 返回参数     void
 // 使用示例     ips200_show_char(0, 0, 'x');                     // 坐标0,0写一个字符x
-// 备注信息     
+// 备注信息
 //-------------------------------------------------------------------------------------------------------------------
 void ips200_show_char (uint16 x, uint16 y, const char dat)
 {
@@ -590,7 +590,7 @@ void ips200_show_char (uint16 x, uint16 y, const char dat)
 // 参数说明     dat             需要显示的字符串
 // 返回参数     void
 // 使用示例     ips200_show_string(0, 0, "seekfree");
-// 备注信息     
+// 备注信息
 //-------------------------------------------------------------------------------------------------------------------
 void ips200_show_string (uint16 x, uint16 y, const char dat[])
 {
@@ -598,7 +598,7 @@ void ips200_show_string (uint16 x, uint16 y, const char dat[])
     // 那么一般是屏幕显示的时候超过屏幕分辨率范围了
     zf_assert(x < ips200_x_max);
     zf_assert(y < ips200_y_max);
-    
+
     uint16 j = 0;
     while('\0' != dat[j])
     {
@@ -659,7 +659,7 @@ void ips200_show_int (uint16 x, uint16 y, const int32 dat, uint8 num)
 // 参数说明     num             需要显示的位数 最高10位  不包含正负号
 // 返回参数     void
 // 使用示例     ips200_show_uint(0, 0, x, 3);                   // x 可以为 uint32 uint16 uint8 类型
-// 备注信息     
+// 备注信息
 //-------------------------------------------------------------------------------------------------------------------
 void ips200_show_uint (uint16 x, uint16 y, const uint32 dat, uint8 num)
 {
@@ -694,7 +694,7 @@ void ips200_show_uint (uint16 x, uint16 y, const uint32 dat, uint8 num)
 // 参数说明     x               坐标x方向的起点 参数范围 [0, ips200_x_max-1]
 // 参数说明     y               坐标y方向的起点 参数范围 [0, ips200_y_max-1]
 // 参数说明     dat             需要显示的变量 数据类型 float
-// 参数说明     num             整数位显示长度   最高8位  
+// 参数说明     num             整数位显示长度   最高8位
 // 参数说明     pointnum        小数位显示长度   最高6位
 // 返回参数     void
 // 使用示例     ips200_show_float(0, 0, x, 2, 3);               // 显示浮点数   整数显示2位   小数显示三位
@@ -918,7 +918,7 @@ void ips200_show_rgb565_image (uint16 x, uint16 y, const uint16 *image, uint16 w
 // 参数说明     dis_value_max   波形显示最大值 参数范围 [0, ips200_y_max]
 // 返回参数     void
 // 使用示例     ips200_show_wave(0, 0, data, 128, 64, 64, 32);
-// 备注信息     
+// 备注信息
 //-------------------------------------------------------------------------------------------------------------------
 void ips200_show_wave (uint16 x, uint16 y, const uint16 *wave, uint16 width, uint16 value_max, uint16 dis_width, uint16 dis_value_max)
 {
@@ -940,7 +940,7 @@ void ips200_show_wave (uint16 x, uint16 y, const uint16 *wave, uint16 width, uin
     {
         for(j = 0; j < dis_width; j ++)
         {
-            ips200_write_16bit_data(ips200_bgcolor); 
+            ips200_write_16bit_data(ips200_bgcolor);
         }
     }
     if(IPS200_TYPE_SPI == ips200_display_type)
@@ -976,18 +976,18 @@ void ips200_show_chinese (uint16 x, uint16 y, uint8 size, const uint8 *chinese_b
     zf_assert(y < ips200_y_max);
     zf_assert(NULL != chinese_buffer);
 
-    int i = 0, j = 0, k = 0; 
+    int i = 0, j = 0, k = 0;
     uint8 temp = 0, temp1 = 0, temp2 = 0;
     const uint8 *p_data = chinese_buffer;
-    
+
     temp2 = size / 8;
-    
+
     if(IPS200_TYPE_SPI == ips200_display_type)
     {
         IPS200_CS(0);
     }
     ips200_set_region(x, y, number * size - 1 + x, y + size - 1);
-    
+
     for(i = 0; i < size; i ++)
     {
         temp1 = number;
@@ -1011,7 +1011,7 @@ void ips200_show_chinese (uint16 x, uint16 y, uint8 size, const uint8 *chinese_b
                 p_data ++;
             }
             p_data = p_data - temp2 + temp2 * size;
-        }   
+        }
     }
     if(IPS200_TYPE_SPI == ips200_display_type)
     {
@@ -1024,7 +1024,7 @@ void ips200_show_chinese (uint16 x, uint16 y, uint8 size, const uint8 *chinese_b
 // 参数说明     type_select     两寸屏接口类型 IPS200_TYPE_SPI 为 SPI 接口串口两寸屏 IPS200_TYPE_PARALLEL8 为 8080 协议八位并口两寸屏
 // 返回参数     void
 // 使用示例     ips200_init(IPS200_TYPE_PARALLEL8);
-// 备注信息     
+// 备注信息
 //-------------------------------------------------------------------------------------------------------------------
 void ips200_init (ips200_type_enum type_select)
 {
@@ -1052,15 +1052,15 @@ void ips200_init (ips200_type_enum type_select)
         ips_bl_pin = IPS200_BL_PIN_PARALLEL8;
         ips_cs_pin =  IPS200_CS_PIN_PARALLEL8;
 
-        fast_gpio_init(IPS200_D0_PIN_PARALLEL8, GPO, 0, FAST_GPO_PUSH_PULL); 
+        fast_gpio_init(IPS200_D0_PIN_PARALLEL8, GPO, 0, FAST_GPO_PUSH_PULL);
         fast_gpio_init(IPS200_D1_PIN_PARALLEL8, GPO, 0, FAST_GPO_PUSH_PULL);
         fast_gpio_init(IPS200_D2_PIN_PARALLEL8, GPO, 0, FAST_GPO_PUSH_PULL);
         fast_gpio_init(IPS200_D3_PIN_PARALLEL8, GPO, 0, FAST_GPO_PUSH_PULL);
         fast_gpio_init(IPS200_D4_PIN_PARALLEL8, GPO, 0, FAST_GPO_PUSH_PULL);
         fast_gpio_init(IPS200_D5_PIN_PARALLEL8, GPO, 0, FAST_GPO_PUSH_PULL);
         fast_gpio_init(IPS200_D6_PIN_PARALLEL8, GPO, 0, FAST_GPO_PUSH_PULL);
-        fast_gpio_init(IPS200_D7_PIN_PARALLEL8, GPO, 0, FAST_GPO_PUSH_PULL); 
-        
+        fast_gpio_init(IPS200_D7_PIN_PARALLEL8, GPO, 0, FAST_GPO_PUSH_PULL);
+
         fast_gpio_init(ips_bl_pin             , GPO, 0, FAST_GPO_PUSH_PULL);
         fast_gpio_init(IPS200_CS_PIN_PARALLEL8, GPO, 0, FAST_GPO_PUSH_PULL);
         fast_gpio_init(ips_rst_pin            , GPO, 0, FAST_GPO_PUSH_PULL);
@@ -1071,13 +1071,13 @@ void ips200_init (ips200_type_enum type_select)
 
     ips200_set_dir(ips200_display_dir);
     ips200_set_color(ips200_pencolor, ips200_bgcolor);
-    
+
     IPS200_BL(1);
-    IPS200_RST(0);  
+    IPS200_RST(0);
     system_delay_ms(5);
-    IPS200_RST(1);      
+    IPS200_RST(1);
     system_delay_ms(5);
-    
+
     if(IPS200_TYPE_SPI == ips200_display_type)
     {
         IPS200_CS(0);
@@ -1094,75 +1094,75 @@ void ips200_init (ips200_type_enum type_select)
         case IPS200_CROSSWISE_180:  ips200_write_8bit_data(0xA0);   break;
     }
 
-    ips200_write_command(0x3A);            
+    ips200_write_command(0x3A);
     ips200_write_8bit_data(0x05);
-    
-    ips200_write_command(0xB2);            
-    ips200_write_8bit_data(0x0C);
-    ips200_write_8bit_data(0x0C); 
-    ips200_write_8bit_data(0x00); 
-    ips200_write_8bit_data(0x33); 
-    ips200_write_8bit_data(0x33);           
 
-    ips200_write_command(0xB7);            
+    ips200_write_command(0xB2);
+    ips200_write_8bit_data(0x0C);
+    ips200_write_8bit_data(0x0C);
+    ips200_write_8bit_data(0x00);
+    ips200_write_8bit_data(0x33);
+    ips200_write_8bit_data(0x33);
+
+    ips200_write_command(0xB7);
     ips200_write_8bit_data(0x35);
 
-    ips200_write_command(0xBB);            
+    ips200_write_command(0xBB);
     ips200_write_8bit_data(0x29);                                               // 32 Vcom=1.35V
-                                                            
-    ips200_write_command(0xC2);            
+
+    ips200_write_command(0xC2);
     ips200_write_8bit_data(0x01);
 
-    ips200_write_command(0xC3);            
-    ips200_write_8bit_data(0x19);                                               // GVDD=4.8V 
-                                                            
-    ips200_write_command(0xC4);            
+    ips200_write_command(0xC3);
+    ips200_write_8bit_data(0x19);                                               // GVDD=4.8V
+
+    ips200_write_command(0xC4);
     ips200_write_8bit_data(0x20);                                               // VDV, 0x20:0v
 
-    ips200_write_command(0xC5);            
+    ips200_write_command(0xC5);
     ips200_write_8bit_data(0x1A);                                               // VCOM Offset Set
 
-    ips200_write_command(0xC6);            
-    ips200_write_8bit_data(0x01F);                                              // 0x0F:60Hz          
+    ips200_write_command(0xC6);
+    ips200_write_8bit_data(0x01F);                                              // 0x0F:60Hz
 
-    ips200_write_command(0xD0);            
+    ips200_write_command(0xD0);
     ips200_write_8bit_data(0xA4);
-    ips200_write_8bit_data(0xA1);                                                                                                                                                                                           
-                
-    ips200_write_command(0xE0);     
-    ips200_write_8bit_data(0xD0);   
-    ips200_write_8bit_data(0x08);   
-    ips200_write_8bit_data(0x0E);   
-    ips200_write_8bit_data(0x09);   
-    ips200_write_8bit_data(0x09);   
-    ips200_write_8bit_data(0x05);   
-    ips200_write_8bit_data(0x31);   
-    ips200_write_8bit_data(0x33);   
-    ips200_write_8bit_data(0x48);   
-    ips200_write_8bit_data(0x17);   
-    ips200_write_8bit_data(0x14);   
-    ips200_write_8bit_data(0x15);   
-    ips200_write_8bit_data(0x31);   
-    ips200_write_8bit_data(0x34);   
+    ips200_write_8bit_data(0xA1);
 
-    ips200_write_command(0xE1);     
-    ips200_write_8bit_data(0xD0);   
-    ips200_write_8bit_data(0x08);   
-    ips200_write_8bit_data(0x0E);   
-    ips200_write_8bit_data(0x09);   
-    ips200_write_8bit_data(0x09); 
-    ips200_write_8bit_data(0x15);   
-    ips200_write_8bit_data(0x31);   
-    ips200_write_8bit_data(0x33);   
-    ips200_write_8bit_data(0x48);   
-    ips200_write_8bit_data(0x17);   
-    ips200_write_8bit_data(0x14);   
-    ips200_write_8bit_data(0x15);   
-    ips200_write_8bit_data(0x31);   
-    ips200_write_8bit_data(0x34);   
+    ips200_write_command(0xE0);
+    ips200_write_8bit_data(0xD0);
+    ips200_write_8bit_data(0x08);
+    ips200_write_8bit_data(0x0E);
+    ips200_write_8bit_data(0x09);
+    ips200_write_8bit_data(0x09);
+    ips200_write_8bit_data(0x05);
+    ips200_write_8bit_data(0x31);
+    ips200_write_8bit_data(0x33);
+    ips200_write_8bit_data(0x48);
+    ips200_write_8bit_data(0x17);
+    ips200_write_8bit_data(0x14);
+    ips200_write_8bit_data(0x15);
+    ips200_write_8bit_data(0x31);
+    ips200_write_8bit_data(0x34);
+
+    ips200_write_command(0xE1);
+    ips200_write_8bit_data(0xD0);
+    ips200_write_8bit_data(0x08);
+    ips200_write_8bit_data(0x0E);
+    ips200_write_8bit_data(0x09);
+    ips200_write_8bit_data(0x09);
+    ips200_write_8bit_data(0x15);
+    ips200_write_8bit_data(0x31);
+    ips200_write_8bit_data(0x33);
+    ips200_write_8bit_data(0x48);
+    ips200_write_8bit_data(0x17);
+    ips200_write_8bit_data(0x14);
+    ips200_write_8bit_data(0x15);
+    ips200_write_8bit_data(0x31);
+    ips200_write_8bit_data(0x34);
 
     ips200_write_command(0x21);
-    
+
     ips200_write_command(0x29);
     if(IPS200_TYPE_SPI == ips200_display_type)
     {
