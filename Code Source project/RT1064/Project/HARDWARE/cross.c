@@ -44,7 +44,7 @@ void Cross_Run(void)
     if(cross_type == CROSS_IN)
     {
         a = 2;
-        if ((Far_ipts0[1][1] > 60 && Far_ipts1[1][1] > 60))
+        if ((Far_ipts0[5][1] > 60 && Far_ipts1[5][1] > 60))
         {
             cross_type = CROSS_OUT;//出圆环
         }
@@ -56,4 +56,8 @@ void Cross_Run(void)
         a = 3;
     }
     ips200_show_uint(200, 250, a, 3);
+    ips200_show_uint(200, 270, Far_ipts0[5][1], 3);
+    ips200_show_uint(200, 290, Far_ipts1[5][1], 3);
+    ips200_draw_line(0, 0, Far_ipts0[5][0], Far_ipts0[5][1], RGB565_BLUE);
+    ips200_draw_line(0, 0, Far_ipts1[5][0], Far_ipts1[5][1], RGB565_BLUE);
 }
