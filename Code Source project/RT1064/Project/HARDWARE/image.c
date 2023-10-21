@@ -51,6 +51,11 @@ int Far_ipts1[POINTS_MAX_LEN][2]; // 存放边线数据（右）
 int Far_ipts0_num;                // 存放边线像素点个数(左)
 int Far_ipts1_num;                // 存放边线像素点个数(右)
 
+int Extra_ipts0[POINTS_MAX_LEN][2]; // 存放边线数据（左）
+int Extra_ipts1[POINTS_MAX_LEN][2]; // 存放边线数据（右）
+int Extra_ipts0_num;                // 存放边线像素点个数(左)
+int Extra_ipts1_num;                // 存放边线像素点个数(右)
+
 int Lpt0_id, Lpt1_id;         // 近线L角点id
 int Far_Lpt0_id, Far_Lpt1_id; // 远线L角点id
 
@@ -61,6 +66,9 @@ int CornersLeft_Point[2];
 int CornersRight_Point[2];
 int FarCornersLeft_Point[2];
 int FarCornersRight_Point[2];
+
+float err,last_err;
+float Finnal_err;
 
 void test(void)
 {
@@ -88,6 +96,9 @@ void test(void)
     ips200_show_int(20, 240, Far_Lpt0_Found, 1);
     ips200_show_int(20, 260, Far_Lpt1_Found, 1);
 
+
+    ips200_show_uint(0,120,Lpt0_id,3);
+    ips200_show_uint(0,140,Lpt1_id,3);
     // Line_Add(&img_raw, CornersLeft_Point, FarCornersLeft_Point, 0);
     // Line_Add(&img_raw, CornersRight_Point, FarCornersRight_Point, 0);
 
@@ -111,12 +122,20 @@ void test(void)
         track_type = TRACK_LEFT;
     }
 
-    if (1)
-    {
-        // Cross_Check();
-        Cross_Run();
-    }
+    
+    Cross_Check(ipts0,ipts0_num,ipts1,ipts1_num);
+    // Finnal_err=run_cross_begin();
+    // Finnal_err=run_cross_in();
+    // Finnal_err=run_cross_out();
+    
+    ips200_show_float(140, 120, Finnal_err, 3,3);
+    ips200_draw_line(0,0,CornersLeft_Point[0],CornersLeft_Point[1],RGB565_RED);
+    ips200_draw_line(160,0,CornersRight_Point[0],CornersRight_Point[1],RGB565_BLUE);
+    
+    ips200_show_uint(0,160,Far_Lpt0_id,3);
+    ips200_show_uint(0,180,Far_Lpt1_id,3);
 
+    // ips200_show_float(100, 120, Finnal_err, 3,3);
     // MidLine_Get(ipts0, ipts0_num, ipts1, ipts1_num, test, 2);
     // NearCorners_Find_Left(ipts0, ipts0_num, test, &test2);
     // NearCorners_Find_Right(ipts1, ipts1_num, test3, &test5);//近角点正常
@@ -227,8 +246,8 @@ void FarBorderline_Find(void)
     if (touch_boundary0)
     {
 
-        x0_first = CornersLeft_Point[0];
-        y0_first = CornersLeft_Point[1] - 20;
+        x0_first = 5;
+        y0_first = ipts0[ipts0_num-1][1]-5;
 
         Far_ipts0_num = sizeof(Far_ipts0) / sizeof(Far_ipts0[0]); // 求数组的长度
         // 扫底下五行，寻找跳变点
@@ -256,9 +275,9 @@ void FarBorderline_Find(void)
 
         // 标记种子起始点(后续元素处理要用到)
         // ips200_show_int(50, 200, 666, 2);
-        x1_first = CornersRight_Point[0];
-        y1_first = CornersRight_Point[1] - 20;
-        ;
+        x1_first = 155;
+        y1_first = ipts1[ipts1_num-0][1]-5;
+        
 
         Far_ipts1_num = sizeof(Far_ipts1) / sizeof(Far_ipts1[0]);
         for (; y1_first > 15; y1_first--)
@@ -646,7 +665,7 @@ void Image_Binarization(uint8 threshold, uint8 (*Image)[IMAGE_WIDTH])
  * @return int 返回value的绝对值
  */
 // int my_abs(int value)
-//{
+// {
 //     if (value >= 0)
 //         return value;
 //     else
@@ -939,6 +958,67 @@ void Image_Binarization(uint8 threshold, uint8 (*Image)[IMAGE_WIDTH])
 //        mid[i].column = (Left[i].column + Right[i].column) / 2;
 //    }
 //}
+
+/*三次扫线*/
+void Find_Borderline_Third(void)
+{
+    int x1, y1;
+    int x2, y2;
+    uint8 uthres = 1;
+	if(loseline0==1)
+	{
+		
+		
+		// 寻左边线
+		x1 = img_raw.width / 2 - begin_x, y1 = begin_y;
+		int TH;
+
+		x0_first = 10;
+		y0_first = 60;
+
+		Extra_ipts0_num = sizeof(Extra_ipts0) / sizeof(Extra_ipts0[0]); // 求数组的长度
+		// 扫底下五行，寻找跳变点
+		for (; y0_first >10; y0_first--)//从所选的行，向上扫5次，每次从中间向左线扫
+		{
+			if (AT_IMAGE(&img_raw, x0_first, y0_first) < uthres)//如果扫到黑点（灰度值为0），就从该点开始扫线
+			  {  
+				goto out1;//开始扫左线
+			  }
+		}
+		//如果扫不到的话，判定左边的底边丢线
+        Extra_ipts0_num=0;
+		out1://从起始点开始执行扫线
+		{
+			// if (AT_IMAGE(&img_raw, x0_first+1, y0_first) >= uthres)//如果这个点是白色（且左边是黑色的话）
+				Left_Adaptive_Threshold(&img_raw, block_size, clip_value, x0_first, y0_first, Extra_ipts0, &Extra_ipts0_num);//开始跑迷宫
+			// else
+			// 	ipts00_num = 0;//如果不是的话，就不用跑了，求得的number记为0
+		}
+    }
+    if(loseline1==1)
+    {
+        // 寻右边线
+        x2 = img_raw.width / 2 + begin_x, y2 = begin_y;
+
+        // 标记种子起始点(后续元素处理要用到)
+        x1_first = 149;
+        y1_first = 60;
+
+        Extra_ipts1_num = sizeof(Extra_ipts1) / sizeof(Extra_ipts1[0]);
+        for (; y1_first > 10; y1_first--)
+        {
+            if (AT_IMAGE(&img_raw, x1_first , y1_first) < uthres)
+            {
+                goto out2;
+            }
+        }
+        out2:
+        {
+            Right_Adaptive_Threshold(&img_raw, block_size, clip_value, x1_first, y1_first, Extra_ipts1, &Extra_ipts1_num);
+        }
+    }
+
+}
 
 /**
  * @brief 十字补线函数
@@ -2063,35 +2143,35 @@ void Right_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int 
  * @param num 数组长度
  * @return float 返回斜率
 // */
-// float LineRession(int pts_in[][2], int num)
-//{
-//     float slope;
-//     // int num = sizeof(pts_in) / sizeof(pts_in[0]); // 求数组的长度
-//     int i = 0, SumX = 0, SumY = 0, SumLines = 0;
-//     float SumUp = 0, SumDown = 0, avrX = 0, avrY = 0, A;
-//     SumLines = pts_in[0][1] - pts_in[num][1]; // pts_in[0][1] 为开始行， //pts_in[num][1] 结束行 //SumLines
+float LineRession(int pts_in[][2], int num)
+{
+    float slope;
+    // int num = sizeof(pts_in) / sizeof(pts_in[0]); // 求数组的长度
+    int i = 0, SumX = 0, SumY = 0, SumLines = 0;
+    float SumUp = 0, SumDown = 0, avrX = 0, avrY = 0, A;
+    SumLines = pts_in[0][1] - pts_in[num][1]; // pts_in[0][1] 为开始行， //pts_in[num][1] 结束行 //SumLines
 
-//    for (i = 0; i < num; i++)
-//    {
-//        SumY += pts_in[i][1];
-//        SumX += pts_in[i][0]; // 对边界X,Y求和
-//    }
-//    avrY = SumY / SumLines; // Y的平均值
-//    avrX = SumX / SumLines; // X的平均值
-//    SumUp = 0;
-//    SumDown = 0;
-//    for (i = 0; i < num; i++)
-//    {
-//        SumUp += (pts_in[i][0] - avrX) * (pts_in[i][1] - avrY);
-//        SumDown += (pts_in[i][1] - avrY) * (pts_in[i][1] - avrY);
-//    }
-//    if (SumDown == 0)
-//        slope = 0;
-//    else
-//        slope = (SumUp / SumDown);
-//    A = (SumX - slope * SumY) / SumLines; // 截距
-//    return slope;                         // 返回斜率
-//}
+   for (i = 0; i < num; i++)
+   {
+       SumY += pts_in[i][1];
+       SumX += pts_in[i][0]; // 对边界X,Y求和
+   }
+   avrY = SumY / SumLines; // Y的平均值
+   avrX = SumX / SumLines; // X的平均值
+   SumUp = 0;
+   SumDown = 0;
+   for (i = 0; i < num; i++)
+   {
+       SumUp += (pts_in[i][0] - avrX) * (pts_in[i][1] - avrY);
+       SumDown += (pts_in[i][1] - avrY) * (pts_in[i][1] - avrY);
+   }
+   if (SumDown == 0)
+       slope = 0;
+   else
+       slope = (SumUp / SumDown);
+   A = (SumX - slope * SumY) / SumLines; // 截距
+   return slope;                         // 返回斜率
+}
 
 /**
  * @brief 快速计算 平方根Sqrt(x),牛顿迭代法
@@ -2648,7 +2728,16 @@ uint8 Huandao_d;
 uint8 Huandao_e;
 
 
-
+/*左下线坐标变换，用于求拐点，原始坐标原点为左上角，变换后为左下角*/
+void Coordinate_transformation_left(int pt0_in[][2], int in_num, int pt0_out[][2])
+{
+    int i;
+    for (i = 0; i < in_num; i++)
+    {
+        pt0_out[i][1] = IMAGE_HEIGHT - pt0_in[i][1] - 1;//y坐标倒置，x坐标保持不变
+        pt0_out[i][0] = pt0_in[i][0];
+    }
+}
 
 
 

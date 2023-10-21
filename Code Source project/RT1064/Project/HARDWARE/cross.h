@@ -4,28 +4,25 @@
 #include "zf_common_headfile.h"
 #define PI               3.14159265358979f
 
-enum cross_type
+enum cross_type_e
 {
-    CROSS_BEGIN,
-    CROSS_IN,
-    CROSS_OUT,
+    CROSS_BEGIN,//state_b
+    CROSS_IN,//state_c
+    CROSS_OUT,//state_d
     CROSS_NONE,
     CROSS_FOUND,
+
 };
 
-enum turn_type
-{
-    TURN_LEFT,
-    TURN_LEFT_MID,
-    TURN_RIGHT,
-    TURN_RIGHT_MID,
-    STRAIGHT,
-};
+
 
 extern enum cross_type_e cross_type;
-
-void Cross_Chreck(void);
-void Cross_Run(void);
+void Cross_Check(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int in_put_num_r);//得考虑斜入十字的情况
+void Cross_Run(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int in_put_num_r);
+int my_abs(int value);
+float run_cross_begin(void);
+float run_cross_in(void);
+float run_cross_out(void);
 //void cross_drawline();
 
 

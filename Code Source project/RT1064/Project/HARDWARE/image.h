@@ -125,98 +125,9 @@ void Cross_Drawline_plus(int in_put_l[][2], int in_put_num_l, int in_put_lnew[][
 void test_new(void);
 
 void FarBorderline_Find(void); //
-float Cross_Drawline(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int in_put_r_num);
+void Cross_Drawline(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int in_put_r_num);
 void MidLine_Get(int pts0[][2], int pts0_num, int pts1[][2], int pts1_num, int pts_out[][2], int pts_out_num);
-// W矩阵参数（原图转化成逆透视后图像的参数）
-// 60*80
-// #define a11 (-4.3801f)
-// #define a12 (-0.0293f)
-// #define a13 (347.5647f)
-// #define a21 (0.0782f)
-// #define a22 (3.2241f)
-// #define a23 (-476.1463f)
-// #define a31 (0.0070f)
-// #define a32 (-0.1864f)
-// #define a33 (1.0f)
 
-// #define a11 (-0.238288f)
-// #define a12 (0.210738f)
-// #define a13 (-15.705617f)
-// #define a21 (0.005936f)
-// #define a22 (0.010945f)
-// #define a23 (-8.492773f)
-// #define a31 (0.000212f)
-// #define a32 (0.002450f)
-// #define a33 (-0.433058f)//效果较好
-
-// #define a11 (-0.304968f)
-// #define a12 (0.321069f)
-// #define a13 (-16.977831f)
-// #define a21 (0.000000f)
-// #define a22 (0.032146f)
-// #define a23 (-12.074271f)
-// #define a31 (0.0000f)
-// #define a32 (0.004067f)
-// #define a33 (-0.527594f)
-
-// #define a11 (0.494521f)
-// #define a12 (-0.235086f)
-// #define a13 (-3.302742f)
-// #define a21 (0.023865f)
-// #define a22 (0.004361f)
-// #define a23 (3.304021f)
-// #define a31 (0.000249f)
-// #define a32 (-0.002777f)
-// #define a33 (0.412018f)
-
-// #define a11 (-1.9446f)
-// #define a12 (-0.0768f)
-// #define a13 (152.9928f)
-// #define a21 (-0.0901f)
-// #define a22 (0.4470f)
-// #define a23 (-190.8998f)
-// #define a31 (-0.0030f)
-// #define a32 (-0.0846f)
-// #define a33 (1.0f)
-
-// #define a11 (-2.2450f)
-// #define a12 (-8.5371f)
-// #define a13 (252.9928f)
-// #define a21 (-0.0901f)
-// #define a22 (0.4470f)
-// #define a23 (-190.8998f)
-// #define a31 (-0.0030f)
-// #define a32 (-0.0846f)
-// #define a33 (1.0f)
-
-// #define a11 (-1.9850f)
-// #define a12 (-6.8451f)
-// #define a13 (232.9928f)
-// #define a21 (-0.0901f)
-// #define a22 (0.4470f)
-// #define a23 (-190.8998f)
-// #define a31 (-0.0030f)
-// #define a32 (-0.0636f)
-// #define a33 (1.0f)//best
-
-// #define a11 (2.4483f)
-// #define a12 (9.9016f)
-// #define a13 (-187.3382f)
-// #define a21 (-0.0240f)
-// #define a22 (-0.9154f)
-// #define a23 (308.7282f)
-// #define a31 (-0.0062f)
-// #define a32 (0.1221f)
-
-// #define a11 (-2.2450f)
-// #define a12 (-8.5371f)
-// #define a13 (252.9928f)
-// #define a21 (-0.0901f)
-// #define a22 (0.4470f)
-// #define a23 (-190.8998f)
-// #define a31 (-0.0030f)
-// #define a32 (-0.0846f)
-// #define a33 (1.0f)
 
 #define a11 (-5.5988f)
 #define a12 (-27.9734f)
@@ -228,15 +139,6 @@ void MidLine_Get(int pts0[][2], int pts0_num, int pts1[][2], int pts1_num, int p
 #define a32 (-0.3464f)
 #define a33 (1.0f)
 
-// #define a11 (-1.9850f)
-// #define a12 (-6.8451f)
-// #define a13 (232.9928f)
-// #define a21 (-0.0901f)
-// #define a22 (0.4470f)
-// #define a23 (-190.8998f)
-// #define a31 (-0.0030f)
-// #define a32 (-0.0636f)
-// #define a33 (1.0f)
 
 #define getx(u, v) (a11 * (u) + a12 * (v) + a13)
 #define gety(u, v) (a21 * (u) + a22 * (v) + a23)
@@ -389,7 +291,27 @@ extern float dn[1];
 
 extern int Far_ipts0[POINTS_MAX_LEN][2]; // 存放边线数据（左）
 extern int Far_ipts1[POINTS_MAX_LEN][2]; // 存放边线数据（右）
+
+
+
+extern int Extra_ipts0[POINTS_MAX_LEN][2]; // 存放边线数据（左）
+extern int Extra_ipts1[POINTS_MAX_LEN][2]; // 存放边线数据（右）
+extern int Extra_ipts0_num;                // 存放边线像素点个数(左)
+extern int Extra_ipts1_num;                // 存放边线像素点个数(右)
+
 // 若考虑近点远点,可近似构造Stanley算法,避免撞路肩
+
+extern int CornersLeft_Point[2];
+extern int CornersRight_Point[2];
+extern int FarCornersLeft_Point[2];
+extern int FarCornersRight_Point[2];
+
+extern int Far_ipts0_num;                // 存放边线像素点个数(左)
+extern int Far_ipts1_num;                // 存放边线像素点个数(右)
+
+extern float err;
+extern float last_err;
+extern float Finnal_err;
 
 extern float pure_angle;
 
@@ -400,9 +322,10 @@ void NearCorners_Find_Right(int pts_in[][2], int pts_num, int pts_out[2], int *f
 void Straight_Rec(int pts_in[][2], int pts_num, int pts_out[2]);
 void FarCorners_Find_Left(int pts_in[][2], int pts_num, int pts_out[2], int *flag);
 void FarCorners_Find_Right(int pts_in[][2], int pts_num, int pts_out[2], int *flag);
-
-
+void Get_guaidian(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int in_put_r_num);
+float LineRession(int pts_in[][2], int num);
 void BorderLine_Find(void);
+void Find_Borderline_Third(void);
 
 void Line_Add(image_t *img, int pts0_in[2], int pts1_in[2], int8 value);
 #endif
