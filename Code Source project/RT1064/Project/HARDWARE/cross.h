@@ -4,13 +4,11 @@
 #include "zf_common_headfile.h"
 #define PI               3.14159265358979f
 
-enum cross_type
+enum cross_type_e
 {
     CROSS_BEGIN,
-    CROSS_IN,
-    CROSS_OUT,
-    CROSS_NONE,
-    CROSS_FOUND,
+    CROSS_IN,CROSS_OUT,
+    CROSS_NONE,CROSS_FOUND,
 };
 
 enum turn_type

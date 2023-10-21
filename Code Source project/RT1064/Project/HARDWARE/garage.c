@@ -1,98 +1,79 @@
-/*
- * garage.c
- *
- *  Created on: 2023年1月12日
- *      Author: HQC
- */
+
 #include "garage.h"
 #include "image.h"
-// // 以下定义为车库寻远线设定
-// //int g_far_ipts0[LLL][2];           //种子巡线
-// //int g_far_ipts1[LLL][2];
-// //int g_far_ipts0_num, g_far_ipts1_num;
-// //
-// //float g_far_rpts0[LLL][2];         //逆透视
-// //float g_far_rpts1[LLL][2];
-// //int g_far_rpts0_num, g_far_rpts1_num;
-// //
-// //float g_far_rpts0b[LLL][2];        //逆透视滤波
-// //float g_far_rpts1b[LLL][2];
-// //int g_far_rpts0b_num, g_far_rpts1b_num;
-// //
-// //float g_far_rpts0s[LLL][2];        //逆透视等距采样
-// //float g_far_rpts1s[LLL][2];
-// //int g_far_rpts0s_num, g_far_rpts1s_num;
-// //
-// //
-// //
-// //
-// //float g_far_rpts0a[LLL];           //每点的角度，，没用到
-// //float g_far_rpts1a[LLL];
-// //int g_far_rpts0a_num, g_far_rpts1a_num;
-// //
-// //float g_far_rpts0an[LLL];          //角度极大值抑制，，，没用到
-// //float g_far_rpts1an[LLL];
-// //int g_far_rpts0an_num, g_far_rpts1an_num;
-
-// // 车库远处L角点
-// int g_far_Lpt0_rpts0s_id, g_far_Lpt1_rpts1s_id;
-// bool g_far_Lpt0_found, g_far_Lpt1_found;
-// // 车库远处内L角点
-// int g_far_N_Lpt0_rpts0s_id, g_far_N_Lpt1_rpts1s_id;
-// bool g_far_N_Lpt0_found, g_far_N_Lpt1_found;
-
-// int g_not_have_line = 0;
-
-// int zebra_cross_flag_begin = 0;
-// int zebra_cross_flag0[30];
-// int zebra_cross_flag0_num = 0;
-// int zebra_cross_flag1[30];
-// int zebra_cross_flag1_num = 0;
-
-// float (*garage_rpts)[2];
-// int garage_rpts_num;
 
 enum garage_type_e garage_type = GARAGE_NONE; // 初始化为向左出库 调试状态为NONE
 int Zibra_Thres = 0;
+int Garage_cnt = 0;
 // uint8 touch_boundary0; // 左边线走到图像左边界
 // uint8 touch_boundary1; // 右边线走到图像右边界
 void Garage_Check(void) // 找到上角点则加入上角点一起判断
 {
-    if (Zibra_Thres > ZIBRA_THRES)//找到斑马线
+    int16 temp;
+    if (Near_Lpt0_Found && Far_Lpt0_Found)
     {
-        if (Far_Lpt0_Found && Near_Lpt0_Found && 1) // 单边长直线且另外一边双角点
+        for (int i = FarCornersLeft_Point[1]; i < CornersLeft_Point[0]; i++) // 遍历行
         {
-            garage_type = GARAGE_FOUND_LEFT;//左车库
+            for (int j = 0; j < 20; j++) // 遍历20列
+            {
+                temp = Zibra_Thres + AT_IMAGE(&img_raw, i, j); // 累计区域内的黑点数
+            }
         }
-        else if (Far_Lpt1_Found && Near_Lpt1_Found && 1)//右车库
+        if (temp > ZIBRA_THRES)
         {
             garage_type = GARAGE_FOUND_RIGHT;
         }
     }
-    // if (1&& Zibra_Thres > ZIBRA_THRES)
-    // {
-    //     garage_type = GARAGE_LEFT_FOUND;
-    // }
-    // else if (1&& Zibra_Thres > ZIBRA_THRES)
-    // {
-    //     garage_type = GARAGE_RIGHT_FOUND;
-    // }
+    else if (Near_Lpt1_Found && Far_Lpt1_Found) // 单边双角点
+    {
+        for (int i = FarCornersRight_Point[1]; i < CornersRight_Point[0]; i++) // 遍历行
+        {
+            for (int j = 0; j < 20; j++) // 遍历20列,统计斑马线黑点数
+            {
+                temp = Zibra_Thres + AT_IMAGE(&img_raw, i, j); // 累计区域内的黑点数
+            }
+        }
+        if (temp > ZIBRA_THRES) // 斑马线黑点数大于阈值
+        {
+            garage_type = GARAGE_FOUND_RIGHT;
+        }
+    }
+    else
+    {
+        Zibra_Thres = 0;
+    }
+    Garage_cnt++; // 记录车库数目
+    //     if (Zibra_Thres > ZIBRA_THRES) // 找到斑马线
+    //     {
+    //         if (Far_Lpt0_Found && Near_Lpt0_Found && Is_straight1) // 单边长直线且另外一边双角点
+    //         {
+    //             garage_type = GARAGE_FOUND_LEFT; // 左车库
+    //         }
+    //         else if (Far_Lpt1_Found && Near_Lpt1_Found && Is_straight0) // 右车库
+    //         {
+    //             garage_type = GARAGE_FOUND_RIGHT; // 右车库
+    //         }
+    //         Garage_cnt++; // 记录车库数目
+    //     }
 }
 
 void Garage_Run(void)
 {
-    if(garage_type == GARAGE_FOUND_LEFT)
+    if (garage_type == GARAGE_FOUND_LEFT)
     {
-
+        if (CornersLeft_Point[1] > 50)
+        {
+        }
     }
-    else if(garage_type == GARAGE_FOUND_RIGHT)
+    else if (garage_type == GARAGE_FOUND_RIGHT)
     {
-        
+        if (CornersLeft_Point[1] > 50)
+        {
+        }
     }
 }
 // // 编码器，防止重复触发等情况
-// int64_t garage_encoder = -10000;        
-
+// int64_t garage_encoder = -10000;
 
 // // 出库转向方向
 // bool out_dir = 0;

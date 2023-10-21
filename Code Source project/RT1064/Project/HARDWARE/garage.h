@@ -11,7 +11,7 @@
 #define ZIBRA_THRES 200
 #define GARAGE_IN_SERVO_ANGLE 0 // 进库时舵机角度
 #define GARAGE_OUT_SERVO_ANGLE 0 // 出库时舵机角度
-
+#define GARAGE_DIS 1000
 enum garage_type_e
 {
     GARAGE_NONE = 0, // 非车库模式

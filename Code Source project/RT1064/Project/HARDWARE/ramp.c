@@ -1,29 +1,40 @@
 #include "ramp.h"
+#include "image.h"
+#include "encoder.h"
+int Ramp_num = 0;
 
-int ramp_num = 0;
-
-void Ramp_Check(void)
+enum ramp_type_e ramp_type = RAMP_NONE;
+void Ramp_Check(void) // 根据边沿外张的特性
 {
-    if ((cross_type == CROSS_NONE&&ramp_type == RAMP_NONE&&circle_type == CIRCLE_NONE))
+    if (ramp_type != RAMP_NONE && !touch_boundary0 && !touch_boundary1 && touch_boundary_up0 && touch_boundary_up1) // 非坡道模式
     {
-        ramp_type = RAMP_FOUND;//枚举状态为找到坡道
-        ramp_num++;//记录坡道数量
+        for (int i = 0; i < ipts0_num; i++)
+        {
+            if (ipts1[i][0] - ipts0[i][0] > ipts1[i + 3][0] - ipts0[i + 3][0] && ipts1[i][0] - ipts0[i][0] > ipts1[i - 3][0] - ipts0[i - 3][0] && ipts1[i][0] - ipts0[i + 6][0] > 0 && ipts1[i][0] - ipts0[i - 6][0] > 0 && ipts1[i][1] - ipts0[i + 9][1] > 0 && ipts1[i][1] - ipts0[i - 9][1] > 0 && ipts1[i][0] - ipts0[i][0] > 30)
+            {
+                Ramp_num++;
+                ramp_type = RAMP_FOUND; // 枚举状态为找到坡道
+                break;
+            }
+            else
+            {
+                ramp_type = RAMP_NONE;
+            }
+        }
     }
 }
-
 
 void Ramp_Run(void)
 {
-    if(1)//边线触碰上边界，进入坡道
+    if (ramp_type == RAMP_FOUND)
     {
-        ramp_type = RAMP_IN;//枚举状态为进入坡道
+        DisCnt_Flag = 1; // 开启编码器积分
     }
-    if(1)//
-    {
-        ramp_type = RAMP_OUT;//枚举状态为准备出坡道
-    }
-    {
 
+
+
+    if ((Encoder_L_Dis + Encoder_R_Dis)/2>1000)//编码器积分到达阈值,退出坡道模式
+    {
+        ramp_type = RAMP_END;
     }
 }
-
