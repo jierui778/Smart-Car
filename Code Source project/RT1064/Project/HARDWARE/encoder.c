@@ -3,7 +3,7 @@
 #include "zf_common_headfile.h"
 int32 Encoder_L_Data = 0, Encoder_R_Data = 0;
 int32 Encoder_L_Dis = 0, Encoder_R_Dis = 0;
-int8 DisCnt_Flag = 0;
+uint8 DisCnt_Flag = 0;
 
 /**
  * @brief 编码器引脚初始化
@@ -47,7 +47,7 @@ void Encoder_Update(int32 *Data_L, int32 *Data_R, int32 *Dis_L, int32 *Dis_R)
     }
 }
 
-void Encoder_Int_Clc(void)
+void Encoder_Int_Clear(void)
 {
     DisCnt_Flag = 0;
     Encoder_L_Dis = 0;

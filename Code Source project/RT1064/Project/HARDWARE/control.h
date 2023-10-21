@@ -16,13 +16,13 @@
 #define WHEEL_COUNT (2300)   // 轮子转一圈，对应编码器的计数值（得手动测）
 #define ENCODER_COUNT (1024) // 编码器转一圈，对应的编码器计数值（1024线编码器标定值）
 
-// typedef struct
-//{
-//     float TargetSpeed;//目标速度
-//     float Speed;//当前速度
-//     float Output;//输出
-//     int Max_Output;//最大输出
-// } sMotor_Info;
+typedef struct
+{
+    float TargetSpeed;//目标速度
+    float Speed;//当前速度
+    float Output;//输出
+    int Max_Output;//最大输出
+} sMotor_Info;
 
 // typedef struct
 //{

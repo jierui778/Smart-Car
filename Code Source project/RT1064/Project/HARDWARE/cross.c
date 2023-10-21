@@ -29,7 +29,7 @@ void Cross_Run(void)
 {
     if (cross_type == CROSS_FOUND)
     {
-        a = 1;
+
         if (ipts0_num < 40 || ipts1_num < 40) // 左右边线一边点数小于40且双远近角点存在,进入十字
         {
             cross_type = CROSS_IN; // 进入十字
@@ -43,7 +43,7 @@ void Cross_Run(void)
     if (cross_type == CROSS_IN)
     {
         Encoder_Int_Enable(); // 开启编码器积分
-        a = 2;
+
         if ((Far_ipts0[5][1] > 70 && Far_ipts1[5][1] > 70)) // 远边线最下面的一个y坐标大于70,跳出十字模式
         {
             cross_type = CROSS_OUT; // 出圆环
