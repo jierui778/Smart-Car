@@ -81,17 +81,18 @@ void Garage_Check(void) // 找到上角点则加入上角点一起判断
 
 void Garage_Run(void)
 {
-    if(garage_type = GARAGE_FOUND_LEFT)
+    if(garage_type == GARAGE_FOUND_LEFT)
     {
 
     }
-    else if(garage_type = GARAGE_FOUND_RIGHT)
+    else if(garage_type == GARAGE_FOUND_RIGHT)
     {
         
     }
 }
 // // 编码器，防止重复触发等情况
-// int64_t garage_encoder = -10000;
+// int64_t garage_encoder = -10000;        
+
 
 // // 出库转向方向
 // bool out_dir = 0;

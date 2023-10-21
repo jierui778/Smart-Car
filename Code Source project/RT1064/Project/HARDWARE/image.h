@@ -102,7 +102,7 @@ extern int16_t garage_cnt;
 extern image_t img_raw;
 void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x, int y, int pts[][2], int *num);
 void Right_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x, int y, int pts[][2], int *num);
-void Find_Borderline(void);
+void FarBorderLine_Find(void);
 // void draw_line(image_t *img, int pt0[2], int pt1[2], uint8_t value);                                          // 两点画线
 // void draw_line2(float pt0[2], float pt1[2], float pts_out[][2], int *num, float dist);                        // 逆透视等距采样
 // void SplicingArray(float pt0[][2], int num1, float pt1[][2], int num2, float pt_out[][2], int *num, uint8 x); // 数组拼接
@@ -124,6 +124,8 @@ void Cross_Drawline_plus(int in_put_l[][2], int in_put_num_l, int in_put_lnew[][
                          int in_put_r[][2], int in_put_r_num, int in_put_rnew[][2], int in_put_r_numnew);
 void Cross_Drawline(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int in_put_r_num);
 void test_new(void);
+
+void FarBorderline_Find(void); //
 
 void MidLine_Get(int pts0[][2], int pts0_num, int pts1[][2], int pts1_num, int pts_out[][2], int pts_out_num);
 // W矩阵参数（原图转化成逆透视后图像的参数）
@@ -277,7 +279,7 @@ void MidLine_Get(int pts0[][2], int pts0_num, int pts1[][2], int pts1_num, int p
 #define gety_b(u, v) (b21 * (u) + b22 * (v) + b23)
 #define getw_b(u, v) (b31 * (u) + b32 * (v) + b33)
 
-    void resample_points(float pts_in[][2], int num1, float pts_out[][2], int *num2, float dist);
+void resample_points(float pts_in[][2], int num1, float pts_out[][2], int *num2, float dist);
 
 void local_angle_points(float pts_in[][2], int num, float angle_out[], int dist);
 void nms_angle(float angle_in[], int num, float angle_out[], int kernel);
@@ -327,6 +329,9 @@ extern float xielv_left_y_to_end, xielv_right_y_to_end; // 在逆透视后得坐
 extern int ipts0[POINTS_MAX_LEN][2];
 extern int ipts1[POINTS_MAX_LEN][2];
 extern int ipts0_num, ipts1_num;
+
+extern int Lpt0_id, Lpt1_id;                // 近线L角点id
+extern int Far_Lpt0_id, Far_Lpt1_id; // 远线L角点id
 // // 变换后左右边线
 // extern float rpts0[POINTS_MAX_LEN][2];
 // extern float rpts1[POINTS_MAX_LEN][2];
@@ -391,6 +396,13 @@ void Arc_Rec(int pts_in[][2], int pts_num, int pts_out[2]);
 void NearCorners_Find_Left(int pts_in[][2], int pts_num, int pts_out[2], int *flag);
 void NearCorners_Find_Right(int pts_in[][2], int pts_num, int pts_out[2], int *flag);
 void Straight_Rec(int pts_in[][2], int pts_num, int pts_out[2]);
+void FarCorners_Find_Left(int pts_in[][2], int pts_num, int pts_out[2], int *flag);
+void FarCorners_Find_Right(int pts_in[][2], int pts_num, int pts_out[2], int *flag);
+
+
+void BorderLine_Find(void);
+
+void Line_Add(image_t *img, int pts0_in[2], int pts1_in[2], int8 value);
 #endif
 
 /*
