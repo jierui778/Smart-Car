@@ -1293,11 +1293,6 @@ void Image_CheckState(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], in
         Cross_State_d = 0;
         Straight_State = 0;
     }
-
-    if(touch_boundary0==1 &&ipts0_num>100&&ipts0[ipts0_num-1][1]<30)
-    {
-        Huandao_a=1;
-    }
 	// ips200_draw_line(in_put_l[in_put_num_l-1][0],in_put_l[in_put_num_l-1][1],in_put_r[in_put_num_r-1][0],in_put_r[in_put_num_r-1][1],RGB565_RED);
 	ips200_show_uint(3,200,Cross_State_b,2);
 	ips200_show_uint(3,220,Cross_State_c,2);
@@ -2201,6 +2196,65 @@ void Pespective(int pts_in[][2], int int_num, float pts_out[][2])
 // Created by RUPC on 2022/9/20.
 //
 
+/**
+ * @brief 寻找远左拐点
+ *
+ * @param pts_in 左远线数组
+ * @param pts_num 左边线数组长度
+ * @param pts_out 拐点坐标
+ * @param flag 标志位
+ */
+void FarCorners_Find_Left(int pts_in[][2], int pts_num)
+{
+    int Is_Corner = 0; // 角点判断标志位
+    for (int i = 10; i < pts_num - 10; i++)
+    {
+        if ((pts_in[i][0] - pts_in[i - 2][0] > 0 && pts_in[i][0] - pts_in[i - 4][0] > 0 && pts_in[i][0] - pts_in[i - 6][0] > 0 && pts_in[i][0] - pts_in[i - 8][0] > 0 && pts_in[i][0] - pts_in[i - 10][0] > 0 && pts_in[i][1] - pts_in[i + 2][1] > 0 && pts_in[i][1] - pts_in[i + 4][1] > 0 && pts_in[i][1] - pts_in[i + 6][1] > 0 && pts_in[i][1] - pts_in[i + 8][1] > 0 && pts_in[i][1] - pts_in[i + 10][1] > 0) || (pts_in[i][0] - pts_in[i - 2][0] > 0 && pts_in[i][0] - pts_in[i - 4][0] > 0 && pts_in[i][0] - pts_in[i - 6][0] > 0 && pts_in[i][0] - pts_in[i - 8][0] > 0 && pts_in[i][0] - pts_in[i - 10][0] > 0 && pts_in[i][1] - pts_in[i + 2][2] > 0 && pts_in[i][1] - pts_in[i + 4][1] > 0 && pts_in[i][1] - pts_in[i + 6][1] > 0 && pts_in[i][1] - pts_in[i + 8][1] > 0 && pts_in[i][1] - pts_in[i + 10][1] > 0)) // 感觉可以加条件进行二次强判断
+        {
+            if (pts_in[i][1] == pts_in[i - 1][1])
+            {
+                continue;
+            }
+            ipts0_up_index = i; // 记录拐点的下标
+            break;
+        }
+        else
+        {
+            ipts0_up_index = 0;
+        }
+    }
+}
+
+/**
+ * @brief 寻右远拐点
+ *
+ * @param pts_in 右远线数组
+ * @param pts_num 右远线数组长度
+ * @param pts_out 拐点坐标
+ * @param flag 标志位
+ */
+void FarCorners_Find_Right(int pts_in[][2], int pts_num)
+{
+    int Is_Corner = 0; // 角点判断标志位
+
+    for (int i = 10; i < pts_num - 10; i++)
+    {
+        if ((pts_in[i][0] - pts_in[i - 2][0] < 0 && pts_in[i][0] - pts_in[i - 4][0] < 0 && pts_in[i][0] - pts_in[i - 6][0] < 0 && pts_in[i][0] - pts_in[i - 8][0] < 0 && pts_in[i][0] - pts_in[i - 10][0] < 0 && pts_in[i][1] - pts_in[i + 2][1] > 0 && pts_in[i][1] - pts_in[i + 4][1] > 0 && pts_in[i][1] - pts_in[i + 6][1] > 0 && pts_in[i][1] - pts_in[i + 8][1] > 0 && pts_in[i][1] - pts_in[i + 10][1] > 0) || (pts_in[i][0] - pts_in[i - 2][0] < 0 && pts_in[i][0] - pts_in[i - 4][0] < 0 && pts_in[i][0] - pts_in[i - 6][0] < 0 && pts_in[i][0] - pts_in[i - 8][0] < 0 && pts_in[i][1] - pts_in[i - 10][1] < 0 && pts_in[i][1] - pts_in[i + 2][1] > 0 && pts_in[i][1] - pts_in[i + 4][1] > 0 && pts_in[i][1] - pts_in[i + 6][1] > 0 && pts_in[i][1] - pts_in[i + 8][1] > 0 && pts_in[i][1] - pts_in[i + 10][1] > 0)) // 感觉可以加条件进行二次强判断
+        {
+            if (pts_in[i][1] == pts_in[i - 1][1])
+            {
+                continue;
+            }
+            ipts1_up_index = i;
+            break;
+        }
+        else
+        {
+            ipts1_up_index = 0;
+        }
+    }
+}
+
 /*************************************************************************
  *  函数名称：void nms_angle();
  *  功能说明：角度变化率非极大抑制
@@ -2683,6 +2737,10 @@ void run_cross_d(void)
         二次扫线相对来说更加灵活，能根据ipts0最后一个点的坐标进行二次扫线的灵活变化     三次扫线只能在y属于0-60的范围内扫，相对比较固定
         二次扫线在十字环岛都能用        三次扫线只能在十字的最后一个状态才能用*/
     Get_Upguaidian(ipts000,ipts000_num,ipts111,ipts111_num);//找到上拐点
+    FarCorners_Find_Left(ipts000,ipts000_num);//找到左边线
+    FarCorners_Find_Right(ipts111,ipts111_num);//找到左边线
+    ips200_draw_line(0,0,ipts000[left_index_l][0],ipts000[left_index_l][1],RGB565_RED);//显示左边线
+    ips200_draw_line(0,0,ipts111[right_index_r][0],ipts111[right_index_r][1],RGB565_RED);//显示右边线
     uint8 i;
     Finnal_err=Draw_line_cross_d();
 }
