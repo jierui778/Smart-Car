@@ -387,6 +387,9 @@ extern int aim_idx[1];
 extern float dx[1];
 extern float dy[1];
 extern float dn[1];
+
+extern int Far_ipts0[POINTS_MAX_LEN][2]; // 存放边线数据（左）
+extern int Far_ipts1[POINTS_MAX_LEN][2]; // 存放边线数据（右）
 // 若考虑近点远点,可近似构造Stanley算法,避免撞路肩
 
 extern float pure_angle;

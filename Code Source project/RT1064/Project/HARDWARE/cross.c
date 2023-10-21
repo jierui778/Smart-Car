@@ -31,8 +31,29 @@ void Cross_Check(void)//得考虑斜入十字的情况
  */
 void Cross_Run(void)
 {
+    int a = 0;
     if(cross_type == CROSS_FOUND)
     {
+        a = 1;
+        if ((ipts0_num < 40 || ipts1_num < 40) && touch_boundary1 && touch_boundary0 && ((Near_Lpt0_Found && Far_Lpt0_Found) || (Near_Lpt1_Found && Far_Lpt1_Found)))
+        {
+            cross_type = CROSS_IN; // 进入圆环
 
+            }
     }
+    if(cross_type == CROSS_IN)
+    {
+        a = 2;
+        if ((Far_ipts0[1][1] > 60 && Far_ipts1[1][1] > 60))
+        {
+            cross_type = CROSS_OUT;//出圆环
+        }
+        touch_boundary1 = 0;
+        touch_boundary0 = 0;
+    }
+    if(cross_type == CROSS_OUT)
+    {
+        a = 3;
+    }
+    ips200_show_uint(200, 250, a, 3);
 }
