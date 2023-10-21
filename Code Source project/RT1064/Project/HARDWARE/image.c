@@ -1293,6 +1293,11 @@ void Image_CheckState(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], in
         Cross_State_d = 0;
         Straight_State = 0;
     }
+
+    if(touch_boundary0==1 &&ipts0_num>100&&ipts0[ipts0_num-1][1]<30)
+    {
+        Huandao_a=1;
+    }
 	// ips200_draw_line(in_put_l[in_put_num_l-1][0],in_put_l[in_put_num_l-1][1],in_put_r[in_put_num_r-1][0],in_put_r[in_put_num_r-1][1],RGB565_RED);
 	ips200_show_uint(3,200,Cross_State_b,2);
 	ips200_show_uint(3,220,Cross_State_c,2);
