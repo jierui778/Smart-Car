@@ -1,7 +1,5 @@
 #include "camera.h"
 
-
-
 /**
  * @brief 摄像头初始化
  *
@@ -14,4 +12,3 @@ uint8 Camera_Init(void)
     interrupt_global_enable(0);
     return init_finishflag;
 }
-

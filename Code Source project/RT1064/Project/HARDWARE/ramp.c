@@ -28,13 +28,12 @@ void Ramp_Run(void)
 {
     if (ramp_type == RAMP_FOUND)
     {
-        DisCnt_Flag = 1; // 开启编码器积分
+        Encoder_Int_Enable(); // 开启编码器积分
     }
 
-
-
-    if ((Encoder_L_Dis + Encoder_R_Dis)/2>1000)//编码器积分到达阈值,退出坡道模式
+    if ((Encoder_L_Dis + Encoder_R_Dis) / 2 > 1000) // 编码器积分到达阈值,退出坡道模式
     {
         ramp_type = RAMP_END;
     }
+    Encoder_Int_Clear();
 }

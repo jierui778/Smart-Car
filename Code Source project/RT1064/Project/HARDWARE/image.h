@@ -103,6 +103,9 @@ extern int CornersRight_Point[2];
 extern int FarCornersLeft_Point[2];
 extern int FarCornersRight_Point[2];
 
+extern int NearIs_Arc0, NearIs_Arc1; // 是否为弧线
+extern int FarIs_Arc0, FarIs_Arc1;   // 是否为弧线
+
 // 长直道
 extern int Is_straight0, Is_straight1;
 // 弯道

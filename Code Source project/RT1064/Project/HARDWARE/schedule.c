@@ -2,8 +2,6 @@
 #include "encoder.h"
 #include "image.h"
 
-
-
 #define TASK_LIST_END \
     {                 \
         NULL, 0, 0, 0 \
@@ -101,7 +99,7 @@ void Schedule_Run(void)
 void pit_handler(void)
 {
     Schedule_Tick();
-    gpio_toggle_level(B9);//test
+    gpio_toggle_level(B9); // test
 }
 // //void pit_handler(void)
 // //{

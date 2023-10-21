@@ -9,7 +9,6 @@ void Buzzer_On()
     gpio_set_level(BEEP, GPIO_HIGH);
 }
 
-
 void Buzzer_Off()
 {
     gpio_set_level(BEEP, GPIO_LOW);

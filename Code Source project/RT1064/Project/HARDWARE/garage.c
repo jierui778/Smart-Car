@@ -1,6 +1,7 @@
 
 #include "garage.h"
 #include "image.h"
+#include "encoder.h"
 
 enum garage_type_e garage_type = GARAGE_NONE; // 初始化为向左出库 调试状态为NONE
 int Zibra_Thres = 0;
@@ -71,6 +72,7 @@ void Garage_Run(void)
         {
         }
     }
+    Encoder_Int_Clear();
 }
 // // 编码器，防止重复触发等情况
 // int64_t garage_encoder = -10000;

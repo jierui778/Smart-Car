@@ -2,13 +2,15 @@
 #define IMGVALUE_CROSS_H_
 
 #include "zf_common_headfile.h"
-#define PI               3.14159265358979f
+#define PI 3.14159265358979f
 
 enum cross_type_e
 {
     CROSS_BEGIN,
-    CROSS_IN,CROSS_OUT,
-    CROSS_NONE,CROSS_FOUND,
+    CROSS_IN,
+    CROSS_OUT,
+    CROSS_NONE,
+    CROSS_FOUND,
 };
 
 enum turn_type
@@ -24,7 +26,6 @@ extern enum cross_type_e cross_type;
 
 void Cross_Chreck(void);
 void Cross_Run(void);
-//void cross_drawline();
-
+// void cross_drawline();
 
 #endif /*IMGVALUE_CROSS_H_*/

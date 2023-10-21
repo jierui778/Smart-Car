@@ -2,8 +2,9 @@
 #ifndef _FILTER_H
 #define _FILTER_H
 
-//卡尔曼滤波器参数结构体
-typedef struct {
+// 卡尔曼滤波器参数结构体
+typedef struct
+{
     float LastP; // 上次估算协方差 初始化值为0.02
     float Now_P; // 当前估算协方差 初始化值为0
     float out;   // 卡尔曼滤波器输出 初始化值为0
@@ -12,7 +13,7 @@ typedef struct {
     float R;     // 观测噪声协方差 初始化值为0.543
 } KalmanParam;
 
-extern KalmanParam EncoderParam;//全局声明编码器卡尔曼滤波参数
+extern KalmanParam EncoderParam; // 全局声明编码器卡尔曼滤波参数
 
 /**
  * @brief 一维卡尔曼滤波
@@ -37,8 +38,8 @@ extern KalmanParam EncoderParam;//全局声明编码器卡尔曼滤波参数
  * Pt　= (I-KtH)(Pt)',(Pt)'为先验（一维时H、I为1）
  * 总结：五个变量（协方差，上一次协方差，过程噪声，观测噪声，增益），五个公式
  */
-float KalmanFilter(float DataIn, KalmanParam *kfp);//卡尔曼滤波器
+float KalmanFilter(float DataIn, KalmanParam *kfp); // 卡尔曼滤波器
 
-float Iir_Filter(float DataIn);//IIR滤波器
+float Iir_Filter(float DataIn); // IIR滤波器
 
 #endif

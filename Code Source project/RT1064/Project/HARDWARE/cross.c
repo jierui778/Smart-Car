@@ -1,6 +1,7 @@
 #include "cross.h"
 #include "image.h"
 #include "circle.h"
+#include "encoder.h"
 enum cross_type_e cross_type = CROSS_NONE;
 int cross_num = 0;
 
@@ -26,7 +27,6 @@ void Cross_Check(void) // 得考虑斜入十字的情况
 
 void Cross_Run(void)
 {
-    int a = 0;
     if (cross_type == CROSS_FOUND)
     {
         a = 1;
@@ -42,8 +42,9 @@ void Cross_Run(void)
     }
     if (cross_type == CROSS_IN)
     {
+        Encoder_Int_Enable(); // 开启编码器积分
         a = 2;
-        if ((Far_ipts0[5][1] > 70 && Far_ipts1[5][1] > 70))
+        if ((Far_ipts0[5][1] > 70 && Far_ipts1[5][1] > 70)) // 远边线最下面的一个y坐标大于70,跳出十字模式
         {
             cross_type = CROSS_OUT; // 出圆环
             ips200_show_int(200, 200, 7, 1);
@@ -51,7 +52,8 @@ void Cross_Run(void)
         touch_boundary1 = 0;
         touch_boundary0 = 0;
         Far_Lpt1_Found = 0;
-        Far_Lpt0_Found = 0; // 清零标志位
+        Far_Lpt0_Found = 0;  // 清零标志位
+        Encoder_Int_Clear(); // 清零编码器积分
     }
     // ips200_show_uint(200, 250, a, 3);
     // ips200_show_uint(200, 270, Far_ipts0[5][1], 3);
