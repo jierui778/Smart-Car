@@ -22,11 +22,16 @@ void Cross_Check(void) // 得考虑斜入十字的情况
     }
 }
 
+uint8 Straight_State = 0;
 /**
- * @brief 十字运行函数
+ * @brief 检查图像状态，判断当前是否处于十字路口、直道、左弯道或右弯道
  *
+ * @param in_put_l 左边线的坐标数组
+ * @param in_put_num_l 左边线的坐标数量
+ * @param in_put_r 右边线的坐标数组
+ * @param in_put_r 右边线的坐标数量
  */
-void Cross_Run(void)
+void Image_CheckState(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int in_put_num_r)
 {
     int a = 0;
     if (cross_type == CROSS_FOUND)

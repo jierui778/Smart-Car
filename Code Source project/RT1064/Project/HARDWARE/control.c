@@ -14,7 +14,7 @@ float Speed_Vary = 0.3; // 单次速度的增值（用来加速减速）
  */
 void Control_Init()
 {
-    PID_Init();
+//     PID_Init();
     Motor_Init();
 }
 
