@@ -19,18 +19,18 @@ float sPidInfo[2][4] = { // IncrPID{Kp,Ki,Kd,MaxOutput}
  * @param MaxValue 最大值
  * @return float
  */
-float PIDInfo_Limit(float Value, float MaxValue)
-{
-    if (fabs(Value) > MaxValue)
-    {
-        if (Value >= 0)
-            Value = MaxValue;
-        else
-            Value = -MaxValue;
-    }
+// float PIDInfo_Limit(float Value, float MaxValue)
+// {
+//     if (fabs(Value) > MaxValue)
+//     {
+//         if (Value >= 0)
+//             Value = MaxValue;
+//         else
+//             Value = -MaxValue;
+//     }
 
-    return Value;
-}
+//     return Value;
+// }
 
 /**
  * @brief 初始化PID控制器参数
