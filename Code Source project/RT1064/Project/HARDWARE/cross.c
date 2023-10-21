@@ -5,8 +5,6 @@
 enum cross_type_e cross_type = CROSS_NONE;
 int cross_num = 0;
 
-
-
 /*十字检测思路：
 双边迷宫巡线到达左右边界
 是否需要再向上巡线，二次验证双远角点的存在

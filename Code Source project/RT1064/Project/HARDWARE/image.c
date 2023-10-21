@@ -145,17 +145,18 @@ void test(void)
     // test = Is_Straight(ipts0, ipts0_num, sample_dist);
     // Straight_Rec(ipts1, ipts1_num);
     //    Arc_Rec(ipts0, ipts0_num);
-    //    for (int i = 0; i < Far_ipts0_num; i++)
-    //    {
-    // ips200_draw_line(0, 0, Far_ipts0[Far_ipts0_num - 1][0] + 3, Far_ipts0[Far_ipts0_num - 1][1], RGB565_RED);
-    // //    }
-    // //    for (int i = 0; i < Far_ipts1_num; i++)
-    // //    {
-    // ips200_draw_line(200, 0, Far_ipts1[Far_ipts1_num - 1][0] + 3, Far_ipts1[Far_ipts0_num - 1][1], RGB565_RED);
-    // //    }
+    for (int i = 0; i < ipts0_num; i++)
+    {
+        ips200_draw_point(ipts0[i][0]+3, ipts0[i][1], RGB565_RED);
+    }
     for (int i = 0; i < ipts1_num; i++)
     {
-        ips200_draw_point(ipts1[i][0] - 3, ipts1[i][1], RGB565_RED);
+        ips200_draw_point(ipts1[i][0]-3, ipts1[i][1], RGB565_RED);
+    }
+
+    for (int i = 0; i < ipts1_num; i++)
+    {
+        ips200_draw_point(Far_ipts0[i][0] + 3, Far_ipts0[i][1], RGB565_RED);
     }
     // for (int i = 0; i < 50; i++)
     // {
@@ -183,7 +184,7 @@ void FarCorners_Find_Left(int pts_in[][2], int pts_num, int pts_out[2], int *fla
         pts_in[i][1] - pts_in[i + 2][1] > 0 && pts_in[i][1] - pts_in[i + 3][1] > 0 && pts_in[i][1] - pts_in[i + 4][1] > 0 && 
         pts_in[i][1] - pts_in[i + 5][1] > 0)) // 感觉可以加条件进行二次强判断
         {
-            if (pts_in[i][1] == pts_in[i -1][1])
+            if (pts_in[i][1] == pts_in[i - 1][1])
             {
                 continue;
             }
@@ -196,8 +197,8 @@ void FarCorners_Find_Left(int pts_in[][2], int pts_num, int pts_out[2], int *fla
         else
         {
             *flag = 0;
-            pts_out[0] = 0;
-            pts_out[1] = 0;
+            // pts_out[0] = 0;
+            // pts_out[1] = 0;
         }
     }
     ips200_draw_line(0, 0, pts_out[0], pts_out[1], RGB565_RED);
@@ -231,9 +232,10 @@ void FarCorners_Find_Right(int pts_in[][2], int pts_num, int pts_out[2], int *fl
         }
         else
         {
+
             *flag = 0;
-            pts_out[0] = 0;
-            pts_out[1] = 0;
+            // pts_out[0] = 0;
+            // pts_out[1] = 0;
         }
     }
     ips200_draw_line(0, 0, pts_out[0], pts_out[1], RGB565_RED);
@@ -245,9 +247,8 @@ void FarBorderline_Find(void)
     uint8 uthres = 1;
     if (touch_boundary0)
     {
-
-        x0_first = 5;
-        y0_first = ipts0[ipts0_num-1][1]-5;
+        x0_first = CornersLeft_Point[0];
+        y0_first = CornersLeft_Point[1] - 20;
 
         Far_ipts0_num = sizeof(Far_ipts0) / sizeof(Far_ipts0[0]); // 求数组的长度
         // 扫底下五行，寻找跳变点
@@ -1904,7 +1905,7 @@ void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x
         int frontleft_value = AT(img, x + dir_frontleft[dir][0], y + dir_frontleft[dir][1]); // 左前方像素点灰度值 （dir=0左下；dir=1 右下；dir=2 右上；dir=3 左上 ）
         //=======添加部分=======（限制条件）
         /*  当扫点的列坐标到左黑框边界且行坐标小于20    列坐标到右边的黑框边界  行坐标为1   行坐标为88的同时步数已经大于19*/
-        if ((x == 2 && y < img->height - 60) || x == img->width - 2 || y == 1 || (y == 20 && step > 19)) // 30修改后能扫线
+        if ((x == 2 && y < img->height - 50) || x == img->width - 2 || y == 2 || (y == 20 && step > 19)) // 30修改后能扫线
         {
             if (x == 2 /*|| x== img->width - 2*/) // 限制迷宫巡线的左边界
                 touch_boundary0 = 1;              // 左边界是因为到最左边才停下来的，触碰到最左边，可能是环岛，十字等，
@@ -1979,7 +1980,7 @@ void Right_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int 
         int front_value = AT(img, x + dir_front[dir][0], y + dir_front[dir][1]);
         int frontright_value = AT(img, x + dir_frontright[dir][0], y + dir_frontright[dir][1]);
         //=======添加部分=======
-        if ((x == img->width - 2 && y < img->height - 60) || x == 1 || y == 1 || (y == 20 && step > 19)) // 丢线标志，否则由于sobel特殊性会一直往上巡线，直到边线个数达到最大为止
+        if ((x == img->width - 2 && y < img->height - 50) || x == 1 || y == 1 || (y == 20 && step > 19)) // 丢线标志，否则由于sobel特殊性会一直往上巡线，直到边线个数达到最大为止
         {
             if (x == img->width - 2 /*|| x==1*/) // 限制迷宫巡线的右边界
             {
