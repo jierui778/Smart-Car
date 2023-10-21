@@ -56,11 +56,11 @@ int Far_Lpt0_id, Far_Lpt1_id; // 远线L角点id
 
 int Far_Lpt0_Found = 0, Far_Lpt1_Found = 0;   // 远线L角点标志位
 int Near_Lpt0_Found = 0, Near_Lpt1_Found = 0; // 近线角点标志位
+
 int CornersLeft_Point[2];
 int CornersRight_Point[2];
 int FarCornersLeft_Point[2];
 int FarCornersRight_Point[2];
-
 
 void test(void)
 {
@@ -77,17 +77,19 @@ void test(void)
     BorderLine_Find(); // 寻找近边线
     NearCorners_Find_Left(ipts0, ipts0_num, CornersLeft_Point, &Near_Lpt0_Found);
     NearCorners_Find_Right(ipts1, ipts1_num, CornersRight_Point, &Near_Lpt1_Found); // 近角点正常
-    FarBorderline_Find(); // 寻找远边线
+    FarBorderline_Find();                                                           // 寻找远边线
 
     FarCorners_Find_Right(Far_ipts1, Far_ipts1_num, FarCornersRight_Point, &Far_Lpt1_Found);
     FarCorners_Find_Left(Far_ipts0, Far_ipts0_num, FarCornersLeft_Point, &Far_Lpt0_Found);
     ips200_draw_line(200, 0, CornersLeft_Point[0], CornersLeft_Point[1], RGB565_RED);
+
     ips200_show_int(20, 200, Near_Lpt0_Found, 1);
     ips200_show_int(20, 220, Near_Lpt1_Found, 1);
     ips200_show_int(20, 240, Far_Lpt0_Found, 1);
     ips200_show_int(20, 260, Far_Lpt1_Found, 1);
-    Line_Add(&img_raw, CornersLeft_Point, FarCornersLeft_Point, 0);
-    Line_Add(&img_raw, CornersRight_Point, FarCornersRight_Point, 0);
+
+    // Line_Add(&img_raw, CornersLeft_Point, FarCornersLeft_Point, 0);
+    // Line_Add(&img_raw, CornersRight_Point, FarCornersRight_Point, 0);
 
     // ips200_show_int(100, 100, test, 3);
 
@@ -141,35 +143,61 @@ void test(void)
     //     ips200_draw_point(test[i][0], test[i][1], RGB565_RED);
     // }
 }
-
+/**
+ * @brief 寻找远左拐点
+ *
+ * @param pts_in 左远线数组
+ * @param pts_num 左边线数组长度
+ * @param pts_out 拐点坐标
+ * @param flag 标志位
+ */
 void FarCorners_Find_Left(int pts_in[][2], int pts_num, int pts_out[2], int *flag)
 {
     int Is_Corner = 0; // 角点判断标志位
-    for (int i = 5; i < pts_num - 5; i++)
+    for (int i = 10; i < pts_num - 10; i++)
     {
-        if ((pts_in[i][0] - pts_in[i - 1][0] > 0 && pts_in[i][0] - pts_in[i - 2][0] > 0 && pts_in[i][0] - pts_in[i - 3][0] > 0 && pts_in[i][0] - pts_in[i - 4][0] > 0 && pts_in[i][0] - pts_in[i - 5][0] > 0 && pts_in[i][1] - pts_in[i + 1][1] > 0 && pts_in[i][1] - pts_in[i + 2][1] > 0 && pts_in[i][1] - pts_in[i + 3][1] > 0 && pts_in[i][1] - pts_in[i + 4][1] > 0 && pts_in[i][1] - pts_in[i + 5][1] > 0) || (pts_in[i][0] - pts_in[i - 1][0] > 0 && pts_in[i][0] - pts_in[i - 2][0] > 0 && pts_in[i][0] - pts_in[i - 3][0] > 0 && pts_in[i][0] - pts_in[i - 4][0] > 0 && pts_in[i][1] - pts_in[i + 1][1] > 0 && pts_in[i][1] - pts_in[i + 2][1] > 0 && pts_in[i][1] - pts_in[i + 3][1] > 0 && pts_in[i][1] - pts_in[i + 4][1] > 0 && pts_in[i][1] - pts_in[i + 5][1] > 0)) // 感觉可以加条件进行二次强判断
+        if ((pts_in[i][0] - pts_in[i - 2][0] > 0 && pts_in[i][0] - pts_in[i - 4][0] > 0 && pts_in[i][0] - pts_in[i - 6][0] > 0 && pts_in[i][0] - pts_in[i - 8][0] > 0 && pts_in[i][0] - pts_in[i - 10][0] > 0 && pts_in[i][1] - pts_in[i + 2][1] > 0 && pts_in[i][1] - pts_in[i + 4][1] > 0 && pts_in[i][1] - pts_in[i + 6][1] > 0 && pts_in[i][1] - pts_in[i + 8][1] > 0 && pts_in[i][1] - pts_in[i + 10][1] > 0) || (pts_in[i][0] - pts_in[i - 2][0] > 0 && pts_in[i][0] - pts_in[i - 4][0] > 0 && pts_in[i][0] - pts_in[i - 6][0] > 0 && pts_in[i][0] - pts_in[i - 8][0] > 0 && pts_in[i][0] - pts_in[i - 10][0] > 0 && pts_in[i][1] - pts_in[i + 2][2] > 0 && pts_in[i][1] - pts_in[i + 4][1] > 0 && pts_in[i][1] - pts_in[i + 6][1] > 0 && pts_in[i][1] - pts_in[i + 8][1] > 0 && pts_in[i][1] - pts_in[i + 10][1] > 0)) // 感觉可以加条件进行二次强判断
         {
+            if (pts_in[i][1] == pts_in[i -1][1])
+            {
+                continue;
+            }
             pts_out[0] = pts_in[i][0];
             pts_out[1] = pts_in[i][1];
-            Far_Lpt0_id = i;
-            *flag = 1;
+            Far_Lpt0_id = i; // 记录拐点的下标
+            *flag = 1;       // 标志位为1
             break;
         }
         else
         {
             *flag = 0;
+            pts_out[0] = 0;
+            pts_out[1] = 0;
         }
     }
     ips200_draw_line(0, 0, pts_out[0], pts_out[1], RGB565_RED);
 }
 
+/**
+ * @brief 寻右远拐点
+ *
+ * @param pts_in 右远线数组
+ * @param pts_num 右远线数组长度
+ * @param pts_out 拐点坐标
+ * @param flag 标志位
+ */
 void FarCorners_Find_Right(int pts_in[][2], int pts_num, int pts_out[2], int *flag)
 {
     int Is_Corner = 0; // 角点判断标志位
+
     for (int i = 10; i < pts_num - 10; i++)
     {
-        if ((pts_in[i][0] - pts_in[i - 2][0] < 0 && pts_in[i][0] - pts_in[i - 4][0] < 0 && pts_in[i][0] - pts_in[i - 6][0] < 0 && pts_in[i][0] - pts_in[i - 8][0] < 0 && pts_in[i][0] - pts_in[i - 10][0] < 0 && pts_in[i][1] - pts_in[i + 2][1] > 0 && pts_in[i][1] - pts_in[i + 4][1] > 0 && pts_in[i][1] - pts_in[i + 6][1] > 0 && pts_in[i][1] - pts_in[i + 8][1] > 0 && pts_in[i][1] - pts_in[i + 10][1] > 0) || (pts_in[i][0] - pts_in[i - 2][0] < 0 && pts_in[i][0] - pts_in[i - 4][0] < 0 && pts_in[i][0] - pts_in[i - 6][0] < 0 && pts_in[i][0] - pts_in[i - 8][0] < 0 && pts_in[i][1] - pts_in[i - 10][1] < 0 && pts_in[i][1] - pts_in[i + 2][1] > 0&&pts_in [i][1] - pts_in[i + 4][1] > 0 && pts_in[i][1] - pts_in[i + 6][1] > 0 && pts_in[i][1] - pts_in[i + 8][1] > 0 && pts_in[i][1] - pts_in[i + 10][1] > 0)) // 感觉可以加条件进行二次强判断
+        if ((pts_in[i][0] - pts_in[i - 2][0] < 0 && pts_in[i][0] - pts_in[i - 4][0] < 0 && pts_in[i][0] - pts_in[i - 6][0] < 0 && pts_in[i][0] - pts_in[i - 8][0] < 0 && pts_in[i][0] - pts_in[i - 10][0] < 0 && pts_in[i][1] - pts_in[i + 2][1] > 0 && pts_in[i][1] - pts_in[i + 4][1] > 0 && pts_in[i][1] - pts_in[i + 6][1] > 0 && pts_in[i][1] - pts_in[i + 8][1] > 0 && pts_in[i][1] - pts_in[i + 10][1] > 0) || (pts_in[i][0] - pts_in[i - 2][0] < 0 && pts_in[i][0] - pts_in[i - 4][0] < 0 && pts_in[i][0] - pts_in[i - 6][0] < 0 && pts_in[i][0] - pts_in[i - 8][0] < 0 && pts_in[i][1] - pts_in[i - 10][1] < 0 && pts_in[i][1] - pts_in[i + 2][1] > 0 && pts_in[i][1] - pts_in[i + 4][1] > 0 && pts_in[i][1] - pts_in[i + 6][1] > 0 && pts_in[i][1] - pts_in[i + 8][1] > 0 && pts_in[i][1] - pts_in[i + 10][1] > 0)) // 感觉可以加条件进行二次强判断
         {
+            if (pts_in[i][1] == pts_in[i - 1][1])
+            {
+                continue;
+            }
             pts_out[0] = pts_in[i][0];
             pts_out[1] = pts_in[i][1];
             Far_Lpt1_id = i;
@@ -179,6 +207,8 @@ void FarCorners_Find_Right(int pts_in[][2], int pts_num, int pts_out[2], int *fl
         else
         {
             *flag = 0;
+            pts_out[0] = 0;
+            pts_out[1] = 0;
         }
     }
     ips200_draw_line(0, 0, pts_out[0], pts_out[1], RGB565_RED);
@@ -1744,7 +1774,7 @@ void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x
         int frontleft_value = AT(img, x + dir_frontleft[dir][0], y + dir_frontleft[dir][1]); // 左前方像素点灰度值 （dir=0左下；dir=1 右下；dir=2 右上；dir=3 左上 ）
         //=======添加部分=======（限制条件）
         /*  当扫点的列坐标到左黑框边界且行坐标小于20    列坐标到右边的黑框边界  行坐标为1   行坐标为88的同时步数已经大于19*/
-        if ((x == 2 && y < img->height - 60) || x == img->width - 2 || y == 1 || (y == 10 && step > 19)) // 30修改后能扫线
+        if ((x == 2 && y < img->height - 60) || x == img->width - 2 || y == 1 || (y == 20 && step > 19)) // 30修改后能扫线
         {
             if (x == 2 /*|| x== img->width - 2*/) // 限制迷宫巡线的左边界
                 touch_boundary0 = 1;              // 左边界是因为到最左边才停下来的，触碰到最左边，可能是环岛，十字等，
@@ -1819,7 +1849,7 @@ void Right_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int 
         int front_value = AT(img, x + dir_front[dir][0], y + dir_front[dir][1]);
         int frontright_value = AT(img, x + dir_frontright[dir][0], y + dir_frontright[dir][1]);
         //=======添加部分=======
-        if ((x == img->width - 2 && y < img->height - 60) || x == 1 || y == 1 || (y == 5 && step > 19)) // 丢线标志，否则由于sobel特殊性会一直往上巡线，直到边线个数达到最大为止
+        if ((x == img->width - 2 && y < img->height - 60) || x == 1 || y == 1 || (y == 20 && step > 19)) // 丢线标志，否则由于sobel特殊性会一直往上巡线，直到边线个数达到最大为止
         {
             if (x == img->width - 2 /*|| x==1*/) // 限制迷宫巡线的右边界
             {
@@ -2606,7 +2636,7 @@ void Line_Add(image_t *img, int pts0_in[2], int pts1_in[2], int8 value)
     {
         for (int x = pts0_in[0]; x != pts1_in[0]; x += (dx > 0 ? 1 : -1))
         {
-            int y = pts0_in[1] + (x - pts0_in[0]) * dy / dx;                                  // y = 左线横坐标 + x遍历差值占总差值比例 * y方向差值
+            int y = pts0_in[1] + (x - pts0_in[0]) * dy / dx;                          // y = 左线横坐标 + x遍历差值占总差值比例 * y方向差值
             AT(img, clip(x, 0, img->width - 1), clip(y, 0, img->height - 1)) = value; // （x，y）坐标像素（不超出边界）赋值
         }
     }

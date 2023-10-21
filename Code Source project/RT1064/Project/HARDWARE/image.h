@@ -287,7 +287,7 @@ void find_corners(void);
 void cross_farline(void); // 寻远线
 void check_cross(void);
 void run_cross(void);
-#define POINTS_MAX_LEN (150) // 边线点最多的情况——>num
+#define POINTS_MAX_LEN (80) // 边线点最多的情况——>num
 
 //// 逆透视补线数组
 // extern float left_line[POINTS_MAX_LEN][2];
