@@ -72,7 +72,9 @@ void PID_Init(void)
 //    PosiPID->Integral_Err += PosiPID->Err;                    // 积分误差
 //    PosiPID->Integral_Err = PIDInfo_Limit(PosiPID->Integral_Err, PosiPID->MaxIntegral_Err);//积分限幅，否者积分会超出变量最大取值范围
 //    // 计算输出
-//    PosiPID->Output += PosiPID->Kp * PosiPID->Err + PosiPID->Ki * PosiPID->Integral_Err + PosiPID->Kd * (PosiPID->Err - PosiPID->LastErr);
+//    PosiPID->Output = PosiPID->Kp * PosiPID->Err + PosiPID->Ki * PosiPID->Integral_Err + PosiPID->Kd * (PosiPID->Err - PosiPID->LastErr);
 //    // 限制PID输出
 //    PosiPID->Output = PIDInfo_Limit(PosiPID->Output, PosiPID->MaxOutput);
 //}
+
+
