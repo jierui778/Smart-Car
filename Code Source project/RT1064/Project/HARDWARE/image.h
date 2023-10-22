@@ -369,7 +369,8 @@ extern float pure_angle;
 #define L_CROSS 80 // 十字模式中存储左边线坐标的个数为80
 void Arc_Check(int pts_in[][2], int pts_num /*,int8 *flag*/);
 uint8_t RoundaboutGetArc(uint8_t imageSide[120][2], uint8_t status, uint8_t num, uint8_t *index);
-
+void FarCorners_Find_Left(int pts_in[][2], int pts_num);
+void FarCorners_Find_Right(int pts_in[][2], int pts_num);
 void LongLine_Check(int pts_in[][2], int pts_num);
 #endif
 

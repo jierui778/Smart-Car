@@ -25,7 +25,7 @@ const int dir_frontright[4][2] = {{1, -1},
 uint8 Image_Use_Robert[120][160]; // sobel二值化图像
 
 float Finnal_err;
-
+int ipts0_up_index, ipts1_up_index; // 定义左上和右上拐点的下标
 int mid_row_first; // 中线行的起点
 // flash参数统一定义
 float begin_x = 5;   // 起始点距离图像中心的左右偏移量	8
@@ -1121,6 +1121,65 @@ void draw_line2(float pt0[2], float pt1[2], float pts_out[][2], int *num, float 
     *num = len;
 }
 
+/**
+ * @brief 寻找远左拐点
+ *
+ * @param pts_in 左远线数组
+ * @param pts_num 左边线数组长度
+ * @param pts_out 拐点坐标
+ * @param flag 标志位
+ */
+void FarCorners_Find_Left(int pts_in[][2], int pts_num)
+{
+    int Is_Corner = 0; // 角点判断标志位
+    for (int i = 10; i < pts_num - 10; i++)
+    {
+        if ((pts_in[i][0] - pts_in[i - 2][0] > 0 && pts_in[i][0] - pts_in[i - 4][0] > 0 && pts_in[i][0] - pts_in[i - 6][0] > 0 && pts_in[i][0] - pts_in[i - 8][0] > 0 && pts_in[i][0] - pts_in[i - 10][0] > 0 && pts_in[i][1] - pts_in[i + 2][1] > 0 && pts_in[i][1] - pts_in[i + 4][1] > 0 && pts_in[i][1] - pts_in[i + 6][1] > 0 && pts_in[i][1] - pts_in[i + 8][1] > 0 && pts_in[i][1] - pts_in[i + 10][1] > 0) || (pts_in[i][0] - pts_in[i - 2][0] > 0 && pts_in[i][0] - pts_in[i - 4][0] > 0 && pts_in[i][0] - pts_in[i - 6][0] > 0 && pts_in[i][0] - pts_in[i - 8][0] > 0 && pts_in[i][0] - pts_in[i - 10][0] > 0 && pts_in[i][1] - pts_in[i + 2][2] > 0 && pts_in[i][1] - pts_in[i + 4][1] > 0 && pts_in[i][1] - pts_in[i + 6][1] > 0 && pts_in[i][1] - pts_in[i + 8][1] > 0 && pts_in[i][1] - pts_in[i + 10][1] > 0)) // 感觉可以加条件进行二次强判断
+        {
+            if (pts_in[i][1] == pts_in[i - 1][1])
+            {
+                continue;
+            }
+            ipts0_up_index = i; // 记录拐点的下标
+            break;
+        }
+        else
+        {
+            ipts0_up_index = 0;
+        }
+    }
+}
+
+/**
+ * @brief 寻右远拐点
+ *
+ * @param pts_in 右远线数组
+ * @param pts_num 右远线数组长度
+ * @param pts_out 拐点坐标
+ * @param flag 标志位
+ */
+void FarCorners_Find_Right(int pts_in[][2], int pts_num)
+{
+    int Is_Corner = 0; // 角点判断标志位
+
+    for (int i = 10; i < pts_num - 10; i++)
+    {
+        if ((pts_in[i][0] - pts_in[i - 2][0] < 0 && pts_in[i][0] - pts_in[i - 4][0] < 0 && pts_in[i][0] - pts_in[i - 6][0] < 0 && pts_in[i][0] - pts_in[i - 8][0] < 0 && pts_in[i][0] - pts_in[i - 10][0] < 0 && pts_in[i][1] - pts_in[i + 2][1] > 0 && pts_in[i][1] - pts_in[i + 4][1] > 0 && pts_in[i][1] - pts_in[i + 6][1] > 0 && pts_in[i][1] - pts_in[i + 8][1] > 0 && pts_in[i][1] - pts_in[i + 10][1] > 0) || (pts_in[i][0] - pts_in[i - 2][0] < 0 && pts_in[i][0] - pts_in[i - 4][0] < 0 && pts_in[i][0] - pts_in[i - 6][0] < 0 && pts_in[i][0] - pts_in[i - 8][0] < 0 && pts_in[i][1] - pts_in[i - 10][1] < 0 && pts_in[i][1] - pts_in[i + 2][1] > 0 && pts_in[i][1] - pts_in[i + 4][1] > 0 && pts_in[i][1] - pts_in[i + 6][1] > 0 && pts_in[i][1] - pts_in[i + 8][1] > 0 && pts_in[i][1] - pts_in[i + 10][1] > 0)) // 感觉可以加条件进行二次强判断
+        {
+            if (pts_in[i][1] == pts_in[i - 1][1])
+            {
+                continue;
+            }
+            ipts1_up_index = i;
+            break;
+        }
+        else
+        {
+            ipts1_up_index = 0;
+        }
+    }
+}
+
 /*************************************************************************
  *  函数名称：void SplicingArray();
  *  功能说明：数组拼接
@@ -1385,35 +1444,12 @@ float Cross_Drawline(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int
     /*一 坐标转换*/
     Coordinate_transformation_left(in_put_l, in_put_num_l, Left_Change); // 左右下线坐标变换
     Coordinate_transformation_right(in_put_r, in_put_r_num, Right_Change);
-    Coordinate_transformation_rightup(ipts11, ipts11_num, right_up);
 
-    for (i = 0; i < ipts00_num; i++)
-    {
-        if ((ipts00[i][1] > ipts00[i + 1][1]) && (ipts00[i][0] < ipts00[i + 1][0])) // 拐点的坐标之和最大
-        {
-            left_up_highest_index = i;
-            break;
-            // 遍历完，不用break
-        }
-    }
-    ips200_draw_line(80, 60, ipts00[left_up_highest_index][0], ipts00[left_up_highest_index][1], RGB565_BLUE);
-    for (i = 0; i < ipts11_num; i++)
-    {
-        if ((right_up[i][1] > right_up[i + 1][1]) && (right_up[i][0] < right_up[i + 1][0])) // 拐点的坐标之和最大
-        {
-            right_up_highest_index = i;
-            if (right_up_highest_index >= 5)
-            {
-                break;
-            }
+    FarCorners_Find_Right(ipts11,ipts11_num);
+    FarCorners_Find_Left(ipts00,ipts00_num);
+    ips200_draw_line(80,60, ipts00[ipts0_up_index][0], ipts00[ipts0_up_index][1], RGB565_BLACK);
+    ips200_draw_line(80,60, ipts11[ipts1_up_index][0], ipts11[ipts1_up_index][1], RGB565_RED);
 
-            // 遍历完，不用break
-        }
-
-        ips200_draw_point(right_up[i][0], right_up[i][1] + 160, RGB565_RED);
-    }
-
-    ips200_draw_line(160, 120, ipts11[right_up_highest_index][0], ipts11[right_up_highest_index][1], RGB565_RED);
     /*二 找下拐点*/
     for (i = 0; i < in_put_num_l; i++)
     {
@@ -1435,15 +1471,22 @@ float Cross_Drawline(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int
         }
     }
 
-    ips200_draw_line(0, 0, in_put_l[left_index][0], in_put_l[left_index][1], RGB565_RED);
-    ips200_draw_line(0, 0, in_put_r[right_index][0], in_put_r[right_index][1], RGB565_BLUE);
+    // FarCorners_Find_Left(ipts00,ipts00_num);//找到左边线
+    // FarCorners_Find_Right(ipts11,ipts11_num);//找到左边线
+
+    // ips200_draw_line(0, 0, in_put_l[left_index][0], in_put_l[left_index][1], RGB565_RED);
+    // ips200_draw_line(0, 0, in_put_r[right_index][0], in_put_r[right_index][1], RGB565_BLUE);
+
+    // ips200_draw_line(0, 0, ipts00[ipts0_up_index][0], ipts00[ipts0_up_index][1], RGB565_RED);
+    // ips200_draw_line(0, 0, ipts11[ipts1_up_index][0], ipts11[ipts1_up_index][1], RGB565_BLUE);
+
     /*三 求直线方程*/
-    k_left = (float)(in_put_l[left_index][1] - ipts00[left_up_highest_index][1]) / (in_put_l[left_index][0] - ipts00[left_up_highest_index][0]);
+    k_left = (float)(in_put_l[left_index][1] - ipts00[ipts0_up_index][1]) / (in_put_l[left_index][0] - ipts00[ipts0_up_index][0]);
 
     b_left = in_put_l[left_index][1] - k_left * in_put_l[left_index][0];
 
     // 求得的直线方程是row=column*k+b，实际上应该是column=row*k+b
-    k_right = (float)(in_put_r[right_index][1] - ipts11[right_up_highest_index][1]) / (in_put_r[right_index][0] - ipts11[right_up_highest_index][0]);
+    k_right = (float)(in_put_r[right_index][1] - ipts11[ipts1_up_index][1]) / (in_put_r[right_index][0] - ipts11[ipts1_up_index][0]);
 
     b_right = in_put_r[right_index][1] - k_right * in_put_r[right_index][0];
 
@@ -1454,8 +1497,8 @@ float Cross_Drawline(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int
     b_right = -b_right * k_right; // 新截距取相反数
 
     /*增加：斜率滤波*/
-    ips200_show_float(0, 0, k_left, 3, 3);
-    ips200_show_float(0, 0, k_right, 3, 3);
+    ips200_show_float(120, 140, k_left, 3, 3);
+    ips200_show_float(120, 160, k_right, 3, 3);
     // 新直线方程为 column=k*row+b
     /*四 补线*/
     for (i = in_put_l[left_index][1]; i > 10; i--)
@@ -1464,7 +1507,6 @@ float Cross_Drawline(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int
         if (new_column_l > 0)
         {
             Image_Use_Robert[i][new_column_l] = BLACK;
-            ips200_draw_point(i, new_column_l, RGB565_RED);
         }
     }
     for (i = in_put_r[right_index][1]; i > 10; i--)
@@ -1473,7 +1515,6 @@ float Cross_Drawline(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int
         if (new_column_r > 0)
         {
             Image_Use_Robert[i][new_column_r] = BLACK;
-            ips200_draw_point(i, new_column_r, RGB565_GREEN);
         }
     }
 
@@ -1520,7 +1561,7 @@ void Get_guaidian(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int in
     }
 }
 
-int ipts0_up_index, ipts1_up_index; // 定义左上和右上拐点的下标
+
 void Get_Upguaidian(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int in_put_r_num)
 {
     uint16 i;
@@ -2196,64 +2237,7 @@ void Pespective(int pts_in[][2], int int_num, float pts_out[][2])
 // Created by RUPC on 2022/9/20.
 //
 
-/**
- * @brief 寻找远左拐点
- *
- * @param pts_in 左远线数组
- * @param pts_num 左边线数组长度
- * @param pts_out 拐点坐标
- * @param flag 标志位
- */
-void FarCorners_Find_Left(int pts_in[][2], int pts_num)
-{
-    int Is_Corner = 0; // 角点判断标志位
-    for (int i = 10; i < pts_num - 10; i++)
-    {
-        if ((pts_in[i][0] - pts_in[i - 2][0] > 0 && pts_in[i][0] - pts_in[i - 4][0] > 0 && pts_in[i][0] - pts_in[i - 6][0] > 0 && pts_in[i][0] - pts_in[i - 8][0] > 0 && pts_in[i][0] - pts_in[i - 10][0] > 0 && pts_in[i][1] - pts_in[i + 2][1] > 0 && pts_in[i][1] - pts_in[i + 4][1] > 0 && pts_in[i][1] - pts_in[i + 6][1] > 0 && pts_in[i][1] - pts_in[i + 8][1] > 0 && pts_in[i][1] - pts_in[i + 10][1] > 0) || (pts_in[i][0] - pts_in[i - 2][0] > 0 && pts_in[i][0] - pts_in[i - 4][0] > 0 && pts_in[i][0] - pts_in[i - 6][0] > 0 && pts_in[i][0] - pts_in[i - 8][0] > 0 && pts_in[i][0] - pts_in[i - 10][0] > 0 && pts_in[i][1] - pts_in[i + 2][2] > 0 && pts_in[i][1] - pts_in[i + 4][1] > 0 && pts_in[i][1] - pts_in[i + 6][1] > 0 && pts_in[i][1] - pts_in[i + 8][1] > 0 && pts_in[i][1] - pts_in[i + 10][1] > 0)) // 感觉可以加条件进行二次强判断
-        {
-            if (pts_in[i][1] == pts_in[i - 1][1])
-            {
-                continue;
-            }
-            ipts0_up_index = i; // 记录拐点的下标
-            break;
-        }
-        else
-        {
-            ipts0_up_index = 0;
-        }
-    }
-}
 
-/**
- * @brief 寻右远拐点
- *
- * @param pts_in 右远线数组
- * @param pts_num 右远线数组长度
- * @param pts_out 拐点坐标
- * @param flag 标志位
- */
-void FarCorners_Find_Right(int pts_in[][2], int pts_num)
-{
-    int Is_Corner = 0; // 角点判断标志位
-
-    for (int i = 10; i < pts_num - 10; i++)
-    {
-        if ((pts_in[i][0] - pts_in[i - 2][0] < 0 && pts_in[i][0] - pts_in[i - 4][0] < 0 && pts_in[i][0] - pts_in[i - 6][0] < 0 && pts_in[i][0] - pts_in[i - 8][0] < 0 && pts_in[i][0] - pts_in[i - 10][0] < 0 && pts_in[i][1] - pts_in[i + 2][1] > 0 && pts_in[i][1] - pts_in[i + 4][1] > 0 && pts_in[i][1] - pts_in[i + 6][1] > 0 && pts_in[i][1] - pts_in[i + 8][1] > 0 && pts_in[i][1] - pts_in[i + 10][1] > 0) || (pts_in[i][0] - pts_in[i - 2][0] < 0 && pts_in[i][0] - pts_in[i - 4][0] < 0 && pts_in[i][0] - pts_in[i - 6][0] < 0 && pts_in[i][0] - pts_in[i - 8][0] < 0 && pts_in[i][1] - pts_in[i - 10][1] < 0 && pts_in[i][1] - pts_in[i + 2][1] > 0 && pts_in[i][1] - pts_in[i + 4][1] > 0 && pts_in[i][1] - pts_in[i + 6][1] > 0 && pts_in[i][1] - pts_in[i + 8][1] > 0 && pts_in[i][1] - pts_in[i + 10][1] > 0)) // 感觉可以加条件进行二次强判断
-        {
-            if (pts_in[i][1] == pts_in[i - 1][1])
-            {
-                continue;
-            }
-            ipts1_up_index = i;
-            break;
-        }
-        else
-        {
-            ipts1_up_index = 0;
-        }
-    }
-}
 
 /*************************************************************************
  *  函数名称：void nms_angle();
@@ -2722,6 +2706,7 @@ float Center_edge(void)
  */
 void run_cross_c(void)
 {
+    Find_Borderline_Second();
     Finnal_err=Cross_Drawline(ipts0,ipts0_num,ipts1,ipts1_num)*0.06;//直接返回误差（函数里面会有滤波）
 }
 
@@ -2736,7 +2721,6 @@ void run_cross_d(void)
         二次扫线的起始点和ipts0的最后一个点的坐标有关                三次扫线的起始点是固定的（因为loseline==1，ipts0的坐标找不到了）
         二次扫线相对来说更加灵活，能根据ipts0最后一个点的坐标进行二次扫线的灵活变化     三次扫线只能在y属于0-60的范围内扫，相对比较固定
         二次扫线在十字环岛都能用        三次扫线只能在十字的最后一个状态才能用*/
-    Get_Upguaidian(ipts000,ipts000_num,ipts111,ipts111_num);//找到上拐点
     FarCorners_Find_Left(ipts000,ipts000_num);//找到左边线
     FarCorners_Find_Right(ipts111,ipts111_num);//找到左边线
     ips200_draw_line(0,0,ipts000[left_index_l][0],ipts000[left_index_l][1],RGB565_RED);//显示左边线
@@ -2843,18 +2827,18 @@ void test(void)
     int test = 0;
     // test = Is_Straight(ipts0, ipts0_num, sample_dist);
 
-    for (i = 0; i < ipts0_num; i++)
-    {
-        func_limit_ab(ipts0[i][0], 0, 160);
-        func_limit_ab(ipts0[i][1], 0, 120);
-        ips200_draw_point(ipts0[i][0], ipts0[i][1], RGB565_RED);
-    }
-    for (i = 0; i < ipts1_num; i++)
-    {
-        func_limit_ab(ipts1[i][0], 0, 160);
-        func_limit_ab(ipts1[i][1], 0, 120);
-        ips200_draw_point(ipts1[i][0], ipts1[i][1], RGB565_GREEN);
-    }
+    // for (i = 0; i < ipts0_num; i++)
+    // {
+    //     func_limit_ab(ipts0[i][0], 0, 160);
+    //     func_limit_ab(ipts0[i][1], 0, 120);
+    //     ips200_draw_line(0,0,ipts0[i][0], ipts0[i][1], RGB565_RED);
+    // }
+    // for (i = 0; i < ipts1_num; i++)
+    // {
+    //     func_limit_ab(ipts1[i][0], 0, 160);
+    //     func_limit_ab(ipts1[i][1], 0, 120);
+    //     ips200_draw_line(0,0,ipts1[i][0], ipts1[i][1], RGB565_GREEN);
+    // }
     // for(i=0;i<ipts00_num;i++)
     // {
     // 	func_limit_ab(ipts00[i][0],0,160);
@@ -2862,12 +2846,12 @@ void test(void)
     // 	ips200_draw_line(0,0,ipts00[i][0],ipts00[i][1],RGB565_BLUE);
     // }
 
-    // for(i=0;i<ipts11_num;i++)
-    // {
-    // 	func_limit_ab(ipts11[i][0],0,160);
-    // 	func_limit_ab(ipts11[i][1],0,120);
-    // 	ips200_draw_line(160,0,ipts11[i][0],ipts11[i][1],RGB565_RED);
-    // }
+    for(i=0;i<ipts11_num;i++)
+    {
+    	func_limit_ab(ipts11[i][0],0,160);
+    	func_limit_ab(ipts11[i][1],0,120);
+    	ips200_draw_line(160,0,ipts11[i][0],ipts11[i][1],RGB565_RED);
+    }
 
     Image_CheckState(ipts0, ipts0_num, ipts1, ipts1_num);
     /*根据状态执行*/
