@@ -6,20 +6,14 @@
 
 enum cross_type_e
 {
-    CROSS_BEGIN,
-    CROSS_IN,
+    CROSS_HALF_LEFT_FOUND,
+    CROSS_HALF_RIGHT_FOUND, // 斜入十字
+    CROSS_DOUBLLE_FOUND,
+    CROSS_IN_LEFT,
+    CROSS_IN_RIGHT,
+    CROSS_IN_DOUBLE,
     CROSS_OUT,
     CROSS_NONE,
-    CROSS_FOUND,
-};
-
-enum turn_type
-{
-    TURN_LEFT,
-    TURN_LEFT_MID,
-    TURN_RIGHT,
-    TURN_RIGHT_MID,
-    STRAIGHT,
 };
 
 extern enum cross_type_e cross_type;

@@ -34,6 +34,8 @@ float begin_y = 118; // 起始点距离图像底部的上下偏移量 120高度�
 
 float block_size = 7; // 自适应阈值的block大小
 float clip_value = 2; // 自适应阈值的阈值裁减量
+int NearBorderLine_Enable = 1;
+int FarBorderLine_Enable = 0; // 开启远近线的标志位
 
 // 左右边丢线
 uint8 loseline0;
@@ -88,24 +90,27 @@ void test(void)
     Image_Sobel(Image_Use, Image_Use_Robert, TH);                        // 全局Sobel得二值图(方案二) 2.8ms
     img_raw.data = *Image_Use_Robert;                                    // 传入sobel边沿检测图像
     // 寻找左右边线
-    BorderLine_Find();                                                              // 寻找近边线
+    if (NearBorderLine_Enable)
+    {
+        BorderLine_Find(); // 寻找近边线
+    }
     NearCorners_Find_Left(ipts0, ipts0_num, CornersLeft_Point, &Near_Lpt0_Found);   // 寻找近角点
     NearCorners_Find_Right(ipts1, ipts1_num, CornersRight_Point, &Near_Lpt1_Found); // 近角点正常
 
-    ips200_show_int(50, 200, CornersLeft_Point[0], 1);
-    ips200_show_int(50, 220, CornersLeft_Point[1], 1);
-    if (Near_Lpt0_Found || Near_Lpt1_Found) // 只有近处有角点才需要向上寻找远角点
+    ips200_show_int(50, 200, FarCornersLeft_Point[0], 2);
+    ips200_show_int(50, 220, FarCornersLeft_Point[1], 2);
+    if (Near_Lpt0_Found || Near_Lpt1_Found)
+    {
+        FarBorderLine_Enable = 1;
+    }
+    if (FarBorderLine_Enable)
     {
         FarBorderline_Find(); // 寻找远边线
-        if (Far_ipts0_num > 0 && Near_Lpt0_Found)
-        {
-            FarCorners_Find_Left(Far_ipts0, Far_ipts0_num, FarCornersLeft_Point, &Far_Lpt0_Found);
+
+        FarCorners_Find_Left(Far_ipts0, Far_ipts0_num, FarCornersLeft_Point, &Far_Lpt0_Found);
+
+        FarCorners_Find_Right(Far_ipts1, Far_ipts1_num, FarCornersRight_Point, &Far_Lpt1_Found);
         }
-        if (Far_ipts1_num > 0 && Near_Lpt1_Found) //
-        {
-            FarCorners_Find_Right(Far_ipts1, Far_ipts1_num, FarCornersRight_Point, &Far_Lpt1_Found);
-        }
-    }
 
     ips200_show_int(20, 200, Near_Lpt0_Found, 1);
     ips200_show_int(20, 220, Near_Lpt1_Found, 1);
@@ -120,6 +125,8 @@ void test(void)
 
     ips200_show_int(80, 200, loseline0, 1);
     ips200_show_int(80, 220, loseline1, 1);
+    ips200_show_int(160, 200, NearBorderLine_Enable, 1);
+    ips200_show_int(160, 240, FarBorderLine_Enable, 1);
 
     // Line_Add(&img_raw, CornersLeft_Point, FarCornersLeft_Point, 0);
     // Line_Add(&img_raw, CornersRight_Point, FarCornersRight_Point, 0);
@@ -148,7 +155,9 @@ void test(void)
     {
         Cross_Check();
         Cross_Run();
+        MidLine_Get();
     }
+
     // MidLine_Get(ipts0, ipts0_num, ipts1, ipts1_num, test, 2);
     // NearCorners_Find_Left(ipts0, ipts0_num, test, &test2);
     // NearCorners_Find_Right(ipts1, ipts1_num, test3, &test5);//近角点正常
@@ -167,9 +176,13 @@ void test(void)
     //     ips200_draw_point(ipts1[i][0] - 3, ipts1[i][1], RGB565_RED);
     // }
 
-    for (int i = 0; i < ipts1_num; i++)
+    for (int i = 0; i < ipts0_num; i++)
     {
-        ips200_draw_line(0, 0, Far_ipts0[i][0] + 5, Far_ipts0[i][1], RGB565_RED);
+        ips200_draw_line(0, 0, ipts0[i][0] + 5, ipts0[i][1], RGB565_RED);
+    }
+    for (int i = 0; i < Far_ipts0_num; i++)
+    {
+        ips200_draw_point(Far_ipts0[i][0] + 5, Far_ipts0[i][1], RGB565_RED);
     }
     // for (int i = 0; i < 50; i++)
     // {
@@ -257,61 +270,68 @@ void FarCorners_Find_Right(int pts_in[][2], int pts_num, int pts_out[2], int *fl
 void FarBorderline_Find(void)
 {
     uint8 uthres = 1;
-    if (loseline0) // 近线丢失,采用静态起始点,否则一律采用动态起始点
-    {
-        CornersLeft_Point[0] = 20;
-        CornersLeft_Point[1] = 30;
-    }
-    if (loseline1)
+    if (loseline1) // 近处丢线,采用静态起始点
     {
         CornersRight_Point[0] = 150;
-        CornersRight_Point[1] = 60;
+        CornersRight_Point[1] = 100;
     }
+    if (loseline0)
+    {
+        CornersLeft_Point[0] = 10;
+        CornersLeft_Point[1] = 100;
+    }
+    ips200_draw_line(0, 0, CornersLeft_Point[0], CornersLeft_Point[1], RGB565_RED);
+    ips200_show_uint(200, 200, Far_ipts0_num, 2);
+
     if (1)
     {
+
         x0_first = CornersLeft_Point[0];
-        y0_first = CornersLeft_Point[1];
+        y0_first = CornersLeft_Point[1] - 10;
 
         Far_ipts0_num = sizeof(Far_ipts0) / sizeof(Far_ipts0[0]); // 求数组的长度
         // 扫底下五行，寻找跳变点
-        for (; y0_first > 20; y0_first--) // 从所选的行，向上扫5次，每次从中间向左线扫
+        for (; y0_first > 0; y0_first--) // 从所选的行，向上扫5次，每次从中间向左线扫
         {
-            for (; x0_first > 0; x0_first--)
-                if (AT_IMAGE(&img_raw, x0_first - 1, y0_first) < uthres) // 如果扫到黑点（灰度值为0），就从该点开始扫线
-                    goto out1;                                           // 开始扫左线
-            x0_first = img_raw.width / 2 - begin_x;
+            if (AT_IMAGE(&img_raw, x0_first, y0_first) < uthres) // 如果扫到黑点（灰度值为0），就从该点开始扫线
+            {
+                goto out1; // 开始扫左线
+            }
         }
         // 如果扫不到的话，判定左边的底边丢线
     out1: // 从起始点开始执行扫线
     {
-        if (AT_IMAGE(&img_raw, x0_first + 1, y0_first) >= uthres)                                                     // 如果这个点是白色（且左边是黑色的话）
-            Left_Adaptive_Threshold(&img_raw, block_size, clip_value, x0_first, y0_first, Far_ipts0, &Far_ipts0_num); // 开始跑迷宫
-        else
-            Far_ipts0_num = 0; // 如果不是的话，就不用跑了，求得的number记为0
+        // if (AT_IMAGE(&img_raw, x0_first+1, y0_first) >= uthres)//如果这个点是白色（且左边是黑色的话）
+        Left_Adaptive_Threshold(&img_raw, block_size, clip_value, x0_first, y0_first, Far_ipts0, &Far_ipts0_num); // 开始跑迷宫
+        // else
+        // 	Far_ipts0_num = 0;//如果不是的话，就不用跑了，求得的number记为0
     }
     }
 
-    // 寻右边线
-    // x2 = img_raw.width / 2 + begin_x, y2 = begin_y;
-
-    // 标记种子起始点(后续元素处理要用到)
-    // ips200_show_int(50, 200, 666, 2);
-    x1_first = CornersRight_Point[0];
-    y1_first = CornersRight_Point[1] - 20;
-    ;
-
-    Far_ipts1_num = sizeof(Far_ipts1) / sizeof(Far_ipts1[0]);
-    for (; y1_first > 15; y1_first--)
+    if (1)
     {
-        if (AT_IMAGE(&img_raw, x1_first, y1_first) < uthres)
+        // 寻右边线
+        // x2 = img_raw.width / 2 + begin_x, y2 = begin_y;
+
+        // 标记种子起始点(后续元素处理要用到)
+        // ips200_show_int(50, 200, 666, 2);
+        x1_first = CornersRight_Point[0];
+        y1_first = CornersRight_Point[1] - 10;
+        ;
+
+        Far_ipts1_num = sizeof(Far_ipts1) / sizeof(Far_ipts1[0]);
+        for (; y1_first > 15; y1_first--)
         {
-            goto out2;
+            if (AT_IMAGE(&img_raw, x1_first, y1_first) < uthres)
+            {
+                goto out2;
+            }
         }
+    out2:
+    {
+        Right_Adaptive_Threshold(&img_raw, block_size, clip_value, x1_first, y1_first, Far_ipts1, &Far_ipts1_num);
     }
-out2:
-{
-    Right_Adaptive_Threshold(&img_raw, block_size, clip_value, x1_first, y1_first, Far_ipts1, &Far_ipts1_num);
-}
+    }
 }
 
 /**
@@ -324,11 +344,29 @@ out2:
  * @param pts_out 中线
  * @param pts_out_num 中线点数
  */
+int TEST[30][2] = {0};
 void MidLine_Get(void)
 {
-    if (cross_type == CROSS_NONE && garage_type == GARAGE_NONE && circle_type == CIRCLE_NONE && ramp_type == RAMP_NONE)
+
+    if (cross_type == CROSS_DOUBLLE_FOUND)
     {
-        // 中线数组平均加权
+        for (int i = 0;i<30;i++)
+        {
+            TEST[i][0] = (ipts0[i][0] + ipts1[i][0]) / 2;
+            TEST[i][1] = (ipts0[i][1] + ipts1[i][1]) / 2;
+        }
+    }
+    if (cross_type == CROSS_IN_DOUBLE)
+    {
+        for (int i = 0; i < 30; i++)
+        {
+            TEST[i][0] = (Far_ipts0[i][0] + Far_ipts0[i][0]) / 2;
+            TEST[i][1] = (Far_ipts1[i][1] + Far_ipts1[i][1]) / 2;
+        }
+    }
+    for (int i = 0; i < 30; i++)
+    {
+        ips200_draw_point(TEST[i][0], TEST[i][1], RGB565_RED);
     }
 }
 void Features_Find(void)

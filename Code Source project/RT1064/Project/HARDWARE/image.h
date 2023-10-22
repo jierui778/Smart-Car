@@ -44,6 +44,7 @@ typedef struct img
     uint32_t height;
     uint32_t step; // 走过路径的长度
 } image_t;
+extern image_t img_raw;
 
 enum track_type_e
 {
@@ -61,7 +62,6 @@ uint8 OSTU_GetThreshold(uint8 *image, uint16 Width, uint16 Height);             
 void Image_Sobel(uint8 Image_in[IMAGE_HEIGHT][IMAGE_WIDTH], uint8_t Image_out[IMAGE_HEIGHT][IMAGE_WIDTH], uint16 Threshold); // 全局sobel方案
 void Image_Binarization(unsigned char threshold, uint8 (*Image_Use)[IMAGE_WIDTH]);                                           // 全局二值化方案
 
-extern image_t img_raw;
 void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x, int y, int pts[][2], int *num);
 void Right_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x, int y, int pts[][2], int *num);
 void FarBorderLine_Find(void);
@@ -72,6 +72,9 @@ void MidLine_Get(void);        // W矩阵参数（原图转化成逆透视后图
 // 左右边丢线
 extern uint8 loseline0;
 extern uint8 loseline1;
+
+extern int NearBorderLine_Enable;
+extern int FarBorderLine_Enable;//开启远近线的标志位
 
 extern int Far_Lpt0_Found, Far_Lpt1_Found;
 extern int Near_Lpt0_Found, Near_Lpt1_Found;

@@ -3,7 +3,8 @@
 #include "zf_common_headfile.h"
 int32 Encoder_L_Data = 0, Encoder_R_Data = 0;
 int32 Encoder_L_Dis = 0, Encoder_R_Dis = 0;
-uint8 DisCnt_Flag = 0;
+
+int8 DisCnt_Flag = 0;
 
 /**
  * @brief 编码器引脚初始化
