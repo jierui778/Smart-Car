@@ -4,7 +4,7 @@
 int Ramp_num = 0;
 
 enum ramp_type_e ramp_type = RAMP_NONE;
-void Ramp_Check(void) // 根据边沿外张的特性
+void Ramp_Check(void) // 根据边沿外张的特性//左边线先增后减，右边线先减后增//且两边线都没有触碰到左右边界
 {
     if (ramp_type != RAMP_NONE && !touch_boundary0 && !touch_boundary1 && touch_boundary_up0 && touch_boundary_up1) // 非坡道模式
     {

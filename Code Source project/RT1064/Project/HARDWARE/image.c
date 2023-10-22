@@ -35,7 +35,7 @@ float begin_y = 118; // 起始点距离图像底部的上下偏移量 120高度�
 float block_size = 7; // 自适应阈值的block大小
 float clip_value = 2; // 自适应阈值的阈值裁减量
 int NearBorderLine_Enable = 1;
-int FarBorderLine_Enable = 0; // 开启远近线的标志位
+int FarBorderLine_Enable = 0; // 开启远近线的标志位//默认只开启近线,不开启远线
 
 // 左右边丢线
 uint8 loseline0;
@@ -99,18 +99,23 @@ void test(void)
 
     ips200_show_int(50, 200, FarCornersLeft_Point[0], 2);
     ips200_show_int(50, 220, FarCornersLeft_Point[1], 2);
-    if (Near_Lpt0_Found || Near_Lpt1_Found)
+    if (Near_Lpt0_Found || Near_Lpt1_Found) // 如果近边线有角点
     {
         FarBorderLine_Enable = 1;
     }
-    if (FarBorderLine_Enable)
+    if (FarBorderLine_Enable) // 开启
     {
         FarBorderline_Find(); // 寻找远边线
 
-        FarCorners_Find_Left(Far_ipts0, Far_ipts0_num, FarCornersLeft_Point, &Far_Lpt0_Found);
-
-        FarCorners_Find_Right(Far_ipts1, Far_ipts1_num, FarCornersRight_Point, &Far_Lpt1_Found);
+        if (Near_Lpt0_Found) // 如果左边线有角点
+        {
+            FarCorners_Find_Left(Far_ipts0, Far_ipts0_num, FarCornersLeft_Point, &Far_Lpt0_Found);
         }
+        if (Near_Lpt1_Found)
+        {
+            FarCorners_Find_Right(Far_ipts1, Far_ipts1_num, FarCornersRight_Point, &Far_Lpt1_Found);
+        }
+    }
 
     ips200_show_int(20, 200, Near_Lpt0_Found, 1);
     ips200_show_int(20, 220, Near_Lpt1_Found, 1);
@@ -133,31 +138,13 @@ void test(void)
 
     // ips200_show_int(100, 100, test, 3);
 
-    // 单侧线少，切换巡线方向  切外向圆
-    if (ipts0_num < ipts1_num / 2 && ipts0_num < 60)
-    { // 如果左边线比右边线少一半，循右
-        track_type = TRACK_RIGHT;
-    }
-    else if (ipts1_num < ipts0_num / 2 && ipts1_num < 60)
-    { // 如果右边线比左边线少一半，循左
-        track_type = TRACK_LEFT;
-    }
-    else if (ipts0_num < 20 && ipts1_num > ipts0_num)
-    { // 如果左边线少于20，且右边数大于左边，循右
-        track_type = TRACK_RIGHT;
-    }
-    else if (ipts1_num < 20 && ipts0_num > ipts1_num)
-    { // 如果右边线少于20，且左边数大于右边，循左
-        track_type = TRACK_LEFT;
-    }
-
     if (1)
     {
         Cross_Check();
         Cross_Run();
         MidLine_Get();
     }
-
+    
     // MidLine_Get(ipts0, ipts0_num, ipts1, ipts1_num, test, 2);
     // NearCorners_Find_Left(ipts0, ipts0_num, test, &test2);
     // NearCorners_Find_Right(ipts1, ipts1_num, test3, &test5);//近角点正常
@@ -184,11 +171,9 @@ void test(void)
     {
         ips200_draw_point(Far_ipts0[i][0] + 5, Far_ipts0[i][1], RGB565_RED);
     }
-    // for (int i = 0; i < 50; i++)
-    // {
-    //     ips200_draw_point(test[i][0], test[i][1], RGB565_RED);
-    // }
 }
+
+
 /**
  * @brief 寻找远左拐点
  *
@@ -211,7 +196,7 @@ void FarCorners_Find_Left(int pts_in[][2], int pts_num, int pts_out[2], int *fla
              pts_in[i][1] - pts_in[i + 2][1] > 0 && pts_in[i][1] - pts_in[i + 3][1] > 0 && pts_in[i][1] - pts_in[i + 4][1] > 0 &&
              pts_in[i][1] - pts_in[i + 5][1] > 0)) // 感觉可以加条件进行二次强判断
         {
-            if (pts_in[i][1] == pts_in[i - 1][1])
+            if (pts_in[i][1] == pts_in[i - 1][1] || (pts_in[i][0] - pts_in[i - 2][0] >= 0 && pts_in[i][0] - pts_in[i - 4][0] >= 0 & pts_in[i][0] - pts_in[i - 6][0] >= 0 && pts_in[i][0] - pts_in[i + 4][0] >= 0 && (pts_in[i][0] - pts_in[i + 6][0] >= 0)))
             {
                 continue;
             }
@@ -228,7 +213,6 @@ void FarCorners_Find_Left(int pts_in[][2], int pts_num, int pts_out[2], int *fla
             // pts_out[1] = 0;
         }
     }
-    // ips200_draw_line(0, 0, pts_out[0], pts_out[1], RGB565_RED);
 }
 
 /**
@@ -247,7 +231,7 @@ void FarCorners_Find_Right(int pts_in[][2], int pts_num, int pts_out[2], int *fl
     {
         if ((pts_in[i][0] - pts_in[i - 2][0] < 0 && pts_in[i][0] - pts_in[i - 4][0] < 0 && pts_in[i][0] - pts_in[i - 6][0] < 0 && pts_in[i][0] - pts_in[i - 8][0] < 0 && pts_in[i][0] - pts_in[i - 10][0] < 0 && pts_in[i][1] - pts_in[i + 2][1] > 0 && pts_in[i][1] - pts_in[i + 4][1] > 0 && pts_in[i][1] - pts_in[i + 6][1] > 0 && pts_in[i][1] - pts_in[i + 8][1] > 0 && pts_in[i][1] - pts_in[i + 10][1] > 0) || (pts_in[i][0] - pts_in[i - 2][0] < 0 && pts_in[i][0] - pts_in[i - 4][0] < 0 && pts_in[i][0] - pts_in[i - 6][0] < 0 && pts_in[i][0] - pts_in[i - 8][0] < 0 && pts_in[i][1] - pts_in[i - 10][1] < 0 && pts_in[i][1] - pts_in[i + 2][1] > 0 && pts_in[i][1] - pts_in[i + 4][1] > 0 && pts_in[i][1] - pts_in[i + 6][1] > 0 && pts_in[i][1] - pts_in[i + 8][1] > 0 && pts_in[i][1] - pts_in[i + 10][1] > 0)) // 感觉可以加条件进行二次强判断
         {
-            if (pts_in[i][1] == pts_in[i - 1][1])
+            if (pts_in[i][1] == pts_in[i - 1][1] || (pts_in[i][0] - pts_in[i - 2][0] <= 0 && pts_in[i][0] - pts_in[i - 4][0] <= 0 & pts_in[i][0] - pts_in[i - 6][0] <= 0 && pts_in[i][0] - pts_in[i + 4][1] <= 0 && (pts_in[i][0] - pts_in[i + 6][0] <= 0)))
             {
                 continue;
             }
@@ -259,7 +243,6 @@ void FarCorners_Find_Right(int pts_in[][2], int pts_num, int pts_out[2], int *fl
         }
         else
         {
-
             *flag = 0;
         }
     }
@@ -272,12 +255,12 @@ void FarBorderline_Find(void)
     uint8 uthres = 1;
     if (loseline1) // 近处丢线,采用静态起始点
     {
-        CornersRight_Point[0] = 150;
+        CornersRight_Point[0] = 155;
         CornersRight_Point[1] = 100;
     }
     if (loseline0)
     {
-        CornersLeft_Point[0] = 10;
+        CornersLeft_Point[0] = 5;
         CornersLeft_Point[1] = 100;
     }
     ips200_draw_line(0, 0, CornersLeft_Point[0], CornersLeft_Point[1], RGB565_RED);
@@ -350,7 +333,7 @@ void MidLine_Get(void)
 
     if (cross_type == CROSS_DOUBLLE_FOUND)
     {
-        for (int i = 0;i<30;i++)
+        for (int i = 0; i < 30; i++)
         {
             TEST[i][0] = (ipts0[i][0] + ipts1[i][0]) / 2;
             TEST[i][1] = (ipts0[i][1] + ipts1[i][1]) / 2;
@@ -409,7 +392,11 @@ void NearCorners_Find_Left(int pts_in[][2], int pts_num, int pts_out[2], int *fl
             pts_in[i][0] - pts_in[i - 1][0] >= 0 && pts_in[i][0] - pts_in[i - 2][0] >= 0 && pts_in[i][0] - pts_in[i - 3][0] >= 0 &&
             pts_in[i][0] - pts_in[i - 4][0] >= 0 && pts_in[i][0] - pts_in[i - 5][0] >= 0 && pts_in[i][0] - pts_in[i - 6][0] >= 0 && pts_in[i][0] - pts_in[i + 1][0] >= 0 && pts_in[i][0] - pts_in[i + 2][0] > 0 && pts_in[i][0] - pts_in[i + 3][0] >= 0 && pts_in[i][0] - pts_in[i + 4][0] >= 0 && pts_in[i][0] - pts_in[i + 5][0] > 0 && pts_in[i][0] - pts_in[i + 6][0] >= 0 && my_abs(pts_in[i][1] - pts_in[i + 1][1]) < 5 && my_abs(pts_in[i][1] - pts_in[i + 2][1]) < 5 && my_abs(pts_in[i][1] - pts_in[i + 3][1]) < 5 && my_abs(pts_in[i][1] - pts_in[i + 4][1]) < 5 && my_abs(pts_in[i][1] - pts_in[i + 5][1]) < 5) // 感觉可以加条件进行二次强判断
         {
-            pts_out[0] = pts_in[i][0];
+            if (pts_in[pts_num - 5][1] - pts_in[i][1]>10)
+            {
+                continue;
+            }
+                pts_out[0] = pts_in[i][0];
             pts_out[1] = pts_in[i][1];
             Lpt0_id = i;
             *flag = 1;
@@ -440,6 +427,10 @@ void NearCorners_Find_Right(int pts_in[][2], int pts_num, int pts_out[2], int *f
             pts_in[i][0] - pts_in[i - 1][0] <= 0 && pts_in[i][0] - pts_in[i - 2][0] <= 0 && pts_in[i][0] - pts_in[i - 3][0] <= 0 &&
             pts_in[i][0] - pts_in[i - 4][0] <= 0 && pts_in[i][0] - pts_in[i - 5][0] <= 0 && pts_in[i][0] - pts_in[i - 6][0] <= 0 && pts_in[i][0] - pts_in[i + 1][0] <= 0 && pts_in[i][0] - pts_in[i + 2][0] < 0 && pts_in[i][0] - pts_in[i + 3][0] <= 0 && pts_in[i][0] - pts_in[i + 4][0] <= 0 && pts_in[i][0] - pts_in[i + 5][0] < 0 && pts_in[i][0] - pts_in[i + 6][0] <= 0 && my_abs(pts_in[i][1] - pts_in[i + 1][1]) < 5 && my_abs(pts_in[i][1] - pts_in[i + 2][1]) < 5 && my_abs(pts_in[i][1] - pts_in[i + 3][1]) < 5 && my_abs(pts_in[i][1] - pts_in[i + 4][1]) < 5 && my_abs(pts_in[i][1] - pts_in[i + 5][1]) < 5) // 感觉可以加条件进行二次强判断
         {
+            if (pts_in[pts_num - 5][1] - pts_in[i][1] > 10)
+            {
+                continue;
+            }
             pts_out[0] = pts_in[i][0];
             pts_out[1] = pts_in[i][1];
             Lpt1_id = i;
@@ -459,7 +450,7 @@ void NearCorners_Find_Right(int pts_in[][2], int pts_num, int pts_out[2], int *f
  * @param pts_num 边线坐标数组长度
  * @param pts_out 极边界坐标数组
  */
-void Arc_Rec(int pts_in[][2], int pts_num, int pts_out[2])
+void Arc_Point_Get(int pts_in[][2], int pts_num, int pts_out[2])
 {
     int Is_Arc = 0; // 圆环判断标志位
     for (int i = 0; i < pts_num; i++)
@@ -473,7 +464,6 @@ void Arc_Rec(int pts_in[][2], int pts_num, int pts_out[2])
         }
         else
         {
-            // leftcircle_guai = 0;
         }
     }
 }
@@ -485,7 +475,7 @@ void Arc_Rec(int pts_in[][2], int pts_num, int pts_out[2])
  * @param pts_num
  * @param pts_out
  */
-void Straight_Rec(int pts_in[][2], int pts_num, int pts_out[2])
+void Straight_Rec(int pts_in[][2], int pts_num)
 {
     int Is_Straight = 0; // 长直道判断标志位
     for (int i = 0; i < pts_num; i++)

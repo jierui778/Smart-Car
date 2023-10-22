@@ -35,7 +35,6 @@ void Circle_Run(void)
     {
         track_type = TRACK_LEFT; // 进右圆环前，先巡右线
     }
-    Encoder_Int_Enable(); // 开启编码器积分
 
     if (circle_type == CIRCLE_LEFT_FOUND && CornersRight_Point[1] < 40) // 圆弧外凸坐标达到范围内,循内圆入环
     {
@@ -46,18 +45,33 @@ void Circle_Run(void)
         track_type = TRACK_RIGHT;
     }
 
-    if (1) // 进入圆环,内园必丢线,循外圆
+
+    if(circle_type == CIRCLE_LEFT_FOUND && CornersRight_Point[1] > 40)
     {
+        track_type = TRACK_LEFT;
     }
-    else if (1) //
+    else if(circle_type == CIRCLE_RIGHT_FOUND && CornersLeft_Point[1] > 40)
     {
+        track_type = TRACK_LEFT;
     }
 
-    if (Near_Lpt1_Found && (Encoder_L_Dis + Encoder_R_Dis) / 2 > CIRCLE_ENCODER_THRES) // 发现单边有角点且编码器积分到达阈值,准备出圆环
+
+
+
+    if (Far_Lpt0_Found) //左边圆弧极坐标点到达一定阈值且,远角点存在
     {
+        LeftLine_Found = 0;
+        LeftLine_Loss = 0;
+        circle_type = CIRCLE_LEFT_IN; // 进入左圆环
+        Encoder_Int_Enable();         // 开启编码器积分
     }
-    else if (1)
+    else if (Far_Lpt1_Found) //右边圆弧极坐标点到达一定阈值且,远角点存在
     {
+        RightLine_Found = 0;
+        RightLine_Loss = 0;
+        circle_type = CIRCLE_RIGHT_IN; // 进入右圆环
+        Encoder_Int_Enable();          // 开启编码器积分
+
     }
     Encoder_Int_Clear(); // 清零编码器积分
 

@@ -24,17 +24,22 @@ void Cross_Check(void) // 得考虑斜入十字的情况
         cross_num++; // 记录圆环个数
         a = 1;
     }
-    if (cross_type == CROSS_NONE && touch_boundary1 && Near_Lpt1_Found && Far_Lpt1_Found && !Near_Lpt0_Found) // 右边双角点,左边近角点丢失,斜入右十字,进入十字模式
+    else if (cross_type == CROSS_NONE && touch_boundary1 && Near_Lpt1_Found && Far_Lpt1_Found && !Near_Lpt0_Found) // 右边双角点,左边近角点丢失,斜入右十字,进入十字模式
     {
         cross_type = CROSS_HALF_RIGHT_FOUND;
         cross_num++; // 记录圆环个数
         a = 2;
     }
-    if (cross_type == CROSS_NONE && touch_boundary0 && Near_Lpt0_Found && Far_Lpt0_Found && touch_boundary1 && Near_Lpt1_Found && Far_Lpt1_Found) // 双边双角点,进入十字模式
+    else if (cross_type == CROSS_NONE && touch_boundary0 && Near_Lpt0_Found && Far_Lpt0_Found && touch_boundary1 && Near_Lpt1_Found && Far_Lpt1_Found) // 双边双角点,进入十字模式
     {
         cross_type = CROSS_DOUBLLE_FOUND;
         cross_num++; // 记录圆环个数
         a = 3;
+    }
+    else
+        
+    {
+        cross_type = CROSS_NONE;
     }
 }
 
@@ -42,7 +47,7 @@ void Cross_Run(void)
 {
     if (cross_type == CROSS_HALF_LEFT_FOUND) // 斜入左十字
     {
-        if (ipts0_num < 40) // 左边线一边点数小于40,进入十字
+        if (loseline0) // 左边线一边点数小于40,进入十字
         {
 
             cross_type = CROSS_IN_LEFT; // 左边近线丢失,循左边远线
@@ -51,9 +56,9 @@ void Cross_Run(void)
             NearBorderLine_Enable = 0; // 关闭近边线
         }
     }
-    if (cross_type == CROSS_HALF_RIGHT_FOUND) // 斜入左十字
+    else if (cross_type == CROSS_HALF_RIGHT_FOUND) // 斜入左十字
     {
-        if (ipts1_num < 40) // 左边线一边点数小于40,进入十字
+        if (loseline1) // 左边线一边点数小于40,进入十字
         {
             cross_type = CROSS_IN_LEFT; // 左边近线丢失,循左边远线
             Encoder_Int_Enable();
@@ -62,9 +67,9 @@ void Cross_Run(void)
         }
     }
 
-    if (cross_type == CROSS_DOUBLLE_FOUND) // 斜入左十字
+    else if (cross_type == CROSS_DOUBLLE_FOUND) // 斜入左十字
     {
-        if (loseline0|| loseline1) // 左边线一边点数小于40,进入十字
+        if (loseline0 && loseline1) // 左边线一边点数小于40,进入十字
         {
             cross_type = CROSS_IN_DOUBLE; // 左边近线丢失,循左边远线
             Encoder_Int_Enable();
@@ -73,22 +78,15 @@ void Cross_Run(void)
         }
     }
 
-    if ((CROSS_IN_LEFT && Far_ipts0[1][1] > 60 && Far_ipts0[1][0] < 40) || (CROSS_IN_RIGHT && Far_ipts1[1][1] > 60 && Far_ipts1[1][0] > 80)) // 远边线最下面的一个y坐标大于70,跳出十字模式
+    if (((CROSS_IN_LEFT && Far_ipts0[1][1] > 60 && Far_ipts0[1][0] < 40) || (CROSS_IN_RIGHT && Far_ipts1[1][1] > 60 && Far_ipts1[1][0] > 80)) && loseline0 && loseline1) // 远边线最下面的一个y坐标大于70,跳出十字模式
     {
         cross_type = CROSS_OUT;    // 出十字
-        NearBorderLine_Enable = 1; // 关闭近边线
-        FarBorderLine_Enable = 0;
-        a = 66;
+        NearBorderLine_Enable = 1; // 重新开启近边线
+        FarBorderLine_Enable = 0;  // 关闭远线
         cross_type = CROSS_NONE;
         Encoder_Int_Clear(); // 清除编码器积分
     }
     ips200_show_uint(200, 230, Far_ipts0[1][0], 2);
     ips200_show_uint(200, 250, Far_ipts0[1][1], 2);
     ips200_show_uint(200, 270, a, 2);
-    // ips200_show_uint(200, 270, Far_ipts0[5][1], 3);
-    // ips200_show_uint(200, 290, Far_ipts1[5][1], 3);
-    // ips200_draw_line(0, 0, Far_ipts0[5][0], Far_ipts0[5][1], RGB565_BLUE);
-    // ips200_draw_line(0, 0, Far_ipts1[5][0], Far_ipts1[5][1], RGB565_BLUE);
-    // ips200_show_int(200, 120, touch_boundary0, 1);
-    // ips200_show_int(200, 140, touch_boundary1, 1);
 }

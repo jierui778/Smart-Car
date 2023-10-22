@@ -74,6 +74,22 @@ void Garage_Run(void)
     }
     Encoder_Int_Clear();
 }
+
+void Garage_Out(void)
+{
+    if(garage_type == GARAGE_OUT_LEFT&&Near_Lpt0_Found&& Near_Lpt1_Found)//非车库模式且双近拐点找到
+    {
+
+    }
+    else if (garage_type == GARAGE_OUT_RIGHT&&Near_Lpt0_Found&& Near_Lpt1_Found)
+    {
+
+    }
+    else
+    {
+        
+    }
+}
 // // 编码器，防止重复触发等情况
 // int64_t garage_encoder = -10000;
 

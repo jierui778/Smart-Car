@@ -74,7 +74,7 @@ extern uint8 loseline0;
 extern uint8 loseline1;
 
 extern int NearBorderLine_Enable;
-extern int FarBorderLine_Enable;//开启远近线的标志位
+extern int FarBorderLine_Enable; // 开启远近线的标志位
 
 extern int Far_Lpt0_Found, Far_Lpt1_Found;
 extern int Near_Lpt0_Found, Near_Lpt1_Found;
@@ -119,13 +119,12 @@ extern int Far_ipts1[POINTS_MAX_LEN][2]; // 存放边线数据（右）
 extern float Err[5];                     // 中线误差
 // 若考虑近点远点,可近似构造Stanley算法,避免撞路肩
 
-void Arc_Rec(int pts_in[][2], int pts_num, int pts_out[2]);
+void Arc_Point_Get(int pts_in[][2], int pts_num, int pts_out[2]);
 void NearCorners_Find_Left(int pts_in[][2], int pts_num, int pts_out[2], int *flag);
 void NearCorners_Find_Right(int pts_in[][2], int pts_num, int pts_out[2], int *flag);
-void Straight_Rec(int pts_in[][2], int pts_num, int pts_out[2]);
+void Straight_Rec(int pts_in[][2], int pts_num);
 void FarCorners_Find_Left(int pts_in[][2], int pts_num, int pts_out[2], int *flag);
 void FarCorners_Find_Right(int pts_in[][2], int pts_num, int pts_out[2], int *flag);
-
 void BorderLine_Find(void);
 
 #endif

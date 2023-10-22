@@ -20,6 +20,5 @@ extern enum cross_type_e cross_type;
 
 void Cross_Chreck(void);
 void Cross_Run(void);
-// void cross_drawline();
 
-#endif /*IMGVALUE_CROSS_H_*/
+#endif
