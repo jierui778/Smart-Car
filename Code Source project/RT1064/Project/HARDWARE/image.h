@@ -77,10 +77,13 @@ typedef struct img
 
 enum track_type_e
 {
+    TRACK_LEFT_MID,
     TRACK_LEFT,
     TRACK_RIGHT,
+    TRACK_RIGHT_MID,
+    TRACK_NONE,
 };
-
+extern enum track_type_e track_type;
 /*这个得放在车库的.c现在还没建成*/
 
 #define LLL 60
@@ -123,6 +126,8 @@ void Cross_Drawline_plus(int in_put_l[][2], int in_put_num_l, int in_put_lnew[][
                          int in_put_r[][2], int in_put_r_num, int in_put_rnew[][2], int in_put_r_numnew);
 float Cross_Drawline(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int in_put_r_num);
 void test_new(void);
+
+void Get_guaidian(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int in_put_r_num);
 // W矩阵参数（原图转化成逆透视后图像的参数）
 // 60*80
 // #define a11 (-4.3801f)
@@ -268,6 +273,9 @@ void find_corners(void);
 void cross_farline(void); // 寻远线
 void check_cross(void);
 void run_cross(void);
+void run_cross_b(void);
+void run_cross_c(void);
+void run_cross_d(void);
 #define POINTS_MAX_LEN (150) // 边线点最多的情况——>num
 
 // 逆透视补线数组

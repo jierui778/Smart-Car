@@ -1233,17 +1233,25 @@ uint8 Huandao_b;
 uint8 Huandao_c;
 uint8 Huandao_d;
 uint8 Huandao_e;
-/**
- * @brief 清空图像状态变量
- *
- */
-void Image_Clear(void)
+
+void Image_Check(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int in_put_num_r)
 {
-    Cross_State_b = 0;
-    Cross_State_c = 0;
-    Straight_State = 0;
-    Left_Turn = 0;
-    Right_Turn = 0;
+    if(touch_boundary0==1&&in_put_num_r>80&&cross_type==CROSS_NONE&&in_put_r[in_put_num_r][0]<IMAGE_WIDTH/2)
+    {
+        track_type=TRACK_LEFT_MID;
+    }
+    if (loseline0 == 1 && in_put_num_r > 80 && in_put_r[in_put_num_r - 1][0] < 60)
+    {
+        track_type = TRACK_LEFT;
+    }
+    if (touch_boundary1 == 1 && in_put_l[in_put_num_l - 1][0] > 120 && in_put_num_l > 100)
+    {
+        track_type = TRACK_RIGHT_MID;
+    }
+    if (loseline1 == 1 && in_put_l[in_put_num_l - 1][0] > 120 && in_put_num_l > 100 && Right_Turn_Mid == 1)
+    {
+        track_type = TRACK_RIGHT;
+    }
 }
 
 /**
@@ -1939,404 +1947,7 @@ uint8_t RoundaboutGetArc(uint8_t imageSide[120][2], uint8_t status, uint8_t num,
     return 0;
 }
 
-/**
- * 识别图像中的Y型和L型拐点，并进行二次检查。
- *
- * @param sample_dist 采样距离
- * @param angle_dist 角度距离
- * @param pixel_per_meter 每米像素数
- * @param garage_type 车库类型
- * @param rpts0s_num 左边线点数
- * @param rpts0s 左边线点坐标
- * @param rpts0a 左边线点角度
- * @param rpts0an 左边线点角度是否为峰值
- * @param rpts1s_num 右边线点数
- * @param rpts1s 右边线点坐标
- * @param rpts1a 右边线点角度
- * @param rpts1an 右边线点角度是否为峰值
- * @param Ypt0_rpts0s_id 左边线Y型拐点点号
- * @param Ypt1_rpts1s_id 右边线Y型拐点点号
- * @param Lpt0_rpts0s_id 左边线L型拐点点号
- * @param Lpt1_rpts1s_id 右边线L型拐点点号
- * @param N_Lpt0_rpts0s_id 左边线内L型拐点点号
- * @param N_Lpt1_rpts1s_id 右边线内L型拐点点号
- * @param xielv_left_y_to_end 左边线Y型拐点到终点的斜率
- * @param xielv_right_y_to_end 右边线Y型拐点到终点的斜率
- */
-// 思路，检测角点(包括圆环角点和十字路口角点），长直道
-//  这里不找Y拐点，只找L拐点（十字，环岛）
-//  void find_corners(void)
-/**
- * @brief 赛道边沿检测
- *
- */
-void BordLineFeature_Check(void) // 赛道边沿特征检测
-{
-    Ypt0_found = Ypt1_found = Lpt0_found = Lpt1_found = N_Lpt1_found = N_Lpt0_found = false; // 标志位归零
-    for (int i = 1; i < rpts0s_num; i++)                                                     //
-    {
-    }
 
-    /*
-    // 识别Y,L拐点
-    Ypt0_found = Ypt1_found = Lpt0_found = Lpt1_found = N_Lpt1_found = N_Lpt0_found = false;
-    is_straight0 = rpts0s_num > 1.6 / sample_dist; // 逆透视之后的边线个数大于80个就是直道,也就是边线边长大于0.8m,并不是直向前0.8m
-    is_straight1 = rpts1s_num > 1.6 / sample_dist;
-    // 左边线角度
-    for (int i = 1; i < rpts0s_num; i++)
-    { // 只要数组里的角度符合的，Y或L就为true,然后就不在继续检测Y或L
-        if (rpts0an[i] == 0)
-            continue; // 以下检测只检测峰值（极大值）
-        int im1 = clip(i - (int)round(angle_dist / sample_dist), 0, rpts0s_num - 1);
-        int ip1 = clip(i + (int)round(angle_dist / sample_dist), 0, rpts0s_num - 1);
-        float conf = fabs(rpts0a[i]) - (fabs(rpts0a[im1]) + fabs(rpts0a[ip1])) / 2; // 计算了当前点的角度与其前后两个点角度平均值的差值，判断拐点及其有用
-
-        // Y角点阈值                 (30*  ,   50*)    并且距离在40个点之内 (注：30.转化浮点数)
-        // if (Ypt0_found == false && 6. / 180. * PI < conf && conf < 15. / 180. * PI && i < 0.8 / sample_dist)
-        // {
-        //     Ypt0_rpts0s_id = i;
-        //     Ypt0_found = true;
-        // }
-        // L角点阈值                 (55*  ,    140*)  并且距离在40个点之内 修改距离为1.2m增长判断路障距离
-        if (Lpt0_found == false && 45. / 180. * PI < conf && conf < 140. / 180. * PI && i < 0.8 / sample_dist)
-        {
-
-            Lpt0_rpts0s_id = i;
-            Lpt0_found = true;
-            //            ips200_draw_line(0,0,ipts0[Lpt0_rpts0s_id][0],ipts0[Lpt0_rpts0s_id][0],RGB565_GREEN);
-            // ips200_show_uint(203,200,Lpt0_found,2);
-            //            if (rpts0a[Lpt0_rpts0s_id] < 0) // 这一个L点如果是向右拐的，就是内L点
-            //            {
-            //                N_Lpt0_rpts0s_id = Lpt0_rpts0s_id;
-            //                N_Lpt0_found = true;
-            //                //                //对内L角的线截断
-            //                //                rptsc0_num = rpts0s_num = N_Lpt0_rpts0s_id;
-            //                Lpt0_found = false;
-            //            }
-        }
-        // 长直道阈值
-        if (conf > 5. / 180. * PI && i < 1.4 / sample_dist) // conf大于5度（转化为弧度为 5/180 * PI），并且i小于1.4米除以采样距离sample_dist
-            is_straight0 = false;                           // 只要中间有大角度，就不是长直道
-        if (Ypt0_found == true && Lpt0_found == true && is_straight0 == false)
-            break;
-    }
-
-    // 右边线角度
-    for (int i = 1; i < rpts1s_num; i++)
-    {
-        if (rpts1an[i] == 0)
-            continue;
-        int im1 = clip(i - (int)round(angle_dist / sample_dist), 0, rpts1s_num - 1);
-        int ip1 = clip(i + (int)round(angle_dist / sample_dist), 0, rpts1s_num - 1);
-        float conf = fabs(rpts1a[i]) - (fabs(rpts1a[im1]) + fabs(rpts1a[ip1])) / 2;
-        // if (Ypt1_found == false && 6. / 180. * PI < conf && conf < 15. / 180. * PI && i < 0.8 / sample_dist)
-        // {
-        //     Ypt1_rpts1s_id = i;
-        //     Ypt1_found = true;
-        // }
-        if (Lpt1_found == false && 45. / 180. * PI < conf && conf < 140. / 180. * PI && i < 0.8 / sample_dist)
-        {
-            Lpt1_rpts1s_id = i;
-            Lpt1_found = true;
-
-            // if (rpts1a[Lpt1_rpts1s_id] > 0) // 这一个L点如果是向左拐的，就是内L点
-            // {
-            //     N_Lpt1_rpts1s_id = Lpt1_rpts1s_id;
-            //     N_Lpt1_found = true;
-            //     //                //对内L角的线截断
-            //     //                rptsc1_num = rpts1s_num = N_Lpt1_rpts1s_id;
-            //     Lpt1_found = false;
-            // }
-        }
-
-        if (conf > 5. / 180. * PI && i < 1.4 / sample_dist)
-            is_straight1 = false;
-        if (Ypt1_found == true && Lpt1_found == true && is_straight1 == false)
-            break;
-    }
-
-    // Y点二次检查,依据两角点距离及角点后张开特性
-    // if (Ypt0_found && Ypt1_found)
-    // {
-    //     //==================================================================原检查
-    //     float dx = rpts0s[Ypt0_rpts0s_id][0] - rpts1s[Ypt1_rpts1s_id][0];
-    //     float dy = rpts0s[Ypt0_rpts0s_id][1] - rpts1s[Ypt1_rpts1s_id][1];
-    //     float dn = sqrtf(dx * dx + dy * dy);
-    //     if (fabs(dn - 0.40 * pixel_per_meter) < 0.20 * pixel_per_meter) // 两点距离不能大于60cm  (赛道40cm)
-    //     {
-    //         float dwx = rpts0s[clip(Ypt0_rpts0s_id + 50, 0, rpts0s_num - 1)][0] -
-    //                     rpts1s[clip(Ypt1_rpts1s_id + 50, 0, rpts1s_num - 1)][0];
-    //         float dwy = rpts0s[clip(Ypt0_rpts0s_id + 50, 0, rpts0s_num - 1)][1] -
-    //                     rpts1s[clip(Ypt1_rpts1s_id + 50, 0, rpts1s_num - 1)][1];
-    //         float dwn = sqrtf(dwx * dwx + dwy * dwy);
-    //         if (!(dwn > 0.7 * pixel_per_meter && // 如两个Y点之后第50个 点之间的距离小于0.7m
-    //               rpts0s[clip(Ypt0_rpts0s_id + 50, 0, rpts0s_num - 1)][0] < rpts0s[Ypt0_rpts0s_id][0] &&
-    //               rpts1s[clip(Ypt1_rpts1s_id + 50, 0, rpts1s_num - 1)][0] > rpts1s[Ypt1_rpts1s_id][0]))
-    //         {
-    //             Ypt0_found = Ypt1_found = false;
-    //         }
-    //     }
-    //     else
-    //     {
-    //         Ypt0_found = Ypt1_found = false;
-    //     }
-
-    //     float dx_temp, dy_temp;
-
-    //     dx_temp = rpts0s[Ypt0_rpts0s_id][0] - rpts0s[rpts0s_num - 5][0];
-    //     dy_temp = rpts0s[Ypt0_rpts0s_id][1] - rpts0s[rpts0s_num - 5][1];
-    //     xielv_left_y_to_end = dy_temp / dx_temp; // 这里得算法包含十字得情况，所以dy 有可能为0，所以dy做分子
-
-    //     dx_temp = rpts1s[Ypt1_rpts1s_id][0] - rpts1s[rpts1s_num - 5][0];
-    //     dy_temp = rpts1s[Ypt1_rpts1s_id][1] - rpts1s[rpts1s_num - 5][1];
-    //     xielv_right_y_to_end = dy_temp / dx_temp; // 这里得算法包含十字得情况，所以dy 有可能为0，所以dy做分子
-    // }
-    // L点二次检查，车库模式不检查, 依据L角点距离及角点后张开特性
-
-
-    // 左车库第二次检查
-    // if (Lpt0_found && N_Lpt1_found)
-    // { // 理论上是左车库
-    //     float dx = rpts0s[Lpt0_rpts0s_id][0] - rpts1s[Lpt1_rpts1s_id][0];
-    //     float dy = rpts0s[Lpt0_rpts0s_id][1] - rpts1s[Lpt1_rpts1s_id][1];
-    //     float dn = sqrtf(dx * dx + dy * dy);
-    //     if (fabs(dn - 0.45 * pixel_per_meter) < 0.15 * pixel_per_meter) // 两点距离不能大于60cm  (赛道45cm)
-    //     {
-    //         float dwx = rpts0s[clip(Lpt0_rpts0s_id + 50, 0, rpts0s_num - 1)][0] -
-    //                     rpts1s[clip(Lpt1_rpts1s_id + 50, 0, rpts1s_num - 1)][0];
-    //         float dwy = rpts0s[clip(Lpt0_rpts0s_id + 50, 0, rpts0s_num - 1)][1] -
-    //                     rpts1s[clip(Lpt1_rpts1s_id + 50, 0, rpts1s_num - 1)][1];
-    //         float dwn = sqrtf(dwx * dwx + dwy * dwy);
-    //         if (!(dwn < 0.5 * pixel_per_meter && // 符合左车库特征必须50个点后距离小于0.5m，
-    //               rpts0s[clip(Lpt0_rpts0s_id + 50, 0, rpts0s_num - 1)][0] < rpts0s[Lpt0_rpts0s_id][0] &&
-    //               rpts1s[clip(Lpt1_rpts1s_id + 50, 0, rpts1s_num - 1)][0] < rpts1s[Lpt1_rpts1s_id][0]))
-    //         {
-    //             Lpt0_found = N_Lpt1_found = false;
-    //         }
-    //     }
-    //     else
-    //     {
-    //         Lpt0_found = N_Lpt1_found = false;
-    //     }
-    // }
-
-    // 右车库第二次检查
-    if (Lpt1_found && N_Lpt0_found)
-    { // 理论上是右车库
-        float dx = rpts0s[Lpt0_rpts0s_id][0] - rpts1s[Lpt1_rpts1s_id][0];
-        float dy = rpts0s[Lpt0_rpts0s_id][1] - rpts1s[Lpt1_rpts1s_id][1];
-        float dn = sqrtf(dx * dx + dy * dy);                            // 算个弧长微分
-        if (fabs(dn - 0.45 * pixel_per_meter) < 0.15 * pixel_per_meter) // 测量两点距离 两点距离不能大于60cm  (赛道45cm)
-        {
-            float dwx = rpts0s[clip(Lpt0_rpts0s_id + 50, 0, rpts0s_num - 1)][0] -
-                        rpts1s[clip(Lpt1_rpts1s_id + 50, 0, rpts1s_num - 1)][0];
-            float dwy = rpts0s[clip(Lpt0_rpts0s_id + 50, 0, rpts0s_num - 1)][1] -
-                        rpts1s[clip(Lpt1_rpts1s_id + 50, 0, rpts1s_num - 1)][1];
-            float dwn = sqrtf(dwx * dwx + dwy * dwy); // 如果符合车库要求的话求出两个车库点之后第50个点的距离
-            if (!(dwn < 0.5 * pixel_per_meter &&      // 符合右车库特征必须50个点后距离小于0.5m，
-                  rpts0s[clip(Lpt0_rpts0s_id + 50, 0, rpts0s_num - 1)][0] > rpts0s[Lpt0_rpts0s_id][0] &&
-                  rpts1s[clip(Lpt1_rpts1s_id + 50, 0, rpts1s_num - 1)][0] > rpts1s[Lpt1_rpts1s_id][0]))
-            {
-                Lpt1_found = N_Lpt0_found = false;
-            }
-        }
-        else
-        {
-            Lpt1_found = N_Lpt0_found = false;
-        }
-    }
-    */
-}
-
-/**
- * @brief 透视变换函数，将提取出来的两条边线进行透视变换
- *
- * @param pts_in 二维数组，表示输入的点集，每个点有两个坐标值
- * @param int_num 整型，表示输入的点集中点的数量
- * @param pts_out 二维数组，表示输出的点集，每个点有两个坐标值
- */
-void Pespective(int pts_in[][2], int int_num, float pts_out[][2])
-// 带入提取出来的两条边线，得到透视变换后的两条边线
-{
-    float x, y, w;
-    for (int16_t i = 0; i < int_num; i++)
-    {
-        x = getx((pts_in[i][0]), (pts_in[i][1]));
-        y = gety((pts_in[i][0]), (pts_in[i][1]));
-        w = getw((pts_in[i][0]), (pts_in[i][1]));
-        pts_out[i][0] = x / w;
-        pts_out[i][1] = y / w;
-    }
-}
-
-/*
-
-*/
-// void Normalization(float in[][2],int16 num,float out[][2])
-//{
-//     for (int i = 0; i < rpts_num; i++)
-//     {
-//         float dx = rpts[i][0] - cx;
-//         float dy = rpts[i][1] - cy;//求出每个点到x,y变化值
-//         //float dist = mySqrt(dx * dx + dy * dy);
-//         float dist = sqrt(dx * dx + dy * dy);
-//         //计算rpts上每一点到起始点cx,cy的距离
-//         if (dist < min_dist)//如果当前点到起始点的距离小于已知的最小距离，则更新最小距离和最近点的下标索引
-//         {
-//             min_dist = dist;
-//             begin_id = i;
-//         }
-//     }
-//     // 中线有点，同时最近点不是最后几个点
-//     if (begin_id >= 0 && rpts_num - begin_id >= 3)//这个if条件是用来判断中线是否有足够的点数，同时最近点不是最后几个点
-//     {
-//         // 归一化中线
-//         rpts[begin_id][0] = cx;
-//         rpts[begin_id][1] = cy;//选定起始点
-//         rptsn_num = sizeof(rptsn) / sizeof(rptsn[0]);//sizeof(rptsn) 表示 rptsn 数组的总字节数，sizeof(rptsn[0]) 表示 rptsn 数组中每个元素的字节数
-//         resample_points(rpts + begin_id, rpts_num - begin_id, rptsn, &rptsn_num, sample_dist * pixel_per_meter);
-//          aim_idx[0] = clip(round(aim_distance / sample_dist), 0, rptsn_num - 1);
-
-//        // 计算远锚点偏差值      cx，cy为摄像头坐标距重心坐标距离 0,-7
-//        dx[0] = rptsn[aim_idx[0]][0] - cx;
-//        dy[0] = rptsn[aim_idx[0]][1] - cy;
-//        dn[0] = sqrt(dx[0] * dx[0] + dy[0] * dy[0]);
-//        //dn = mySqrt(dx * dx + dy * dy);
-//        //error<0(输出为正) 左 error>0(输出为负) 右 以下为角度制换算为弧度制
-//        error[0] = atan2f(dx[0], dy[0]) * 180 / PI;//1弧度=180/π度 1度=π/180弧度
-//        //assert(!isnan(error));
-
-//        ave_error = 0;
-//        // 远近锚点综合考虑
-//        //angle = pid_solve(&servo_pid, error * far_rate + error_near * (1 - far_rate));
-//        // 根据偏差进行PD计算
-//        //float angle = pid_solve(&servo_pid, error);
-
-//        // 纯跟踪算法(只考虑远点)三轮控制用不到
-////        pure_angle = -atanf(pixel_per_meter * 2 * 0.2 * dx / dn / dn) / PI * 180 / 1;
-//      } else {
-//          // 中线点过少(出现问题)，则不控制舵机
-//          rptsn_num = 0;
-//      }
-
-//     end = system_getval_us();
-//     //timer_cost = end - start;                              //处理每一帧的时间
-
-//}
-
-// void Cross_Inflection_point(int16 pt0_in[][2],int16 pt0_num,int16 pt1[][2],int16 pt1_num)
-// {
-//     uint8 i;
-//     if()
-// }
-//*PerImg_ip定义使用的图像
-//
-// Created by RUPC on 2022/9/20.
-//
-//
-// Created by RUPC on 2022/9/20.
-//
-
-
-
-/*************************************************************************
- *  函数名称：void nms_angle();
- *  功能说明：角度变化率非极大抑制
- *  参数说明：输入角度变化率数组，角度变换数组总个数，抑制后的角度变化数组，点集奇数核
- *  函数返回：无
- *  备    注：上交方案：kernel = 21，保存极大值的数组，即一段范围内斜率变换最大的值，非极大值均设为零
- *************************************************************************/
-void nms_angle(float angle_in[], int num, float angle_out[], int kernel)
-{
-    zf_assert(kernel % 2 == 1);
-    int half = kernel / 2;
-    for (int i = 0; i < num; i++)
-    {
-        angle_out[i] = angle_in[i];
-        for (int j = -half; j <= half; j++)
-        {
-            // fabs():求绝对值
-            if (fabs(angle_in[clip(i + j, 0, num - 1)]) > fabs(angle_out[i]))
-            {
-                angle_out[i] = 0;
-                break;
-            }
-        }
-    }
-}
-
-/*************************************************************************
- *  函数名称：void local_angle_points();
- *  功能说明：点集局部角度变化率
- *  参数说明：输入边线数组，边线点个数，输出角度变换率数组，两点间固定距离
- *  函数返回：无
- *  修改时间：2022年11月23日
- *  备    注：计算该点前后两点连线的斜率作为该点切线斜率的近似
- *************************************************************************/
-void local_angle_points(float pts_in[][2], int num, float angle_out[], int dist)
-{
-    for (int i = 0; i < num; i++)
-    {
-        if (i <= 0 || i >= num - 1)
-        {
-            angle_out[i] = 0;
-            continue;
-        }
-        float dx1 = pts_in[i][0] - pts_in[clip(i - dist, 0, num - 1)][0];
-        float dy1 = pts_in[i][1] - pts_in[clip(i - dist, 0, num - 1)][1];
-        float dn1 = mySqrt(dx1 * dx1 + dy1 * dy1); // 此点与前一点间距离
-        // float dn1 = sqrtf(dx1 * dx1 + dy1 * dy1);//此点与前一点间距离
-        float dx2 = pts_in[clip(i + dist, 0, num - 1)][0] - pts_in[i][0];
-        float dy2 = pts_in[clip(i + dist, 0, num - 1)][1] - pts_in[i][1];
-        float dn2 = mySqrt(dx2 * dx2 + dy2 * dy2); // 此点与后一点间距离
-        // float dn2 = sqrtf(dx2 * dx2 + dy2 * dy2);//此点与后一点间距离
-        float c1 = dx1 / dn1; // cosθ1
-        float s1 = dy1 / dn1; // sinθ1
-        float c2 = dx2 / dn2; // cosθ2
-        float s2 = dy2 / dn2; // sinθ2
-        // 化简展开得到角公式(k1-k2)/(1+k1k2),即tan的差角公式==>得出两点间角度变化==>曲线斜率变化
-        angle_out[i] = atan2f(c1 * s2 - c2 * s1, c2 * c1 + s2 * s1); // atan2f(y,x):返回以弧度表示的y/x反正切
-    }
-}
-/**
- * @brief 左侧跟踪线函数，这整个函数是起到对输入数组pts_in平移的作用（感觉没什么用的样子）
- *
- * @param pts_in 输入的点集数组
- * @param num 点集数组的长度
- * @param pts_out 输出的点集数组
- * @param approx_num 近似点的数量
- * @param dist 距离
- */
-void track_leftline(float pts_in[][2], int num, float pts_out[][2], int approx_num, float dist)
-{
-    for (int i = 0; i < num; i++)
-    {
-        float dx = pts_in[clip(i + approx_num, 0, num - 1)][0] - pts_in[clip(i - approx_num, 0, num - 1)][0];
-        float dy = pts_in[clip(i + approx_num, 0, num - 1)][1] - pts_in[clip(i - approx_num, 0, num - 1)][1];
-        // 求x,y坐标上的偏差
-        float dn = mySqrt(dx * dx + dy * dy); // 求弧长
-        // float dn = sqrt(dx * dx + dy * dy);
-        dx /= dn; // cosθ
-        dy /= dn; // sinθ
-        pts_out[i][0] = pts_in[i][0] + dy * dist;
-        pts_out[i][1] = pts_in[i][1] - dx * dist;
-    }
-    ips200_show_uint(210, 210, approx_num, 3);
-}
-void track_rightline(float pts_in[][2], int num, float pts_out[][2], int approx_num, float dist)
-{
-    for (int i = 0; i < num; i++)
-    {
-        float dx = pts_in[clip(i + approx_num, 0, num - 1)][0] - pts_in[clip(i - approx_num, 0, num - 1)][0];
-        float dy = pts_in[clip(i + approx_num, 0, num - 1)][1] - pts_in[clip(i - approx_num, 0, num - 1)][1];
-        float dn = mySqrt(dx * dx + dy * dy);
-        // float dn = sqrt(dx * dx + dy * dy);
-        dx /= dn;
-        dy /= dn;
-        pts_out[i][0] = pts_in[i][0] - dy * dist;
-        pts_out[i][1] = pts_in[i][1] + dx * dist;
-    }
-}
 
 uint8 mid_line_num;
 
@@ -2537,29 +2148,35 @@ float Draw_line_cross_d(void)
 
 float err, last_err;
 
+float run_left_mid(void)
+{
+    int mid_line[150][2]; // 中线
+    uint8 i;
+    mid_line_num = ipts0_num; // 中线赋值
+    for (i = 0; i < mid_line_num; i++)
+    {
+        mid_line[i][0] = (ipts1[i][0] + ipts0[i][0]) / 2;
+        mid_line[i][1] = (ipts1[i][1] + ipts0[i][1]) / 2;//直接取平均（前面有个更好的函数，但是试过不行，后面再优化）
+    }
+    last_err = err;
+    err = LineRession(mid_line, mid_line_num - 1);
+    ips200_show_uint(0, 160, mid_line_num, 3);
+    /*三 误差简单滤波*/
+    err=0.8*err+last_err*0.2;
+    return err;
+
+}
 float run_left(void)
 {
     /*一 求中线*/
     int mid_line[150][2]; // 中线
     mid_line_num = 0;
     uint8 i;
-    if (Left_Turn_Mid == 1 || Left_Turn == 0)//左转弯边线状态（左边丢线or左边不丢线）
+    mid_line_num = ipts1_num; // 中线赋值
+    for (i = 0; i < mid_line_num; i++)
     {
-        mid_line_num = ipts0_num; // 中线赋值
-        for (i = 0; i < mid_line_num; i++)
-        {
-            mid_line[i][0] = (ipts1[i][0] + ipts0[i][0]) / 2;
-            mid_line[i][1] = (ipts1[i][1] + ipts0[i][1]) / 2;//直接取平均（前面有个更好的函数，但是试过不行，后面再优化）
-        }
-    }
-    else if (Left_Turn == 1 || Left_Turn_Mid == 0)
-    {
-        mid_line_num = ipts1_num; // 中线赋值
-        for (i = 0; i < mid_line_num; i++)
-        {
-            mid_line[i][0] = ipts1[i][0] / 2;
-            mid_line[i][1] = ipts1[i][1];
-        }
+        mid_line[i][0] = ipts1[i][0] / 2;
+        mid_line[i][1] = ipts1[i][1];
     }
     for (i = 0; i < mid_line_num; i++)
     {
@@ -2575,34 +2192,41 @@ float run_left(void)
     return err;
 }
 
+float run_right_mid(void)
+{
+    int mid_line[150][2]; // 中线
+    mid_line_num = 0;
+    uint8 i;
+    
+    mid_line_num = ipts1_num; // 中线赋值
+    for (i = 0; i < mid_line_num; i++)
+    {
+        mid_line[i][0] = (ipts1[i][0] + ipts0[i][0]) / 2;
+        mid_line[i][1] = (ipts1[i][1] + ipts0[i][1]) / 2;
+    }
+    last_err = err;
+    err = LineRession(mid_line, mid_line_num - 1);
+    ips200_show_uint(0, 160, mid_line_num, 3);
+    /*三 误差简单滤波*/
+    err = 0.8 * err + last_err * 0.2;
+    ips200_show_float(120, 120, err, 3, 3);
+    return err;
+}
+
+
 float run_right(void)
 {
     /*一 求中线*/
     int mid_line[150][2]; // 中线
     mid_line_num = 0;
     uint8 i;
-    if (Right_Turn_Mid == 1 || Right_Turn == 0)
-    {
-        mid_line_num = ipts1_num; // 中线赋值
-        for (i = 0; i < mid_line_num; i++)
-        {
-            mid_line[i][0] = (ipts1[i][0] + ipts0[i][0]) / 2;
-            mid_line[i][1] = (ipts1[i][1] + ipts0[i][1]) / 2;
-        }
-    }
-    else if (Right_Turn == 1 || Right_Turn_Mid == 0)
-    {
-        mid_line_num = ipts0_num; // 中线赋值
-        for (i = 0; i < mid_line_num; i++)
-        {
-            mid_line[i][0] = ipts0[i][0] / 2;
-            mid_line[i][1] = ipts0[i][1];
-        }
-    }
+    mid_line_num = ipts0_num; // 中线赋值
     for (i = 0; i < mid_line_num; i++)
     {
-        ips200_draw_point(mid_line[i][0], mid_line[i][1], RGB565_GREEN);
+        mid_line[i][0] = ipts0[i][0] / 2;
+        mid_line[i][1] = ipts0[i][1];
     }
+   
     /*二 求误差*/
 
     last_err = err;
@@ -2728,33 +2352,7 @@ void run_cross_d(void)
     uint8 i;
     Finnal_err=Draw_line_cross_d();
 }
-// float run_left_new(void)
-// {
-//     /*一 求中线*/
-//     int mid_line[120][2];//中线
-//     mid_line_num=0;
-//     uint16 height_count;
-//     int l_c,r_c;//左右计数值
-//     int i;
-//     if(loseline0==0&&touch_boundary0==1)
-//     {
-//         mid_line_num=ipts1_num;//中线赋值
-//         for(i=0;i<mid_line_num;i++)
-//         {
-//             mid_line[i][0]=(ipts1[i][0]+ipts0[i][0])/2;
-//             mid_line[i][1]=(ipts1[i][1]+ipts0[i][1])/2;
-//         }
-//     }
-//     /*二 求误差*/
-//     float err,last_err;
-//     last_err=err;
-//     err=LineRession(mid_line,mid_line_num-1);
 
-//     /*三 误差简单滤波*/
-//     err=0.8*err+last_err*0.2;
-//     ips200_show_float(120,120,err,3,3);
-//     return err;
-// }
 
 /*找到近拐点直接截断处理*/
 /**
@@ -2795,23 +2393,7 @@ float run_straight(void)
     return (k_l+k_r)/2;
 }
 
-void run_HD_a(void)
-{
-    float k_l, k_r, b_l, b_r; // 定义左右边线斜率和截距
-    k_l = (float)(ipts0[left_index_l][1] - 118) / (ipts0[left_index_l][0] - 1);
-    b_l = ipts0[left_index_l][1] * k_l - ipts0[left_index_l][0];
-    k_l = 1 / k_l;
-    b_l = -b_l * k_l;
-}
 
-void run_huandao(void)
-{
-    if (Huandao_a == 1)
-    {
-        Get_guaidian(ipts0, ipts0_num, ipts1, ipts1_num); // 找到拐点
-        run_HD_a();
-    }
-}
 void test(void)
 {
     uint8 i;
@@ -2846,21 +2428,34 @@ void test(void)
     // 	ips200_draw_line(0,0,ipts00[i][0],ipts00[i][1],RGB565_BLUE);
     // }
 
-    for(i=0;i<ipts11_num;i++)
-    {
-    	func_limit_ab(ipts11[i][0],0,160);
-    	func_limit_ab(ipts11[i][1],0,120);
-    	ips200_draw_line(160,0,ipts11[i][0],ipts11[i][1],RGB565_RED);
-    }
+    // for(i=0;i<ipts11_num;i++)
+    // {
+    // 	func_limit_ab(ipts11[i][0],0,160);
+    // 	func_limit_ab(ipts11[i][1],0,120);
+    // 	ips200_draw_line(160,0,ipts11[i][0],ipts11[i][1],RGB565_RED);
+    // }
 
-    Image_CheckState(ipts0, ipts0_num, ipts1, ipts1_num);
+    Image_Check(ipts0, ipts0_num, ipts1, ipts1_num);
     /*根据状态执行*/
-    if (Cross_State_b == 1 || Cross_State_c == 1 || Cross_State_d == 1)
+    switch (track_type)
     {
-        run_cross();
+        case TRACK_LEFT:
+        {
+            Finnal_err=run_left();
+            break;
+        }
+        case TRACK_RIGHT:
+        {
+            Finnal_err=run_right();
+            break;
+        }
+        case TRACK_LEFT_MID:
+        {
+            Finnal_err=run_left_mid();
+            break;
+        }
     }
     Finnal_err=run_left();
     Finnal_err=run_right();
-    Finnal_err=run_straight();
 
 }
