@@ -583,7 +583,7 @@ void Find_Borderline(void)
     ipts0_num = sizeof(ipts0) / sizeof(ipts0[0]); // 求数组的长度
     // 扫底下五行，寻找跳变点
 
-    for (; y0_first > begin_y - 100; y0_first--) // 从所选的行，向上扫50次，每次从中间向左线扫
+    for (; y0_first > begin_y - 40; y0_first--) // 从所选的行，向上扫50次，每次从中间向左线扫
     {
         for (; x0_first > 0; x0_first--)                             // 在选的每行中，从中间向左线扫
             if (AT_IMAGE(&img_raw, x0_first - 1, y0_first) < uthres) // 如果扫到黑点（灰度值为0），就从该点开始扫线
@@ -1328,6 +1328,11 @@ void Image_Check()
         track_type = TRACK_RIGHT;
         i=4;
     }
+    if (Straight_State == 1)
+    {
+        track_type = TRACK_STRAIGHT;
+        i=5;
+    }
     ips200_show_uint(160, 0, i, 3);
 }
 
@@ -1390,7 +1395,7 @@ void Image_CheckState(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], in
     }
 
     /*左弯道中：左边不丢线，右边也不丢线，左边到边界，左右点数差异大*/
-    if(touch_boundary0==1&&in_put_num_r>80&&Cross_State_c==0)
+    if(touch_boundary0==1 && in_put_num_r>80 && Cross_State_c==0 &&in_put_r[in_put_num_r-1][0]<40 )
     {
         Left_Turn_Mid = 1;
         Left_Turn = 0;
@@ -1438,10 +1443,10 @@ void Image_CheckState(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], in
         Straight_State = 0;
     }
 	// ips200_draw_line(in_put_l[in_put_num_l-1][0],in_put_l[in_put_num_l-1][1],in_put_r[in_put_num_r-1][0],in_put_r[in_put_num_r-1][1],RGB565_RED);
-	ips200_show_uint(3,200,Right_Turn,2);
-	ips200_show_uint(3,220,Right_Turn_Mid,2);
-	// ips200_show_uint(3,240,Cross_State_d,2);
-	// ips200_show_uint(3,260,Straight_State,2);
+	ips200_show_uint(3,200,Cross_State_b,2);
+	ips200_show_uint(3,220,Cross_State_c,2);
+	ips200_show_uint(3,240,Cross_State_d,2);
+	ips200_show_uint(3,260,Straight_State,2);
 	ips200_show_uint(3,280,Left_Turn,2);
 	ips200_show_uint(3,300,Left_Turn_Mid,2);
 	ips200_show_uint(43,200,in_put_num_l,3);
@@ -1582,8 +1587,6 @@ float Cross_Drawline(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int
     b_right = -b_right * k_right; // 新截距取相反数
 
     /*增加：斜率滤波*/
-    ips200_show_float(120, 140, k_left, 3, 3);
-    ips200_show_float(120, 160, k_right, 3, 3);
     // 新直线方程为 column=k*row+b
     /*四 补线*/
     for (i = in_put_l[left_index][1]; i > 10; i--)
@@ -2211,6 +2214,8 @@ float Draw_line_cross_d(void)
     k_r=(1/k_r);
     b_r= -b_r*k_r;
 
+    ips200_show_float(0,120,k_l,3,3);
+    ips200_show_float(0,140,k_r,3,3);
     // //直线方程为 row=k*column+b，但是补线的时候要转化为column=k*row+b（其实后面也没用补线，直接求斜率即可）
     // k_r = (float)(ipts111[ipts1_up_index][1] - 118) / (ipts111[ipts1_up_index][0] - 158);
     
@@ -2314,7 +2319,6 @@ float run_right_mid(void)
     ips200_show_uint(0, 160, mid_line_num, 3);
     /*三 误差简单滤波*/
     err = 0.8 * err + last_err * 0.2;
-    ips200_show_float(120, 120, err, 3, 3);
     return err;
 }
 
@@ -2339,7 +2343,6 @@ float run_right(void)
     ips200_show_uint(0, 160, mid_line_num, 3);
     /*三 误差简单滤波*/
     err = 0.8 * err + last_err * 0.2;
-    ips200_show_float(120, 120, err, 3, 3);
     return err;
 }
 
@@ -2507,7 +2510,7 @@ float Center_edge(void)
 
     for(i=0;i<118;i++)
     {
-        ips200_draw_line(0,0,Mid_line[i][0],Mid_line[i][1],RGB565_RED);
+        ips200_draw_point(Mid_line[i][0],Mid_line[i][1],RGB565_RED);
     }
 
     /*对高处的直线作截断处理*/
@@ -2517,7 +2520,6 @@ float Center_edge(void)
     err = LineRession(Mid_line, 118);
 
     err = last_err * 0.2 + err * 0.8;
-    ips200_show_float(160,120,err,3,3);
     return err;
 }
 
@@ -2537,18 +2539,11 @@ void run_cross_c(void)
  */
 void run_cross_d(void) 
 {
-    uint8 i;
-    float k_l,k_r;//定义左右边线斜率
-    float b_l,b_r;//定义左右边线截距
     Find_Borderline_Third();//当左右丢线后，此时ipts000和ipts111就可以扫上去了
     /*三次扫线和二次扫线的区别在于： 二次扫线的条件依赖于ipts0是否到达左边界(touch_boundary0)    三次扫线的条件是 左右同时丢线才扫线(loseline)
         二次扫线的起始点和ipts0的最后一个点的坐标有关                三次扫线的起始点是固定的（因为loseline==1，ipts0的坐标找不到了）
         二次扫线相对来说更加灵活，能根据ipts0最后一个点的坐标进行二次扫线的灵活变化     三次扫线只能在y属于0-60的范围内扫，相对比较固定
         二次扫线在十字环岛都能用        三次扫线只能在十字的最后一个状态才能用*/
-    
-
-   
-    
     Finnal_err=Draw_line_cross_d();
     Finnal_err=Center_edge();
 }
@@ -2584,13 +2579,9 @@ void run_cross(void)
  */
 float run_straight(void)
 {
-    float k_l,k_r;//定义左右边线斜率
-    if(Straight_State==1)
-    {
-        k_l=(float)LineRession(ipts0,ipts0_num*0.75);//减少直线尽头点对斜率的干扰
-        k_r=(float)LineRession(ipts1,ipts1_num*0.75);
-    }
-    return (k_l+k_r)/2;
+    float err;
+    err = Center_edge();
+    return err;
 }
 
 
@@ -2609,18 +2600,18 @@ void test(void)
     int test = 0;
     // test = Is_Straight(ipts0, ipts0_num, sample_dist);
 
-    // for (i = 0; i < ipts0_num; i++)
-    // {
-    //     func_limit_ab(ipts0[i][0], 0, 160);
-    //     func_limit_ab(ipts0[i][1], 0, 120);
-    //     ips200_draw_line(0,0,ipts0[i][0], ipts0[i][1], RGB565_RED);
-    // }
-    // for (i = 0; i < ipts1_num; i++)
-    // {
-    //     func_limit_ab(ipts1[i][0], 0, 160);
-    //     func_limit_ab(ipts1[i][1], 0, 120);
-    //     ips200_draw_line(0,0,ipts1[i][0], ipts1[i][1], RGB565_GREEN);
-    // }
+    for (i = 0; i < ipts0_num; i++)
+    {
+        func_limit_ab(ipts0[i][0], 0, 160);
+        func_limit_ab(ipts0[i][1], 0, 120);
+        ips200_draw_line(0,0,ipts0[i][0], ipts0[i][1], RGB565_RED);
+    }
+    for (i = 0; i < ipts1_num; i++)
+    {
+        func_limit_ab(ipts1[i][0], 0, 160);
+        func_limit_ab(ipts1[i][1], 0, 120);
+        ips200_draw_line(0,0,ipts1[i][0], ipts1[i][1], RGB565_GREEN);
+    }
     // for(i=0;i<ipts00_num;i++)
     // {
     // 	func_limit_ab(ipts00[i][0],0,160);
@@ -2655,6 +2646,16 @@ void test(void)
         case TRACK_LEFT_MID:
         {
             Finnal_err=run_left_mid();
+            break;
+        }
+        case TRACK_RIGHT_MID:
+        {
+            Finnal_err=run_right_mid();
+            break;
+        }
+        case TRACK_STRAIGHT:
+        {
+            Finnal_err=run_straight();
             break;
         }
     }

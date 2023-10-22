@@ -80,6 +80,7 @@ enum track_type_e
     TRACK_RIGHT,
     TRACK_RIGHT_MID,
     TRACK_NONE,
+    TRACK_STRAIGHT,
 };
 extern enum track_type_e track_type;
 /*这个得放在车库的.c现在还没建成*/

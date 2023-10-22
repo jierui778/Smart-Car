@@ -60,6 +60,10 @@ void Cross_Run(void)
         case CROSS_OUT:
         {
             run_cross_d();
+            if(loseline0 == 0 && loseline1 == 0)
+            {
+                cross_type = CROSS_NONE;
+            }
             break;
         }
 
