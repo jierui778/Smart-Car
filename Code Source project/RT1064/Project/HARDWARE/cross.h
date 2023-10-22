@@ -11,6 +11,7 @@ enum cross_type_e
     CROSS_DOUBLLE_FOUND,
     CROSS_IN_LEFT,
     CROSS_IN_RIGHT,
+    CROSS_RUN,
     CROSS_IN_DOUBLE,
     CROSS_OUT,
     CROSS_NONE,
