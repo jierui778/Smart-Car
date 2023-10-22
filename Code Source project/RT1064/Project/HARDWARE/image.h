@@ -1,4 +1,6 @@
 #include "zf_common_headfile.h"
+#include "mymath.h"
+#include "cross.h"
 #ifndef _IMAGE_H
 #define _IMAGE_H
 
@@ -51,12 +53,8 @@ float Imgae_SlopeLeft(uint8 begin, uint8 end);                                 /
 void Image_CountLeftKB_L(uint8 start, uint8 end);
 float mySqrt(float x); // 计算一个浮点数的平方根
 
-/*元素*/
-void Image_FillCross(uint8 (*Image_Use)[IMAGE_WIDTH]); // 十字
-uint8 Image_Stretch_Left(void);                        // 左直道元素判断
-uint8 Image_Stretch_Right(void);                       // 右直道元素判断
-void Image_Ramp(void);                                 // 坡道判断
-void Image_LeftRound(uint8 (*Image_Use)[IMAGE_WIDTH]); // 左环岛判断补线
+void run_cicrle_right_in(void);
+
 
 /*运行*/
 void Image_Run(void); // 图像处理主函数

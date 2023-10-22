@@ -23,6 +23,16 @@ void Circle_Check(void)
         circle_type = CIRCLE_RIGHT_FOUND; // 枚举状态为找到右圆环
         circle_num++;
     }
+
+    if( ipts0_num>100 && ipts0[ipts0_num-1][1]<40 && touch_boundary1==1 && ipts1[ipts1_num-1][0]>140 && circle_type==CIRCLE_NONE)
+    {
+        circle_type = CIRCLE_RIGHT_FOUND; // 枚举状态置为找到左圆环
+        circle_num++;
+    }
+    if( ipts1_num>100 && ipts1[ipts1_num-1][1]<40 && touch_boundary0==1 && ipts0[ipts0_num-1][0]>140 && circle_type==CIRCLE_NONE)
+    {
+        circle_type = CIRCLE_LEFT_FOUND;
+    }
 }
 
 void Circle_Run(void)
@@ -53,4 +63,23 @@ void Circle_Run(void)
     //   {
     //       track_type = TRACK_LEFT; // 15cm摄像头看不到内线,默认巡左
     //   }
+    switch (circle_type)
+    {
+        case CIRCLE_RIGHT_FOUND:
+        {
+            if (touch_boundary1 == 1 && touch_boundary0 == 0 && ipts1[ipts1_num - 1][1] < 50)
+            {
+                circle_type = CIRCLE_RIGHT_IN;
+            }
+            break;
+        }
+        case CIRCLE_RIGHT_IN:
+        {
+            run_cicrle_right_in();
+            if(ipts0_num>100 && ipts0[ipts0_num-1][1]<40 && touch_boundary1==1 && ipts1[ipts1_num-1][0]>140)
+            {
+                circle_type = CIRCLE_RIGHT_FOUND;
+            }
+        }
+    }
 }

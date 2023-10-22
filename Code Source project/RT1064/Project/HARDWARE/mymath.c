@@ -1,4 +1,5 @@
 #include "mymath.h"
+#include "math.h"
 /**
  * @brief 快速反向平方根开方
  *
@@ -88,6 +89,15 @@ uint8 Atan2(float y, float x)
 
     return alpha; // 方向
 } // end of function Atan2
+
+
+
+float slope_to_degree(float slope) 
+{
+    float theta = atan(slope);
+    float degree = theta * 180 / PI;
+    return degree;
+}
 
 /**
 //  * @brief 计算一个整数的绝对值

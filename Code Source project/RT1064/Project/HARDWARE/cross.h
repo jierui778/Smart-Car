@@ -14,9 +14,9 @@ enum cross_type_e {
 };
 extern enum cross_type_e cross_type;
 
-void Cross_Chreck(void);
+void Cross_Check(void);
 
-
+void Cross_Run(void);
 //extern int cross_num;
 //extern int L_x0, L_x1 , L_y0 , L_y1;                       //十字得近处两个L点的坐标
 //extern int far_x0, far_x1 , far_y0 , far_y1 ;                  //寻找到的远处起始点
