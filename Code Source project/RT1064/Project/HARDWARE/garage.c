@@ -23,6 +23,7 @@ void Garage_Check(void) // 找到上角点则加入上角点一起判断
         if (temp > ZIBRA_THRES)
         {
             garage_type = GARAGE_FOUND_RIGHT;
+            Garage_cnt++; // 记录车库数目
         }
     }
     else if (Near_Lpt1_Found && Far_Lpt1_Found) // 单边双角点
@@ -37,13 +38,15 @@ void Garage_Check(void) // 找到上角点则加入上角点一起判断
         if (temp > ZIBRA_THRES) // 斑马线黑点数大于阈值
         {
             garage_type = GARAGE_FOUND_RIGHT;
+            Garage_cnt++; // 记录车库数目
         }
     }
     else
     {
+        garage_type = GARAGE_NONE;
         Zibra_Thres = 0;
     }
-    Garage_cnt++; // 记录车库数目
+
     //     if (Zibra_Thres > ZIBRA_THRES) // 找到斑马线
     //     {
     //         if (Far_Lpt0_Found && Near_Lpt0_Found && Is_straight1) // 单边长直线且另外一边双角点
@@ -62,32 +65,38 @@ void Garage_Run(void)
 {
     if (garage_type == GARAGE_FOUND_LEFT)
     {
-        if (CornersLeft_Point[1] > 50)
+        if (CornersLeft_Point[1] > 50 && Far_Lpt0_Found && loseline0) // 左远角点找到,且左边近线丢线,准备入库
         {
+            garage_type = GARAGE_IN_LEFT;
+            Encoder_Int_Enable();
         }
     }
     else if (garage_type == GARAGE_FOUND_RIGHT)
     {
-        if (CornersLeft_Point[1] > 50)
+        if (CornersRight_Point[1] > 50 && Far_Lpt1_Found && loseline1) // 右远角点找到,且右边近线丢线,准备入库
         {
+            garage_type = GARAGE_IN_LEFT;
+            Encoder_Int_Enable();
         }
     }
-    Encoder_Int_Clear();
+
+    if ((Encoder_L_Dis + Encoder_R_Dis) / 2 > GARAGE_DIS) // 编码器积分到达指定值,强积分停车
+    {
+        garage_type = GARAGE_STOP;
+        Encoder_Int_Clear(); // 编码器积分清除
+    }
 }
 
 void Garage_Out(void)
 {
-    if(garage_type == GARAGE_OUT_LEFT&&Near_Lpt0_Found&& Near_Lpt1_Found)//非车库模式且双近拐点找到
+    if (garage_type == GARAGE_OUT_LEFT && Near_Lpt0_Found && Near_Lpt1_Found) // 非车库模式且双近拐点找到
     {
-
     }
-    else if (garage_type == GARAGE_OUT_RIGHT&&Near_Lpt0_Found&& Near_Lpt1_Found)
+    else if (garage_type == GARAGE_OUT_RIGHT && Near_Lpt0_Found && Near_Lpt1_Found)
     {
-
     }
     else
     {
-        
     }
 }
 // // 编码器，防止重复触发等情况
