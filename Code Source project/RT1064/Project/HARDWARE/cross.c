@@ -37,7 +37,7 @@ void Cross_Check(void) // 得考虑斜入十字的情况
         a = 3;
     }
     else
-
+        
     {
         cross_type = CROSS_NONE;
     }
@@ -71,9 +71,7 @@ void Cross_Run(void)
     {
         if (loseline0 && loseline1) // 左边线一边点数小于40,进入十字
         {
-            cross_type = CROSS_IN_DOUBLE;                                                // 左边近线丢失,循左边远线
-            Line_Add(&Image_Use_Robert, NearCorners_Find_Left, FarCorners_Find_Left, 0); // 十字补线
-            Line_Add(&Image_Use_Robert, NearCorners_Find_Right, FarCorners_Find_Right, 0);
+            cross_type = CROSS_IN_DOUBLE; // 左边近线丢失,循左边远线
             Encoder_Int_Enable();
             a = 13;
             NearBorderLine_Enable = 0; // 关闭近边线
