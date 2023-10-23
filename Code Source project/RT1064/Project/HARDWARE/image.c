@@ -116,7 +116,11 @@ void test(void)
             FarCorners_Find_Right(Far_ipts1, Far_ipts1_num, FarCornersRight_Point, &Far_Lpt1_Found);
         }
     }
+<<<<<<< HEAD
 
+=======
+    Line_Add(&Image_Use_Robert, NearCorners_Find_Left, FarCorners_Find_Left, 0);
+>>>>>>> de1e39c23ed37256b074f0365ef312782ec84f1c
     ips200_show_int(20, 200, Near_Lpt0_Found, 1);
     ips200_show_int(20, 220, Near_Lpt1_Found, 1);
     ips200_show_int(20, 240, Far_Lpt0_Found, 1);
@@ -132,12 +136,17 @@ void test(void)
     ips200_show_int(80, 220, loseline1, 1);
     ips200_show_int(160, 200, NearBorderLine_Enable, 1);
     ips200_show_int(160, 240, FarBorderLine_Enable, 1);
+<<<<<<< HEAD
+=======
+
+>>>>>>> de1e39c23ed37256b074f0365ef312782ec84f1c
 
     // Line_Add(&img_raw, CornersLeft_Point, FarCornersLeft_Point, 0);
     // Line_Add(&img_raw, CornersRight_Point, FarCornersRight_Point, 0);
 
     // ips200_show_int(100, 100, test, 3);
 
+<<<<<<< HEAD
     if (1)
     {
         Cross_Check();
@@ -145,10 +154,20 @@ void test(void)
         MidLine_Get();
     }
     
+=======
+    // if (1)
+    // {
+    //     Cross_Check();
+    //     Cross_Run();
+    //     MidLine_Get();
+    // }
+
+>>>>>>> de1e39c23ed37256b074f0365ef312782ec84f1c
     // MidLine_Get(ipts0, ipts0_num, ipts1, ipts1_num, test, 2);
     // NearCorners_Find_Left(ipts0, ipts0_num, test, &test2);
     // NearCorners_Find_Right(ipts1, ipts1_num, test3, &test5);//近角点正常
     // Features_Find();  // 寻找特征点
+<<<<<<< HEAD
 
     // int test = Is_Straight(ipts0, ipts0_num, 100);
     // test = Is_Straight(ipts0, ipts0_num, sample_dist);
@@ -162,6 +181,10 @@ void test(void)
     // {
     //     ips200_draw_point(ipts1[i][0] - 3, ipts1[i][1], RGB565_RED);
     // }
+=======
+
+
+>>>>>>> de1e39c23ed37256b074f0365ef312782ec84f1c
 
     for (int i = 0; i < ipts0_num; i++)
     {
@@ -172,7 +195,6 @@ void test(void)
         ips200_draw_point(Far_ipts0[i][0] + 5, Far_ipts0[i][1], RGB565_RED);
     }
 }
-
 
 /**
  * @brief 寻找远左拐点
@@ -300,7 +322,11 @@ void FarBorderline_Find(void)
         // ips200_show_int(50, 200, 666, 2);
         x1_first = CornersRight_Point[0];
         y1_first = CornersRight_Point[1] - 10;
+<<<<<<< HEAD
         ;
+=======
+
+>>>>>>> de1e39c23ed37256b074f0365ef312782ec84f1c
 
         Far_ipts1_num = sizeof(Far_ipts1) / sizeof(Far_ipts1[0]);
         for (; y1_first > 15; y1_first--)
@@ -330,8 +356,55 @@ void FarBorderline_Find(void)
 int TEST[30][2] = {0};
 void MidLine_Get(void)
 {
+<<<<<<< HEAD
 
     if (cross_type == CROSS_DOUBLLE_FOUND)
+=======
+
+    int Left_Edge[150][2]={0}; // 实际上只会用到120个，怕越界
+    int Right_Edge[150][2]={0};
+    int x,y;
+    int i;
+    int uthres=1;
+    y=0;
+    for(i = 0;i< 118; i++)
+    {
+        for(x=80;x>0;x--)
+        {
+            if((AT_IMAGE(&img_raw, x+1, i) > uthres)&&(AT_IMAGE(&img_raw, x, i) < uthres))
+            {
+                Left_Edge[i][0]=x;
+                Left_Edge[i][1]=i;
+                break;
+            }
+        }
+    }
+    y=0;
+    for(i=0;i<118;i++)
+    {
+        for(x=80;x<159;x++)
+        {
+            if((AT_IMAGE(&img_raw, x+1, i) > uthres)&&(AT_IMAGE(&img_raw, x, i) < uthres))
+            {
+                Right_Edge[i][0]=x;
+                Right_Edge[i][1]=i;
+                break;
+            }
+        }
+    }
+
+
+    int Mid_line[150][2]={0};
+    int Mid_line_num =0;
+    /*显示函数，可以去掉*/
+    for(i=0;i<118;i++)
+    {
+        ips200_draw_point(Mid_line[i][0],Mid_line[i][1],RGB565_RED);
+    }
+
+
+    switch (mode)
+>>>>>>> de1e39c23ed37256b074f0365ef312782ec84f1c
     {
         for (int i = 0; i < 30; i++)
         {
@@ -339,6 +412,7 @@ void MidLine_Get(void)
             TEST[i][1] = (ipts0[i][1] + ipts1[i][1]) / 2;
         }
     }
+<<<<<<< HEAD
     if (cross_type == CROSS_IN_DOUBLE)
     {
         for (int i = 0; i < 30; i++)
@@ -351,6 +425,12 @@ void MidLine_Get(void)
     {
         ips200_draw_point(TEST[i][0], TEST[i][1], RGB565_RED);
     }
+=======
+    /*对高处的直线作截断处理*/
+
+
+    return err;
+>>>>>>> de1e39c23ed37256b074f0365ef312782ec84f1c
 }
 void Features_Find(void)
 {
@@ -392,11 +472,11 @@ void NearCorners_Find_Left(int pts_in[][2], int pts_num, int pts_out[2], int *fl
             pts_in[i][0] - pts_in[i - 1][0] >= 0 && pts_in[i][0] - pts_in[i - 2][0] >= 0 && pts_in[i][0] - pts_in[i - 3][0] >= 0 &&
             pts_in[i][0] - pts_in[i - 4][0] >= 0 && pts_in[i][0] - pts_in[i - 5][0] >= 0 && pts_in[i][0] - pts_in[i - 6][0] >= 0 && pts_in[i][0] - pts_in[i + 1][0] >= 0 && pts_in[i][0] - pts_in[i + 2][0] > 0 && pts_in[i][0] - pts_in[i + 3][0] >= 0 && pts_in[i][0] - pts_in[i + 4][0] >= 0 && pts_in[i][0] - pts_in[i + 5][0] > 0 && pts_in[i][0] - pts_in[i + 6][0] >= 0 && my_abs(pts_in[i][1] - pts_in[i + 1][1]) < 5 && my_abs(pts_in[i][1] - pts_in[i + 2][1]) < 5 && my_abs(pts_in[i][1] - pts_in[i + 3][1]) < 5 && my_abs(pts_in[i][1] - pts_in[i + 4][1]) < 5 && my_abs(pts_in[i][1] - pts_in[i + 5][1]) < 5) // 感觉可以加条件进行二次强判断
         {
-            if (pts_in[pts_num - 5][1] - pts_in[i][1]>10)
+            if (pts_in[pts_num - 5][1] - pts_in[i][1] > 10)
             {
                 continue;
             }
-                pts_out[0] = pts_in[i][0];
+            pts_out[0] = pts_in[i][0];
             pts_out[1] = pts_in[i][1];
             Lpt0_id = i;
             *flag = 1;
@@ -1052,4 +1132,152 @@ void Right_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int 
         loseline1 = 1;
     // 记录边线数目
     *num = step;
+<<<<<<< HEAD
 }
+=======
+}
+
+// void Line_Add(image_t *img, int pt0[2], int pt1[2], uint8_t value)
+// {
+//     int dx = pt1[0] - pt0[0];
+//     int dy = pt1[1] - pt0[1];
+//     if (abs(dx) > abs(dy))
+//     {
+//         for (int x = pt0[0]; x != pt1[0]; x += (dx > 0 ? 1 : -1))
+//         {
+//             int y = pt0[1] + (x - pt0[0]) * dy / dx;                                  // y = 左线横坐标 + x遍历差值占总差值比例 * y方向差值
+//             AT(img, clip(x, 0, img->width - 1), clip(y, 0, img->height - 1)) = value; // （x，y）坐标像素（不超出边界）赋值
+//         }
+//     }
+//     else
+//     {
+//         for (int y = pt0[1]; y != pt1[1]; y += (dy > 0 ? 1 : -1))
+//         {
+//             int x = pt0[0] + (y - pt0[1]) * dx / dy;
+//             AT(img, clip(x, 0, img->width - 1), clip(y, 0, img->height - 1)) = value;
+//         }
+//     }
+// }
+void Line_Add(image_t *img, int pt0[2], int pt1[2], uint8_t value)
+{
+    int dx = pt1[0] - pt0[0];
+    int dy = pt1[1] - pt0[1];
+    if (abs(dx) > abs(dy))
+    {
+        for (int x = pt0[0]; x != pt1[0]; x += (dx > 0 ? 1 : -1))
+        {
+            int y = pt0[1] + (x - pt0[0]) * dy / dx;                                  // y = 左线横坐标 + x遍历差值占总差值比例 * y方向差值
+            AT(img, clip(x, 0, img->width - 1), clip(y, 0, img->height - 1)) = value; // （x，y）坐标像素（不超出边界）赋值
+        }
+    }
+    else
+    {
+        for (int y = pt0[1]; y != pt1[1]; y += (dy > 0 ? 1 : -1))
+        {
+            int x = pt0[0] + (y - pt0[1]) * dx / dy;
+            AT(img, clip(x, 0, img->width - 1), clip(y, 0, img->height - 1)) = value;
+        }
+    }
+}
+
+// void Line_Add(int pts_start[2], int pts_end[2], uint8_t value)
+// {
+//     // float k, b;
+//     // k = (float)(pts_end[0] - pts_start[0]) / (pts_end[1] - pts_start[1]);
+//     // b = (float)(pts_start[0] - k * pts_start[1]);
+//     // // row=k*column+b  column=row*k+b
+//     // if (pts_start[1] > pts_end[1])
+//     // {
+//     //     // for (int i = pts_start[1]; i > pts_end[1]; i--)
+//     //     // {
+//     //     //     // int j = (int)(k * i + b);
+//     //     //     // if (j>0)
+//     //     //     // {
+//     //     //     //     Image_Use_Robert[i][j] = value;
+//     //     //     // }
+//     //     // }
+//     // }
+//     float temp_rate = 0;
+//     float temp_b = 0;
+//     int16 x_dir = (pts_end[0] < pts_start[0] ? 1 : -1);
+//     int16 y_dir = (pts_end[1] < pts_start[1] ? 1 : -1);
+//     do
+//     {
+//         if (pts_start[0] != pts_end[0])
+//         {
+//             temp_rate = (float)(pts_end[1] - pts_start[1]) / (float)(pts_end[0] - pts_start[0]);
+//             temp_b = (float)pts_end[1] - (float)pts_end[0] * temp_rate;
+//         }
+//         else
+//         {
+//             while (pts_end[1] != pts_start[1])
+//             {
+//                 Image_Use_Robert[pts_end[0]][pts_end[1]] = value;
+//                 pts_end[1] += y_dir;
+//             }
+//             break;
+//         }
+
+//         if (func_abs(pts_end[1] - pts_start[1]) > func_abs(pts_end[0] - pts_start[0]))
+//         {
+//             while (pts_end[1] != pts_start[1])
+//             {
+//                 Image_Use_Robert[pts_end[0]][pts_end[1]] = value;
+//                 pts_end[1] += y_dir;
+//                 pts_end[0] = (int16)(((float)pts_end[1] - temp_b) / temp_rate);
+//             }
+//         }
+//         else
+//         {
+//             while (pts_end[0] != pts_start[0])
+//             {
+//                 Image_Use_Robert[pts_end[0]][pts_end[1]] = value;
+//                 pts_end[0] += x_dir;
+//                 pts_end[1] = (int16)((float)pts_end[0] * temp_rate + temp_b);
+//             }
+//         }
+//     } while (0);
+// }
+
+
+void Err_Get(void)
+{
+// 中线加权平均
+    ///////////////////////////////////////////////
+    int i=20,j=20;
+    while(ipts0[i][1]<ipts1[j][1])
+    {
+        j++;
+    }
+    while(ipts0[i][1]>ipts1[j][1])
+    {
+        i++;
+    }
+    float d=ipts1[j][0]-ipts0[i][0];
+    float sum=0,num=0;
+    for(int k=0;k<10;k++)
+    {
+    while(ipts0[i][1]<ipts1[j][1])
+    {
+        j++;
+    }
+    while(ipts0[i][1]>ipts1[j][1])
+    {
+        i++;
+    }
+        sum+= ((ipts1[j][0]+ipts0[i][0])/2)*((ipts1[j][0]-ipts0[i][0])/d);
+        num+=(ipts1[j][0]-ipts0[i][0])/d;
+        i++;
+    }
+    int mid_line =(int)(sum/num);
+    for (int k = 0; k < ipts0_num; k++)
+    {
+        ips200_draw_point(ipts0[k][0] + 3, ipts0[k][1], RGB565_RED);
+    }
+    for (int k = 0; k < ipts1_num; k++)
+    {
+        ips200_draw_point(ipts1[k][0] - 3, ipts1[k][1], RGB565_GREEN);
+    }
+    ips200_draw_line(mid_line,0,mid_line,120,RGB565_RED);
+}
+>>>>>>> de1e39c23ed37256b074f0365ef312782ec84f1c

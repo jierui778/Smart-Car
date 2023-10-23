@@ -22,12 +22,51 @@ Dialog DLL:      TCM.DLL V1.56.4.0
  
 <h2>Project:</h2>
 C:\Users\JIERUI\Desktop\2023 Smart Car\Smart-Car\Code Source project\RT1064\Project\MDK\RT1064_CAR.uvprojx
+<<<<<<< HEAD
 Project File Date:  10/22/2023
+=======
+Project File Date:  10/23/2023
+>>>>>>> de1e39c23ed37256b074f0365ef312782ec84f1c
 
 <h2>Output:</h2>
 *** Using Compiler 'V6.19', folder: 'C:\Program Files\Keil_v5\ARM\ARMCLANG\Bin'
 Build target 'RT1064_CAR'
+<<<<<<< HEAD
 ".\Objects\RT1064_CAR.axf" - 0 Error(s), 0 Warning(s).
+=======
+warning: unknown warning option '-Wno-reserved-identifier'; did you mean '-Wno-reserved-id-macro'? [-Wunknown-warning-option]
+../HARDWARE/image.c(5): warning: In file included from...
+../HARDWARE/cross.h(5): warning: 'PI' macro redefined [-Wmacro-redefined]
+#define PI 3.14159265358979f
+        ^
+../../libraries/zf_device\zf_device_gps_tau1201.h(60): note: previous definition is here
+#define PI                  ( 3.1415926535898 )
+        ^
+../HARDWARE/image.c(119): warning: incompatible pointer types passing 'uint8 (*)[120][160]' to parameter of type 'image_t *' (aka 'struct img *') [-Wincompatible-pointer-types]
+    Line_Add(&Image_Use_Robert, NearCorners_Find_Left, FarCorners_Find_Left, 0);
+             ^~~~~~~~~~~~~~~~~
+../HARDWARE/image.h(72): note: passing argument to parameter 'img' here
+extern void Line_Add(image_t *img, int pt0[2], int pt1[2], uint8_t value);
+                              ^
+../HARDWARE/image.c(119): warning: incompatible pointer types passing 'void (int (*)[2], int, int *, int *)' to parameter of type 'int *' [-Wincompatible-pointer-types]
+    Line_Add(&Image_Use_Robert, NearCorners_Find_Left, FarCorners_Find_Left, 0);
+                                ^~~~~~~~~~~~~~~~~~~~~
+../HARDWARE/image.h(72): note: passing argument to parameter 'pt0' here
+extern void Line_Add(image_t *img, int pt0[2], int pt1[2], uint8_t value);
+                                       ^
+../HARDWARE/image.c(119): warning: incompatible pointer types passing 'void (int (*)[2], int, int *, int *)' to parameter of type 'int *' [-Wincompatible-pointer-types]
+    Line_Add(&Image_Use_Robert, NearCorners_Find_Left, FarCorners_Find_Left, 0);
+                                                       ^~~~~~~~~~~~~~~~~~~~
+../HARDWARE/image.h(72): note: passing argument to parameter 'pt1' here
+extern void Line_Add(image_t *img, int pt0[2], int pt1[2], uint8_t value);
+                                                   ^
+5 warnings generated.
+compiling image.c...
+linking...
+Program Size: Code=80368 RO-data=7764 RW-data=324 ZI-data=93348  
+FromELF: creating hex file...
+".\Objects\RT1064_CAR.axf" - 0 Error(s), 5 Warning(s).
+>>>>>>> de1e39c23ed37256b074f0365ef312782ec84f1c
 
 <h2>Software Packages used:</h2>
 
@@ -40,7 +79,11 @@ Package Vendor: NXP
   C:/Users/JIERUI/AppData/Local/Arm/Packs/NXP/MIMXRT1064_DFP/16.0.0
 
 <h2>Collection of Component Files used:</h2>
+<<<<<<< HEAD
 Build Time Elapsed:  00:00:01
+=======
+Build Time Elapsed:  00:00:02
+>>>>>>> de1e39c23ed37256b074f0365ef312782ec84f1c
 </pre>
 </body>
 </html>
