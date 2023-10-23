@@ -57,7 +57,7 @@ extern enum track_type_e track_type; // 当前巡线模式
 extern uint8 Image_Use[IMAGE_HEIGHT][IMAGE_WIDTH];        // 全局声明原图像数组
 extern uint8 Image_Use_Robert[IMAGE_HEIGHT][IMAGE_WIDTH]; // 全局声明用于处理的图像数组
 /*图像处理*/
-void Image_Compress();                                                                                                       // 对原始图像进行压缩
+void Image_Compress(void);                                                                                                   // 对原始图像进行压缩
 uint8 OSTU_GetThreshold(uint8 *image, uint16 Width, uint16 Height);                                                          // 优化大津法获取阈值
 void Image_Sobel(uint8 Image_in[IMAGE_HEIGHT][IMAGE_WIDTH], uint8_t Image_out[IMAGE_HEIGHT][IMAGE_WIDTH], uint16 Threshold); // 全局sobel方案
 void Image_Binarization(unsigned char threshold, uint8 (*Image_Use)[IMAGE_WIDTH]);                                           // 全局二值化方案
@@ -68,6 +68,8 @@ void FarBorderLine_Find(void);
 
 void FarBorderline_Find(void); //
 void MidLine_Get(void);        // W矩阵参数（原图转化成逆透视后图像的参数）
+
+extern void Line_Add(image_t *img, int pt0[2], int pt1[2], uint8_t value);
 
 // 左右边丢线
 extern uint8 loseline0;

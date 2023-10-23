@@ -21,23 +21,27 @@ void Cross_Check(void) // 得考虑斜入十字的情况
     if (cross_type == CROSS_NONE && touch_boundary0 && Near_Lpt0_Found && Far_Lpt0_Found && !Near_Lpt1_Found) // 左边双角点,右边近角点丢失,斜入左十字,进入十字模式
     {
         cross_type = CROSS_HALF_LEFT_FOUND;
-        cross_num++; // 记录圆环个数
+        Line_Add(&Image_Use_Robert, NearCorners_Find_Left, FarCorners_Find_Left, 0); // 十字补线
+        cross_num++;                                                                 // 记录圆环个数
         a = 1;
     }
     else if (cross_type == CROSS_NONE && touch_boundary1 && Near_Lpt1_Found && Far_Lpt1_Found && !Near_Lpt0_Found) // 右边双角点,左边近角点丢失,斜入右十字,进入十字模式
     {
         cross_type = CROSS_HALF_RIGHT_FOUND;
-        cross_num++; // 记录圆环个数
+        Line_Add(&Image_Use_Robert, NearCorners_Find_Right, FarCorners_Find_Right, 0); // 十字补线
+        cross_num++;                                                                   // 记录圆环个数
         a = 2;
     }
     else if (cross_type == CROSS_NONE && touch_boundary0 && Near_Lpt0_Found && Far_Lpt0_Found && touch_boundary1 && Near_Lpt1_Found && Far_Lpt1_Found) // 双边双角点,进入十字模式
     {
         cross_type = CROSS_DOUBLLE_FOUND;
+        Line_Add(&Image_Use_Robert, NearCorners_Find_Left, FarCorners_Find_Left, 0); // 十字补线
+        Line_Add(&Image_Use_Robert, NearCorners_Find_Right, FarCorners_Find_Right, 0);
         cross_num++; // 记录圆环个数
         a = 3;
     }
     else
-        
+
     {
         cross_type = CROSS_NONE;
     }
@@ -50,8 +54,10 @@ void Cross_Run(void)
         if (loseline0) // 左边线一边点数小于40,进入十字
         {
 
-            cross_type = CROSS_IN_LEFT; // 左边近线丢失,循左边远线
-            Encoder_Int_Enable();       // 开启编码器积分
+            cross_type = CROSS_IN_LEFT;                                                  // 左边近线丢失,循左边远线
+            Line_Add(&Image_Use_Robert, NearCorners_Find_Left, FarCorners_Find_Left, 0); // 十字补线
+            // Line_Add(&Image_Use_Robert, NearCorners_Find_Right, FarCorners_Find_Right, 0);
+            Encoder_Int_Enable(); // 开启编码器积分
             a = 11;
             NearBorderLine_Enable = 0; // 关闭近边线
         }
@@ -61,6 +67,8 @@ void Cross_Run(void)
         if (loseline1) // 左边线一边点数小于40,进入十字
         {
             cross_type = CROSS_IN_LEFT; // 左边近线丢失,循左边远线
+            // Line_Add(&Image_Use_Robert, NearCorners_Find_Left, FarCorners_Find_Left, 0); // 十字补线
+            Line_Add(&Image_Use_Robert, NearCorners_Find_Right, FarCorners_Find_Right, 0);
             Encoder_Int_Enable();
             a = 12;
             NearBorderLine_Enable = 0; // 关闭近边线
@@ -71,7 +79,9 @@ void Cross_Run(void)
     {
         if (loseline0 && loseline1) // 左边线一边点数小于40,进入十字
         {
-            cross_type = CROSS_IN_DOUBLE; // 左边近线丢失,循左边远线
+            cross_type = CROSS_IN_DOUBLE;                                                // 左边近线丢失,循左边远线
+            Line_Add(&Image_Use_Robert, NearCorners_Find_Left, FarCorners_Find_Left, 0); // 十字补线
+            Line_Add(&Image_Use_Robert, NearCorners_Find_Right, FarCorners_Find_Right, 0);
             Encoder_Int_Enable();
             a = 13;
             NearBorderLine_Enable = 0; // 关闭近边线
