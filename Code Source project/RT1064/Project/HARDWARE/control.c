@@ -14,8 +14,8 @@ float Speed_Vary = 0.3; // 单次速度的增值（用来加速减速）
  */
 void Control_Init()
 {
-//     PID_Init();
-    Motor_Init();
+        //     PID_Init();
+        Motor_Init();
 }
 
 // /**
@@ -37,17 +37,17 @@ void Control_Init()
  */
 void Speed_Control(float left_speed, float right_speed)
 {
-    // pidMotor1Speed.target_val=left_speed;
-    // pidMotor2Speed.target_val=right_speed;
-    float Speed_L, Speed_R;
+        // pidMotor1Speed.target_val=left_speed;
+        // pidMotor2Speed.target_val=right_speed;
+        float Speed_L, Speed_R;
 
-    Speed_L = Encoder_L_Data / WHEEL_COUNT * WHEEL_C / 0.01; // 计算左轮速度(读取编码器的周期为10ms)
-    Speed_R = Encoder_R_Data / WHEEL_COUNT * WHEEL_C / 0.01; // 计算右轮速度
-    float Deviation_L = left_speed - Speed_L;                // 偏差=目标速度-实际速度
-    float Deviation_R = right_speed - Speed_R;               //
+        Speed_L = Encoder_L_Data / WHEEL_COUNT * WHEEL_C / 0.01; // 计算左轮速度(读取编码器的周期为10ms)
+        Speed_R = Encoder_R_Data / WHEEL_COUNT * WHEEL_C / 0.01; // 计算右轮速度
+        float Deviation_L = left_speed - Speed_L;                // 偏差=目标速度-实际速度
+        float Deviation_R = right_speed - Speed_R;               //
 
-//    Motor_SetPwmL(MINMAX(IncrementPID(Deviation_L, SpeedParam), -PWM_MAX, PWM_MAX));  // 将累加增量进行限幅输出
-//    Motor_SetPwmR(MINMAX(IncrementPID2(Deviation_R, SpeedParam), -PWM_MAX, PWM_MAX)); // 将累加增量进行限幅输出
+        //    Motor_SetPwmL(MINMAX(IncrementPID(Deviation_L, SpeedParam), -PWM_MAX, PWM_MAX));  // 将累加增量进行限幅输出
+        //    Motor_SetPwmR(MINMAX(IncrementPID2(Deviation_R, SpeedParam), -PWM_MAX, PWM_MAX)); // 将累加增量进行限幅输出
 }
 
 /**
@@ -88,18 +88,16 @@ void Speed_Control(float left_speed, float right_speed)
 void TrackLine_Control(float current_err)
 {
 
-        float Deviation = -current_err;                      // 理想情况应该为误差角度为0
+        float Deviation = -current_err; // 理想情况应该为误差角度为0
         float x;
-//        x= PositionPID(Deviation, TraceTurnParam);
-    
+        //        x= PositionPID(Deviation, TraceTurnParam);
+
         Servo_SetAngle(x); // 根据误差角度进行转
-//    MINMAX(IncrementPID(Deviation_L, SpeedParam), -PWM_MAX, PWM_MAX)
-        ips200_show_int(100,100,x,4);
-        ips200_show_int(100,120,Deviation,4);
+                           //    MINMAX(IncrementPID(Deviation_L, SpeedParam), -PWM_MAX, PWM_MAX)
+        ips200_show_int(100, 100, x, 4);
+        ips200_show_int(100, 120, Deviation, 4);
 }
 
 void SpeedUp_Control()
 {
-
-    
 }

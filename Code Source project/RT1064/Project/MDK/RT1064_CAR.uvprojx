@@ -569,6 +569,16 @@
               <FileType>5</FileType>
               <FilePath>..\HARDWARE\garage.h</FilePath>
             </File>
+            <File>
+              <FileName>ramp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\ramp.c</FilePath>
+            </File>
+            <File>
+              <FileName>ramp.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\HARDWARE\ramp.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

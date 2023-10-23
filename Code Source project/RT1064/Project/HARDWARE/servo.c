@@ -19,8 +19,8 @@ void Servo_SetAngle(float Angle) // 具体换算关系看舵机位置调整
     {
         Angle=-SERVO_ANGLE_MAX;
     }
-    
-        
+
+
     pwm = (float)(PWM_DUTY_MAX / (1000.0 / (float)SERVO_FRE) * (0.5 + (float)(Angle-ERROR) / 90.0));
     pwm_set_duty(SERVO_CH, MINMAX((uint32)pwm,0,PWM_DUTY_MAX));
 

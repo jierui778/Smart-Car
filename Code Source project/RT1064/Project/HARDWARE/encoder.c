@@ -3,6 +3,7 @@
 #include "zf_common_headfile.h"
 int32 Encoder_L_Data = 0, Encoder_R_Data = 0;
 int32 Encoder_L_Dis = 0, Encoder_R_Dis = 0;
+
 int8 DisCnt_Flag = 0;
 
 /**
@@ -34,15 +35,29 @@ void Encoder_Init(void)
  * @param Dis_L 编码器积分距离
  * @param Dis_R
  */
-void Encoder_Update(int32 *Data_L, int32 *Data_R ,int32 *Dis_L, int32 *Dis_R)
+void Encoder_Update(int32 *Data_L, int32 *Data_R, int32 *Dis_L, int32 *Dis_R)
 {
     *Data_L = encoder_get_count(ENCODER_L);  // 获取编码器计数
     *Data_R = -encoder_get_count(ENCODER_R); // 获取编码器计数//预采用kalman滤波
     encoder_clear_count(ENCODER_L);          // 清空编码器计数
     encoder_clear_count(ENCODER_R);          // 清空编码器计数
-    if(DisCnt_Flag)//开启计数
+    if (DisCnt_Flag)                         // 开启计数
     {
         *Dis_L += *Data_L;
         *Dis_R += *Data_R; // 积分编码器计数
     }
+}
+
+void Encoder_Int_Clear(void)
+{
+    DisCnt_Flag = 0;
+    Encoder_L_Dis = 0;
+    Encoder_R_Dis = 0;
+}
+
+void Encoder_Int_Enable(void)
+{
+    DisCnt_Flag = 1;
+    Encoder_L_Dis = 0;
+    Encoder_R_Dis = 0;
 }
