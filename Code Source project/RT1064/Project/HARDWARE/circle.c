@@ -6,20 +6,22 @@
 int LeftLine_Loss = 0, RightLine_Loss = 0;
 int LeftLine_Found = 0, RightLine_Found = 0;
 
-int circle_num = 0; // ¼ÇÂ¼Ô²»·¸öÊý
+int circle_num = 0; // ï¿½ï¿½Â¼Ô²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+
+enum circle_type_e circle_type = CIRCLE_NONE;
 
 void Circle_Check(void)
 {
-    if (circle_type == CIRCLE_NONE && Near_Lpt0_Found && Far_Lpt0_Found) // µ¥±ß³¤Ö±ÏßÇÒÁíÍâÒ»±ßÎª½Çµã+Ô²»¡
-    // ·Ç³µ¿âÄ£Ê½£¬·ÇÔ²»·Ä£Ê½ÇÒÕÒµ½×ó½Çµã£¬ÎÞÓÒ½Çµã£¬×óÏßÃÔ¹¬´¥Åöµ½±ßÑØ£¬ÓÒ±ßÎª³¤Ö±Ïß
+    if (circle_type == CIRCLE_NONE && Near_Lpt0_Found && Far_Lpt0_Found) // ï¿½ï¿½ï¿½ß³ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Îªï¿½Çµï¿½+Ô²ï¿½ï¿½
+    // ï¿½Ç³ï¿½ï¿½ï¿½Ä£Ê½ï¿½ï¿½ï¿½ï¿½Ô²ï¿½ï¿½Ä£Ê½ï¿½ï¿½ï¿½Òµï¿½ï¿½ï¿½Çµã£¬ï¿½ï¿½ï¿½Ò½Çµã£¬ï¿½ï¿½ï¿½ï¿½ï¿½Ô¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø£ï¿½ï¿½Ò±ï¿½Îªï¿½ï¿½Ö±ï¿½ï¿½
     {
-        circle_type = CIRCLE_LEFT_FOUND; // Ã¶¾Ù×´Ì¬ÖÃÎªÕÒµ½×óÔ²»·
+        circle_type = CIRCLE_LEFT_FOUND; // Ã¶ï¿½ï¿½×´Ì¬ï¿½ï¿½Îªï¿½Òµï¿½ï¿½ï¿½Ô²ï¿½ï¿½
         circle_num++;
     }
     else if (circle_type == CIRCLE_NONE && Near_Lpt1_Found && Far_Lpt1_Found)
-    // Ìõ¼þÓë×óÔ²»·Ä£Ê½Ïà·´
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô²ï¿½ï¿½Ä£Ê½ï¿½à·´
     {
-        circle_type = CIRCLE_RIGHT_FOUND; // Ã¶¾Ù×´Ì¬ÎªÕÒµ½ÓÒÔ²»·
+        circle_type = CIRCLE_RIGHT_FOUND; // Ã¶ï¿½ï¿½×´Ì¬Îªï¿½Òµï¿½ï¿½ï¿½Ô²ï¿½ï¿½
         circle_num++;
     }
     else
@@ -32,14 +34,14 @@ void Circle_Run(void)
 {
     if (circle_type == CIRCLE_LEFT_FOUND)
     {
-        track_type = TRACK_RIGHT; // ½ø×óÔ²»·Ç°£¬ÏÈÑ²ÓÒÏß
+        track_type = TRACK_RIGHT; // ï¿½ï¿½ï¿½ï¿½Ô²ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½Ñ²ï¿½ï¿½ï¿½ï¿½
     }
     else if (circle_type == CIRCLE_RIGHT_FOUND)
     {
-        track_type = TRACK_LEFT; // ½øÓÒÔ²»·Ç°£¬ÏÈÑ²ÓÒÏß
+        track_type = TRACK_LEFT; // ï¿½ï¿½ï¿½ï¿½Ô²ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½Ñ²ï¿½ï¿½ï¿½ï¿½
     }
 
-    if (circle_type == CIRCLE_LEFT_FOUND && CornersRight_Point[1] < 40) // Ô²»¡ÍâÍ¹×ø±ê´ïµ½·¶Î§ÄÚ,Ñ­ÄÚÔ²Èë»·
+    if (circle_type == CIRCLE_LEFT_FOUND && CornersRight_Point[1] < 40) // Ô²ï¿½ï¿½ï¿½ï¿½Í¹ï¿½ï¿½ï¿½ï¿½ïµ½ï¿½ï¿½Î§ï¿½ï¿½,Ñ­ï¿½ï¿½Ô²ï¿½ë»·
     {
         track_type = TRACK_RIGHT;
     }
@@ -57,34 +59,34 @@ void Circle_Run(void)
         track_type = TRACK_LEFT;
     }
 
-    if (Far_Lpt0_Found) // ×ó±ßÔ²»¡¼«×ø±êµãµ½´ïÒ»¶¨ãÐÖµÇÒ,Ô¶½Çµã´æÔÚ
+    if (Far_Lpt0_Found) // ï¿½ï¿½ï¿½Ô²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ãµ½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½,Ô¶ï¿½Çµï¿½ï¿½ï¿½ï¿½
     {
         LeftLine_Found = 0;
         LeftLine_Loss = 0;
-        circle_type = CIRCLE_LEFT_IN; // ½øÈë×óÔ²»·
-        Encoder_Int_Enable();         // ¿ªÆô±àÂëÆ÷»ý·Ö
+        circle_type = CIRCLE_LEFT_IN; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô²ï¿½ï¿½
+        Encoder_Int_Enable();         // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     }
-    else if (Far_Lpt1_Found) // ÓÒ±ßÔ²»¡¼«×ø±êµãµ½´ïÒ»¶¨ãÐÖµÇÒ,Ô¶½Çµã´æÔÚ
+    else if (Far_Lpt1_Found) // ï¿½Ò±ï¿½Ô²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ãµ½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½,Ô¶ï¿½Çµï¿½ï¿½ï¿½ï¿½
     {
         RightLine_Found = 0;
         RightLine_Loss = 0;
-        circle_type = CIRCLE_RIGHT_IN; // ½øÈëÓÒÔ²»·
-        Encoder_Int_Enable();          // ¿ªÆô±àÂëÆ÷»ý·Ö
+        circle_type = CIRCLE_RIGHT_IN; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô²ï¿½ï¿½
+        Encoder_Int_Enable();          // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     }
 
-    // ½øÔ²»·ÏÈ¶ªÏßºóÓÐÏß,¼´ÏÈÑ­ÄÚÔ²,ºóÑ­ÍâÔ²
-    if (circle_type = CIRCLE_LEFT_RUN && Near_Lpt1_Found) // Ô²»·Ä£Ê½,ÍâÔ²ÖÜ·¢ÏÖ½Çµã,×¼±¸³öÔ²»·
+    // ï¿½ï¿½Ô²ï¿½ï¿½ï¿½È¶ï¿½ï¿½ßºï¿½ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½Ñ­ï¿½ï¿½Ô²,ï¿½ï¿½Ñ­ï¿½ï¿½Ô²
+    if (circle_type == CIRCLE_LEFT_RUN && Near_Lpt1_Found) // Ô²ï¿½ï¿½Ä£Ê½,ï¿½ï¿½Ô²ï¿½Ü·ï¿½ï¿½Ö½Çµï¿½,×¼ï¿½ï¿½ï¿½ï¿½Ô²ï¿½ï¿½
     {
         circle_type = CIRCLE_LEFT_OUT;
     }
-    else if (circle_type = CIRCLE_RIGHT_RUN && Near_Lpt0_Found)
+    else if (circle_type == CIRCLE_RIGHT_RUN && Near_Lpt0_Found)
     {
-        circle_type = CIRCLE_RIGHT_OUT; // ×¼±¸³öÔ²»·,½Çµã°´Ö¸¶¨Ð±ÂÊ²¹Ïß,ÇÐ»»Ñ­Ïß·½Ïò
+        circle_type = CIRCLE_RIGHT_OUT; // ×¼ï¿½ï¿½ï¿½ï¿½Ô²ï¿½ï¿½,ï¿½Çµã°´Ö¸ï¿½ï¿½Ð±ï¿½Ê²ï¿½ï¿½ï¿½,ï¿½Ð»ï¿½Ñ­ï¿½ß·ï¿½ï¿½ï¿½
     }
 
-    if ((Encoder_L_Dis + Encoder_R_Dis) / 2 > CIRCLE_DIS && !Near_Lpt1_Found && !Near_Lpt0_Found) // ±àÂëÆ÷»ý·Ö´óÓÚ¾àÀëãÐÖµÇÒË«±ßÏßÎÞ½Çµã,ÍË³öÔ²»·Ä£Ê½
+    if ((Encoder_L_Dis + Encoder_R_Dis) / 2 > CIRCLE_DIS && !Near_Lpt1_Found && !Near_Lpt0_Found) // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½Ú¾ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½Ë«ï¿½ï¿½ï¿½ï¿½ï¿½Þ½Çµï¿½,ï¿½Ë³ï¿½Ô²ï¿½ï¿½Ä£Ê½
     {
         circle_type = CIRCLE_NONE;
-        Encoder_Int_Clear(); // ¹Ø±Õ±àÂëÆ÷»ý·Ö
+        Encoder_Int_Clear(); // ï¿½Ø±Õ±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     }
 }
