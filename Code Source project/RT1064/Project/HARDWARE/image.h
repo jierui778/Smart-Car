@@ -66,84 +66,16 @@ void Image_Binarization(unsigned char threshold, uint8 (*Image_Use)[IMAGE_WIDTH]
 void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x, int y, int pts[][2], int *num);
 void Right_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x, int y, int pts[][2], int *num);
 void FarBorderline_Find(void);
-float Center_edge(void);
+float Center_edge(uint8 mode);
 void Cross_Drawline(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int in_put_r_num);
 void Cross_Drawline_Found_Left(void);
 void Line_Add(image_t *img, int pts0_in[2], int pts1_in[2], int8 value);
+void Track_Run(void);
+void Track_Check(void);
 
-#define a11 (-5.5988f)
-#define a12 (-27.9734f)
-#define a13 (709.0200f)
-#define a21 (0.1837f)
-#define a22 (0.7491f)
-#define a23 (-648.4869f)
-#define a31 (0.0194f)
-#define a32 (-0.3464f)
-#define a33 (1.0f)
-
-
-#define getx(u, v) (a11 * (u) + a12 * (v) + a13)
-#define gety(u, v) (a21 * (u) + a22 * (v) + a23)
-#define getw(u, v) (a31 * (u) + a32 * (v) + a33)
-
-// D矩阵参数
-/*这些宏定义都是给60*80的矩阵*/
-#define b11 (-0.1238f)
-#define b12 (-0.0969f)
-#define b13 (-1.0252f)
-
-#define b21 (0.0000f)
-
-#define b22 (-0.0097f)
-
-#define b23 (-4.2726f)
-
-#define b31 (-0.0000f)
-#define b32 (-0.0023f)
-#define b33 (-0.0271f)
-
-//// D矩阵参数
-///*这些宏定义都是给60*80的矩阵*/
-// #define b11 (-0.4928f)
-// #define b12 (-0.4038f)
-// #define b13 (47.5991f)
-
-// #define b21 (0.0208f)
-
-// #define b22 (-0.0466f)
-
-// #define b23 (-14.1659f)
-
-// #define b31 (0.0003f)
-// #define b32 (-0.0052f)
-// #define b33 (-0.0556f)
-
-#define getx_b(u, v) (b11 * (u) + b12 * (v) + b13)
-#define gety_b(u, v) (b21 * (u) + b22 * (v) + b23)
-#define getw_b(u, v) (b31 * (u) + b32 * (v) + b33)
-
-void resample_points(float pts_in[][2], int num1, float pts_out[][2], int *num2, float dist);
-
-void local_angle_points(float pts_in[][2], int num, float angle_out[], int dist);
-void nms_angle(float angle_in[], int num, float angle_out[], int kernel);
-void find_corners(void);
-void cross_farline(void); // 寻远线
-void check_cross(void);
-void run_cross(void);
 #define POINTS_MAX_LEN (120) // 边线点最多的情况——>num
 
-//// 逆透视补线数组
-// extern float left_line[POINTS_MAX_LEN][2];
-// extern float right_line[POINTS_MAX_LEN][2];
-// extern int left_num, right_num;
-//// 拼接数组
-// extern float splicing_leftline[POINTS_MAX_LEN][2];
-// extern float splicing_rightline[POINTS_MAX_LEN][2];
-// extern int splicing_leftline_num, splicing_rightline_num;
-//// 拼接数组平移中线
-// extern float splicing_leftline_center[POINTS_MAX_LEN][2];
-// extern float splicing_rightline_center[POINTS_MAX_LEN][2];
-// extern int splicing_leftline_center_num, splicing_rightline_center_num;
+
 
 // 左右边丢线
 extern uint8 loseline0;
@@ -155,10 +87,6 @@ extern int FarBorderLine_Enable; // 开启远近线的标志位
 extern int Far_Lpt0_Found, Far_Lpt1_Found;
 extern int Near_Lpt0_Found, Near_Lpt1_Found;
 
-extern int CornersLeft_Point[2] ;
-extern int CornersRight_Point[2] ; // 近角点坐标
-extern int FarCornersLeft_Point[2] ;
-extern int FarCornersRight_Point[2] ; // 远角点坐标
 
 extern int x0_first, y0_first, x1_first, y1_first;
 
@@ -174,10 +102,7 @@ extern uint8 touch_boundary1;    // 右边线走到图像边界
 extern uint8 touch_boundary_up0; // 左边线走到图像左边界
 extern uint8 touch_boundary_up1; // 右边线走到图像右边界
 
-extern float xielv_left_y_to_end, xielv_right_y_to_end; // 在逆透视后得坐标系建得斜率
 
-extern float err,last_err;
-extern float Finnal_err;
 
 // 原图左右边线
 extern int ipts0[POINTS_MAX_LEN][2];
@@ -203,39 +128,16 @@ extern bool is_turn0, is_turn1;
 extern int Far_ipts0[POINTS_MAX_LEN][2]; // 存放边线数据（左）
 extern int Far_ipts1[POINTS_MAX_LEN][2]; // 存放边线数据（右）
 
-
-
-extern int Extra_ipts0[POINTS_MAX_LEN][2]; // 存放边线数据（左）
-extern int Extra_ipts1[POINTS_MAX_LEN][2]; // 存放边线数据（右）
-extern int Extra_ipts0_num;                // 存放边线像素点个数(左)
-extern int Extra_ipts1_num;                // 存放边线像素点个数(右)
-
 extern float Err[5];                     // 中线误差
 // 若考虑近点远点,可近似构造Stanley算法,避免撞路肩
 
-extern int CornersLeft_Point[2];
-extern int CornersRight_Point[2];
-extern int FarCornersLeft_Point[2];
-extern int FarCornersRight_Point[2];
-
-extern int Far_ipts0_num;                // 存放边线像素点个数(左)
-extern int Far_ipts1_num;                // 存放边线像素点个数(右)
 
 extern float err;
 extern float last_err;
 extern float Finnal_err;
 
-extern int CornersLeft_Point[2];
-extern int CornersRight_Point[2];
-extern int FarCornersLeft_Point[2];
-extern int FarCornersRight_Point[2];
-
 extern int Far_ipts0_num;                // 存放边线像素点个数(左)
 extern int Far_ipts1_num;                // 存放边线像素点个数(右)
-
-extern float err;
-extern float last_err;
-extern float Finnal_err;
 
 void Arc_Point_Get(int pts_in[][2], int pts_num, int pts_out[2]);
 

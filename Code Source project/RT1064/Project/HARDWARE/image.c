@@ -51,12 +51,6 @@ int Far_ipts0[POINTS_MAX_LEN][2]; // 存放边线数据（左）
 int Far_ipts1[POINTS_MAX_LEN][2]; // 存放边线数据（右）
 int Far_ipts0_num;                // 存放边线像素点个数(左)
 int Far_ipts1_num;                // 存放边线像素点个数(右)
-
-int Extra_ipts0[POINTS_MAX_LEN][2]; // 存放边线数据（左）
-int Extra_ipts1[POINTS_MAX_LEN][2]; // 存放边线数据（右）
-int Extra_ipts0_num;                // 存放边线像素点个数(左)
-int Extra_ipts1_num;                // 存放边线像素点个数(右)
-
 int Lpt0_id, Lpt1_id;         // 近线L角点id
 int Far_Lpt0_id, Far_Lpt1_id; // 远线L角点id
 
@@ -128,16 +122,21 @@ void test(void)
         }
     }
 
+    ips200_show_float(120, 140, Finnal_err, 5, 5);
+    ips200_show_uint(40,120,mid_line_num,3);
+    ips200_show_uint(40,140,ipts0_num,3);
+    ips200_show_uint(40,160,ipts1_num,3);
+
     ips200_show_int(20, 200, Near_Lpt0_Found, 1);
     ips200_show_int(20, 220, Near_Lpt1_Found, 1);
     ips200_show_int(20, 240, Far_Lpt0_Found, 1);
     ips200_show_int(20, 260, Far_Lpt1_Found, 1);
     ips200_show_int(20, 280, touch_boundary0, 1);
     ips200_show_int(20, 300, touch_boundary1, 1);
-    // ips200_draw_line(80, 60, CornersLeft_Point[0], CornersLeft_Point[1], RGB565_RED);
-    // ips200_draw_line(80, 60, CornersRight_Point[0], CornersRight_Point[1], RGB565_RED);
-    // ips200_draw_line(80, 60, FarCornersLeft_Point[0], FarCornersLeft_Point[1], RGB565_BLUE);
-    // ips200_draw_line(80, 60, FarCornersRight_Point[0], FarCornersRight_Point[1], RGB565_RED);
+    ips200_draw_line(80, 60, CornersLeft_Point[0], CornersLeft_Point[1], RGB565_RED);
+    ips200_draw_line(80, 60, CornersRight_Point[0], CornersRight_Point[1], RGB565_RED);
+    ips200_draw_line(80, 60, FarCornersLeft_Point[0], FarCornersLeft_Point[1], RGB565_BLUE);
+    ips200_draw_line(80, 60, FarCornersRight_Point[0], FarCornersRight_Point[1], RGB565_RED);
 
     ips200_show_int(80, 200, loseline0, 1);
     ips200_show_int(80, 220, loseline1, 1);
@@ -155,7 +154,10 @@ void test(void)
     
     Cross_Check();
     Cross_Run(ipts0,ipts0_num,ipts1,ipts1_num);
+    Track_Check();
+    Track_Run();
     ips200_show_float(140, 120, Finnal_err, 3,3);
+    ips200_show_float(140, 160, atan(1/Finnal_err), 3,3);
     // ips200_draw_line(0,0,CornersLeft_Point[0],CornersLeft_Point[1],RGB565_RED);
     // ips200_draw_line(160,0,CornersRight_Point[0],CornersRight_Point[1],RGB565_BLUE);
     
@@ -323,15 +325,11 @@ void FarBorderline_Find(void)
 /**
  * @brief 获取中线
  *
- * @param pts0 左边线
- * @param pts0_num 左边线点数
- * @param pts1 右边线
- * @param pts1_num 右边线点数
- * @param pts_out 中线
- * @param pts_out_num 中线点数
+ * @param mode 1.95-35行加权求误差    2. 中线斜率求做误差
  */
-float Center_edge(void)
+float Center_edge(uint8 mode)
 {
+    
     int Left_Edge[150][2]={0}; // 实际上只会用到120个，怕越界
     int Right_Edge[150][2]={0};
     int x,y;
@@ -366,25 +364,48 @@ float Center_edge(void)
     
     
     int Mid_line[150][2]={0};
-    int Mid_line_num;
-    for (i = 30; i < 118; i++)
-    {
-        Mid_line[i][0] = (Left_Edge[i][0] + Right_Edge[i][0]) / 2;
-        Mid_line[i][1] = (Left_Edge[i][1] + Right_Edge[i][1]) / 2;
-    }
-
+    int Mid_line_num =0;
+    /*显示函数，可以去掉*/
     for(i=0;i<118;i++)
     {
         ips200_draw_point(Mid_line[i][0],Mid_line[i][1],RGB565_RED);
     }
 
+    
+    switch (mode)
+    {
+        case 1:
+        {
+            err=0.0;
+            for(int row = 95; row > 35; row--)//只取中线的35至95行
+            {
+                float k = 0.01; // 比例系数
+                float mapped_row = (row - 35) / 60.0; // 线性映射到0-1之间
+                err += (float)(k * mapped_row * ((Left_Edge[row][0] + Right_Edge[row][1])/2 - 80)/3.5);
+                Mid_line_num++;
+            }
+            break;
+        }
+        case 2:
+        {
+            for (i = 30; i < 118; i++)
+            {
+                Mid_line[i][0] = (Left_Edge[i][0] + Right_Edge[i][0]) / 2;
+                Mid_line[i][1] = (Left_Edge[i][1] + Right_Edge[i][1]) / 2;
+            }
+            for(i=0;i<118;i++)
+            {
+                ips200_draw_point(Mid_line[i][0],Mid_line[i][1],RGB565_RED);
+            }
+            err = LineRession(Mid_line, 118);
+
+            err = atan(err);//返回角度
+            break;
+        }
+    }
     /*对高处的直线作截断处理*/
 
     
-    last_err = err;
-    err = LineRession(Mid_line, 118);
-
-    err = last_err * 0.2 + err * 0.8;
     return err;
 }
 void Features_Find(void)
@@ -726,53 +747,6 @@ void Image_Binarization(uint8 threshold, uint8 (*Image)[IMAGE_WIDTH])
         }
     }
 }
-
-/**
- * @brief 计算两个浮点数之间的绝对值差
- *
- * @param a 第一个浮点数
- * @param b 第二个浮点数
- * @return float 两个浮点数之间的绝对值差
- */
-float Image_ab_value(float a, float b)
-{
-    if (a > b)
-    {
-        return a - b;
-    }
-    else
-    {
-        return b - a;
-    }
-}
-
-
-/**
- * @brief 扫描100行中的某一行的黑白跳变的函数（检测斑马线）
- *
- * @param uint8(*Image_Use)[IMAGE_WIDTH] 二值化后的图像 target_row：目标行
- * @return uint8 返回黑白跳变的次数
- */
-uint8 Image_Scan_Column(uint8 (*Image_Use)[IMAGE_WIDTH], uint8 target_column)
-{
-    uint8 i;
-    uint8 black_white_count = 0; // 黑白跳变的计数
-    for (i = 0; i < IMAGE_HEIGHT; i++)
-    {
-        if (Image_Use[i][target_column] != Image_Use[i + 1][target_column]) // 如果不相等的话，就说明是黑白跳变
-        {
-            black_white_count++;
-        }
-    }
-    return black_white_count;
-}
-
-// float begin_x = 8;  // 起始点距离图像中心的左右偏移量
-// float begin_y = 58; // 起始点距离图像底部的上下偏移量 120高度：35;100高
-
-// float block_size = 7; // 自适应阈值的block大小
-// float clip_value = 2; // 自适应阈值的阈值裁减量
-//  SOBEL二值化图像
 void BorderLine_Find(void)
 {
     // 迷宫巡线是否走到左右边界
@@ -1047,63 +1021,6 @@ float LineRession(int pts_in[][2], int num)
    return slope;                         // 返回斜率
 }
 
-
-// 角点提取&筛选 Y角点用于检测坡道，L角点用于检测圆环、十字、路障、断路
-
-// 左右边线局部角度变化率
-float rpts0a[POINTS_MAX_LEN];
-float rpts1a[POINTS_MAX_LEN];
-int rpts0a_num, rpts1a_num;
-// 左右边线局部角度变化率+非极大抑制
-float rpts0an[POINTS_MAX_LEN];
-float rpts1an[POINTS_MAX_LEN];
-int rpts0an_num, rpts1an_num;
-// 左/右中线
-float rptsc0[POINTS_MAX_LEN][2];
-float rptsc1[POINTS_MAX_LEN][2];
-int rptsc0_num, rptsc1_num;
-// 左右跟踪后的中线
-float (*rpts)[2];
-int rpts_num;
-// 归一化最终中线
-float rptsn[POINTS_MAX_LEN][2];
-int rptsn_num;
-
-// Y角点
-int Ypt0_rpts0s_id, Ypt1_rpts1s_id;
-bool Ypt0_found, Ypt1_found;
-// L角点
-int Lpt0_rpts0s_id, Lpt1_rpts1s_id;
-bool Lpt0_found, Lpt1_found;
-// 内L角点
-int N_Lpt0_rpts0s_id, N_Lpt1_rpts1s_id;
-bool N_Lpt0_found, N_Lpt1_found;
-// 长直道
-bool is_straight0, is_straight1;
-// 弯道
-bool is_turn0, is_turn1;
-
-int N_Xfound_num; // 面向赛道编程，双内L计数
-
-// 当前巡线模式（发车方向）
-
-float error[1];
-float ave_error; // 速度控制输入变量
-// 多个预锚点位置
-int aim_idx[1];
-
-// 计算远锚点偏差值
-float dx[1];
-float dy[1];
-float dn[1];
-
-// 若考虑近点远点,可近似构造Stanley算法,避免撞路肩
-// 计算近锚点偏差值
-float dx_near;
-float dy_near;
-float dn_near;
-float pure_angle;
-
 void Line_Add(image_t *img, int pts0_in[2], int pts1_in[2], int8 value)
 {
     int dx = pts1_in[0] - pts0_in[0];
@@ -1146,29 +1063,42 @@ float run_left_mid(void)
     return err;
 
 }
+
 float run_left(void)
 {
     /*一 求中线*/
     int mid_line[150][2]; // 中线
     mid_line_num = 0;
-    uint8 i;
-    mid_line_num = ipts1_num; // 中线赋值
-    for (i = 0; i < mid_line_num; i++)
+    if(loseline0 == 1 || (loseline0 == 0 && ipts0_num < 50))//情况1：左边完全丢线
     {
-        mid_line[i][0] = ipts1[i][0] / 2;
-        mid_line[i][1] = ipts1[i][1];
+        mid_line_num = ipts1_num; // 中线赋值
+        for (uint8 i = 0; i < mid_line_num; i++)
+        {
+            mid_line[i][0] = ipts1[i][0] / 2;
+            mid_line[i][1] = ipts1[i][1];
+        }
+        for (uint8 i = 0; i < mid_line_num; i++)
+        {
+            ips200_draw_point(mid_line[i][0], mid_line[i][1], RGB565_GREEN);
+        }
     }
-    for (i = 0; i < mid_line_num; i++)
+    else if(loseline0 ==  0 && ipts0_num > 50)
+    {
+        mid_line_num = ipts0_num;
+        for (uint8 i = 0; i < mid_line_num; i++)
+        {
+            mid_line[i][0] = (ipts1[i][0] + ipts0[i][0]) / 2;
+            mid_line[i][1] = (ipts1[i][1] + ipts0[i][1]) / 2;//直接取平均（前面有个更好的函数，但是试过不行，后面再优化）
+        }
+    }
+    
+    for(uint8 i=0; i < mid_line_num ; i++)
     {
         ips200_draw_point(mid_line[i][0], mid_line[i][1], RGB565_GREEN);
     }
-    /*二 求误差*/
 
-    last_err = err;
-    err = LineRession(mid_line, mid_line_num - 1);
-    ips200_show_uint(0, 160, mid_line_num, 3);
-    /*三 误差简单滤波*/
-    err=0.8*err+last_err*0.2;
+    err = Center_edge(2);//选择模式2：中线斜率误差
+   
     return err;
 }
 
@@ -1178,18 +1108,13 @@ float run_right_mid(void)
     mid_line_num = 0;
     uint8 i;
     
-    mid_line_num = ipts1_num; // 中线赋值
-    for (i = 0; i < mid_line_num; i++)
-    {
-        mid_line[i][0] = (ipts1[i][0] + ipts0[i][0]) / 2;
-        mid_line[i][1] = (ipts1[i][1] + ipts0[i][1]) / 2;
-    }
+    
     last_err = err;
     err = LineRession(mid_line, mid_line_num - 1);
     ips200_show_uint(0, 160, mid_line_num, 3);
     /*三 误差简单滤波*/
     err = 0.8 * err + last_err * 0.2;
-    ips200_show_float(120, 120, Finnal_err, 3, 3);
+    
     return err;
 }
 
@@ -1199,26 +1124,85 @@ float run_right(void)
     /*一 求中线*/
     int mid_line[150][2]; // 中线
     mid_line_num = 0;
-    uint8 i;
-    mid_line_num = ipts0_num; // 中线赋值
-    for (i = 0; i < mid_line_num; i++)
+    if( (loseline1 == 0 && ipts1_num > 50))
     {
-        mid_line[i][0] = ipts0[i][0] / 2;
-        mid_line[i][1] = ipts0[i][1];
+        mid_line_num = ipts1_num; // 中线赋值
+        for (uint8 i = 0; i < mid_line_num; i++)
+        {
+            mid_line[i][0] = (ipts1[i][0] + ipts0[i][0]) / 2;
+            mid_line[i][1] = (ipts1[i][1] + ipts0[i][1]) / 2;
+        }
     }
-   
-    /*二 求误差*/
-
-    last_err = err;
-    err = LineRession(mid_line, mid_line_num - 1);
-    ips200_show_uint(0, 160, mid_line_num, 3);
-    /*三 误差简单滤波*/
-    err = 0.8 * err + last_err * 0.2;
-    ips200_show_float(120, 120, err, 3, 3);
+    else
+    {
+        mid_line_num = ipts0_num; // 中线赋值
+        for (uint8 i = 0; i < mid_line_num; i++)
+        {
+            mid_line[i][0] = ipts0[i][0] / 2+ 80;
+            mid_line[i][1] = ipts0[i][1];
+        }
+    }
+    
+    for(uint8 i=0; i < mid_line_num ; i++)
+    {
+        ips200_draw_point(mid_line[i][0], mid_line[i][1], RGB565_GREEN);
+    }
+    err = Center_edge(2);//选择模式2：中线斜率误差
     return err;
 }
+float run_straight(void)
+{
+    int mid_line[150][2];
+    mid_line_num = (ipts0_num > ipts1_num) ? ipts1_num : ipts0_num;
+    for(uint8 i =0; i< mid_line_num ;i++)
+    {
+        mid_line[i][0] = (ipts1[i][0] + ipts0[i][0]) / 2;
+        mid_line[i][1] = (ipts1[i][1] + ipts0[i][1]) / 2;
+    }
+    err = Center_edge(2);//选择模式2：中线斜率误差
+    for(uint8 i=0; i < mid_line_num ; i++)
+    {
+        ips200_draw_point(mid_line[i][0], mid_line[i][1], RGB565_GREEN);
+    }
 
+    return err;
+}
 void Track_Check(void)
 {
-    
+    if(ipts1_num > 100 && ipts1[ipts1_num - 1][0] < (IMAGE_WIDTH/2) && (loseline0 ==1 || touch_boundary0 == 1))
+    {
+        track_type = TRACK_RIGHT;
+    }
+    else if ( ipts0_num > 100 && ipts0[ipts0_num -1][0] < (IMAGE_WIDTH/2) &&(loseline0 ==1 || touch_boundary0 ==1))
+    {
+        track_type = TRACK_LEFT;
+    }
+    else if( ipts1_num > 120 && ipts0_num > 120 && ipts0[ipts0_num-1][1] < (IMAGE_HEIGHT/2) && ipts1[ipts1_num-1][1]<(IMAGE_HEIGHT/2) && !loseline0 && !loseline1)
+    {
+        track_type = TRACK_BOTH;
+    }
+}
+
+void Track_Run(void)
+{
+    switch (track_type)
+    {
+        case TRACK_LEFT:
+        {
+            Finnal_err=run_left();
+            break;
+        }
+        case TRACK_RIGHT:
+        {
+            Finnal_err=run_right();
+            break;
+        }
+        case TRACK_BOTH:
+        {
+            Finnal_err=run_straight();
+            break;
+        }
+        default:
+            break;
+    }
 }

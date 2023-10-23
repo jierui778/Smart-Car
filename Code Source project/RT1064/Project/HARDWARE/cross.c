@@ -51,7 +51,7 @@ void Cross_Check(void) // 得考虑斜入十字的情况
     {
         cross_type = CROSS_NONE;
     }
-    Finnal_err = Center_edge(); // 求出最终误差
+    Finnal_err = Center_edge(1); // 求出最终误差
 }
 
 
@@ -114,7 +114,7 @@ void Cross_Run(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int in_pu
         Encoder_Int_Clear(); // 清除编码器积分
     }
 
-    Finnal_err = Center_edge(); // 求出最终误差
+    Finnal_err = Center_edge(1); // 求出最终误差
 
     ips200_show_uint(0,120,a,3);
     ips200_show_uint(200, 230, Far_ipts0[1][0], 2);
@@ -126,7 +126,6 @@ void Cross_Drawline_In_Left(void)
 {
     int i;
     float k_left, b_left;
-    FarBorderline_Find();
     FarCorners_Find_Left(Far_ipts0,Far_ipts0_num,FarCornersLeft_Point,&Far_Lpt0_Found);
 
     k_left=(float)(Far_ipts0[Far_Lpt0_id][1]-118)/(Far_ipts0[Far_Lpt0_id][0]-2);
@@ -148,7 +147,6 @@ void Cross_Drawline_In_Right(void)
 {
     int i;
     float k_right, b_right;
-    FarBorderline_Find();
     FarCorners_Find_Right(Far_ipts1,Far_ipts1_num,FarCornersRight_Point,&Far_Lpt1_Found);
 
     k_right=(float)(Far_ipts1[Far_Lpt1_id][1]-118)/(Far_ipts1[Far_Lpt1_id][0]-157);
