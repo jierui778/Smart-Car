@@ -1,0 +1,74 @@
+<html>
+<body>
+<pre>
+<h1>�Vision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: ��Vision V5.38.0.0
+Copyright (C) 2022 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: 123 Administrator, 123, LIC=D0D7S-LU8DC-Z9EG9-4YVI2-Q76GA-FQRDI
+ 
+Tool Versions:
+Toolchain:       MDK-ARM Plus  Version: 5.38.0.0
+Toolchain Path:  D:\keil5\ARM\ARMCLANG\Bin
+C Compiler:      ArmClang.exe V6.19
+Assembler:       Armasm.exe V6.19
+Linker/Locator:  ArmLink.exe V6.19
+Library Manager: ArmAr.exe V6.19
+Hex Converter:   FromElf.exe V6.19
+CPU DLL:         SARMCM3.DLL V5.38.0.0
+Dialog DLL:      DCM.DLL V1.17.5.0
+Target DLL:      Segger\JL2CM3.dll V2.99.42.0
+Dialog DLL:      TCM.DLL V1.56.4.0
+ 
+<h2>Project:</h2>
+C:\Users\Administrator\Desktop\Competition\Smart-Car\Code Source project\RT1064\Project\MDK\RT1064_CAR.uvprojx
+Project File Date:  10/21/2023
+
+<h2>Output:</h2>
+*** Using Compiler 'V6.19', folder: 'D:\keil5\ARM\ARMCLANG\Bin'
+Build target 'RT1064_CAR'
+../HARDWARE/image.c(1): warning: In file included from...
+../HARDWARE/image.h(3): warning: In file included from...
+../HARDWARE/cross.h(6): warning: 'PI' macro redefined [-Wmacro-redefined]
+#define PI               3.14159265358979f
+        ^
+../../libraries/zf_device\zf_device_gps_tau1201.h(60): note: previous definition is here
+#define PI                  ( 3.1415926535898 )
+        ^
+../HARDWARE/image.c(1207): warning: array index 2 is past the end of the array (which contains 2 elements) [-Warray-bounds]
+        if ((pts_in[i][0] - pts_in[i - 2][0] > 0 && pts_in[i][0] - pts_in[i - 4][0] > 0 && pts_in[i][0] - pts_in[i - 6][0] > 0 && pts_in[i][0] - pts_in[i - 8][0] > 0 && pts_in[i][0] - pts_in[i - 10][0] > 0 && pts_in[i][1] - pts_in[i + 2][1] > 0 && pts_in[i][1] - pts_in[i + 4][1] > 0 && pts_in[i][1] - pts_in[i + 6][1] > 0 && pts_in[i][1] - pts_in[i + 8][1] > 0 && pts_in[i][1] - pts_in[i + 10][1] > 0) || (pts_in[i][0] - pts_in[i - 2][0] > 0 && pts_in[i][0] - pts_in[i - 4][0] > 0 && pts_in[i][0] - pts_in[i - 6][0] > 0 && pts_in[i][0] - pts_in[i - 8][0] > 0 && pts_in[i][0] - pts_in[i - 10][0] > 0 && pts_in[i][1] - pts_in[i + 2][2] > 0 && pts_in[i][1] - pts_in[i + 4][1] > 0 && pts_in[i][1] - pts_in[i + 6][1] > 0 && pts_in[i][1] - pts_in[i + 8][1] > 0 && pts_in[i][1] - pts_in[i + 10][1] > 0)) // 感觉可以加条件进行二次强判断
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ^             ~
+../HARDWARE/image.c(1202): note: array 'pts_in' declared here
+void FarCorners_Find_Left(int pts_in[][2], int pts_num)
+                          ^
+../HARDWARE/image.c(2257): warning: non-void function does not return a value [-Wreturn-type]
+}
+^
+../HARDWARE/image.c(2389): warning: ordered comparison between pointer and integer ('int' and 'int *')
+    for (i = ipts1[right_index][1]; i > (ipts11[right_up_index]-5); i--)
+                                    ~ ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~
+../HARDWARE/image.c(2639): warning: enumeration value 'TRACK_NONE' not handled in switch [-Wswitch]
+    switch (track_type)
+            ^~~~~~~~~~
+5 warnings generated.
+compiling image.c...
+linking...
+Program Size: Code=85608 RO-data=7984 RW-data=324 ZI-data=97064  
+FromELF: creating hex file...
+".\Objects\RT1064_CAR.axf" - 0 Error(s), 5 Warning(s).
+
+<h2>Software Packages used:</h2>
+
+Package Vendor: NXP
+                https://mcuxpresso.nxp.com/cmsis_pack/repo/NXP.MIMXRT1064_DFP.17.0.0.pack
+                NXP.MIMXRT1064_DFP.17.0.0
+                Device Family Pack for MIMXRT1064
+
+<h2>Collection of Component include folders:</h2>
+  D:/keil5/ARM/PACK/NXP/MIMXRT1064_DFP/17.0.0/devices/MIMXRT1064
+
+<h2>Collection of Component Files used:</h2>
+Build Time Elapsed:  00:00:03
+</pre>
+</body>
+</html>

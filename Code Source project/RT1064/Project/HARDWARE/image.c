@@ -26,6 +26,9 @@ uint8 Image_Use_Robert[120][160]; // sobel二值化图像
 
 enum track_type_e track_type = TRACK_NONE;
 
+int NearBorderLine_Enable = 1;
+int FarBorderLine_Enable = 0; // 开启远近线的标志位//默认只开启近线,不开启远线
+
 uint16 left_index, right_index; // 左右拐点的坐标
 float Finnal_err;
 int ipts0_up_index, ipts1_up_index; // 定义左上和右上拐点的下标
@@ -1199,7 +1202,7 @@ void draw_line2(float pt0[2], float pt1[2], float pts_out[][2], int *num, float 
  * @param pts_out 拐点坐标
  * @param flag 标志位
  */
-void FarCorners_Find_Left(int pts_in[][2], int pts_num)
+void FarCorners_Find_Left(int pts_in[][2], int pts_num,int *flag)
 {
     int Is_Corner = 0; // 角点判断标志位
     for (int i = 10; i < pts_num - 10; i++)
@@ -1211,6 +1214,7 @@ void FarCorners_Find_Left(int pts_in[][2], int pts_num)
                 continue;
             }
             ipts0_up_index = i; // 记录拐点的下标
+
             break;
         }
         else
@@ -1228,7 +1232,7 @@ void FarCorners_Find_Left(int pts_in[][2], int pts_num)
  * @param pts_out 拐点坐标
  * @param flag 标志位
  */
-void FarCorners_Find_Right(int pts_in[][2], int pts_num)
+void FarCorners_Find_Right(int pts_in[][2], int pts_num,int *flag)
 {
     int Is_Corner = 0; // 角点判断标志位
 
@@ -2506,6 +2510,11 @@ float Center_edge(void)
     {
         Mid_line[i][0] = (Left_Edge[i][0] + Right_Edge[i][0]) / 2;
         Mid_line[i][1] = (Left_Edge[i][1] + Right_Edge[i][1]) / 2;
+        if(track_type == TRACK_STRAIGHT && Mid_line[i][0]==0)
+        {
+            Mid_line[i][0]=80;
+            Mid_line[i][1]=i;
+        }
     }
 
     for(i=0;i<118;i++)
