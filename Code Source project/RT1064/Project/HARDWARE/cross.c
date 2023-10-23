@@ -101,7 +101,6 @@ void Cross_Check(void) // 得考虑斜入十字的情况
         }
     }
 
-
     if (((cross_type == CROSS_IN_LEFT && Far_ipts0[1][1] > 60 && Far_ipts0[1][0] < 40) || (cross_type == CROSS_IN_RIGHT && Far_ipts1[1][1] > 60 && Far_ipts1[1][0] > 80)
         ||(cross_type == CROSS_IN_DOUBLE && Far_ipts0[1][1] > 60 && Far_ipts0[1][0] < 40 && Far_ipts1[1][1] > 60 && Far_ipts1[1][0] > 80)) && loseline0 && loseline1) // 远边线最下面的一个y坐标大于70,跳出十字模式
     {
@@ -152,7 +151,6 @@ void Cross_Drawline_In_Right(void)
 
     k_right=(float)(Far_ipts1[Far_Lpt1_id][1]-118)/(Far_ipts1[Far_Lpt1_id][0]-157);
     b_right=Far_ipts1[Far_Lpt1_id][1]*k_right-Far_ipts1[Far_Lpt1_id][0];//将拐点坐标和左下右下相连，求出斜率
-
     k_right = (1 / k_right);
     b_right = k_right * (-b_right);
 
@@ -186,7 +184,6 @@ void Cross_Drawline_In_Double(void)
 
     k_r = (float)(FarCornersRight_Point[1] - 118) / (FarCornersRight_Point[0] - 158);
     b_r = FarCornersRight_Point[1] - k_r * FarCornersRight_Point[0];
-
 
     k_r=(1/k_r);
     b_r=-b_r*k_r;
@@ -321,7 +318,6 @@ void Cross_Drawline_Found_Double(void)
     float k_left, k_right;
     float b_left, b_right;
     float k_left_low, k_right_low;
-
     NearCorners_Find_Left(ipts0,ipts0_num,CornersLeft_Point,&Near_Lpt0_Found);
     NearCorners_Find_Right(ipts1,ipts1_num,CornersRight_Point,&Near_Lpt1_Found);
 

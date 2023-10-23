@@ -297,7 +297,6 @@ void FarBorderline_Find(void)
         x1_first = CornersRight_Point[0];
         y1_first = CornersRight_Point[1] - 10;
 
-
         Far_ipts1_num = sizeof(Far_ipts1) / sizeof(Far_ipts1[0]);
         for (; y1_first > 15; y1_first--)
         {
@@ -322,6 +321,47 @@ void FarBorderline_Find(void)
  */
 float Center_edge(uint8 mode)
 {
+
+    int Left_Edge[150][2]={0}; // 实际上只会用到120个，怕越界
+    int Right_Edge[150][2]={0};
+    int x,y;
+    int i;
+    int uthres=1;
+    y=0;
+    for(i = 0;i< 118; i++)
+    {
+        for(x=80;x>0;x--)
+        {
+            if((AT_IMAGE(&img_raw, x+1, i) > uthres)&&(AT_IMAGE(&img_raw, x, i) < uthres))
+            {
+                Left_Edge[i][0]=x;
+                Left_Edge[i][1]=i;
+                break;
+            }
+        }
+    }
+    y=0;
+    for(i=0;i<118;i++)
+    {
+        for(x=80;x<159;x++)
+        {
+            if((AT_IMAGE(&img_raw, x+1, i) > uthres)&&(AT_IMAGE(&img_raw, x, i) < uthres))
+            {
+                Right_Edge[i][0]=x;
+                Right_Edge[i][1]=i;
+                break;
+            }
+        }
+    }
+
+
+    int Mid_line[150][2]={0};
+    int Mid_line_num =0;
+    /*显示函数，可以去掉*/
+    for(i=0;i<118;i++)
+    {
+        ips200_draw_point(Mid_line[i][0],Mid_line[i][1],RGB565_RED);
+    }
 
     int Left_Edge[150][2]={0}; // 实际上只会用到120个，怕越界
     int Right_Edge[150][2]={0};
