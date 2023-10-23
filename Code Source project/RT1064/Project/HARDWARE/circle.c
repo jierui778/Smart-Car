@@ -8,6 +8,8 @@ int LeftLine_Found = 0, RightLine_Found = 0;
 
 int circle_num = 0; // 记录圆环个数
 
+enum circle_type_e circle_type = CIRCLE_NONE;
+
 void Circle_Check(void)
 {
     if (circle_type == CIRCLE_NONE && Near_Lpt0_Found && Far_Lpt0_Found) // 单边长直线且另外一边为角点+圆弧
