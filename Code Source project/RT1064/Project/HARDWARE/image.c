@@ -147,9 +147,9 @@ void test(void)
     if (1)
     {
         Cross_Check();
-        Cross_Run(ipts0,ipts0_num,ipts1,ipts1_num);
+        Cross_Run();
     }
-    if (cross_type == CROSS_HALF_LEFT_FOUND || cross_type == CROSS_HALF_RIGHT_FOUND ||)
+    if (1)
         // MidLine_Get(ipts0, ipts0_num, ipts1, ipts1_num, test, 2);
         // NearCorners_Find_Left(ipts0, ipts0_num, test, &test2);
         // NearCorners_Find_Right(ipts1, ipts1_num, test3, &test5);//近角点正常
@@ -1110,27 +1110,7 @@ float LineRession(int pts_in[][2], int num)
    return slope;                         // 返回斜率
 }
 
-void Line_Add(image_t *img, int pts0_in[2], int pts1_in[2], int8 value)
-{
-    int dx = pts1_in[0] - pts0_in[0];
-    int dy = pts1_in[1] - pts0_in[1];
-    if (abs(dx) > abs(dy))
-    {
-        for (int x = pts0_in[0]; x != pts1_in[0]; x += (dx > 0 ? 1 : -1))
-        {
-            int y = pts0_in[1] + (x - pts0_in[0]) * dy / dx;                          // y = 左线横坐标 + x遍历差值占总差值比例 * y方向差值
-            AT(img, clip(x, 0, img->width - 1), clip(y, 0, img->height - 1)) = value; // （x，y）坐标像素（不超出边界）赋值
-        }
-    }
-    else
-    {
-        for (int y = pts0_in[1]; y != pts1_in[1]; y += (dy > 0 ? 1 : -1))
-        {
-            int x = pts0_in[0] + (y - pts0_in[1]) * dx / dy;
-            AT(img, clip(x, 0, img->width - 1), clip(y, 0, img->height - 1)) = value;
-        }
-    }
-}
+
 
 float err, last_err;//全局变量的误差
 
@@ -1310,31 +1290,53 @@ void Track_Run(void)
     }
 }
 
-/**
- * @brief 补线函数,十字或者圆环使用
- *
- * @param img 传入结构体图像数据
- * @param pt0 起始坐标
- * @param pt1 结束坐标
- * @param value 黑点/白点
- */
-void Line_Add(image_t *img, int pt0[2], int pt1[2], uint8_t value)
+// /**
+//  * @brief 补线函数,十字或者圆环使用
+//  *
+//  * @param img 传入结构体图像数据
+//  * @param pt0 起始坐标
+//  * @param pt1 结束坐标
+//  * @param value 黑点/白点
+//  */
+// void Line_Add(image_t *img, int pt0[2], int pt1[2], uint8_t value)
+// {
+//     int dx = pt1[0] - pt0[0];
+//     int dy = pt1[1] - pt0[1];
+//     if (abs(dx) > abs(dy))
+//     {
+//         for (int x = pt0[0]; x != pt1[0]; x += (dx > 0 ? 1 : -1))
+//         {
+//             int y = pt0[1] + (x - pt0[0]) * dy / dx;                                  // y = 左线横坐标 + x遍历差值占总差值比例 * y方向差值
+//             AT(img, clip(x, 0, img->width - 1), clip(y, 0, img->height - 1)) = value; // （x，y）坐标像素（不超出边界）赋值
+//         }
+//     }
+//     else
+//     {
+//         for (int y = pt0[1]; y != pt1[1]; y += (dy > 0 ? 1 : -1))
+//         {
+//             int x = pt0[0] + (y - pt0[1]) * dx / dy;
+//             AT(img, clip(x, 0, img->width - 1), clip(y, 0, img->height - 1)) = value;
+//         }
+//     }
+// }
+
+void Line_Add(image_t *img, int pts0_in[2], int pts1_in[2], int8 value)
 {
-    int dx = pt1[0] - pt0[0];
-    int dy = pt1[1] - pt0[1];
+    int dx = pts1_in[0] - pts0_in[0];
+    int dy = pts1_in[1] - pts0_in[1];
     if (abs(dx) > abs(dy))
     {
-        for (int x = pt0[0]; x != pt1[0]; x += (dx > 0 ? 1 : -1))
+        for (int x = pts0_in[0]; x != pts1_in[0]; x += (dx > 0 ? 1 : -1))
         {
-            int y = pt0[1] + (x - pt0[0]) * dy / dx;                                  // y = 左线横坐标 + x遍历差值占总差值比例 * y方向差值
+            int y = pts0_in[1] + (x - pts0_in[0]) * dy / dx;                          // y = 左线横坐标 + x遍历差值占总差值比例 * y方向差值
             AT(img, clip(x, 0, img->width - 1), clip(y, 0, img->height - 1)) = value; // （x，y）坐标像素（不超出边界）赋值
         }
     }
     else
     {
-        for (int y = pt0[1]; y != pt1[1]; y += (dy > 0 ? 1 : -1))
+        for (int y = pts0_in[1]; y != pts1_in[1]; y += (dy > 0 ? 1 : -1))
         {
-            int x = pt0[0] + (y - pt0[1]) * dx / dy;
+            int x = pts0_in[0] + (y - pts0_in[1]) * dx / dy;
             AT(img, clip(x, 0, img->width - 1), clip(y, 0, img->height - 1)) = value;
         }
     }

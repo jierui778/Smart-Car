@@ -2,7 +2,7 @@
 #define IMGVALUE_CROSS_H_
 
 #include "zf_common_headfile.h"
-#define PI 3.14159265358979f
+
 
 enum cross_type_e
 {

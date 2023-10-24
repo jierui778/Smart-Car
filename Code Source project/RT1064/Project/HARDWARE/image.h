@@ -142,7 +142,7 @@ void FarCorners_Find_Left(int pts_in[][2], int pts_num, int pts_out[2], int *fla
 void FarCorners_Find_Right(int pts_in[][2], int pts_num, int pts_out[2], int *flag);
 extern void BorderLine_Find(void);
 
-void Line_Add(image_t *img, int pts0_in[2], int pts1_in[2], int8 value);
+//void Line_Add(image_t *img, int pts0_in[2], int pts1_in[2], int8 value);
 
 float LineRession(int pts_in[][2], int num);
 
