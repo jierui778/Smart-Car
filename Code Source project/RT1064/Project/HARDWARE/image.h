@@ -66,13 +66,16 @@ void Image_Binarization(unsigned char threshold, uint8 (*Image_Use)[IMAGE_WIDTH]
 void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x, int y, int pts[][2], int *num);
 void Right_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x, int y, int pts[][2], int *num);
 void FarBorderline_Find(void);
-float Center_edge(uint8 mode);
+void Center_edge(void);
 void Cross_Drawline(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int in_put_r_num);
 void Cross_Drawline_Found_Left(void);
 void Line_Add(image_t *img, int pts0_in[2], int pts1_in[2], int8 value);
 void Track_Run(void);
 void Track_Check(void);
-
+float Err_Handle(uint8 mode);
+float run_straight(void);
+float run_right(void);
+float run_left(void);
 #define POINTS_MAX_LEN (120) // 边线点最多的情况——>num
 
 

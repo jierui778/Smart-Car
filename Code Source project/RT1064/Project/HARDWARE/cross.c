@@ -51,7 +51,8 @@ void Cross_Check(void) // 得考虑斜入十字的情况
     {
         cross_type = CROSS_NONE;
     }
-    Finnal_err = Center_edge(1); // 求出最终误差
+    Center_edge();//中线左右扫，扫出中线
+    Finnal_err = Err_Handle(3); // 求出角度偏差
 }
 
 
@@ -114,12 +115,10 @@ void Cross_Run(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int in_pu
         Encoder_Int_Clear(); // 清除编码器积分
     }
 
-    Finnal_err = Center_edge(1); // 求出最终误差
+    Center_edge();
 
-    ips200_show_uint(0,120,a,3);
-    ips200_show_uint(200, 230, Far_ipts0[1][0], 2);
-    ips200_show_uint(200, 250, Far_ipts0[1][1], 2);
-    ips200_show_uint(200, 270, a, 2);
+    Finnal_err = Err_Handle(3); // 求出最终误差，选择模式3——返回角度偏差
+
 }
 
 void Cross_Drawline_In_Left(void)
@@ -364,5 +363,25 @@ void Cross_Drawline_Found_Double(void)
 
 }
 
+/*
+ * 函数名：Draw_Line
+ * 功能：在图像上绘制一条直线
+ * 参数：
+ * 返回值：无
+ */
+void Draw_Line(int low_point[2], int high_point[2])
+{
+    int i;
+    float k,b;
 
+    k = (high_point[1] - low_point[1]) / (high_point[0] - low_point[0]);
+    b = high_point[1] - k * high_point[0];
+    k = (1 / k);
+    b = -b * k ;
+    /*求出直线方程的反函数 column = k * row + b*/
+    for (i = low_point[1]; i > high_point[1]; i --)
+    {
+        Image_Use_Robert[i][column] = BLACK;
+    }
+}
 
