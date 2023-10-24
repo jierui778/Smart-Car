@@ -37,7 +37,7 @@ void Cross_Check(void) // 得考虑斜入十字的情况
         a = 3;
     }
     else
-        
+
     {
         cross_type = CROSS_NONE;
     }
@@ -45,6 +45,12 @@ void Cross_Check(void) // 得考虑斜入十字的情况
 
 void Cross_Run(void)
 {
+    Line_Add(&img_raw, CornersLeft_Point, FarCornersLeft_Point, 0);
+    Line_Add(&img_raw, CornersRight_Point, FarCornersRight_Point, 0);
+    BorderLine_Find();
+
+    // Right_Adaptive_Threshold(&img_raw, block_size, clip_value, x1_first, y1_first, ipts1, &ipts1_num);
+    // Left_Adaptive_Threshold(&img_raw, block_size, clip_value, x0_first, y0_first, ipts0, &ipts0_num);
     if (cross_type == CROSS_HALF_LEFT_FOUND) // 斜入左十字
     {
         if (loseline0) // 左边线一边点数小于40,进入十字

@@ -119,12 +119,14 @@ extern int Far_ipts1[POINTS_MAX_LEN][2]; // 存放边线数据（右）
 extern float Err[5];                     // 中线误差
 // 若考虑近点远点,可近似构造Stanley算法,避免撞路肩
 
-void Arc_Point_Get(int pts_in[][2], int pts_num, int pts_out[2]);
+void Arc_Point_Get(int pts_in[][2], int pts_num, int pts_out[2], int *flag);
 void NearCorners_Find_Left(int pts_in[][2], int pts_num, int pts_out[2], int *flag);
 void NearCorners_Find_Right(int pts_in[][2], int pts_num, int pts_out[2], int *flag);
-void Straight_Rec(int pts_in[][2], int pts_num);
+void Straight_Rec(int pts_in[][2], int pts_num, int *flag);
 void FarCorners_Find_Left(int pts_in[][2], int pts_num, int pts_out[2], int *flag);
 void FarCorners_Find_Right(int pts_in[][2], int pts_num, int pts_out[2], int *flag);
-void BorderLine_Find(void);
+extern void BorderLine_Find(void);
+
+void Line_Add(image_t *img, int pt0[2], int pt1[2], uint8_t value);
 
 #endif

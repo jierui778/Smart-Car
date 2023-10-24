@@ -116,6 +116,7 @@ void test(void)
             FarCorners_Find_Right(Far_ipts1, Far_ipts1_num, FarCornersRight_Point, &Far_Lpt1_Found);
         }
     }
+    Line_Add(&img_raw, CornersLeft_Point, FarCornersLeft_Point, 0);
 
     ips200_show_int(20, 200, Near_Lpt0_Found, 1);
     ips200_show_int(20, 220, Near_Lpt1_Found, 1);
@@ -144,35 +145,34 @@ void test(void)
         Cross_Run();
         MidLine_Get();
     }
-    
-    // MidLine_Get(ipts0, ipts0_num, ipts1, ipts1_num, test, 2);
-    // NearCorners_Find_Left(ipts0, ipts0_num, test, &test2);
-    // NearCorners_Find_Right(ipts1, ipts1_num, test3, &test5);//近角点正常
-    // Features_Find();  // 寻找特征点
+    if (cross_type == CROSS_HALF_LEFT_FOUND || cross_type == CROSS_HALF_RIGHT_FOUND ||)
+        // MidLine_Get(ipts0, ipts0_num, ipts1, ipts1_num, test, 2);
+        // NearCorners_Find_Left(ipts0, ipts0_num, test, &test2);
+        // NearCorners_Find_Right(ipts1, ipts1_num, test3, &test5);//近角点正常
+        // Features_Find();  // 寻找特征点
 
-    // int test = Is_Straight(ipts0, ipts0_num, 100);
-    // test = Is_Straight(ipts0, ipts0_num, sample_dist);
-    // Straight_Rec(ipts1, ipts1_num);
-    //    Arc_Rec(ipts0, ipts0_num);
-    // for (int i = 0; i < ipts0_num; i++)
-    // {
-    //     ips200_draw_point(ipts0[i][0] + 3, ipts0[i][1], RGB565_RED);
-    // }
-    // for (int i = 0; i < ipts1_num; i++)
-    // {
-    //     ips200_draw_point(ipts1[i][0] - 3, ipts1[i][1], RGB565_RED);
-    // }
+        // int test = Is_Straight(ipts0, ipts0_num, 100);
+        // test = Is_Straight(ipts0, ipts0_num, sample_dist);
+        // Straight_Rec(ipts1, ipts1_num);
+        //    Arc_Rec(ipts0, ipts0_num);
+        // for (int i = 0; i < ipts0_num; i++)
+        // {
+        //     ips200_draw_point(ipts0[i][0] + 3, ipts0[i][1], RGB565_RED);
+        // }
+        // for (int i = 0; i < ipts1_num; i++)
+        // {
+        //     ips200_draw_point(ipts1[i][0] - 3, ipts1[i][1], RGB565_RED);
+        // }
 
-    for (int i = 0; i < ipts0_num; i++)
-    {
-        ips200_draw_line(0, 0, ipts0[i][0] + 5, ipts0[i][1], RGB565_RED);
-    }
+        for (int i = 0; i < ipts0_num; i++)
+        {
+            ips200_draw_line(0, 0, ipts0[i][0] + 5, ipts0[i][1], RGB565_RED);
+        }
     for (int i = 0; i < Far_ipts0_num; i++)
     {
         ips200_draw_point(Far_ipts0[i][0] + 5, Far_ipts0[i][1], RGB565_RED);
     }
 }
-
 
 /**
  * @brief 寻找远左拐点
@@ -392,11 +392,11 @@ void NearCorners_Find_Left(int pts_in[][2], int pts_num, int pts_out[2], int *fl
             pts_in[i][0] - pts_in[i - 1][0] >= 0 && pts_in[i][0] - pts_in[i - 2][0] >= 0 && pts_in[i][0] - pts_in[i - 3][0] >= 0 &&
             pts_in[i][0] - pts_in[i - 4][0] >= 0 && pts_in[i][0] - pts_in[i - 5][0] >= 0 && pts_in[i][0] - pts_in[i - 6][0] >= 0 && pts_in[i][0] - pts_in[i + 1][0] >= 0 && pts_in[i][0] - pts_in[i + 2][0] > 0 && pts_in[i][0] - pts_in[i + 3][0] >= 0 && pts_in[i][0] - pts_in[i + 4][0] >= 0 && pts_in[i][0] - pts_in[i + 5][0] > 0 && pts_in[i][0] - pts_in[i + 6][0] >= 0 && my_abs(pts_in[i][1] - pts_in[i + 1][1]) < 5 && my_abs(pts_in[i][1] - pts_in[i + 2][1]) < 5 && my_abs(pts_in[i][1] - pts_in[i + 3][1]) < 5 && my_abs(pts_in[i][1] - pts_in[i + 4][1]) < 5 && my_abs(pts_in[i][1] - pts_in[i + 5][1]) < 5) // 感觉可以加条件进行二次强判断
         {
-            if (pts_in[pts_num - 5][1] - pts_in[i][1]>10)
+            if (pts_in[pts_num - 5][1] - pts_in[i][1] > 10)
             {
                 continue;
             }
-                pts_out[0] = pts_in[i][0];
+            pts_out[0] = pts_in[i][0];
             pts_out[1] = pts_in[i][1];
             Lpt0_id = i;
             *flag = 1;
@@ -450,40 +450,54 @@ void NearCorners_Find_Right(int pts_in[][2], int pts_num, int pts_out[2], int *f
  * @param pts_num 边线坐标数组长度
  * @param pts_out 极边界坐标数组
  */
-void Arc_Point_Get(int pts_in[][2], int pts_num, int pts_out[2])
+void Arc_Point_Get(int pts_in[][2], int pts_num, int pts_out[2], int *flag)
 {
-    int Is_Arc = 0; // 圆环判断标志位
+    // int Is_Arc = 0; // 圆环判断标志位
     for (int i = 0; i < pts_num; i++)
     {
         // 圆弧
-        if (ipts0[i][0] - ipts0[i - 1][0] >= 0 && ipts0[i][0] - ipts0[i - 2][0] >= 0 && ipts0[i][0] - ipts0[i - 3][0] >= 0 && ipts0[i][0] - ipts0[i + 1][0] >= 0 && ipts0[i][0] - ipts0[i + 2][0] > 0 && ipts0[i][0] - ipts0[i + 3][0] >= 0) // 感觉可以加条件进行二次强判断
+        if (pts_in[i][0] - pts_in[i - 2][0] > 0 && pts_in[i][0] - pts_in[i - 4][0] > 0 && pts_in[i][0] - pts_in[i - 8][0] > 0 && pts_in[i][0] - pts_in[i - 12][0] > 0 && pts_in[i][0] - pts_in[i - 16][0] > 0 && pts_in[i][0] - pts_in[i + 4][0] < 0 && pts_in[i][0] - pts_in[i + 8][0] < 0 && pts_in[i][0] - pts_in[i + 12][0] < 0 && pts_in[i][0] - pts_in[i + 16][0] < 0) //
         {
             pts_out[0] = ipts0[i][0];
             pts_out[1] = ipts0[i][1];
+            *flag = 1;
             break;
         }
         else
         {
+            *flag = 0;
         }
     }
 }
 
 /**
- * @brief
+ * @brief 检测单边是否为长直线
  *
- * @param pts_in
- * @param pts_num
- * @param pts_out
+ * @param pts_in 边界数组
+ * @param pts_num 数组长度
+ * @param flag 标志位
  */
-void Straight_Rec(int pts_in[][2], int pts_num)
+void Straight_Rec(int pts_in[][2], int pts_num, int *flag)
 {
     int Is_Straight = 0; // 长直道判断标志位
     for (int i = 0; i < pts_num; i++)
     {
-        if (pts_in[i][0] - pts_in[i - 1][0] == pts_in[i + 1][0] - pts_in[i][0] && pts_in[i][0] - pts_in[i - 5][0] == pts_in[i + 5][0] - pts_in[i][0])
+        if (my_abs((pts_in[i][0] - pts_in[i - 5][0]) - (pts_in[i + 5][0] - pts_in[i][0])) < 3 && my_abs((pts_in[i][0] - pts_in[i - 10][0]) - (pts_in[i][0] - pts_in[i + 10][0])) && my_abs((pts_in[i][1] - pts_in[i - 5][1]) - (pts_in[i + 5][1] - pts_in[i][1])) < 3 && my_abs((pts_in[i][1] - pts_in[i - 10][1]) - (pts_in[i][1] - pts_in[i + 10][1])))
         {
             Is_Straight++;
         }
+        else
+        {
+            Is_Straight--;
+        }
+    }
+    if (Is_Straight > 50) // 大于阈值认为是长直线
+    {
+        *flag = 1;
+    }
+    else
+    {
+        *flag = 0;
     }
 }
 
@@ -1052,4 +1066,33 @@ void Right_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int 
         loseline1 = 1;
     // 记录边线数目
     *num = step;
+}
+/**
+ * @brief 补线函数,十字或者圆环使用
+ *
+ * @param img 传入结构体图像数据
+ * @param pt0 起始坐标
+ * @param pt1 结束坐标
+ * @param value 黑点/白点
+ */
+void Line_Add(image_t *img, int pt0[2], int pt1[2], uint8_t value)
+{
+    int dx = pt1[0] - pt0[0];
+    int dy = pt1[1] - pt0[1];
+    if (abs(dx) > abs(dy))
+    {
+        for (int x = pt0[0]; x != pt1[0]; x += (dx > 0 ? 1 : -1))
+        {
+            int y = pt0[1] + (x - pt0[0]) * dy / dx;                                  // y = 左线横坐标 + x遍历差值占总差值比例 * y方向差值
+            AT(img, clip(x, 0, img->width - 1), clip(y, 0, img->height - 1)) = value; // （x，y）坐标像素（不超出边界）赋值
+        }
+    }
+    else
+    {
+        for (int y = pt0[1]; y != pt1[1]; y += (dy > 0 ? 1 : -1))
+        {
+            int x = pt0[0] + (y - pt0[1]) * dx / dy;
+            AT(img, clip(x, 0, img->width - 1), clip(y, 0, img->height - 1)) = value;
+        }
+    }
 }

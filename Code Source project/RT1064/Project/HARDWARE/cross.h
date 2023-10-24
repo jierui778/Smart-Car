@@ -19,7 +19,7 @@ enum cross_type_e
 
 extern enum cross_type_e cross_type;
 
-void Cross_Chreck(void);
+void Cross_Check(void);
 void Cross_Run(void);
 
 #endif
