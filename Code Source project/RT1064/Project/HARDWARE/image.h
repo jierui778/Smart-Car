@@ -44,7 +44,6 @@ typedef struct img
     uint32_t height;
     uint32_t step; // 走过路径的长度
 } image_t;
-
 extern image_t img_raw;
 
 enum track_type_e
@@ -76,9 +75,8 @@ float Err_Handle(uint8 mode);
 float run_straight(void);
 float run_right(void);
 float run_left(void);
+void test(void);
 #define POINTS_MAX_LEN (120) // 边线点最多的情况——>num
-
-
 
 // 左右边丢线
 extern uint8 loseline0;
@@ -90,13 +88,10 @@ extern int FarBorderLine_Enable; // 开启远近线的标志位
 extern int Far_Lpt0_Found, Far_Lpt1_Found;
 extern int Near_Lpt0_Found, Near_Lpt1_Found;
 
-
 extern int x0_first, y0_first, x1_first, y1_first;
 
 extern int begin_x0, begin_y0; // 找线偏移点
 extern int begin_x1, begin_y1; // 找线偏移点
-
-extern uint8 mid_line_num;
 
 extern uint8 Image_Use[120][160];
 extern uint8 Image_Use_Robert[120][160];
@@ -105,7 +100,7 @@ extern uint8 touch_boundary1;    // 右边线走到图像边界
 extern uint8 touch_boundary_up0; // 左边线走到图像左边界
 extern uint8 touch_boundary_up1; // 右边线走到图像右边界
 
-
+extern float xielv_left_y_to_end, xielv_right_y_to_end; // 在逆透视后得坐标系建得斜率
 
 // 原图左右边线
 extern int ipts0[POINTS_MAX_LEN][2];
@@ -123,6 +118,12 @@ extern int FarCornersRight_Point[2];
 extern int NearIs_Arc0, NearIs_Arc1; // 是否为弧线
 extern int FarIs_Arc0, FarIs_Arc1;   // 是否为弧线
 
+extern int Far_ipts0_num;                // 存放边线像素点个数(左)
+extern int Far_ipts1_num;                // 存放边线像素点个数(右)
+
+extern uint8 mid_line_num;//定义中线数组个数
+extern float Finnal_err;
+extern float err,last_err;
 // 长直道
 extern int Is_straight0, Is_straight1;
 // 弯道
@@ -130,30 +131,16 @@ extern bool is_turn0, is_turn1;
 
 extern int Far_ipts0[POINTS_MAX_LEN][2]; // 存放边线数据（左）
 extern int Far_ipts1[POINTS_MAX_LEN][2]; // 存放边线数据（右）
-
 extern float Err[5];                     // 中线误差
 // 若考虑近点远点,可近似构造Stanley算法,避免撞路肩
 
-
-extern float err;
-extern float last_err;
-extern float Finnal_err;
-
-extern int Far_ipts0_num;                // 存放边线像素点个数(左)
-extern int Far_ipts1_num;                // 存放边线像素点个数(右)
-
 void Arc_Point_Get(int pts_in[][2], int pts_num, int pts_out[2]);
-
 void NearCorners_Find_Left(int pts_in[][2], int pts_num, int pts_out[2], int *flag);
 void NearCorners_Find_Right(int pts_in[][2], int pts_num, int pts_out[2], int *flag);
 void Straight_Rec(int pts_in[][2], int pts_num);
 void FarCorners_Find_Left(int pts_in[][2], int pts_num, int pts_out[2], int *flag);
 void FarCorners_Find_Right(int pts_in[][2], int pts_num, int pts_out[2], int *flag);
-void Get_guaidian(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int in_put_r_num);
-float LineRession(int pts_in[][2], int num);
 void BorderLine_Find(void);
-void Find_Borderline_Third(void);
-void test(void);
-void FarBorderline_Find(void);
+float LineRession(int pts_in[][2], int num);
 
 #endif
