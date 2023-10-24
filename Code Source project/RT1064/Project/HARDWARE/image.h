@@ -64,10 +64,19 @@ void Image_Binarization(unsigned char threshold, uint8 (*Image_Use)[IMAGE_WIDTH]
 
 void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x, int y, int pts[][2], int *num);
 void Right_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x, int y, int pts[][2], int *num);
-void FarBorderLine_Find(void);
-
-void FarBorderline_Find(void); //
-void MidLine_Get(void);        // W矩阵参数（原图转化成逆透视后图像的参数）
+void FarBorderline_Find(void);
+void Center_edge(void);
+void Cross_Drawline(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int in_put_r_num);
+void Cross_Drawline_Found_Left(void);
+void Line_Add(image_t *img, int pts0_in[2], int pts1_in[2], int8 value);
+void Track_Run(void);
+void Track_Check(void);
+float Err_Handle(uint8 mode);
+float run_straight(void);
+float run_right(void);
+float run_left(void);
+void test(void);
+#define POINTS_MAX_LEN (120) // 边线点最多的情况——>num
 
 // 左右边丢线
 extern uint8 loseline0;
@@ -109,6 +118,12 @@ extern int FarCornersRight_Point[2];
 extern int NearIs_Arc0, NearIs_Arc1; // 是否为弧线
 extern int FarIs_Arc0, FarIs_Arc1;   // 是否为弧线
 
+extern int Far_ipts0_num;                // 存放边线像素点个数(左)
+extern int Far_ipts1_num;                // 存放边线像素点个数(右)
+
+extern uint8 mid_line_num;//定义中线数组个数
+extern float Finnal_err;
+extern float err,last_err;
 // 长直道
 extern int Is_straight0, Is_straight1;
 // 弯道
@@ -127,6 +142,8 @@ void FarCorners_Find_Left(int pts_in[][2], int pts_num, int pts_out[2], int *fla
 void FarCorners_Find_Right(int pts_in[][2], int pts_num, int pts_out[2], int *flag);
 extern void BorderLine_Find(void);
 
-void Line_Add(image_t *img, int pt0[2], int pt1[2], uint8_t value);
+void Line_Add(image_t *img, int pts0_in[2], int pts1_in[2], int8 value);
+
+float LineRession(int pts_in[][2], int num);
 
 #endif

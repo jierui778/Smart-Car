@@ -3,6 +3,8 @@
 #include "garage.h"
 #include "encoder.h"
 
+enum circle_type_e circle_type = CIRCLE_NONE;
+
 int LeftLine_Loss = 0, RightLine_Loss = 0;
 int LeftLine_Found = 0, RightLine_Found = 0;
 
@@ -72,15 +74,15 @@ void Circle_Run(void)
     //     Encoder_Int_Enable();          // 开启编码器积分
     // }
 
-    // // 进圆环先丢线后有线,即先循内圆,后循外圆
-    // if (circle_type = CIRCLE_LEFT_RUN && Near_Lpt1_Found) // 圆环模式,外圆周发现角点,准备出圆环
-    // {
-    //     circle_type = CIRCLE_LEFT_OUT;
-    // }
-    // else if (circle_type = CIRCLE_RIGHT_RUN && Near_Lpt0_Found)
-    // {
-    //     circle_type = CIRCLE_RIGHT_OUT; // 准备出圆环,角点按指定斜率补线,切换循线方向
-    // }
+    // 进圆环先丢线后有线,即先循内圆,后循外圆
+    if (circle_type == CIRCLE_LEFT_RUN && Near_Lpt1_Found) // 圆环模式,外圆周发现角点,准备出圆环
+    {
+        circle_type = CIRCLE_LEFT_OUT;
+    }
+    else if (circle_type == CIRCLE_RIGHT_RUN && Near_Lpt0_Found)
+    {
+        circle_type = CIRCLE_RIGHT_OUT; // 准备出圆环,角点按指定斜率补线,切换循线方向
+    }
 
     // if ((Encoder_L_Dis + Encoder_R_Dis) / 2 > CIRCLE_DIS && !Near_Lpt1_Found && !Near_Lpt0_Found) // 编码器积分大于距离阈值且双边线无角点,退出圆环模式
     // {
