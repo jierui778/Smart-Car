@@ -29,7 +29,7 @@ void Cross_Check(void) // 得考虑斜入十字的情况
     else if (cross_type == CROSS_NONE && touch_boundary0 && Near_Lpt0_Found && Far_Lpt0_Found && touch_boundary1 && Near_Lpt1_Found && Far_Lpt1_Found) // 双边双角点,进入十字模式
     {
         cross_type = CROSS_DOUBLLE_FOUND;
-        
+
         cross_num++; // 记录圆环个数
         a = 3;
     }
@@ -52,7 +52,7 @@ void Cross_Run(void)
     Line_Add(&img_raw, CornersRight_Point, FarCornersRight_Point, 0);
     BorderLine_Find(); // 寻找边线
     if(cross_type==CROSS_HALF_LEFT_FOUND)
-    {  
+    {
         if ((loseline0 == 0 && loseline1 == 0 && (ipts1[ipts1_num - 1][0] - ipts0[ipts0_num - 3][0]) > (IMAGE_WIDTH - 20)))
         {
             cross_type = CROSS_IN_LEFT; // 左边近线丢失,循左边远线

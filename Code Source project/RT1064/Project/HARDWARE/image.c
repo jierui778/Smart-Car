@@ -41,8 +41,8 @@ int NearBorderLine_Enable = 1;
 int FarBorderLine_Enable = 0; // 开启远近线的标志位//默认只开启近线,不开启远线
 
 // 左右边丢线
-uint8 loseline0;
-uint8 loseline1;
+uint8 loseline0;              // 左边线丢失标志位
+uint8 loseline1;              // 右边线丢失标志位
 int ipts0[POINTS_MAX_LEN][2]; // 存放边线数据（左）
 int ipts1[POINTS_MAX_LEN][2]; // 存放边线数据（右）
 int ipts0_num;                // 存放边线像素点个数(左)
@@ -57,6 +57,8 @@ int Lpt0_id, Lpt1_id;         // 近线L角点id
 int Far_Lpt0_id, Far_Lpt1_id; // 远线L角点id
 
 int Is_straight0, Is_straight1; // 直道标志位
+int Is_Arc0, Is_Arc1;           // 圆弧标志位
+int Is_Bend0, Is_Bend1;         // 弯道标志位
 
 int Far_Lpt0_Found = 0, Far_Lpt1_Found = 0;   // 远线L角点标志位
 int Near_Lpt0_Found = 0, Near_Lpt1_Found = 0; // 近线角点标志位
@@ -70,7 +72,7 @@ uint8 touch_boundary_up1; // 右边线走到图像上边界
 int begin_x0, begin_y0; // 找线偏移点
 int begin_x1, begin_y1; // 找线偏移点
 
-int x0_first, y0_first, x1_first, y1_first; // 左右边线第一个点的坐标
+int x0_first, y0_first, x1_first, y1_first; // 寻找跳变点坐标
 
 int x1, y1;
 int x2, y2;
@@ -84,7 +86,7 @@ int FarCornersRight_Point[2] = {0}; // 远角点坐标
 
 float Err[5] = {0}; // 中线误差数组
 
-void test(void)
+void test(void) // 测试函数
 {
     int test[100][2] = {0};
     int test2 = 0;
@@ -149,9 +151,8 @@ void test(void)
     if (1)
     {
         Cross_Check();
-
     }
-    if(cross_type!=CROSS_NONE)
+    if (cross_type != CROSS_NONE)
     {
         Cross_Run();
         ips200_draw_line(0,0,120,160,RGB565_BLUE);
@@ -206,6 +207,7 @@ void FarCorners_Find_Left(int pts_in[][2], int pts_num, int pts_out[2], int *fla
 {
     int Is_Corner = 0; // 角点判断标志位
     for (int i = 10; i < pts_num - 10; i++)
+
     {
         if ((pts_in[i][0] - pts_in[i - 1][0] > 0 && pts_in[i][0] - pts_in[i - 2][0] > 0 && pts_in[i][0] - pts_in[i - 3][0] > 0 &&
              pts_in[i][0] - pts_in[i - 4][0] > 0 && pts_in[i][0] - pts_in[i - 5][0] > 0 && pts_in[i][1] - pts_in[i + 1][1] > 0 &&
@@ -215,15 +217,18 @@ void FarCorners_Find_Left(int pts_in[][2], int pts_num, int pts_out[2], int *fla
              pts_in[i][0] - pts_in[i - 3][0] > 0 && pts_in[i][0] - pts_in[i - 4][0] > 0 && pts_in[i][1] - pts_in[i + 1][1] > 0 &&
              pts_in[i][1] - pts_in[i + 2][1] > 0 && pts_in[i][1] - pts_in[i + 3][1] > 0 && pts_in[i][1] - pts_in[i + 4][1] > 0 &&
              pts_in[i][1] - pts_in[i + 5][1] > 0)) // 感觉可以加条件进行二次强判断
+
         {
-            if (pts_in[i][1] == pts_in[i - 1][1] /**|| (pts_in[i][0] - pts_in[i - 2][0] >= 0 && pts_in[i][0] - pts_in[i - 4][0] >= 0 & pts_in[i][0] - pts_in[i - 6][0] >= 0 && pts_in[i][0] - pts_in[i + 4][0] >= 0 && (pts_in[i][0] - pts_in[i + 6][0] >= 0))*/)
+            if (pts_in[i][1] == pts_in[i - 1][1] || (pts_in[i][0] - pts_in[i - 2][0] >= 0 && pts_in[i][0] - pts_in[i - 4][0] >= 0 & pts_in[i][0] - pts_in[i - 6][0] >= 0 && pts_in[i][0] - pts_in[i + 4][0] >= 0 && (pts_in[i][0] - pts_in[i + 6][0] >= 0)))
+
             {
                 continue;
             }
             pts_out[0] = pts_in[i][0];
-            pts_out[1] = pts_in[i][1];
-            Far_Lpt0_id = i; // 记录拐点的下标
-            *flag = 1;       // 标志位为1
+            pts_out[1] = pts_in[i][1]; // 找到拐点,传出拐点坐标
+            Far_Lpt0_id = i;           // 记录拐点的下标
+            *flag = 1;                 // 拐点标志位置为一
+            // 标志位为1
             break;
         }
         else
@@ -296,7 +301,7 @@ void FarBorderline_Find(void)
     if (1)
     {
 
-        x0_first = CornersLeft_Point[0] + 6;
+        x0_first = CornersLeft_Point[0] + 4;
         y0_first = CornersLeft_Point[1] - 10;
 
         Far_ipts0_num = sizeof(Far_ipts0) / sizeof(Far_ipts0[0]); // 求数组的长度
@@ -325,7 +330,7 @@ void FarBorderline_Find(void)
 
         // 标记种子起始点(后续元素处理要用到)
         // ips200_show_int(50, 200, 666, 2);
-        x1_first = CornersRight_Point[0] - 6;
+        x1_first = CornersRight_Point[0] - 4;
         y1_first = CornersRight_Point[1] - 10;
         ;
 
@@ -484,7 +489,7 @@ void NearCorners_Find_Right(int pts_in[][2], int pts_num, int pts_out[2], int *f
     }
 }
 /**
- * @brief 圆弧检测,取出圆弧的极边界坐标
+ * @brief 圆弧检测,取出圆弧的极边界坐标(几何特征,左圆弧先增后减,右圆弧先减后增,且相邻几个点的坐标一般不相同,呈一定的增长/减少趋势)
  *
  * @param pts_in 边线坐标数组
  * @param pts_num 边线坐标数组长度
@@ -509,7 +514,6 @@ void Arc_Point_Get(int pts_in[][2], int pts_num, int pts_out[2], int *flag)
         }
     }
 }
-
 /**
  * @brief 检测单边是否为长直线
  *
