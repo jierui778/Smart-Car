@@ -1,4 +1,3 @@
-
 #include "garage.h"
 #include "image.h"
 #include "encoder.h"

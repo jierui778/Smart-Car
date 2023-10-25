@@ -2,7 +2,7 @@
 #define IMGVALUE_CROSS_H_
 
 #include "zf_common_headfile.h"
-#define PI 3.14159265358979f
+
 
 enum cross_type_e
 {
@@ -20,6 +20,6 @@ enum cross_type_e
 extern enum cross_type_e cross_type;
 
 void Cross_Check(void);
-void Cross_Run(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int in_put_num_r);
+void Cross_Run(void);
 
 #endif
