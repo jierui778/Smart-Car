@@ -31,8 +31,7 @@ int main(void)
     //    //  Servo_Init();
     //    pit_ms_init(PIT_CH0, 200);
     //    interrupt_set_priority(PIT_IRQn, 0);
-//    PID_Init();
-
+    PID_Init();
     SEGGER_RTT_Init();
     SEGGER_RTT_printf(0, "Hello world !");
 
@@ -40,15 +39,21 @@ int main(void)
     //    Motor_SetPwmL(2000);
     //    Motor_SetPwmR(1888.88);
     Servo_Init();//舵机初始化
-    Servo_SetAngle(0);
+    
     while (1)
     {
 
 
-        //        Schedule_Run();//任务运行总函数，开始任务调度
-       test();
+        test();
+        int Midline;
+		if(Finnal_err>-40 && Finnal_err < 40)
+		{
+        PosiPID(&ServoInfo, &Finnal_err);
+		
+        Servo_SetAngle(ServoInfo.Output);
+		}
+        
         ips200_displayimage03x(*Image_Use_Robert, 160, 120);
-
 //        test();
 //
 //        //        Schedule_Run();//任务运行总函数，开始任务调度
