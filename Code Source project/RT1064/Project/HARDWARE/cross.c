@@ -33,11 +33,9 @@ void Cross_Check(void) // 得考虑斜入十字的情况
         cross_num++; // 记录圆环个数
         a = 3;
     }
-
 }
 
-
-int count=0;
+int count = 0;
 /**
  * @brief 检查图像状态，判断当前是否处于十字路口、直道、左弯道或右弯道
  *
@@ -51,19 +49,19 @@ void Cross_Run(void)
     Line_Add(&img_raw, CornersLeft_Point, FarCornersLeft_Point, 0);
     Line_Add(&img_raw, CornersRight_Point, FarCornersRight_Point, 0);
     BorderLine_Find(); // 寻找边线
-    if(cross_type==CROSS_HALF_LEFT_FOUND)
+    if (cross_type == CROSS_HALF_LEFT_FOUND)
     {
         if ((loseline0 == 0 && loseline1 == 0 && (ipts1[ipts1_num - 1][0] - ipts0[ipts0_num - 3][0]) > (IMAGE_WIDTH - 20)))
         {
             cross_type = CROSS_IN_LEFT; // 左边近线丢失,循左边远线
-            Encoder_Int_Enable(); // 开启编码器积分
+            Encoder_Int_Enable();       // 开启编码器积分
             a = 11;
             NearBorderLine_Enable = 0; // 关闭近边线
         }
     }
     else if (cross_type == CROSS_HALF_RIGHT_FOUND) // 斜入左十字
     {
-        if (ipts0_num < 40 ) // 左边线一边点数小于40,进入十字
+        if (ipts0_num < 40) // 左边线一边点数小于40,进入十字
         {
             cross_type = CROSS_IN_LEFT; // 左边近线丢失,循左边远线
             Encoder_Int_Enable();
@@ -83,7 +81,7 @@ void Cross_Run(void)
         }
     }
 
-    if (((CROSS_IN_LEFT && Far_ipts0[1][1] > 60 && Far_ipts0[1][0] < 40) || (CROSS_IN_RIGHT && Far_ipts1[1][1] > 60 && Far_ipts1[1][0] > 80))) // 远边线最下面的一个y坐标大于70,跳出十字模式
+    if ((CROSS_IN_LEFT && Far_ipts0[1][1] > 60 && Far_ipts0[1][0] < 40) || (CROSS_IN_RIGHT && Far_ipts1[1][1] > 60 && Far_ipts1[1][0] > 80)) // 远边线最下面的一个y坐标大于70,跳出十字模式
     {
         cross_type = CROSS_OUT;    // 出十字
         NearBorderLine_Enable = 1; // 重新开启近边线
@@ -92,12 +90,4 @@ void Cross_Run(void)
         a = 66;
         Encoder_Int_Clear(); // 清除编码器积分
     }
-
-    Center_edge();//从中间向左右两边扫线
-
-    Finnal_err = Err_Handle(3); // 求出最终误差，选择模式3——返回角度偏差
-
 }
-
-
-

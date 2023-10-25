@@ -24,6 +24,16 @@ typedef struct
     int Max_Output;//最大输出
 } sMotor_Info;
 
+
+
+typedef struct
+{
+    float TargetAngle;//目标角度
+    float Angle;//当前角度
+    float Output;//输出
+    int Max_Output;//最大输出
+} sServo_Info;
+
 // typedef struct
 //{
 //     float TargetAngle;//目标角度
