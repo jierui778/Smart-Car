@@ -18,7 +18,7 @@ typedef struct
 extern sPosiPID_Info ServoInfo;
 // extern sIncrPID_Info IncrPID_Info[2];
 // extern sPosiPID_Info PosiPID_Info[2];
-// void PID_Init(void);                                                // 初始化PID控制器
+void PID_Init(void);                                                // 初始化PID控制器
 // extern void IncrPID(sIncrPID_Info *IncrPID, sMotor_Info *MotorInfo); // 增量式PID
 // extern void PosiPID(sPosiPID_Info *PosiPID, sServo_Info *ServoInfo); // 位置式PID
 extern void PosiPID(sPosiPID_Info *PosiPID, int *test);

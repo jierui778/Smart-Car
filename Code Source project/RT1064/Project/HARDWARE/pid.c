@@ -1,12 +1,16 @@
-
+// /**
+//  ******************************************************************************
+//  * @文件名 pid.c
+//  * @文件说明：本文件为PID相关函数文件
+//  ******************************************************************************/
 #include "pid.h"
-float sPidInfo[3][5] =
-    { // IncrPID{Kp,Ki,Kd,MaxOutput}
-        {0, 0, 0, 0, 0},
+#include "math.h"
+float sPidInfo[3][5] = { // IncrPID{Kp,Ki,Kd,MaxOutput}
+    {0, 0, 0, 0,0},
 
-        {0, 0, 0, 0, 0},
+    {0, 0, 0, 0,0},
 
-        {1, 0, 1, 10, 10}};
+    {0.003,0,0,10,15}};
 
 sPosiPID_Info ServoInfo = {0};
 // float PidInfo[2][4] = { // IncrPID{Kp,Ki,Kd,MaxOutput}
@@ -67,19 +71,19 @@ void IncrPID(sIncrPID_Info *IncrPID, sMotor_Info *MotorInfo)
     IncrPID->Output = PIDInfo_Limit(IncrPID->Output, IncrPID->MaxOutput);
 }
 /**
- * @brief 位置式PID控制器
- * @param PosPID 位置式PID参数
- * @param MotorInfo 舵机输出参数
- */
+* @brief 位置式PID控制器
+* @param PosPID 位置式PID参数
+* @param MotorInfo 舵机输出参数
+*/
 void PosiPID(sPosiPID_Info *PosiPID, int *test)
 {
-    // 更新误差
-    PosiPID->LastErr = PosiPID->Err;                                                        // 误差更新为上次误差
-    PosiPID->Err = *test;                                                                   // 传入新的误差
-    PosiPID->Integral_Err += PosiPID->Err;                                                  // 积分误差
-    PosiPID->Integral_Err = PIDInfo_Limit(PosiPID->Integral_Err, PosiPID->MaxIntegral_Err); // 积分限幅，否者积分会超出变量最大取值范围
-    // 计算输出
-    PosiPID->Output = PosiPID->Kp * PosiPID->Err + PosiPID->Ki * PosiPID->Integral_Err + PosiPID->Kd * (PosiPID->Err - PosiPID->LastErr);
-    // 限制PID输出
-    PosiPID->Output = PIDInfo_Limit(PosiPID->Output, PosiPID->MaxOutput);
+   // 更新误差
+   PosiPID->LastErr = PosiPID->Err;                          // 误差更新为上次误差
+   PosiPID->Err = *test; // 传入新的误差
+   PosiPID->Integral_Err += PosiPID->Err;                    // 积分误差
+   PosiPID->Integral_Err = PIDInfo_Limit(PosiPID->Integral_Err, PosiPID->MaxIntegral_Err);//积分限幅，否者积分会超出变量最大取值范围
+   // 计算输出
+   PosiPID->Output = PosiPID->Kp * PosiPID->Err + PosiPID->Ki * PosiPID->Integral_Err + PosiPID->Kd * (PosiPID->Err - PosiPID->LastErr);
+   // 限制PID输出
+   PosiPID->Output = PIDInfo_Limit(PosiPID->Output, PosiPID->MaxOutput);
 }
