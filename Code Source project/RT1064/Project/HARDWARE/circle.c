@@ -89,4 +89,19 @@ void Circle_Run(void)
         circle_type = CIRCLE_NONE;
         Encoder_Int_Clear(); // 关闭编码器积分
     }
+
+    switch (circle_type)
+    {
+        case CIRCLE_LEFT_FOUND:
+        {
+            Circle_Run_Left_Found();
+            break;
+        }
+    }
+}
+
+/*找左下和左上拐点相连*/
+void Circle_Run_Left_Found(void)
+{
+    
 }

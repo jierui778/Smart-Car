@@ -41,6 +41,9 @@ void Cross_Check(void) // 得考虑斜入十字的情况
     {
         cross_type = CROSS_NONE;
     }
+    Center_edge();//从中间向左右两边扫线
+
+    Finnal_err = Err_Handle(1); // 求出最终误差，选择模式3——返回角度偏差
 }
 
 int count=0;
@@ -100,7 +103,7 @@ void Cross_Run(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int in_pu
 
     Center_edge();//从中间向左右两边扫线
 
-    Finnal_err = Err_Handle(3); // 求出最终误差，选择模式3——返回角度偏差
+    Finnal_err = Err_Handle(1); // 求出最终误差，选择模式3——返回角度偏差
 
 }
 
