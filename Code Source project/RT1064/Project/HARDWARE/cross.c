@@ -37,7 +37,7 @@ void Cross_Check(void) // 得考虑斜入十字的情况
 void Cross_Run(void)
 {
     FarBorderLine_Enable = 1;
-    int temp0, temp1;
+    int temp0, temp1;//保存原边线的状态,补线会改变边线的状态
     temp0 = loseline0;
     temp1 = loseline1;
     Line_Add(&img_raw, CornersLeft_Point, FarCornersLeft_Point, 0);

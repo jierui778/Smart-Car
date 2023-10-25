@@ -12,34 +12,38 @@ int circle_num = 0; // 记录圆环个数
 
 void Circle_Check(void)
 {
-    // if (circle_type == CIRCLE_NONE && Near_Lpt0_Found && Far_Lpt0_Found) // 单边长直线且另外一边为角点+圆弧
-    // // 非车库模式，非圆环模式且找到左角点，无右角点，左线迷宫触碰到边沿，右边为长直线
-    // {
-    //     circle_type = CIRCLE_LEFT_FOUND; // 枚举状态置为找到左圆环
-    //     circle_num++;
-    // }
-    // else if (circle_type == CIRCLE_NONE && Near_Lpt1_Found && Far_Lpt1_Found)
-    // // 条件与左圆环模式相反
-    // {
-    //     circle_type = CIRCLE_RIGHT_FOUND; // 枚举状态为找到右圆环
-    //     circle_num++;
-    // }
-    // else
-    // {
-    //     circle_type = CIRCLE_NONE;
-    // }
+    if (circle_type == CIRCLE_NONE && Near_Lpt0_Found && Far_Lpt0_Found) // 单边长直线且另外一边为角点+圆弧
+    // 非车库模式，非圆环模式且找到左角点，无右角点，左线迷宫触碰到边沿，右边为长直线
+    {
+        circle_type = CIRCLE_LEFT_FOUND; // 枚举状态置为找到左圆环
+        circle_num++;
+    }
+    else if (circle_type == CIRCLE_NONE && Near_Lpt1_Found && Far_Lpt1_Found)
+    // 条件与左圆环模式相反
+    {
+        circle_type = CIRCLE_RIGHT_FOUND; // 枚举状态为找到右圆环
+        circle_num++;
+    }
+    else
+    {
+        circle_type = CIRCLE_NONE;
+    }
 }
 
 void Circle_Run(void)
 {
-    // if (circle_type == CIRCLE_LEFT_FOUND)
-    // {
-    //     track_type = TRACK_RIGHT; // 进左圆环前，先巡右线
-    // }
-    // else if (circle_type == CIRCLE_RIGHT_FOUND)
-    // {
-    //     track_type = TRACK_LEFT; // 进右圆环前，先巡右线
-    // }
+    if (circle_type == CIRCLE_LEFT_FOUND)//左圆环,补左线
+    {
+        Line_Add(&img_raw, CornersLeft_Point, FarCornersLeft_Point, 0);
+        BorderLine_Find();//补完线必须再次找边线
+        track_type = TRACK_LEFT; //
+    }
+    else if (circle_type == CIRCLE_RIGHT_FOUND)
+    {
+        Line_Add(&img_raw, CornersRight_Point, FarCornersRight_Point, 0);
+        BorderLine_Find();        // 补完线必须再次找边线
+        track_type = TRACK_RIGHT; //
+    }
 
     // if (circle_type == CIRCLE_LEFT_FOUND && CornersRight_Point[1] < 40) // 圆弧外凸坐标达到范围内,循内圆入环
     // {
