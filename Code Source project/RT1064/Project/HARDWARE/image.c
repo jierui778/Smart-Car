@@ -106,6 +106,7 @@ void test(void) // 测试函数
 
     ips200_show_int(50, 200, FarCornersLeft_Point[0], 2);
     ips200_show_int(50, 220, FarCornersLeft_Point[1], 2);
+    ips200_show_float(40,140,Finnal_err,5,5);
     if (Near_Lpt0_Found || Near_Lpt1_Found) // 如果近边线有角点
     {
         FarBorderLine_Enable = 1;
@@ -146,7 +147,6 @@ void test(void) // 测试函数
     // Line_Add(&img_raw, CornersRight_Point, FarCornersRight_Point, 0);
 
     ips200_show_int(160, 0, State, 3);
-
     if (1)
     {
         Cross_Check();
@@ -154,8 +154,18 @@ void test(void) // 测试函数
     if (cross_type != CROSS_NONE)
     {
         Cross_Run();
+        ips200_draw_line(0,0,120,160,RGB565_BLUE);
     }
-
+    Track_Check();
+    Track_Run();
+    for(uint8 i=0; i<mid_line_num ;i++)
+    {
+        if( 0 < mid_line[i][0] < 160 && 0 < mid_line[i][1] < 120)
+        {
+            ips200_draw_point(mid_line[i][0],mid_line[i][1],RGB565_RED);
+        }
+    }
+    ips200_show_uint(0,120,mid_line_num,3);
     // MidLine_Get(ipts0, ipts0_num, ipts1, ipts1_num, test, 2);
     // NearCorners_Find_Left(ipts0, ipts0_num, test, &test2);
     // NearCorners_Find_Right(ipts1, ipts1_num, test3, &test5);//近角点正常
@@ -171,13 +181,13 @@ void test(void) // 测试函数
     // }
     // for (int i = 0; i < ipts1_num; i++)
     // {
-    //     ips200_draw_point(ipts1[i][0] - 3, ipts1[i][1], RGB565_RED);
+    //     ips200_draw_line(0,0,ipts1[i][0] - 3, ipts1[i][1], RGB565_RED);
     // }
 
-    for (int i = 0; i < ipts0_num; i++)
-    {
-        ips200_draw_line(0, 0, ipts0[i][0] + 5, ipts0[i][1], RGB565_RED);
-    }
+    // for (int i = 0; i < ipts0_num; i++)
+    // {
+    //     ips200_draw_line(0, 0, ipts0[i][0] + 5, ipts0[i][1], RGB565_RED);
+    // }
     // for (int i = 0; i < Far_ipts0_num; i++)
     // {
     //     ips200_draw_point(Far_ipts0[i][0] + 5, Far_ipts0[i][1], RGB565_GREEN);
@@ -383,6 +393,7 @@ void Center_edge()
         mid_line[i][0] = (Left_Edge[i][0] + Right_Edge[i][0]) / 2;
         mid_line[i][1] = (Left_Edge[i][1] + Right_Edge[i][1]) / 2;
     }
+
 }
 
 void Features_Find(void)
@@ -1155,46 +1166,52 @@ float run_left(void)
         }
     }
 
-    for (uint8 i = 0; i < mid_line_num; i++)
-    {
-        ips200_draw_point(mid_line[i][0], mid_line[i][1], RGB565_GREEN);
-    }
+    // for (uint8 i = 0; i < mid_line_num; i++)
+    // {
+    //     ips200_draw_point(mid_line[i][0], mid_line[i][1], RGB565_GREEN);
+    // }
 
-    err = Err_Handle(3); // 选择模式3：中线斜率角度误差
-
+    err = Err_Handle(1);//选择模式3：中线斜率角度误差
+   
     return err;
 }
 
 /*误差处理计算：三种模式1.95-35行加权求误差    2. 中线斜率求做误差   3. 中线斜率求角度*/
 float Err_Handle(uint8 mode)
 {
+    float bias = -90; // 舵机打角的中心位置对应的角度
     switch (mode)
     {
-    case 1:
-    {
-        err = 0.0;
-        for (int row = 95; row > 35; row--) // 只取中线的35至95行
+        case 1:
         {
-            float k = 0.01;                       // 比例系数
-            float mapped_row = (row - 35) / 60.0; // 线性映射到0-1之间
-            err += (float)(k * mapped_row * (mid_line[row][0] - 80) / 3.5);
-            mid_line_num++;
+            err=0.0;
+            // for(int row = 95; row > 35; row--)//只取中线的35至95行
+            // {
+            //     float k = 0.01; // 比例系数
+            //     float mapped_row = (row - 35) / 60.0; // 线性映射到0-1之间
+            //     err += (float)(80 - k * mapped_row * (mid_line[row][0] )/350);
+            // }
+            for(uint8 i =0; i<mid_line_num ;i++)
+            {
+                err += (float)((80 - mid_line[i][0] ));
+            }
+            break;
         }
-        break;
-    }
-    case 2:
-    {
-        err = LineRession(mid_line, 118);
-        break;
-    }
-    case 3:
-    {
-        err = LineRession(mid_line, 118);
-        last_err = err;
-        /*根据err的正负，对误差进行正负的处理*/
-        err = (float)(90 - atan(err) * 180 / PI); // 返回角度
-        break;
-    }
+        case 2:
+        {
+            err = LineRession(mid_line, 118);
+            break;
+        }
+        case 3:
+        {
+            err = LineRession(mid_line, 118);
+            last_err = err;
+            
+            float angle = atan(err) * 180 / PI + bias; // 舵机打角的角度
+            /*根据err的正负，对误差进行正负的处理*/
+            // err = (float)(90-atan(err)*180/PI);//返回角度
+            break;
+        }
     }
     return err;
 }
@@ -1226,12 +1243,12 @@ float run_right(void)
         }
     }
     /*显示函数，可以去掉*/
-    for (uint8 i = 0; i < mid_line_num; i++)
-    {
-        ips200_draw_point(mid_line[i][0], mid_line[i][1], RGB565_GREEN);
-    }
+    // for (uint8 i = 0; i < mid_line_num; i++)
+    // {
+    //     ips200_draw_point(mid_line[i][0], mid_line[i][1], RGB565_GREEN);
+    // }
 
-    err = Err_Handle(3); // 选择模式3：中线斜率角度误差
+    err = Err_Handle(1);//选择模式3：中线斜率角度误差
 
     return err;
 }
@@ -1247,13 +1264,13 @@ float run_straight(void)
         mid_line[i][1] = (ipts1[i][1] + ipts0[i][1]) / 2;
     }
 
-    for (uint8 i = 0; i < mid_line_num; i++)
-    {
-        ips200_draw_point(mid_line[i][0], mid_line[i][1], RGB565_GREEN);
-    }
+    // for (uint8 i = 0; i < mid_line_num; i++)
+    // {
+    //     ips200_draw_point(mid_line[i][0], mid_line[i][1], RGB565_GREEN);
+    // }
 
-    err = Err_Handle(3); // 选择模式3：中线斜率角度误差
-
+    err = Err_Handle(1);//选择模式3：中线斜率角度误差
+    
     return err;
 }
 

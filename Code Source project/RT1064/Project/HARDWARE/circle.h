@@ -25,5 +25,6 @@ extern enum circle_type_e circle_type; // 枚举类型全局定义
 // 进圆环必定丢线，考虑进圆环仅巡单边线
 void Circle_Check(void);
 void Circle_Run(void);
+void Circle_Run_Left_Found(void);
 
 #endif
