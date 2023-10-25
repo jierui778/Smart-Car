@@ -95,7 +95,7 @@ void Cross_Run(void)
 
     Center_edge();//从中间向左右两边扫线
 
-    Finnal_err = Err_Handle(1); // 求出最终误差，选择模式3——返回角度偏差
+    Finnal_err = Err_Handle(3); // 求出最终误差，选择模式3——返回角度偏差
 
 }
 

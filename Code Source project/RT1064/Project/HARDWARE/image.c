@@ -29,7 +29,7 @@ uint8 Image_Use_Robert[120][160]; // sobel二值化图像
 uint8 State; // 状态机
 uint8 mid_line_num = 0;
 float Finnal_err;  // 最终误差
-int mid_row_first; // 中线行的起点
+float mid_row_first; // 中线行的起点
 // flash参数统一定义
 float begin_x = 5;   // 起始点距离图像中心的左右偏移量	8
 float begin_y = 118; // 起始点距离图像底部的上下偏移量 120高度：35;100高	58
@@ -109,7 +109,8 @@ void test(void)
     {
         FarBorderLine_Enable = 1;
     }
-    
+    Finnal_err =0;
+    err =0;
     if (FarBorderLine_Enable) // 开启
     {
         FarBorderline_Find(); // 寻找远边线
@@ -159,7 +160,7 @@ void test(void)
     Track_Run();
     for(uint8 i=0; i<mid_line_num ;i++)
     {
-        if( 0 < mid_line[i][0] < 160 && 0 < mid_line[i][1] < 120)
+        if( (mid_line[i][0] > 0 )&& (mid_line[i][0]< 160) && (mid_line[i][1] > 0 )&& (mid_line[i][1]< 120))
         {
             ips200_draw_point(mid_line[i][0],mid_line[i][1],RGB565_RED);
         }
@@ -1147,8 +1148,8 @@ float run_left(void)
             mid_line[i][1] = (ipts1[i][1] + ipts0[i][1]) / 2; // 直接取平均（前面有个更好的函数，但是试过不行，后面再优化）
         }
     }
-
-    if (loseline0 == 1 && ipts1_num > 80 && ipts1[ipts1_num - 1][0] < 60 && ipts0_num < 40)
+    else
+    // if (loseline0 == 1 && ipts1_num > 80 && ipts1[ipts1_num - 1][0] < 60 && ipts0_num < 40)
     {
         mid_line_num = ipts1_num; // 中线赋值
         for (uint8 i = 0; i < mid_line_num; i++)
@@ -1161,7 +1162,7 @@ float run_left(void)
             ips200_draw_point(mid_line[i][0], mid_line[i][1], RGB565_GREEN);
         }
     }
-
+    
     // for (uint8 i = 0; i < mid_line_num; i++)
     // {
     //     ips200_draw_point(mid_line[i][0], mid_line[i][1], RGB565_GREEN);
@@ -1181,26 +1182,30 @@ float Err_Handle(uint8 mode)
         case 1:
         {
             err=0.0;
-            // for(int row = 95; row > 35; row--)//只取中线的35至95行
-            // {
-            //     float k = 0.01; // 比例系数
-            //     float mapped_row = (row - 35) / 60.0; // 线性映射到0-1之间
-            //     err += (float)(80 - k * mapped_row * (mid_line[row][0] )/350);
-            // }
-            for(uint8 i =0; i<mid_line_num ;i++)
+            for(int row = 95; row > 35; row--)//只取中线的35至95行
             {
-                err += (float)((80 - mid_line[i][0] ));
+                float k = 0.01; // 比例系数
+                float mapped_row = (row - 35) / 60.0; // 线性映射到0-1之间
+                err += (float)(80 - k * mapped_row * (mid_line[row][0] )/350);
             }
+            // for(uint8 i =0; i<mid_line_num ;i++)
+            // {
+            //     err += ((80 - mid_line[i][0] ));
+            //     if(mid_line[i][1] < 50)
+            //     {
+            //         break;
+            //     }
+            // }
             break;
         }
         case 2:
         {
-            err = LineRession(mid_line, 118);
+            err = LineRession(mid_line, mid_line_num);
             break;
         }
         case 3:
         {
-            err = LineRession(mid_line, 118);
+            err = LineRession(mid_line, mid_line_num);
             last_err = err;
             
             float angle = atan(err) * 180 / PI + bias; // 舵机打角的角度
@@ -1216,7 +1221,6 @@ float Err_Handle(uint8 mode)
 float run_right(void)
 {
     /*一 求中线*/
-    int mid_line[150][2]; // 中线
     mid_line_num = 0;
     /*情况1：右边线不完全丢线且个数较多*/
     if (touch_boundary1 == 1 && ipts0[ipts0_num - 1][0] > 100 && ipts0_num > 100 && ipts1_num > 40)
@@ -1252,18 +1256,16 @@ float run_right(void)
 /*直道运行函数*/
 float run_straight(void)
 {
-    int mid_line[150][2];
     mid_line_num = (ipts0_num > ipts1_num) ? ipts1_num : ipts0_num;
     for (uint8 i = 0; i < mid_line_num; i++)
     {
         mid_line[i][0] = (ipts1[i][0] + ipts0[i][0]) / 2;
         mid_line[i][1] = (ipts1[i][1] + ipts0[i][1]) / 2;
+        // if(mid_line[i][1] < 50 && mid_line[i][1] == mid_line[i-1][1])
+        // {
+        //     break;
+        // }
     }
-
-    // for (uint8 i = 0; i < mid_line_num; i++)
-    // {
-    //     ips200_draw_point(mid_line[i][0], mid_line[i][1], RGB565_GREEN);
-    // }
 
     err = Err_Handle(1);//选择模式3：中线斜率角度误差
     
@@ -1276,14 +1278,17 @@ void Track_Check(void)
     if (ipts0_num > 100 && ipts0[ipts0_num - 1][0] > (IMAGE_WIDTH / 2) && (loseline1 == 1 || touch_boundary1 == 1))
     {
         track_type = TRACK_RIGHT;
+        cross_type = CROSS_NONE;
     }
     else if (ipts1_num > 100 && ipts1[ipts1_num - 1][0] < 60 && (loseline0 == 1 || touch_boundary0 == 1) && ipts1[ipts1_num - 1][1] > 30)
     {
         track_type = TRACK_LEFT;
+        cross_type = CROSS_NONE;
     }
     else if (ipts1_num > 60 && ipts0_num > 60 && ipts0[ipts0_num - 1][1] < 60 && ipts1[ipts1_num - 1][1] < 60 && !loseline0 && !loseline1)
     {
         track_type = TRACK_BOTH;
+        cross_type = CROSS_NONE;
     }
 }
 
