@@ -3,11 +3,11 @@
 <title>Static Call Graph - [.\Objects\RT1064_CAR.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\RT1064_CAR.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6190004: Last Updated: Wed Oct 25 01:05:06 2023
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6190004: Last Updated: Wed Oct 25 13:24:39 2023
 <BR><P>
 <H3>Maximum Stack Usage =       1984 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
-main &rArr; test &rArr; FarBorderline_Find &rArr; ips200_show_uint &rArr; ips200_show_string &rArr; ips200_show_char &rArr; ips200_set_region &rArr; ips200_write_command &rArr; spi_write_8bit &rArr; spi_write_8bit_array &rArr; spi_write &rArr; LPSPI_MasterTransferBlocking &rArr; LPSPI_CheckTransferArgument &rArr; __aeabi_assert &rArr; DbgConsole_Printf &rArr; DbgConsole_Vprintf &rArr; DbgConsole_PrintfFormattedData &rArr; DbgConsole_ConvertFloatRadixNumToString &rArr; __hardfp_pow &rArr; sqrt
+main &rArr; test &rArr; Cross_Run &rArr; ips200_show_uint &rArr; ips200_show_string &rArr; ips200_show_char &rArr; ips200_set_region &rArr; ips200_write_command &rArr; spi_write_8bit &rArr; spi_write_8bit_array &rArr; spi_write &rArr; LPSPI_MasterTransferBlocking &rArr; LPSPI_CheckTransferArgument &rArr; __aeabi_assert &rArr; DbgConsole_Printf &rArr; DbgConsole_Vprintf &rArr; DbgConsole_PrintfFormattedData &rArr; DbgConsole_ConvertFloatRadixNumToString &rArr; __hardfp_pow &rArr; sqrt
 <P>
 <H3>
 Functions with no stack information
@@ -1456,12 +1456,12 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[257]"></a>Cross_Check</STRONG> (Thumb, 384 bytes, Stack size 0 bytes, cross.o(.text.Cross_Check))
+<P><STRONG><a name="[257]"></a>Cross_Check</STRONG> (Thumb, 370 bytes, Stack size 0 bytes, cross.o(.text.Cross_Check))
 <BR><BR>[Called By]<UL><LI><a href="#[232]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;test
 </UL>
 
-<P><STRONG><a name="[15d]"></a>Cross_Run</STRONG> (Thumb, 508 bytes, Stack size 32 bytes, cross.o(.text.Cross_Run))
-<BR><BR>[Stack]<UL><LI>Max Depth = 1048<LI>Call Chain = Cross_Run &rArr; ips200_show_uint &rArr; ips200_show_string &rArr; ips200_show_char &rArr; ips200_set_region &rArr; ips200_write_command &rArr; spi_write_8bit &rArr; spi_write_8bit_array &rArr; spi_write &rArr; LPSPI_MasterTransferBlocking &rArr; LPSPI_CheckTransferArgument &rArr; __aeabi_assert &rArr; DbgConsole_Printf &rArr; DbgConsole_Vprintf &rArr; DbgConsole_PrintfFormattedData &rArr; DbgConsole_ConvertFloatRadixNumToString &rArr; __hardfp_pow &rArr; sqrt
+<P><STRONG><a name="[15d]"></a>Cross_Run</STRONG> (Thumb, 524 bytes, Stack size 40 bytes, cross.o(.text.Cross_Run))
+<BR><BR>[Stack]<UL><LI>Max Depth = 1056<LI>Call Chain = Cross_Run &rArr; ips200_show_uint &rArr; ips200_show_string &rArr; ips200_show_char &rArr; ips200_set_region &rArr; ips200_write_command &rArr; spi_write_8bit &rArr; spi_write_8bit_array &rArr; spi_write &rArr; LPSPI_MasterTransferBlocking &rArr; LPSPI_CheckTransferArgument &rArr; __aeabi_assert &rArr; DbgConsole_Printf &rArr; DbgConsole_Vprintf &rArr; DbgConsole_PrintfFormattedData &rArr; DbgConsole_ConvertFloatRadixNumToString &rArr; __hardfp_pow &rArr; sqrt
 </UL>
 <BR>[Calls]<UL><LI><a href="#[161]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_uint
 <LI><a href="#[15e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Line_Add
@@ -1762,7 +1762,7 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> startup_mimxrt1064.o(.text)
 </UL>
-<P><STRONG><a name="[176]"></a>FarBorderline_Find</STRONG> (Thumb, 566 bytes, Stack size 32 bytes, image.o(.text.FarBorderline_Find))
+<P><STRONG><a name="[176]"></a>FarBorderline_Find</STRONG> (Thumb, 570 bytes, Stack size 32 bytes, image.o(.text.FarBorderline_Find))
 <BR><BR>[Stack]<UL><LI>Max Depth = 1048<LI>Call Chain = FarBorderline_Find &rArr; ips200_show_uint &rArr; ips200_show_string &rArr; ips200_show_char &rArr; ips200_set_region &rArr; ips200_write_command &rArr; spi_write_8bit &rArr; spi_write_8bit_array &rArr; spi_write &rArr; LPSPI_MasterTransferBlocking &rArr; LPSPI_CheckTransferArgument &rArr; __aeabi_assert &rArr; DbgConsole_Printf &rArr; DbgConsole_Vprintf &rArr; DbgConsole_PrintfFormattedData &rArr; DbgConsole_ConvertFloatRadixNumToString &rArr; __hardfp_pow &rArr; sqrt
 </UL>
 <BR>[Calls]<UL><LI><a href="#[161]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_uint
@@ -1772,13 +1772,13 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[232]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;test
 </UL>
 
-<P><STRONG><a name="[255]"></a>FarCorners_Find_Left</STRONG> (Thumb, 648 bytes, Stack size 24 bytes, image.o(.text.FarCorners_Find_Left))
+<P><STRONG><a name="[255]"></a>FarCorners_Find_Left</STRONG> (Thumb, 540 bytes, Stack size 24 bytes, image.o(.text.FarCorners_Find_Left))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = FarCorners_Find_Left
 </UL>
 <BR>[Called By]<UL><LI><a href="#[232]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;test
 </UL>
 
-<P><STRONG><a name="[256]"></a>FarCorners_Find_Right</STRONG> (Thumb, 708 bytes, Stack size 24 bytes, image.o(.text.FarCorners_Find_Right))
+<P><STRONG><a name="[256]"></a>FarCorners_Find_Right</STRONG> (Thumb, 558 bytes, Stack size 24 bytes, image.o(.text.FarCorners_Find_Right))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = FarCorners_Find_Right
 </UL>
 <BR>[Called By]<UL><LI><a href="#[232]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;test
@@ -2262,7 +2262,6 @@ Global Symbols
 <LI><a href="#[194]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;abs
 </UL>
 <BR>[Called By]<UL><LI><a href="#[15d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Cross_Run
-<LI><a href="#[232]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;test
 </UL>
 
 <P><STRONG><a name="[5]"></a>MemManage_Handler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, zf_common_vector.o(.text.MemManage_Handler))
@@ -3043,7 +3042,6 @@ Global Symbols
 <LI><a href="#[220]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_set_region
 </UL>
 <BR>[Called By]<UL><LI><a href="#[223]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_draw_line
-<LI><a href="#[232]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;test
 </UL>
 
 <P><STRONG><a name="[225]"></a>ips200_init</STRONG> (Thumb, 1016 bytes, Stack size 144 bytes, zf_device_ips200.o(.text.ips200_init))
@@ -3132,7 +3130,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[aa]"></a>main</STRONG> (Thumb, 136 bytes, Stack size 40 bytes, main.o(.text.main))
-<BR><BR>[Stack]<UL><LI>Max Depth = 1984<LI>Call Chain = main &rArr; test &rArr; FarBorderline_Find &rArr; ips200_show_uint &rArr; ips200_show_string &rArr; ips200_show_char &rArr; ips200_set_region &rArr; ips200_write_command &rArr; spi_write_8bit &rArr; spi_write_8bit_array &rArr; spi_write &rArr; LPSPI_MasterTransferBlocking &rArr; LPSPI_CheckTransferArgument &rArr; __aeabi_assert &rArr; DbgConsole_Printf &rArr; DbgConsole_Vprintf &rArr; DbgConsole_PrintfFormattedData &rArr; DbgConsole_ConvertFloatRadixNumToString &rArr; __hardfp_pow &rArr; sqrt
+<BR><BR>[Stack]<UL><LI>Max Depth = 1984<LI>Call Chain = main &rArr; test &rArr; Cross_Run &rArr; ips200_show_uint &rArr; ips200_show_string &rArr; ips200_show_char &rArr; ips200_set_region &rArr; ips200_write_command &rArr; spi_write_8bit &rArr; spi_write_8bit_array &rArr; spi_write &rArr; LPSPI_MasterTransferBlocking &rArr; LPSPI_CheckTransferArgument &rArr; __aeabi_assert &rArr; DbgConsole_Printf &rArr; DbgConsole_Vprintf &rArr; DbgConsole_PrintfFormattedData &rArr; DbgConsole_ConvertFloatRadixNumToString &rArr; __hardfp_pow &rArr; sqrt
 </UL>
 <BR>[Calls]<UL><LI><a href="#[232]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;test
 <LI><a href="#[22d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_gray_image
@@ -3382,11 +3380,11 @@ Global Symbols
 <P><STRONG><a name="[229]"></a>system_delay_ms</STRONG> (Thumb, 88 bytes, Stack size 24 bytes, zf_driver_delay.o(.text.system_delay_ms))
 <BR><BR>[Stack]<UL><LI>Max Depth = 632<LI>Call Chain = system_delay_ms &rArr; GPT_SetOutputCompareValue &rArr; __aeabi_assert &rArr; DbgConsole_Printf &rArr; DbgConsole_Vprintf &rArr; DbgConsole_PrintfFormattedData &rArr; DbgConsole_ConvertFloatRadixNumToString &rArr; __hardfp_pow &rArr; sqrt
 </UL>
-<BR>[Calls]<UL><LI><a href="#[250]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPT_StartTimer
+<BR>[Calls]<UL><LI><a href="#[253]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPT_StopTimer
+<LI><a href="#[250]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPT_StartTimer
 <LI><a href="#[192]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPT_SetOutputCompareValue
 <LI><a href="#[251]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPT_GetStatusFlags
 <LI><a href="#[252]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPT_ClearStatusFlags
-<LI><a href="#[253]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPT_StopTimer
 </UL>
 <BR>[Called By]<UL><LI><a href="#[15b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mt9v03x_init
 <LI><a href="#[225]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_init
@@ -3396,16 +3394,14 @@ Global Symbols
 <LI><a href="#[233]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mt9v03x_get_config
 </UL>
 
-<P><STRONG><a name="[232]"></a>test</STRONG> (Thumb, 810 bytes, Stack size 896 bytes, image.o(.text.test))
-<BR><BR>[Stack]<UL><LI>Max Depth = 1944<LI>Call Chain = test &rArr; FarBorderline_Find &rArr; ips200_show_uint &rArr; ips200_show_string &rArr; ips200_show_char &rArr; ips200_set_region &rArr; ips200_write_command &rArr; spi_write_8bit &rArr; spi_write_8bit_array &rArr; spi_write &rArr; LPSPI_MasterTransferBlocking &rArr; LPSPI_CheckTransferArgument &rArr; __aeabi_assert &rArr; DbgConsole_Printf &rArr; DbgConsole_Vprintf &rArr; DbgConsole_PrintfFormattedData &rArr; DbgConsole_ConvertFloatRadixNumToString &rArr; __hardfp_pow &rArr; sqrt
+<P><STRONG><a name="[232]"></a>test</STRONG> (Thumb, 730 bytes, Stack size 888 bytes, image.o(.text.test))
+<BR><BR>[Stack]<UL><LI>Max Depth = 1944<LI>Call Chain = test &rArr; Cross_Run &rArr; ips200_show_uint &rArr; ips200_show_string &rArr; ips200_show_char &rArr; ips200_set_region &rArr; ips200_write_command &rArr; spi_write_8bit &rArr; spi_write_8bit_array &rArr; spi_write &rArr; LPSPI_MasterTransferBlocking &rArr; LPSPI_CheckTransferArgument &rArr; __aeabi_assert &rArr; DbgConsole_Printf &rArr; DbgConsole_Vprintf &rArr; DbgConsole_PrintfFormattedData &rArr; DbgConsole_ConvertFloatRadixNumToString &rArr; __hardfp_pow &rArr; sqrt
 </UL>
 <BR>[Calls]<UL><LI><a href="#[22e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_int
-<LI><a href="#[224]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_draw_point
 <LI><a href="#[223]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_draw_line
 <LI><a href="#[1c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OSTU_GetThreshold
 <LI><a href="#[1c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NearCorners_Find_Right
 <LI><a href="#[1c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NearCorners_Find_Left
-<LI><a href="#[15e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Line_Add
 <LI><a href="#[193]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Sobel
 <LI><a href="#[254]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Image_Compress
 <LI><a href="#[256]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FarCorners_Find_Right
