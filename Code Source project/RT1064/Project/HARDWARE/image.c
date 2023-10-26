@@ -114,9 +114,9 @@ void test(void) // 测试函数
     NearCorners_Find_Left(ipts0, ipts0_num, CornersLeft_Point, &Near_Lpt0_Found);   // 寻找近角点
     NearCorners_Find_Right(ipts1, ipts1_num, CornersRight_Point, &Near_Lpt1_Found); // 近角点正常
 
-    ips200_show_int(50, 200, loseline0, 2);
+    // ips200_show_int(50, 200, loseline0, 2);
     // ips200_show_int(50, 220, FarCornersLeft_Point[1], 2);
-    ips200_show_float(40,160,Finnal_err+12,3,3);
+    // ips200_show_float(40,160,Finnal_err+12,3,3);
     if (Near_Lpt0_Found || Near_Lpt1_Found) // 如果近边线有角点
     {
         FarBorderLine_Enable = 1;
@@ -157,8 +157,8 @@ void test(void) // 测试函数
     // Line_Add(&img_raw, CornersLeft_Point, FarCornersLeft_Point, 0);
     // Line_Add(&img_raw, CornersRight_Point, FarCornersRight_Point, 0);
 
-    ips200_show_int(160, 0, State, 3);
-    ips200_show_int(160, 20, ipts1_num, 3);
+    // ips200_show_int(160, 0, State, 3);
+    // ips200_show_int(160, 20, ipts1_num, 3);
     if (1)
     {
         Cross_Check();
@@ -193,7 +193,7 @@ void test(void) // 测试函数
             // ips200_draw_line(160,0,mid_line[i][0],mid_line[i][1],RGB565_BLUE);
         
     }
-    ips200_show_uint(0,120,mid_line_num,3);
+    // ips200_show_uint(0,120,mid_line_num,3);
     // MidLine_Get(ipts0, ipts0_num, ipts1, ipts1_num, test, 2);
     // NearCorners_Find_Left(ipts0, ipts0_num, test, &test2);
     // NearCorners_Find_Right(ipts1, ipts1_num, test3, &test5);//近角点正常
