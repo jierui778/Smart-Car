@@ -33,7 +33,7 @@ void PID_Init(void);
 void PID_Init_New(void);// 初始化PID控制器
 // extern void IncrPID(sIncrPID_Info *IncrPID, sMotor_Info *MotorInfo); // 增量式PID
 // extern void PosiPID(sPosiPID_Info *PosiPID, sServo_Info *ServoInfo); // 位置式PID
-extern void PosiPID(sPosiPID_Info *PosiPID, int *test);
+extern void PosiPID(sPosiPID_Info *PosiPID, float *test);
 void Servo_PidSetSpeed(float Target_Angle);
 float P_realize(tPid * pid,float actual_val);
 void PID_Init(void);

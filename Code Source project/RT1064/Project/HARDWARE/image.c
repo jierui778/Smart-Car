@@ -7,11 +7,6 @@
 #include "garage.h"
 #include "ramp.h"
 #include "math.h" //后期处理掉
-
-const float Weight[80] =
-    {
-        80.0, 79.2, 78.4, 77.6, 76.8, 76.0, 75.2, 74.4, 73.6, 72.8, 72.0, 71.2, 70.4, 69.6, 68.8, 68.0, 67.2, 66.4, 65.6, 64.8, 64.0, 63.2, 62.4, 61.6, 60.8, 60.0, 59.2, 58.4, 57.6, 56.8, 56.0, 55.2, 54.4, 53.6, 52.8, 52.0, 51.2, 50.4, 49.6, 48.8, 48.0, 47.2, 46.4, 45.6, 44.8, 44.0, 43.2, 42.4, 41.6, 40.8, 40.0, 39.2, 38.4, 37.6, 36.8, 36.0, 35.2, 34.4, 33.6,
-        32.8, 32.0, 31.2, 30.4, 29.6, 28.8, 28.0, 27.2, 26.4, 25.6, 24.8, 24.0, 23.2, 22.4, 21.6, 20.8, 20.0, 19.2, 18.4, 17.6, 16.8};
 enum track_type_e track_type = TRACK_BOTH;
 image_t img_raw = DEF_IMAGE(NULL, IMAGE_WIDTH, IMAGE_HEIGHT);
 uint8 Image_Use[IMAGE_HEIGHT][IMAGE_WIDTH];
@@ -29,7 +24,7 @@ const int dir_frontright[4][2] = {{1, -1},
                                   {-1, 1},
                                   {-1, -1}};
 
-
+                                  
 
 uint8 Image_Use_Robert[120][160]; // sobel二值化图像
 
@@ -98,16 +93,12 @@ int CornersRight_Point[2] = {0}; // 近角点坐标
 int FarCornersLeft_Point[2] = {0};
 int FarCornersRight_Point[2] = {0}; // 远角点坐标
 
-int ArcCornersLeft_Point[2] = {0};
-int ArcCornersRight_Point[2] = {0};
-
 float Err[5] = {0}; // 中线误差数组
 
 
 void test(void) // 测试函数
 {
-
-    int test[80][2] = {0};
+    int test[100][2] = {0};
     int test2 = 0;
     int test3[2] = {0, 0};
     int test5;
@@ -130,8 +121,8 @@ void test(void) // 测试函数
     {
         FarBorderLine_Enable = 1;
     }
-    Finnal_err = 0;
-    err = 0;
+    Finnal_err =0;
+    err =0;
     if (FarBorderLine_Enable) // 开启
     {
         FarBorderline_Find(); // 寻找远边线
@@ -145,35 +136,6 @@ void test(void) // 测试函数
             FarCorners_Find_Right(Far_ipts1, Far_ipts1_num, FarCornersRight_Point, &Far_Lpt1_Found);
         }
     }
-
-    // Arc_Point_Get(ipts1, ipts1_num, ArcCornersRight_Point, &Is_Arc1);
-    LongLine_Rec(ipts1, ipts1_num, 50, &Is_straight1);
-    ips200_show_int(50, 200, Is_straight1, 2);
-
-    // 车库斑马线检查(车库优先级高，最先检查)
-    // if (/*Z.all_length > ENCODER_PER_METER &&*/ garage_type == GARAGE_NONE && ramp_type == RAMP_NONE)
-    //     Garage_Check(); // 非车库模式//非坡道模式//检测车库
-    // if (garage_type == GARAGE_NONE && ramp_type == RAMP_NONE)
-    //     Cross_Check();                                                                    // 非车库模式//非坡道模式//检测十字
-    // if (garage_type == GARAGE_NONE && cross_type == CROSS_NONE && ramp_type == RAMP_NONE) // 不是车库、十字 , 才检测圆环
-    //     Circle_Check();
-
-    // if (garage_type != GARAGE_NONE && (garage_type != GARAGE_OUT_LEFT || garage_type != GARAGE_OUT_RIGHT))
-    //     Garage_Run(); // 车库模式//非出库模式//运行车库
-    // if (cross_type != CROSS_NONE)
-    //     Cross_Run(); // 运行十字
-    // if (circle_type != CIRCLE_NONE)
-    //     Circle_Run(); // 运行圆环
-    // // ips200_show_int(20, 200, Is_Arc1, 1);
-    // // ips200_draw_line(80, 60, ArcCornersRight_Point[0], ArcCornersRight_Point[1], RGB565_RED);
-
-    // for (int i = 0; i < 79; i++)
-    // {
-    //     test[i][0] = ipts0[i][0] + Weight[i];
-    //     test[i][1] = ipts0[i][1];
-    //     ips200_draw_point(test[i][0], test[i][1], RGB565_RED);
-    // }
-
     // Line_Add(&img_raw, CornersLeft_Point, FarCornersLeft_Point, 0);
 
     // ips200_show_int(20, 200, Near_Lpt0_Found, 1);
@@ -192,8 +154,8 @@ void test(void) // 测试函数
     // ips200_show_int(160, 200, NearBorderLine_Enable, 1);
     // ips200_show_int(160, 240, FarBorderLine_Enable, 1);
 
-    // // Line_Add(&img_raw, CornersLeft_Point, FarCornersLeft_Point, 0);
-    // // Line_Add(&img_raw, CornersRight_Point, FarCornersRight_Point, 0);
+    // Line_Add(&img_raw, CornersLeft_Point, FarCornersLeft_Point, 0);
+    // Line_Add(&img_raw, CornersRight_Point, FarCornersRight_Point, 0);
 
     ips200_show_int(160, 0, State, 3);
     ips200_show_int(160, 20, ipts1_num, 3);
@@ -204,7 +166,7 @@ void test(void) // 测试函数
     if (cross_type != CROSS_NONE)
     {
         Cross_Run();
-        ips200_draw_line(0, 0, 120, 160, RGB565_BLUE);
+        // ips200_draw_line(0,0,120,160,RGB565_BLUE);
     }
 
     Track_Check();
@@ -225,11 +187,11 @@ void test(void) // 测试函数
 
     for(uint8 i=0; i<mid_line_num ;i++)
     {
-
-
+       
+           
             ips200_draw_point(mid_line[i][0],mid_line[i][1],RGB565_RED);
             // ips200_draw_line(160,0,mid_line[i][0],mid_line[i][1],RGB565_BLUE);
-
+        
     }
     ips200_show_uint(0,120,mid_line_num,3);
     // MidLine_Get(ipts0, ipts0_num, ipts1, ipts1_num, test, 2);
@@ -241,23 +203,28 @@ void test(void) // 测试函数
     // test = Is_Straight(ipts0, ipts0_num, sample_dist);
     // Straight_Rec(ipts1, ipts1_num);
     //    Arc_Rec(ipts0, ipts0_num);
-    for (int i = 0; i < ipts0_num; i++)
-    {
-        ips200_draw_point(ipts0[i][0] + 3, ipts0[i][1], RGB565_RED);
-    }
-    for (int i = 0; i < ipts1_num; i++)
-    {
-        ips200_draw_point(ipts1[i][0] - 3, ipts1[i][1], RGB565_RED);
-    }
+    // for (int i = 0; i < ipts0_num; i++)
+    // {
+    //     ips200_draw_point(ipts0[i][0] + 3, ipts0[i][1], RGB565_RED);
+    // }
+    // for (int i = 0; i < ipts1_num; i++)
+    // {
+    //     ips200_draw_point(ipts1[i][0] - 3, ipts1[i][1], RGB565_RED);
+    // }
 
     // for (int i = 0; i < ipts0_num; i++)
     // {
-    //     ips200_draw_line(0, 0, ipts0[i][0] + 5, ipts0[i][1], RGB565_RED);
+    //     ips200_draw_line(0, 0, ipts0[i][0] + 5, ipts0[i][1], RGB565_BLUE);
     // }
-    // for (int i = 0; i < Far_ipts0_num; i++)
-    // {
-    //     ips200_draw_point(Far_ipts0[i][0] + 5, Far_ipts0[i][1], RGB565_GREEN);
-    // }
+    for (int i = 0; i < Far_ipts0_num; i++)
+    {
+        ips200_draw_line(0,0,Far_ipts0[i][0] , Far_ipts0[i][1], RGB565_BLUE);
+    }
+    for (int i = 0; i < Far_ipts1_num; i++)
+    {
+        ips200_draw_line(160,0,Far_ipts1[i][0] , Far_ipts1[i][1], RGB565_RED);
+    }
+
 }
 
 /**
@@ -459,6 +426,7 @@ void Center_edge()
         mid_line[i][0] = (Left_Edge[i][0] + Right_Edge[i][0]) / 2;
         mid_line[i][1] = (Left_Edge[i][1] + Right_Edge[i][1]) / 2;
     }
+
 }
 
 void Features_Find(void)
@@ -559,18 +527,14 @@ void NearCorners_Find_Right(int pts_in[][2], int pts_num, int pts_out[2], int *f
  * @param pts_num 边线坐标数组长度
  * @param pts_out 极边界坐标数组
  */
-void Arc_Point_Get(int pts_in[][2], int pts_num, int pts_out[2], int *flag) // 右圆环检测
+void Arc_Point_Get(int pts_in[][2], int pts_num, int pts_out[2], int *flag)
 {
     // int Is_Arc = 0; // 圆环判断标志位
     for (int i = 0; i < pts_num; i++)
     {
         // 圆弧
-        if (pts_in[i][0] - pts_in[i - 2][0] < 0 && pts_in[i][0] - pts_in[i - 4][0] < 0 && pts_in[i][0] - pts_in[i - 8][0] < 0 && pts_in[i][0] - pts_in[i - 10][0] < 0 && pts_in[i][0] - pts_in[i + 2][0] < 0 && pts_in[i][0] - pts_in[i + 4][0] < 0 && pts_in[i][0] - pts_in[i + 6][0] < 0 && pts_in[i][0] - pts_in[i + 8][0] < 0 && pts_in[i][0] - pts_in[i + 10][0] < 0) //
+        if (pts_in[i][0] - pts_in[i - 2][0] > 0 && pts_in[i][0] - pts_in[i - 4][0] > 0 && pts_in[i][0] - pts_in[i - 8][0] > 0 && pts_in[i][0] - pts_in[i - 12][0] > 0 && pts_in[i][0] - pts_in[i - 16][0] > 0 && pts_in[i][0] - pts_in[i + 4][0] < 0 && pts_in[i][0] - pts_in[i + 8][0] < 0 && pts_in[i][0] - pts_in[i + 12][0] < 0 && pts_in[i][0] - pts_in[i + 16][0] < 0) //
         {
-            if (pts_in[i][0] > pts_in[i + 1][0]) // 后一个点的x坐标必定比极边界点小
-            {
-                continue;
-            }
             pts_out[0] = ipts0[i][0];
             pts_out[1] = ipts0[i][1];
             *flag = 1;
@@ -1006,17 +970,9 @@ out2:
         ipts1_num = 0;
 }
 }
-/**
- * @brief 左边线巡线
- *
- * @param img 图像
- * @param block_size 块大小
- * @param clip_value 阈值裁减量
- * @param x 初始x坐标
- * @param y 初始y坐标
- * @param pts 存放边线坐标信息
- * @param num 边线坐标信息长度
- */
+
+#define AT AT_IMAGE
+
 void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x, int y, int pts[][2], int *num)
 {
     zf_assert(img && img->data); // 不满足则退出执行
@@ -1094,17 +1050,7 @@ void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x
     // 记录边线数目
     *num = step;
 }
-/**
- * @brief 右边线巡线
- *
- * @param img 图像
- * @param block_size 块大小
- * @param clip_value 阈值裁减量
- * @param x 坐标
- * @param y 坐标
- * @param pts 边线坐标
- * @param num 边线数目
- */
+
 void Right_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x, int y, int pts[][2], int *num)
 {
     uint8 i;
@@ -1232,7 +1178,7 @@ float run_left(void)
         {
             mid_line[i][0] = ipts1[i][0] / 2;
             mid_line[i][1] = ipts1[i][1];
-            ips200_draw_line(0,120,mid_line[i][0],mid_line[i][1],RGB565_BLUE);
+            // ips200_draw_line(0,120,mid_line[i][0],mid_line[i][1],RGB565_BLUE);
         }
     }
     else
@@ -1245,7 +1191,7 @@ float run_left(void)
         }
     }
     err = Err_Handle(1);//选择模式2：中线斜率误差
-
+   
     return err;
 }
 
@@ -1276,13 +1222,13 @@ float run_left(void)
 //     }
 // }
 //     count = 0;
-
+    
 //     float err = 0.0;
 
 //     for(int i=0;i < 10; i++)
 //     {
 //         err += (float)(distance[1][i] * distance[0][i]/sum);
-
+        
 //     }
 //     ips200_show_uint(160,20,sum,3);
 //     return err;
@@ -1294,7 +1240,7 @@ float run_left(void)
 //     int i,j=0;
 //     int temp;
 //     for(temp=0;temp>10;temp++)//常规误差计算
-//     {
+//     {	
 //         while(ipts0[i][1] < ipts1[j][1])
 //         {
 //             j++;//如果右边线的点坐标高于左边线,右边取高一点的点
@@ -1417,7 +1363,7 @@ float run_right(void)
     //     ips200_draw_point(mid_line[i][0], mid_line[i][1], RGB565_GREEN);
     // }
 
-    err = Err_Handle(1); // 选择模式3：中线斜率角度误差
+    err = Err_Handle(1);//选择模式3：中线斜率角度误差
 
     return err;
 }
@@ -1437,8 +1383,17 @@ float run_straight(void)
         // }
     }
 
-    err = Err_Handle(1); // 选择模式3：中线斜率角度误差
-
+    if(mid_line_num == 0 && loseline0 == 1 && loseline1 == 1)
+    {
+        mid_line_num = (Far_ipts0_num > Far_ipts1_num) ? Far_ipts1_num : Far_ipts0_num;
+        for(uint8 i =0; i < mid_line_num; i++)
+        {
+            mid_line[i][0] = (Far_ipts1[i][0] + Far_ipts0[i][0]) / 2;
+            mid_line[i][1] = (Far_ipts1[i][1] + Far_ipts0[i][1]) / 2;
+        }
+    }
+    err = Err_Handle(1);//选择模式3：中线斜率角度误差
+    
     return err;
 }
 
@@ -1504,7 +1459,7 @@ void Line_Add(image_t *img, int pts0_in[2], int pts1_in[2], int8 value)
 {
     int dx = pts1_in[0] - pts0_in[0];
     int dy = pts1_in[1] - pts0_in[1];
-    if (my_abs(dx) > my_abs(dy))
+    if (abs(dx) > abs(dy))
     {
         for (int x = pts0_in[0]; x != pts1_in[0]; x += (dx > 0 ? 1 : -1))
         {
@@ -1534,7 +1489,7 @@ float mySqrt(float x)
 
 void track_leftline(int pts_in[][2], int num, int pts_out[][2], int approx_num, float dist)
 {
-    for (int i = 0; i < num; i++)
+    for (int i = 0; i < num; i++) 
     {
             float dx = pts_in[clip(i + approx_num, 0, num - 1)][0] - pts_in[clip(i - approx_num, 0, num - 1)][0];
             float dy = pts_in[clip(i + approx_num, 0, num - 1)][1] - pts_in[clip(i - approx_num, 0, num - 1)][1];

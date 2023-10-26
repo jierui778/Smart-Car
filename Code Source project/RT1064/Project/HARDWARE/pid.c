@@ -7,12 +7,13 @@
 #include "math.h"
 #include "servo.h"
 float sPidInfo[3][5] = { // IncrPID{Kp,Ki,Kd,MaxOutput}
-    {0.1, 0, 0, 0,0},
+    {0.0, 0, 0, 0,0},
 
     {0, 0, 0, 0,0},
     
-    {0.1,0,0,10,15}};
+    {0.8,0,0,10,16}};
 
+	/*--p过荡 0.7*/
 sPosiPID_Info ServoInfo = {0};
 // float PidInfo[2][4] = { // IncrPID{Kp,Ki,Kd,MaxOutput}
 //     {0, 0, 0, 0},
@@ -53,6 +54,7 @@ void PID_Init(void)
     ServoInfo.LastErr = 0;
     ServoInfo.Integral_Err = 0;
     ServoInfo.Output = 0;
+
 }
 /**
  * @brief 增量式PID控制器
@@ -76,7 +78,7 @@ void IncrPID(sIncrPID_Info *IncrPID, sMotor_Info *MotorInfo)
 * @param PosPID 位置式PID参数
 * @param MotorInfo 舵机输出参数
 */
-void PosiPID(sPosiPID_Info *PosiPID, int *test)
+void PosiPID(sPosiPID_Info *PosiPID, float *test)
 {
    // 更新误差
    PosiPID->LastErr = PosiPID->Err;                          // 误差更新为上次误差
@@ -86,6 +88,7 @@ void PosiPID(sPosiPID_Info *PosiPID, int *test)
    // 计算输出
    PosiPID->Output = PosiPID->Kp * PosiPID->Err + PosiPID->Ki * PosiPID->Integral_Err + PosiPID->Kd * (PosiPID->Err - PosiPID->LastErr);
    // 限制PID输出
+   PosiPID->Output = PIDInfo_Limit(PosiPID->Output, PosiPID->MaxOutput);
 } 
 
 #include "pid.h"

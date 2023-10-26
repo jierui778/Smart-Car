@@ -12,7 +12,6 @@
 #include "isr.h"
 #include "filter.h"
 
-#include "SEGGER_RTT.h"
 
 int main(void)
 {
@@ -32,9 +31,7 @@ int main(void)
     //    pit_ms_init(PIT_CH0, 200);
     //    interrupt_set_priority(PIT_IRQn, 0);
     PID_Init();
-    SEGGER_RTT_Init();
-    SEGGER_RTT_printf(0, "Hello world !");
-
+	
     //    Motor_SetPwmL(2000);
     //    Motor_SetPwmR(1888.88);
     Servo_Init();//舵机初始化
