@@ -1,0 +1,155 @@
+Removed Member From Class: ClassName=智能车驱动板HIP4082 Member=L?
+Removed Member From Class: ClassName=智能车驱动板HIP4082 Member=U?
+Change Component Designator: OldDesignator=C? NewDesignator=C1
+Change Component Designator: OldDesignator=C? NewDesignator=C2
+Change Component Designator: OldDesignator=C? NewDesignator=C3
+Change Component Designator: OldDesignator=C? NewDesignator=C4
+Change Component Designator: OldDesignator=C? NewDesignator=C5
+Change Component Designator: OldDesignator=C? NewDesignator=C6
+Change Component Designator: OldDesignator=C? NewDesignator=C7
+Change Component Designator: OldDesignator=C? NewDesignator=C8
+Change Component Designator: OldDesignator=C? NewDesignator=C9
+Change Component Designator: OldDesignator=C? NewDesignator=C10
+Change Component Designator: OldDesignator=D? NewDesignator=D1
+Change Component Designator: OldDesignator=D? NewDesignator=D2
+Change Component Designator: OldDesignator=D? NewDesignator=D3
+Change Component Designator: OldDesignator=D? NewDesignator=D4
+Change Component Designator: OldDesignator=D? NewDesignator=D5
+Change Component Designator: OldDesignator=D? NewDesignator=D6
+Change Component Designator: OldDesignator=D? NewDesignator=D7
+Change Component Designator: OldDesignator=IC? NewDesignator=IC1
+Change Component Designator: OldDesignator=J1 NewDesignator=J2
+Change Component Designator: OldDesignator=J2 NewDesignator=J1
+Change Component Designator: OldDesignator=Q5 NewDesignator=Q7
+Change Component Designator: OldDesignator=Q6 NewDesignator=Q3
+Change Component Designator: OldDesignator=Q7 NewDesignator=Q8
+Change Component Designator: OldDesignator=Q8 NewDesignator=Q4
+Change Component Designator: OldDesignator=Q? NewDesignator=Q1
+Change Component Designator: OldDesignator=Q? NewDesignator=Q2
+Change Component Designator: OldDesignator=Q? NewDesignator=Q5
+Change Component Designator: OldDesignator=Q? NewDesignator=Q6
+Change Component Designator: OldDesignator=R4 NewDesignator=R15
+Change Component Designator: OldDesignator=R5 NewDesignator=R17
+Change Component Designator: OldDesignator=R6 NewDesignator=R16
+Change Component Designator: OldDesignator=R7 NewDesignator=R18
+Change Component Designator: OldDesignator=R? NewDesignator=R1
+Change Component Designator: OldDesignator=R? NewDesignator=R2
+Change Component Designator: OldDesignator=R? NewDesignator=R3
+Change Component Designator: OldDesignator=R? NewDesignator=R4
+Change Component Designator: OldDesignator=R? NewDesignator=R5
+Change Component Designator: OldDesignator=R? NewDesignator=R6
+Change Component Designator: OldDesignator=R? NewDesignator=R7
+Change Component Designator: OldDesignator=R? NewDesignator=R8
+Change Component Designator: OldDesignator=R? NewDesignator=R9
+Change Component Designator: OldDesignator=R? NewDesignator=R10
+Change Component Designator: OldDesignator=R? NewDesignator=R11
+Change Component Designator: OldDesignator=R? NewDesignator=R12
+Change Component Designator: OldDesignator=R? NewDesignator=R13
+Change Component Designator: OldDesignator=R? NewDesignator=R14
+Change Component Designator: OldDesignator=U2 NewDesignator=U3
+Change Component Designator: OldDesignator=U? NewDesignator=U1
+Change Component Designator: OldDesignator=U? NewDesignator=U2
+Added Component: Designator=L1(NR2520)
+Add component (AddParameter): Name = "BOM名称"; Value = "NR磁胶电感"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=L-A Pin=J2-1
+Added Pin To Net: NetName=L-B Pin=J2-2
+Added Pin To Net: NetName=PWM-L2A Pin=L1-2
+Change Net Name : Old Net Name=NetC?_1 New Net Name=NetC8_1
+Change Net Name : Old Net Name=NetC?_2 New Net Name=NetC4_2
+Change Net Name : Old Net Name=NetIC?_3 New Net Name=NetIC1_3
+Change Net Name : Old Net Name=NetQ5_2 New Net Name=NetQ7_2
+Change Net Name : Old Net Name=NetQ6_2 New Net Name=NetQ3_2
+Change Net Name : Old Net Name=NetQ7_2 New Net Name=NetQ8_2
+Change Net Name : Old Net Name=NetQ8_2 New Net Name=NetQ4_2
+Change Net Name : Old Net Name=NetQ?_2 New Net Name=NetQ2_2
+Change Net Name : Old Net Name=NetR?_1 New Net Name=NetR3_1
+Change Net Name : Old Net Name=NetR?_2 New Net Name=NetR8_2
+Change Net Name : Old Net Name=R  A New Net Name=R-A
+Change Net Name : Old Net Name=R  B New Net Name=R-B
+Added Pin To Net: NetName=NetC3_2 Pin=C3-2
+Added Pin To Net: NetName=NetC3_2 Pin=D1-2
+Added Pin To Net: NetName=NetC3_2 Pin=U1-1
+Added Net: Name=NetC3_2
+Added Pin To Net: NetName=NetC5_2 Pin=C5-2
+Added Pin To Net: NetName=NetC5_2 Pin=D3-2
+Added Pin To Net: NetName=NetC5_2 Pin=U1-9
+Added Net: Name=NetC5_2
+Added Pin To Net: NetName=NetC6_2 Pin=C6-2
+Added Pin To Net: NetName=NetC6_2 Pin=D4-2
+Added Pin To Net: NetName=NetC6_2 Pin=U2-9
+Added Net: Name=NetC6_2
+Added Pin To Net: NetName=NetC7_2 Pin=C7-2
+Added Pin To Net: NetName=NetC7_2 Pin=D5-2
+Added Pin To Net: NetName=NetC7_2 Pin=R11-2
+Added Net: Name=NetC7_2
+Added Pin To Net: NetName=NetD5_1 Pin=D5-1
+Added Pin To Net: NetName=NetD5_1 Pin=IC1-1
+Added Pin To Net: NetName=NetD5_1 Pin=L1-1
+Added Net: Name=NetD5_1
+Added Pin To Net: NetName=NetD6_1 Pin=D6-1
+Added Pin To Net: NetName=NetD6_1 Pin=R13-2
+Added Net: Name=NetD6_1
+Added Pin To Net: NetName=NetD7_1 Pin=D7-1
+Added Pin To Net: NetName=NetD7_1 Pin=R14-2
+Added Net: Name=NetD7_1
+Added Pin To Net: NetName=NetQ1_2 Pin=Q1-2
+Added Pin To Net: NetName=NetQ1_2 Pin=R3-2
+Added Net: Name=NetQ1_2
+Added Pin To Net: NetName=NetQ5_2 Pin=Q5-2
+Added Pin To Net: NetName=NetQ5_2 Pin=R7-1
+Added Net: Name=NetQ5_2
+Added Pin To Net: NetName=NetQ6_2 Pin=Q6-2
+Added Pin To Net: NetName=NetQ6_2 Pin=R8-1
+Added Net: Name=NetQ6_2
+Added Pin To Net: NetName=NetR1_2 Pin=R1-2
+Added Pin To Net: NetName=NetR1_2 Pin=U1-5
+Added Net: Name=NetR1_2
+Added Pin To Net: NetName=NetR2_2 Pin=R2-2
+Added Pin To Net: NetName=NetR2_2 Pin=U2-5
+Added Net: Name=NetR2_2
+Added Pin To Net: NetName=NetR4_1 Pin=R4-1
+Added Pin To Net: NetName=NetR4_1 Pin=U1-14
+Added Net: Name=NetR4_1
+Added Pin To Net: NetName=NetR5_1 Pin=R5-1
+Added Pin To Net: NetName=NetR5_1 Pin=U2-16
+Added Net: Name=NetR5_1
+Added Pin To Net: NetName=NetR6_1 Pin=R6-1
+Added Pin To Net: NetName=NetR6_1 Pin=U2-14
+Added Net: Name=NetR6_1
+Added Pin To Net: NetName=NetR10_2 Pin=R10-2
+Added Pin To Net: NetName=NetR10_2 Pin=U2-13
+Added Net: Name=NetR10_2
+Added Member To Class: ClassName=智能车驱动板HIP4082 Member=Component C1 4.7nF
+Added Member To Class: ClassName=智能车驱动板HIP4082 Member=Component C2 4.7nF
+Added Member To Class: ClassName=智能车驱动板HIP4082 Member=Component C3 4.7nF
+Added Member To Class: ClassName=智能车驱动板HIP4082 Member=Component C4 4.7nF
+Added Member To Class: ClassName=智能车驱动板HIP4082 Member=Component C5 4.7nF
+Added Member To Class: ClassName=智能车驱动板HIP4082 Member=Component C6 4.7nF
+Added Member To Class: ClassName=智能车驱动板HIP4082 Member=Component C7 4.7uF
+Added Member To Class: ClassName=智能车驱动板HIP4082 Member=Component C8 4.7uF
+Added Member To Class: ClassName=智能车驱动板HIP4082 Member=Component C10 100nF
+Added Member To Class: ClassName=智能车驱动板HIP4082 Member=Component D1 1N5819
+Added Member To Class: ClassName=智能车驱动板HIP4082 Member=Component D2 1N5819
+Added Member To Class: ClassName=智能车驱动板HIP4082 Member=Component D3 1N5819
+Added Member To Class: ClassName=智能车驱动板HIP4082 Member=Component D5 1N5819
+Added Member To Class: ClassName=智能车驱动板HIP4082 Member=Component D6 LED
+Added Member To Class: ClassName=智能车驱动板HIP4082 Member=Component D7 LED
+Added Member To Class: ClassName=智能车驱动板HIP4082 Member=Component L1 10uH
+Added Member To Class: ClassName=智能车驱动板HIP4082 Member=Component Q2 TPH1R403NL
+Added Member To Class: ClassName=智能车驱动板HIP4082 Member=Component Q6 TPH1R403NL
+Added Member To Class: ClassName=智能车驱动板HIP4082 Member=Component Q8 TPH1R403NL
+Added Member To Class: ClassName=智能车驱动板HIP4082 Member=Component R1 10K
+Added Member To Class: ClassName=智能车驱动板HIP4082 Member=Component R2 10K
+Added Member To Class: ClassName=智能车驱动板HIP4082 Member=Component R3 100R
+Added Member To Class: ClassName=智能车驱动板HIP4082 Member=Component R8 100R
+Added Member To Class: ClassName=智能车驱动板HIP4082 Member=Component R9 100R
+Added Member To Class: ClassName=智能车驱动板HIP4082 Member=Component R10 100R
+Added Member To Class: ClassName=智能车驱动板HIP4082 Member=Component R11 200K
+Added Member To Class: ClassName=智能车驱动板HIP4082 Member=Component R12 10K
+Added Member To Class: ClassName=智能车驱动板HIP4082 Member=Component R13 10K
+Added Member To Class: ClassName=智能车驱动板HIP4082 Member=Component R15 10K
+Added Member To Class: ClassName=智能车驱动板HIP4082 Member=Component R16 10K
+Added Member To Class: ClassName=智能车驱动板HIP4082 Member=Component R17 10K
+Added Member To Class: ClassName=智能车驱动板HIP4082 Member=Component R18 10K
+Added Member To Class: ClassName=智能车驱动板HIP4082 Member=Component U1 HIP4082IBZT
+Added Member To Class: ClassName=智能车驱动板HIP4082 Member=Component U3 SN74HC125PWR
