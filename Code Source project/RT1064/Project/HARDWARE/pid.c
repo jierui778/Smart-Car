@@ -53,7 +53,6 @@ void PID_Init(void)
     ServoInfo.LastErr = 0;
     ServoInfo.Integral_Err = 0;
     ServoInfo.Output = 0;
-
 }
 /**
  * @brief 增量式PID控制器
@@ -87,7 +86,6 @@ void PosiPID(sPosiPID_Info *PosiPID, int *test)
    // 计算输出
    PosiPID->Output = PosiPID->Kp * PosiPID->Err + PosiPID->Ki * PosiPID->Integral_Err + PosiPID->Kd * (PosiPID->Err - PosiPID->LastErr);
    // 限制PID输出
-   PosiPID->Output = PIDInfo_Limit(PosiPID->Output, PosiPID->MaxOutput);
 } 
 
 #include "pid.h"

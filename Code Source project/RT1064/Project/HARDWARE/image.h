@@ -182,7 +182,7 @@ extern float Err[5];                     // 中线误差
 void Arc_Point_Get(int pts_in[][2], int pts_num, int pts_out[2], int *flag);
 void NearCorners_Find_Left(int pts_in[][2], int pts_num, int pts_out[2], int *flag);
 void NearCorners_Find_Right(int pts_in[][2], int pts_num, int pts_out[2], int *flag);
-void Straight_Rec(int pts_in[][2], int pts_num, int *flag);
+void LongLine_Rec(int pts_in[][2], int pts_num, int thres, int *flag);
 void FarCorners_Find_Left(int pts_in[][2], int pts_num, int pts_out[2], int *flag);
 void FarCorners_Find_Right(int pts_in[][2], int pts_num, int pts_out[2], int *flag);
 extern void BorderLine_Find(void);
