@@ -5,12 +5,13 @@
 //  ******************************************************************************/
 #include "pid.h"
 #include "math.h"
+#include "servo.h"
 float sPidInfo[3][5] = { // IncrPID{Kp,Ki,Kd,MaxOutput}
-    {0, 0, 0, 0,0},
+    {0.1, 0, 0, 0,0},
 
     {0, 0, 0, 0,0},
     
-    {0.003,0,0,10,15}};
+    {0.1,0,0,10,15}};
 
 sPosiPID_Info ServoInfo = {0};
 // float PidInfo[2][4] = { // IncrPID{Kp,Ki,Kd,MaxOutput}
@@ -87,4 +88,90 @@ void PosiPID(sPosiPID_Info *PosiPID, int *test)
    PosiPID->Output = PosiPID->Kp * PosiPID->Err + PosiPID->Ki * PosiPID->Integral_Err + PosiPID->Kd * (PosiPID->Err - PosiPID->LastErr);
    // 限制PID输出
    PosiPID->Output = PIDInfo_Limit(PosiPID->Output, PosiPID->MaxOutput);
-}       
+} 
+
+#include "pid.h"
+
+tPid pidMotorLeftSpeed;   //左电机的闭环PID
+tPid pidMotorRightSpeed;   //右电机的闭环PID
+tPid pidServo;//舵机PID
+
+void PID_Init_New()
+{
+	pidMotorLeftSpeed.actual_val=0.0;
+	pidMotorLeftSpeed.target_val=0.00;
+	pidMotorLeftSpeed.err=0.0;
+	pidMotorLeftSpeed.err_last=0.0;
+	pidMotorLeftSpeed.err_sum=0.0;
+	pidMotorLeftSpeed.Kp=0;
+	pidMotorLeftSpeed.Ki=0;
+	pidMotorLeftSpeed.Kd=0;
+	
+	pidMotorRightSpeed.actual_val=0.0;
+	pidMotorRightSpeed.target_val=0.00;
+	pidMotorRightSpeed.err=0.0;
+	pidMotorRightSpeed.err_last=0.0;
+	pidMotorRightSpeed.err_sum=0.0;
+	pidMotorRightSpeed.Kp=0;
+	pidMotorRightSpeed.Ki=0;
+	pidMotorRightSpeed.Kd=0;
+	
+	pidServo.actual_val=0.0;
+	pidServo.target_val=0.00;
+	pidServo.err=0.0;
+	pidServo.err_last=0.0;
+	pidServo.err_sum=0.0;
+	pidServo.Kp=0.2;
+	pidServo.Ki=0;
+	pidServo.Kd=0;
+}
+
+/*
+简介：比例调节控制函数
+原理：通过比例系数Kp，对每次求出的误差值进行比例赋值然后返回比例后的结果
+注意：无
+*/
+float P_Realize(tPid *pid,float actual_val)
+{
+	pid->actual_val=actual_val;//传递真实值
+	pid->err=pid->target_val-pid->actual_val;//求出误差值
+	pid->actual_val=pid->Kp*pid->err;
+	
+	return pid->actual_val;
+}
+
+/*
+简介：比例积分控制函数
+原理&注意：无
+*/
+float PI_realize(tPid *pid,float actual_val)
+{
+	pid->actual_val=actual_val;
+	pid->err=pid->target_val-pid->actual_val;
+	pid->err_sum +=pid->err;//误差累积
+	pid->actual_val=pid->Kp*pid->err+pid->err_sum;
+	return pid->actual_val;
+}
+
+
+/*
+简介：比例积分微分调节
+原理&注意：无
+*/
+float PID_realize(tPid*pid,float actual_val)
+{
+	pid->actual_val=actual_val;
+	pid->err=pid->target_val-pid->actual_val;//当前误差=目标值-真实值
+	pid->err_sum +=pid->err;//误差累加
+	pid->actual_val=pid->Kp*pid->err+pid->err_sum*pid->Ki+pid->Kd*(pid->err-pid->err_last);
+	
+	pid->err_last=pid->err;//误差赋值PID_realize(&pidMotorLeftSpeed,Motor_LeftSpeed)
+	
+	return pid->actual_val;
+}
+
+void Servo_PidSetSpeed(float Target_Angle)
+{
+	pidServo.target_val=Target_Angle;
+	Servo_SetAngle(PID_realize(&pidServo,Target_Angle));
+}

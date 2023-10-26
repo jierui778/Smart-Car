@@ -76,6 +76,7 @@ float run_straight(void);
 float run_right(void);
 float run_left(void);
 void test(void);
+float Line_Shifting(void);
 #define POINTS_MAX_LEN (120) // 边线点最多的情况——>num
 
 // 左右边丢线
@@ -101,6 +102,50 @@ extern uint8 touch_boundary_up0; // 左边线走到图像左边界
 extern uint8 touch_boundary_up1; // 右边线走到图像右边界
 
 extern float xielv_left_y_to_end, xielv_right_y_to_end; // 在逆透视后得坐标系建得斜率
+
+#define a11 (-5.5988f)
+#define a12 (-27.9734f)
+#define a13 (709.0200f)
+#define a21 (0.1837f)
+#define a22 (0.7491f)
+#define a23 (-648.4869f)
+#define a31 (0.0194f)
+#define a32 (-0.3464f)
+#define a33 (1.0f)
+
+// #define a11 (-1.9850f)
+// #define a12 (-6.8451f)
+// #define a13 (232.9928f)
+// #define a21 (-0.0901f)
+// #define a22 (0.4470f)
+// #define a23 (-190.8998f)
+// #define a31 (-0.0030f)
+// #define a32 (-0.0636f)
+// #define a33 (1.0f)
+
+#define getx(u, v) (a11 * (u) + a12 * (v) + a13)
+#define gety(u, v) (a21 * (u) + a22 * (v) + a23)
+#define getw(u, v) (a31 * (u) + a32 * (v) + a33)
+
+// D矩阵参数
+/*这些宏定义都是给60*80的矩阵*/
+#define b11 (-0.4928f)
+#define b12 (-0.4038f)
+#define b13 (47.5991f)
+
+#define b21 (0.0208f)
+
+#define b22 (-0.0466f)
+
+#define b23 (-14.1659f)
+
+#define b31 (0.0003f)
+#define b32 (-0.0052f)
+#define b33 (-0.0556f)
+
+#define getx_b(u, v) (b11 * (u) + b12 * (v) + b13)
+#define gety_b(u, v) (b21 * (u) + b22 * (v) + b23)
+#define getw_b(u, v) (b31 * (u) + b32 * (v) + b33)
 
 // 原图左右边线
 extern int ipts0[POINTS_MAX_LEN][2];

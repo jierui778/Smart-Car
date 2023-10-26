@@ -46,11 +46,13 @@ int main(void)
 
         test();
         int Midline;
+//		Servo_PidSetSpeed()
 		if(Finnal_err>-40 && Finnal_err < 40)
 		{
         PosiPID(&ServoInfo, &Finnal_err);
 		
         Servo_SetAngle(ServoInfo.Output);
+			ips200_show_float(80,120,ServoInfo.Output,3,3);
 		}
         
         ips200_displayimage03x(*Image_Use_Robert, 160, 120);

@@ -28,6 +28,12 @@ const int dir_frontright[4][2] = {{1, -1},
 
 uint8 Image_Use_Robert[120][160]; // sobel二值化图像
 
+const float Weight[80] =//偏差数组
+{
+ 80.0, 79.2, 78.4, 77.6, 76.8, 76.0, 75.2, 74.4, 73.6, 72.8, 72.0, 71.2, 70.4, 69.6, 68.8, 68.0, 67.2, 66.4, 65.6, 64.8, 64.0, 63.2, 62.4, 61.6, 60.8, 60.0, 59.2, 58.4, 57.6, 56.8, 56.0, 55.2, 54.4, 53.6, 52.8, 52.0, 51.2, 50.4, 49.6, 48.8, 48.0, 47.2, 46.4, 45.6, 44.8, 44.0, 43.2, 42.4, 41.6, 40.8, 40.0, 39.2, 38.4, 37.6, 36.8, 36.0, 35.2, 34.4, 33.6,
+32.8, 32.0, 31.2, 30.4, 29.6, 28.8, 28.0, 27.2, 26.4, 25.6, 24.8, 24.0, 23.2, 22.4, 21.6, 20.8, 20.0, 19.2, 18.4, 17.6, 16.8
+};
+
 uint8 State; // 状态机
 uint8 mid_line_num = 0;
 float Finnal_err;  // 最终误差
@@ -108,9 +114,9 @@ void test(void) // 测试函数
     NearCorners_Find_Left(ipts0, ipts0_num, CornersLeft_Point, &Near_Lpt0_Found);   // 寻找近角点
     NearCorners_Find_Right(ipts1, ipts1_num, CornersRight_Point, &Near_Lpt1_Found); // 近角点正常
 
-    // ips200_show_int(50, 200, FarCornersLeft_Point[0], 2);
+    ips200_show_int(50, 200, loseline0, 2);
     // ips200_show_int(50, 220, FarCornersLeft_Point[1], 2);
-    ips200_show_float(40,160,Finnal_err,3,3);
+    ips200_show_float(40,160,Finnal_err+12,3,3);
     if (Near_Lpt0_Found || Near_Lpt1_Found) // 如果近边线有角点
     {
         FarBorderLine_Enable = 1;
@@ -165,7 +171,7 @@ void test(void) // 测试函数
 
     Track_Check();
     Track_Run();
-    
+    Finnal_err = Err_Handle(1);
     
     // else if(track_type == TRACK_RIGHT)
     // {
@@ -322,7 +328,7 @@ void FarBorderline_Find(void)
     if (1)
     {
 
-        x0_first = CornersLeft_Point[0] + 4;
+        x0_first = CornersLeft_Point[0] + 3;
         y0_first = CornersLeft_Point[1] - 10;
 
         Far_ipts0_num = sizeof(Far_ipts0) / sizeof(Far_ipts0[0]); // 求数组的长度
@@ -351,7 +357,7 @@ void FarBorderline_Find(void)
 
         // 标记种子起始点(后续元素处理要用到)
         // ips200_show_int(50, 200, 666, 2);
-        x1_first = CornersRight_Point[0] - 4;
+        x1_first = CornersRight_Point[0] - 3;
         y1_first = CornersRight_Point[1] - 10;
         ;
 
@@ -568,10 +574,7 @@ void Straight_Rec(int pts_in[][2], int pts_num, int *flag)
 
 #define MID_LINE 80 // 定义中线,图像宽为160,所以中线y=80
 #define PROS_NUM 20 //  前瞻点数
-const uint8 Weight[IMAGE_HEIGHT] =
-    {
-        0,
-}; // 定义误差权重
+
 /**
  * @brief
  *
@@ -1163,8 +1166,6 @@ float LineRession(int pts_in[][2], int num)
 float run_left(void)
 {
     /*一 求中线*/
-    int mid_line[150][2]; // 中线
-    mid_line_num = 0;
     if(loseline0 == 1 || (loseline0 == 0 && ipts0_num < 50))//情况1：左边完全丢线
     {
         mid_line_num = ipts1_num; // 中线赋值
@@ -1172,11 +1173,10 @@ float run_left(void)
         {
             mid_line[i][0] = ipts1[i][0] / 2;
             mid_line[i][1] = ipts1[i][1];
-            ips200_draw_point(mid_line[i][0],mid_line[i][1],RGB565_RED);
+            ips200_draw_line(0,120,mid_line[i][0],mid_line[i][1],RGB565_BLUE);
         }
-        
     }
-    else if(loseline0 ==  0 && ipts0_num > 50)
+    else
     {
         mid_line_num = ipts0_num;
         for (uint8 i = 0; i < mid_line_num; i++)
@@ -1215,7 +1215,7 @@ float run_left(void)
 //         distance[1][count] = ((ipts0[i][0] + ipts1[j][0]) /2 - 80);//中线的偏差
 //         count++;
 //     }
-    
+// }
 //     count = 0;
     
 //     float err = 0.0;
@@ -1253,10 +1253,11 @@ float run_left(void)
 //     return err;
 // }
 
-int midline(uint8 type)
+float midline(uint8 type)
 {
-    int mid_line = 0;
+    float Err_staright = 0;
     int i = 20, j = 20;
+    //从第20个点开始取，让点都在同一行
     while (ipts0[i][1] < ipts1[j][1])
     {
         j++;
@@ -1265,11 +1266,11 @@ int midline(uint8 type)
     {
         i++;
     }
-    int max_num = ipts0_num - i > ipts1_num - j ? ipts1_num - j : ipts0_num - i;
+    int max_num = ipts0_num - i > ipts1_num - j ? ipts1_num - j : ipts0_num - i;//避免在处理两个数组时越界
     max_num = max_num > 10 ? 10 : max_num;
-    float d = ipts1[j][0] - ipts0[i][0];
-    float sum = 0, num = 0;
-    for (int k = 0; k < max_num; k++)
+    float d = ipts1[j][0] - ipts0[i][0];//计算第一个相同起始行列坐标的差值
+    float sum = 0, num = 0;//比较个数，
+    for (int k = 0; k < max_num; k++)//一般maxnum都是10行
     {
         while (ipts0[i][1] < ipts1[j][1])
         {
@@ -1279,11 +1280,14 @@ int midline(uint8 type)
         {
             i++;
         }
+        //调节到同一行上去
         sum += ((ipts1[j][0] + ipts0[i][0]) / 2) * ((ipts1[j][0] - ipts0[i][0]) / d);
-        num += (ipts1[j][0] - ipts0[i][0]) / d;
+        //加权求值，其中d为第一行列坐标的值，根据10行值的长度与第一行的做一个长度上的加权，简单来说就是中线*长度的权
+        num += (ipts1[j][0] - ipts0[i][0]) / d;//对加权值进行累加
         i++;
     }
-    mid_line = (sum / num);
+    Err_staright = (sum / num);//加权总值进行加权平均
+    return Err_staright;//返回误差值
 }
 
 
@@ -1291,25 +1295,36 @@ float Err_Handle(uint8 mode)
 {
     uint8 count=0;
     int i,j=0;
-    int temp;
-
-    last_err = err;
-    for( temp =10; temp < 20 ;temp++)//常规误差计算
-    {	
-        err += (80-(mid_line[temp][0])) * (20-temp);
-        // if(ipts0[temp][1] < 50 || ipts1[temp][0] < 50)
-        // {
-        //     break;
-        // }
-    }
-    
-    
-    err = (float)(err / 55);
-
-    // err=LineRession(mid_line,mid_line_num/3);
-    err = 0.6* err + 0.4*last_err;
+ 
+        last_err = err;
+        for( int a =5; a < 25 ;a++)//常规误差计算
+        {	
+            // if(mid_line[a][1] > 60 && mid_line[a][1] < 100)
+            // {
+                
+                err += (80-(mid_line[a][0]));
+                count++;
+            // }
+            
+            //err的前者为x坐标与中线的坐标差值，后者为行数的权重
+        }
+    // for(int a=10; a<20;a++)
+    // {
+    //     if(mid_line[a][1]!=mid_line[a+1][1])
+    //     {
+    //         err += (80-(mid_line[a][0]));
+    //         count++;
+    //     }
+    // }
+    err = err / count;
+    ips200_show_uint(160,60,count,3);
+    if(err > 90 || err < -90)
+    err = last_err*0.5 + err*0.5;
     return err;
+         
 }
+    
+
 
 /*右转运行函数*/
 float run_right(void)
@@ -1371,14 +1386,17 @@ float run_straight(void)
 /*Track检测函数*/
 void Track_Check(void)
 {
-    if ((ipts0_num > 100 && ipts0[ipts0_num - 1][0] > (IMAGE_WIDTH / 2) && (loseline1 == 1 || touch_boundary1 == 1))
-        ||(loseline1 == 1 && ipts0_num >80))
+    if(cross_type == CROSS_NONE)
+    {
+    if ((ipts0_num > 100 && ipts0[ipts0_num - 1][0] > (IMAGE_WIDTH / 2) && (loseline1 == 1 || touch_boundary1 == 1)&&ipts0[ipts0_num - 1][1] > 30)
+        )
     {
         track_type = TRACK_RIGHT;
         cross_type = CROSS_NONE;
     }
-    else if ((ipts1_num > 100 && ipts1[ipts1_num - 1][0] < 60 && (loseline0 == 1 || touch_boundary0 == 1) && ipts1[ipts1_num - 1][1] > 30)
-        ||(loseline0 == 1 && ipts1_num >80))
+    else if ((ipts1_num > 100 && ipts1[ipts1_num - 1][0] < 60 && (loseline0 == 1 || touch_boundary0 == 1) && ipts1[ipts1_num - 1][1] > 30
+            && ipts0[ipts0_num - 1][1] > (IMAGE_HEIGHT/2))
+        ||(loseline0 == 1 && ipts1_num >80 && ipts1[ipts1_num - 1][0] < 60))
     {
         track_type = TRACK_LEFT;
         cross_type = CROSS_NONE;
@@ -1388,6 +1406,7 @@ void Track_Check(void)
         track_type = TRACK_BOTH;
         cross_type = CROSS_NONE;
     }
+    }
 }
 
 /*Track运行函数*/
@@ -1395,59 +1414,32 @@ void Track_Run(void)
 {
     switch (track_type)
     {
-    case TRACK_LEFT:
-    {
-        Finnal_err = run_left();
-        State = 1;
-        break;
-    }
-    case TRACK_RIGHT:
-    {
-        Finnal_err = run_right();
-        State = 2;
-        break;
-    }
-    case TRACK_BOTH:
-    {
-        Finnal_err = run_straight();
-        State = 3;
-        break;
-    }
-    default:
-        break;
-    }
+        case TRACK_LEFT:
+        {
+            Finnal_err = run_left();
+            State = 1;
+            break;
+        }
+        case TRACK_RIGHT:
+        {
+            Finnal_err = run_right();
+            State = 2;
+            break;
+        }
+        case TRACK_BOTH:
+        {
+            Finnal_err = run_straight();
+            State = 3;
+            break;
+        }
+        default:
+        {
+            break;
+        }
+}
 }
 
 
-// /**
-//  * @brief 补线函数,十字或者圆环使用
-//  *
-//  * @param img 传入结构体图像数据
-//  * @param pt0 起始坐标
-//  * @param pt1 结束坐标
-//  * @param value 黑点/白点
-//  */
-// void Line_Add(image_t *img, int pt0[2], int pt1[2], uint8_t value)
-// {
-//     int dx = pt1[0] - pt0[0];
-//     int dy = pt1[1] - pt0[1];
-//     if (abs(dx) > abs(dy))
-//     {
-//         for (int x = pt0[0]; x != pt1[0]; x += (dx > 0 ? 1 : -1))
-//         {
-//             int y = pt0[1] + (x - pt0[0]) * dy / dx;                                  // y = 左线横坐标 + x遍历差值占总差值比例 * y方向差值
-//             AT(img, clip(x, 0, img->width - 1), clip(y, 0, img->height - 1)) = value; // （x，y）坐标像素（不超出边界）赋值
-//         }
-//     }
-//     else
-//     {
-//         for (int y = pt0[1]; y != pt1[1]; y += (dy > 0 ? 1 : -1))
-//         {
-//             int x = pt0[0] + (y - pt0[1]) * dx / dy;
-//             AT(img, clip(x, 0, img->width - 1), clip(y, 0, img->height - 1)) = value;
-//         }
-//     }
-// }
 
 void Line_Add(image_t *img, int pts0_in[2], int pts1_in[2], int8 value)
 {
@@ -1507,4 +1499,57 @@ void track_rightline(int pts_in[][2], int num, int pts_out[][2], int approx_num,
            pts_out[i][0] = pts_in[i][0] - dy * dist;
            pts_out[i][1] = pts_in[i][1] + dx * dist;
        }
+}
+
+/*返回值为误差*/
+float Line_Shifting(void)
+{
+    int left_shift[80][2]={0};
+    int right_shift[80][2]={0};
+    for(int i=0;i<80;i++)
+    {
+        left_shift[i][0] = (ipts0[i][0]+Weight[i]);
+        left_shift[i][1] = ipts0[i][1];
+        ips200_draw_point(left_shift[i][0],left_shift[i][1],RGB565_RED);
+        
+        right_shift[i][0]= (ipts1[i][0]-Weight[i]);
+        right_shift[i][1]= ipts1[i][1];
+        ips200_draw_point(right_shift[i][0],right_shift[i][1],RGB565_RED);
+
+    }
+    
+    for(int i=0;i<80;i++)
+    {
+        mid_line[i][0] = (left_shift[i][0] + right_shift[i][0])/2;
+        mid_line[i][1] = (left_shift[i][1] + right_shift[i][1])/2;
+    }
+    last_err = err;
+    for( int a =0; a < 80 ;a++)//常规误差计算
+    {	
+        err += (80-(mid_line[a][0])) * ((80-a)/80);
+        //err的前者为x坐标与中线的坐标差值，后者为行数的权重
+    }
+
+    return err;
+}
+
+/**
+ * @brief 透视变换函数，将提取出来的两条边线进行透视变换
+ *
+ * @param pts_in 二维数组，表示输入的点集，每个点有两个坐标值
+ * @param int_num 整型，表示输入的点集中点的数量
+ * @param pts_out 二维数组，表示输出的点集，每个点有两个坐标值
+ */
+void Pespective(int pts_in[][2], int int_num, float pts_out[][2])
+// 带入提取出来的两条边线，得到透视变换后的两条边线
+{
+    float x, y, w;
+    for (int16_t i = 0; i < int_num; i++)
+    {
+        x = getx((pts_in[i][0]), (pts_in[i][1]));
+        y = gety((pts_in[i][0]), (pts_in[i][1]));
+        w = getw((pts_in[i][0]), (pts_in[i][1]));
+        pts_out[i][0] = x / w;
+        pts_out[i][1] = y / w;
+    }
 }
