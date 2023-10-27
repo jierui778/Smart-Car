@@ -36,7 +36,7 @@
     {                                                                              \
         .data = &AT_IMAGE(img, x1, y1), .width = w, .height = h, .step = img.width \
     }
-
+extern int Shift;
 typedef struct img
 {
     uint8_t *data;
@@ -195,8 +195,8 @@ void FarCorners_Find_Right(int pts_in[][2], int pts_num, int pts_out[2], int *fl
 extern void BorderLine_Find(void);
 void track_leftline(int pts_in[][2], int num, int pts_out[][2], int approx_num, float dist);
 void track_rightline(int pts_in[][2], int num, int pts_out[][2], int approx_num, float dist);
-// void Line_Add(image_t *img, int pts0_in[2], int pts1_in[2], int8 value);
-
+//void Line_Add(image_t *img, int pts0_in[2], int pts1_in[2], int8 value);
+float run_straight(void);
 float LineRession(int pts_in[][2], int num);
 void LongStarightLine_Rec(int pts_in[][2], int pts_num, int thres, int *flag);
 // uint8_t RoundaboutGetArc(int imageSide[][2], int status, int num, int *index);

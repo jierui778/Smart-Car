@@ -9,11 +9,11 @@
 float sPidInfo[3][5] = { // IncrPID{Kp,Ki,Kd,MaxOutput}
 	{0.0, 0, 0, 0, 0},
 
-	{0, 0, 0, 0, 0},
+    {0, 0, 0, 0,0},
 
-	{0.9, 0, 0, 10, 16}};
+    {0.5,0,0,10,14.5}};
 
-/*--p过荡 0.7*/
+	/*--p过荡 0.7   初始为0.5*/
 sPosiPID_Info ServoInfo = {0};
 // float PidInfo[2][4] = { // IncrPID{Kp,Ki,Kd,MaxOutput}
 //     {0, 0, 0, 0},
@@ -46,14 +46,15 @@ float PIDInfo_Limit(float Value, float MaxValue)
 void PID_Init(void)
 {
 
-	ServoInfo.Kp = sPidInfo[2][0];
-	ServoInfo.Ki = sPidInfo[2][1];
-	ServoInfo.Kd = sPidInfo[2][2];
-	ServoInfo.MaxOutput = sPidInfo[2][3];
-	ServoInfo.Err = 0;
-	ServoInfo.LastErr = 0;
-	ServoInfo.Integral_Err = 0;
-	ServoInfo.Output = 0;
+    ServoInfo.Kp = sPidInfo[2][0];
+    ServoInfo.Ki = sPidInfo[2][1];
+    ServoInfo.Kd = sPidInfo[2][2];
+    ServoInfo.MaxOutput = sPidInfo[2][4];
+    ServoInfo.Err = 0;
+    ServoInfo.LastErr = 0;
+    ServoInfo.Integral_Err = 0;
+    ServoInfo.Output = 0;
+
 }
 /**
  * @brief 增量式PID控制器

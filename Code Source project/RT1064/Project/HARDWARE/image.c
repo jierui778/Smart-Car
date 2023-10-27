@@ -24,6 +24,8 @@ const int dir_frontright[4][2] = {{1, -1},
                                   {-1, 1},
                                   {-1, -1}};
 
+
+int Shift= 82;
 uint8 Image_Use_Robert[120][160]; // sobel二值化图像
 
 const float Weight[80] = // 偏差数组
@@ -158,8 +160,8 @@ void test(void) // 测试函数
     // ips200_show_int(20, 300, touch_boundary1, 1);
     // ips200_draw_line(80, 60, CornersLeft_Point[0], CornersLeft_Point[1], RGB565_RED);
     // ips200_draw_line(80, 60, CornersRight_Point[0], CornersRight_Point[1], RGB565_RED);
-    // ips200_draw_line(80, 60, FarCornersLeft_Point[0], FarCornersLeft_Point[1], RGB565_BLUE);
-    // ips200_draw_line(80, 60, FarCornersRight_Point[0], FarCornersRight_Point[1], RGB565_RED);
+    // ips200_draw_line(80, 60, FarCornersLeft_Point[0], FarCornersLeft_Point[1], RGB565_YELLOW);
+    // ips200_draw_line(80, 60, FarCornersRight_Point[0], FarCornersRight_Point[1], RGB565_GREEN);
 
     // ips200_show_int(80, 200, loseline0, 1);
     // ips200_show_int(80, 220, loseline1, 1);
@@ -235,6 +237,15 @@ void test(void) // 测试函数
     {
         ips200_draw_line(160, 0, Far_ipts1[i][0], Far_ipts1[i][1], RGB565_RED);
     }
+    // for (int i = 0; i < ipts0_num; i++)
+    // {
+    //     ips200_draw_line(0,0,ipts0[i][0] , ipts0[i][1], RGB565_BLUE);
+    // }
+    // for (int i = 0; i < ipts1_num; i++)
+    // {
+    //     ips200_draw_line(160,0,ipts1[i][0] , ipts1[i][1], RGB565_RED);
+    // }
+
 }
 
 /**
@@ -330,7 +341,7 @@ void FarBorderline_Find(void)
     uint8 uthres = 1;
     if (loseline1) // 近处丢线,采用静态起始点
     {
-        CornersRight_Point[0] = 159;
+        CornersRight_Point[0] = 158;
         CornersRight_Point[1] = 100;
     }
     if (loseline0)
@@ -1316,21 +1327,21 @@ float midline(uint8 type)
 
 float Err_Handle(uint8 mode)
 {
-    uint8 count = 0;
-    int i, j = 0;
+    uint8 count=0;
+    int i,j=0;
 
-    last_err = err;
-    for (int a = 5; a < 25; a++) // 常规误差计算
-    {
-        // if(mid_line[a][1] > 60 && mid_line[a][1] < 100)
-        // {
+        last_err = err;
+        for( int a =10; a < 22 ;a++)//常规误差计算
+        {
+            // if(mid_line[a][1] > 60 && mid_line[a][1] < 100)
+            // {
 
-        err += (80 - (mid_line[a][0]));
-        count++;
-        // }
+                err += (80-(mid_line[a][0]));
+                count++;
+            // }
 
-        // err的前者为x坐标与中线的坐标差值，后者为行数的权重
-    }
+            //err的前者为x坐标与中线的坐标差值，后者为行数的权重
+        }
     // for(int a=10; a<20;a++)
     // {
     //     if(mid_line[a][1]!=mid_line[a+1][1])
@@ -1340,9 +1351,13 @@ float Err_Handle(uint8 mode)
     //     }
     // }
     err = err / count;
-    ips200_show_uint(160, 60, count, 3);
-    if (err > 90 || err < -90)
-        err = last_err * 0.5 + err * 0.5;
+    // if(track_type != TRACK_BOTH)
+    // {
+    //     err = err * 1.5;
+    // }
+    ips200_show_uint(160,60,count,3);
+    if(err > 90 || err < -90)
+    err = last_err*0.5 + err*0.5;
     return err;
 }
 
@@ -1368,7 +1383,7 @@ float run_right(void)
         mid_line_num = ipts0_num; // 中线赋值
         for (uint8 i = 0; i < mid_line_num; i++)
         {
-            mid_line[i][0] = ipts0[i][0] / 2 + 80; // 左线坐标偏移
+            mid_line[i][0] = ipts0[i][0] / 2 + Shift; // 左线坐标偏移
             mid_line[i][1] = ipts0[i][1];
         }
     }

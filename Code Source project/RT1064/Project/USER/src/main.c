@@ -45,27 +45,28 @@ int main(void)
         {
             PosiPID(&ServoInfo, &Finnal_err);
 
-            Servo_SetAngle(ServoInfo.Output);
-            // ips200_show_float(80,120,ServoInfo.Output,3,3);
-        }
+        Servo_SetAngle(ServoInfo.Output);
+		ips200_show_float(80,120,ServoInfo.Output,3,3);
+		}
 
-        ips200_displayimage03x(*Image_Use_Robert, 160, 120);
-        //    test();
-        //
-        //        //        Schedule_Run();//任务运行总函数，开始任务调度
-        //	bluetooth_ch9141_send_image(*Image_Use_Robert, 19200);
+       ips200_displayimage03x(*Image_Use_Robert, 160, 120);
+//        test();
+//
+//        //        Schedule_Run();//任务运行总函数，开始任务调度
+		//	bluetooth_ch9141_send_image(*Image_Use_Robert, 19200);
 
-        //        if (mt9v03x_finish_flag)
-        //        {
-        //            test();
-        //           ips200_displayimage03x(*Image_Use_Robert, 160, 120);
-        //                Image_Compress();
-        //    int TH;
-        //    TH = OSTU_GetThreshold(Image_Use[0], IMAGE_WIDTH, IMAGE_HEIGHT);
-        //    //    Image_Binarization(TH, Image_Use);
-        //    Image_Sobel(Image_Use, Image_Use_Robert, TH); // 全局Sobel得二值图(方案二) 2.8ms
-        //            ips200_show_gray_image(0, 200, *Image_Use_Robert, 160, 120, 160, 120, 0);
-        //        }
+//        if (mt9v03x_finish_flag)
+//        {
+
+//            test();
+//           ips200_displayimage03x(*Image_Use_Robert, 160, 120);
+//                Image_Compress();
+//    int TH;
+//    TH = OSTU_GetThreshold(Image_Use[0], IMAGE_WIDTH, IMAGE_HEIGHT);
+//    //    Image_Binarization(TH, Image_Use);
+//    Image_Sobel(Image_Use, Image_Use_Robert, TH); // 全局Sobel得二值图(方案二) 2.8ms
+//            ips200_show_gray_image(0, 200, *Image_Use_Robert, 160, 120, 160, 120, 0);
+//        }
 
         //    test();
         //

@@ -103,7 +103,11 @@
         <bEvRecOn>1</bEvRecOn>
         <bSchkAxf>0</bSchkAxf>
         <bTchkAxf>0</bTchkAxf>
+<<<<<<< HEAD
         <nTsel>4</nTsel>
+=======
+        <nTsel>2</nTsel>
+>>>>>>> 93ddb384ebc4fc5852595766b65fca01869f69e9
         <sDll></sDll>
         <sDllPa></sDllPa>
         <sDlgDll></sDlgDll>
@@ -114,7 +118,7 @@
         <tDlgDll></tDlgDll>
         <tDlgPa></tDlgPa>
         <tIfile></tIfile>
-        <pMon>Segger\JL2CM3.dll</pMon>
+        <pMon>BIN\CMSIS_AGDI.dll</pMon>
       </DebugOpt>
       <TargetDriverDllRegistry>
         <SetRegEntry>
@@ -153,6 +157,7 @@
           <Name>UL2CM3(-S0 -C0 -P0 -FD20000000 -FC8000 -FN1 -FF0MIMXRT1064_QSPI_4KB_SEC -FS070000000 -FL0400000 -FP0($$Device:MIMXRT1064DVL6A$arm\MIMXRT1064_QSPI_4KB_SEC.FLM))</Name>
         </SetRegEntry>
       </TargetDriverDllRegistry>
+<<<<<<< HEAD
       <Breakpoint>
         <Bp>
           <Number>0</Number>
@@ -187,6 +192,9 @@
           <Expression></Expression>
         </Bp>
       </Breakpoint>
+=======
+      <Breakpoint/>
+>>>>>>> 93ddb384ebc4fc5852595766b65fca01869f69e9
       <WatchWindow1>
         <Ww>
           <count>0</count>
@@ -199,6 +207,18 @@
           <ItemText>ServoInfo</ItemText>
         </Ww>
       </WatchWindow1>
+      <WatchWindow2>
+        <Ww>
+          <count>0</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>Shift,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>1</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>speed,0x0A</ItemText>
+        </Ww>
+      </WatchWindow2>
       <Tracepoint>
         <THDelay>0</THDelay>
       </Tracepoint>

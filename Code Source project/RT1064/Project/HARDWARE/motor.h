@@ -12,6 +12,10 @@
 
 #define PWM_MAX 7000//对输出PWM进行限幅
 
+
+
+extern uint32 speed;
+
 void Motor_Init(void);//电机引脚初始化
 void Motor_SetPwmL(int16 Speed);//设置左电机的PWM
 void Motor_SetPwmR(int16 Speed);//设置右电机的PWM

@@ -33,6 +33,10 @@ void Cross_Check(void) // 得考虑斜入十字的情况
         cross_num++; // 记录圆环个数
         a = 3;
     }
+    // Line_Add(&img_raw, CornersLeft_Point, FarCornersLeft_Point, 0);
+    // Line_Add(&img_raw, CornersRight_Point, FarCornersRight_Point, 0);
+    // BorderLine_Find(); // 寻找边线
+    
 }
 
 int count = 0;
@@ -46,6 +50,10 @@ int count = 0;
  */
 void Cross_Run(void)
 {
+    // FarCornersLeft_Point[0] = Far_ipts0[Far_ipts0_num -20][0];   
+    // FarCornersLeft_Point[1] = Far_ipts0[Far_ipts0_num -20][1]; 
+    // FarCornersRight_Point[0] = Far_ipts1[Far_ipts1_num -20][0];
+    // FarCornersRight_Point[1] = Far_ipts1[Far_ipts1_num -20][1];
     Line_Add(&img_raw, CornersLeft_Point, FarCornersLeft_Point, 0);
     Line_Add(&img_raw, CornersRight_Point, FarCornersRight_Point, 0);
     BorderLine_Find(); // 寻找边线
@@ -91,4 +99,6 @@ void Cross_Run(void)
         a = 66;
         Encoder_Int_Clear(); // 清除编码器积分
     }
+    Center_edge();
+    ips200_show_uint(0,120,a,3);
 }
