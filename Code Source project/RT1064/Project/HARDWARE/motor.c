@@ -11,12 +11,12 @@ void Motor_Init(void)
 
     gpio_init(MOTOR_DIRL, GPO, GPIO_HIGH, GPO_PUSH_PULL);
     gpio_init(MOTOR_DIRR, GPO, GPIO_HIGH, GPO_PUSH_PULL);
-
+    
     pwm_init(MOTOR_PWMR, 10000, 0);
     pwm_init(MOTOR_PWML, 10000, 0);
 
-    pwm_set_duty(MOTOR_PWML, 800);
-    pwm_set_duty(MOTOR_PWMR, 800); // 两电机先不动
+    pwm_set_duty(MOTOR_PWML, 888);
+    pwm_set_duty(MOTOR_PWMR, 888); // 两电机先不动
 }
 
 /**

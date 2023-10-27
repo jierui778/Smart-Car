@@ -3,8 +3,8 @@
 #include "circle.h"
 #include "encoder.h"
 enum cross_type_e cross_type = CROSS_NONE;
-int cross_num = 0; // 记录圆环个数
-int a;
+static int cross_num = 0; // 记录圆环个数
+static int a;
 /*十字检测思路：
 双边迷宫巡线到达左右边界
 是否需要再向上巡线，二次验证双远角点的存在
@@ -77,6 +77,7 @@ void Cross_Run(void)
             cross_type = CROSS_IN_DOUBLE; // 左边近线丢失,循左边远线
             Encoder_Int_Enable();
             a = 13;
+
             NearBorderLine_Enable = 0; // 关闭近边线
         }
     }
