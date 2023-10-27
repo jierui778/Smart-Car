@@ -1,7 +1,7 @@
 #include "motor.h"
 // DRV驱动方案
 // PWM频率一般选择13-17kHZ，这里我们选着10kHZ
-
+uint32 speed=1000;
 /**
  * @brief 电机引脚初始化
  *
@@ -15,8 +15,8 @@ void Motor_Init(void)
     pwm_init(MOTOR_PWMR, 10000, 0);
     pwm_init(MOTOR_PWML, 10000, 0);
 
-    pwm_set_duty(MOTOR_PWML, 800);
-    pwm_set_duty(MOTOR_PWMR, 800); // 两电机先不动
+    pwm_set_duty(MOTOR_PWML, 1500);
+    pwm_set_duty(MOTOR_PWMR, 1500); // 两电机先不动
 }
 
 /**

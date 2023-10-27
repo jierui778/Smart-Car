@@ -48,10 +48,10 @@ int main(void)
         PosiPID(&ServoInfo, &Finnal_err);
 
         Servo_SetAngle(ServoInfo.Output);
-			// ips200_show_float(80,120,ServoInfo.Output,3,3);
+		ips200_show_float(80,120,ServoInfo.Output,3,3);
 		}
 
-        // ips200_displayimage03x(*Image_Use_Robert, 160, 120);
+       ips200_displayimage03x(*Image_Use_Robert, 160, 120);
 //        test();
 //
 //        //        Schedule_Run();//任务运行总函数，开始任务调度
@@ -59,6 +59,7 @@ int main(void)
 
 //        if (mt9v03x_finish_flag)
 //        {
+		
 //            test();
 //           ips200_displayimage03x(*Image_Use_Robert, 160, 120);
 //                Image_Compress();
