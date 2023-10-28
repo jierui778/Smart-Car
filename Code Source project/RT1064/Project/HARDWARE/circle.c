@@ -39,6 +39,7 @@ void Circle_Check(void)
         circle_type = CIRCLE_LEFT_FOUND;
         cross_state = 1;
         circle_num++;
+        ips200_show_int(20, 180, 6, 1);
     }
     else if(circle_type == CIRCLE_LEFT_FOUND && !Near_Lpt0_Found&& !Near_Lpt1_Found && !Far_Lpt1_Found )
     {
@@ -60,7 +61,26 @@ void Circle_Check(void)
         cross_state = 5;
         circle_type = CIRCLE_NONE;
     }
+    // /*2023/10/26*/
+    // if(circle_type == CIRCLE_NONE && Near_Lpt0_Found && Far_Lpt0_Found && !Near_Lpt1_Found && !Far_Lpt1_Found)//左环岛，只有左边两个拐点能找到
+    // {
+    //     circle_type = CIRCLE_LEFT_FOUND;
+    //     circle_num++;
+    //     ips200_show_int(20, 180, 6, 1);
+    // }
+    // else if(circle_type == CIRCLE_LEFT_FOUND && !Near_Lpt0_Found && Far_Lpt0_Found && !Near_Lpt1_Found && !Far_Lpt1_Found)
+    // {
+    //     circle_type = CIRCLE_LEFT_IN;
+    //     ips200_show_int(20, 180, 66, 1);
+    // }
+    // else if(circle_type == CIRCLE_LEFT_IN && track_type == TRACK_RIGHT)
+    // {
+    //     circle_type = CIRCLE_LEFT_RUN;
+
+    // }
 }
+
+
 
 void Circle_Run(void)
 {
@@ -111,7 +131,7 @@ void Circle_Run(void)
     {
         case CIRCLE_LEFT_FOUND:
         {
-            FarCorners_Find_Left_New();
+//            FarCorners_Find_Left_New();
             Line_Add(&img_raw,CornersLeft_Point,FarCornersLeft_Point,0);//??????????????
             BorderLine_Find();//???????
             break;
@@ -171,6 +191,87 @@ void Circle_Run(void)
             break;
         }
     }
+    
+
+    if (circle_type == CIRCLE_LEFT_FOUND && CornersRight_Point[1] < 40) // ?????????????Χ??,??????
+    {
+        track_type = TRACK_RIGHT;
+    }
+    else if (circle_type == CIRCLE_RIGHT_FOUND && CornersLeft_Point[1] < 40)
+    {
+        track_type = TRACK_RIGHT;
+    }
+
+    if (circle_type == CIRCLE_LEFT_FOUND && CornersRight_Point[1] > 40)
+    {
+        track_type = TRACK_LEFT;
+    }
+    else if (circle_type == CIRCLE_RIGHT_FOUND && CornersLeft_Point[1] > 40)
+    {
+        track_type = TRACK_LEFT;
+    }
+
+    if (Far_Lpt0_Found) // ???????????????????????,???????
+    {
+        LeftLine_Found = 0;
+        LeftLine_Loss = 0;
+        circle_type = CIRCLE_LEFT_IN; // ?????????
+        Encoder_Int_Enable();         // ??????????????
+    }
+    else if (Far_Lpt1_Found) // ???????????????????????,???????
+    {
+        RightLine_Found = 0;
+        RightLine_Loss = 0;
+        circle_type = CIRCLE_RIGHT_IN; // ?????????
+        Encoder_Int_Enable();          // ??????????????
+    }
+
+    // // ???????????????,????????,??????
+    // switch (circle_type)
+    // {
+    //     case CIRCLE_LEFT_FOUND:
+    //     {
+    //         Line_Add(&img_raw,NearCorners_Find_Left,FarCorners_Find_Left,0);//左边两个拐点连线
+    //         break;
+    //     }
+    //     case CIRCLE_LEFT_IN:
+    //     {
+    //         Line_Add(&img_raw,NearCorners_Find_Right,Fix_Point,0);//左上角和右下角（固定点）补线
+    //         NearBorderLine_Enable = 1;//开启近扫线使能
+    //         BorderLine_Find();//再寻一次边线，找到后再补线，不用再次用track_check了，因为刚刚好track_check在此函数的后面，这里用双状态机
+    //         break;
+    //     }
+    //     case CIRCLE_LEFT_RUN:
+    //     {
+    //         if(track_type != TRACK_LEFT)
+    //         {
+    //             Track_Check();//检测状态机
+    //             Track_Run();
+    //         }
+    //         break;//进去以后就会一直扫了
+    //     }
+    //     case CIRCLE_LEFT_OUT://这里要按斜率补线或者直接固定点也可以，这里用的固定点
+    //     {
+    //         Line_Add(&img_raw,NearCorners_Find_Right,Fix_Point2,0);//左上角（固定点）和右下角补线
+    //         BorderLine_Find();//左右扫线
+    //         if(track_type != TRACK_LEFT)
+    //         {
+    //             Track_Check();//检测状态机，同时开TRACK_LEFT和CIRCLE_LEFT_OUT两个状态
+    //             Track_Run();
+    //         }
+    //         break;
+    //     }
+    //     case CIRCLE_LEFT_END:
+    //     {
+    //         Line_Add(&img_raw,NearCorners_Find_Right,FarCorners_Find_Left,0);//左上角拐点和右上角拐点补线
+    //         BorderLine_Find();//左右扫线，扫线成直道（这里不开使能是因为没有cross就不开）
+    //         break;
+    //     }
+    //     default:
+    //     {
+    //         break;
+    //     }
+    // }
 
     // switch (circle_type)
     // {

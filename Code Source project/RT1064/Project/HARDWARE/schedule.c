@@ -100,6 +100,7 @@ void pit_handler(void)
 {
     Schedule_Tick();
     gpio_toggle_level(B9); // test
+    Encoder_Update(&Encoder_L_Data, &Encoder_R_Data, &Encoder_L_Dis, &Encoder_R_Dis);
 }
 // //void pit_handler(void)
 // //{

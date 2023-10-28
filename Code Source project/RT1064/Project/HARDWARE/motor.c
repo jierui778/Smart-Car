@@ -15,8 +15,8 @@ void Motor_Init(void)
     pwm_init(MOTOR_PWMR, 10000, 0);
     pwm_init(MOTOR_PWML, 10000, 0);
 
-    pwm_set_duty(MOTOR_PWML, 1111);
-    pwm_set_duty(MOTOR_PWMR, 1111); // 两电机先不动
+    pwm_set_duty(MOTOR_PWML, 1888);
+    pwm_set_duty(MOTOR_PWMR, 1888); // 两电机先不动
 }
 
 /**

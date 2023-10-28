@@ -3,8 +3,8 @@
 #include "circle.h"
 #include "encoder.h"
 enum cross_type_e cross_type = CROSS_NONE;
-int cross_num = 0; // 记录圆环个数
-int a;
+static int cross_num = 0; // 记录圆环个数
+static int a;
 /*十字检测思路：
 双边迷宫巡线到达左右边界
 是否需要再向上巡线，二次验证双远角点的存在
@@ -36,7 +36,11 @@ void Cross_Check(void) // 得考虑斜入十字的情况
     // Line_Add(&img_raw, CornersLeft_Point, FarCornersLeft_Point, 0);
     // Line_Add(&img_raw, CornersRight_Point, FarCornersRight_Point, 0);
     // BorderLine_Find(); // 寻找边线
-    
+    Center_edge();
+    if(a == 3)
+    {
+        Finnal_err = run_straight();
+    }
 }
 
 int count = 0;
@@ -85,6 +89,7 @@ void Cross_Run(void)
             cross_type = CROSS_IN_DOUBLE; // 左边近线丢失,循左边远线
             Encoder_Int_Enable();
             a = 13;
+
             NearBorderLine_Enable = 0; // 关闭近边线
         }
     }
@@ -98,6 +103,11 @@ void Cross_Run(void)
         a = 66;
         Encoder_Int_Clear(); // 清除编码器积分
     }
+
     Center_edge();
+    if(a == 13)
+    {
+        Finnal_err = run_straight();
+    }
     ips200_show_uint(0,120,a,3);
 }

@@ -103,25 +103,25 @@ extern uint8 touch_boundary_up1; // 右边线走到图像右边界
 
 extern float xielv_left_y_to_end, xielv_right_y_to_end; // 在逆透视后得坐标系建得斜率
 
-#define a11 (-5.5988f)
-#define a12 (-27.9734f)
-#define a13 (709.0200f)
-#define a21 (0.1837f)
-#define a22 (0.7491f)
-#define a23 (-648.4869f)
-#define a31 (0.0194f)
-#define a32 (-0.3464f)
-#define a33 (1.0f)
-
-// #define a11 (-1.9850f)
-// #define a12 (-6.8451f)
-// #define a13 (232.9928f)
-// #define a21 (-0.0901f)
-// #define a22 (0.4470f)
-// #define a23 (-190.8998f)
-// #define a31 (-0.0030f)
-// #define a32 (-0.0636f)
+// #define a11 (-5.5988f)
+// #define a12 (-27.9734f)
+// #define a13 (709.0200f)
+// #define a21 (0.1837f)
+// #define a22 (0.7491f)
+// #define a23 (-648.4869f)
+// #define a31 (0.0194f)
+// #define a32 (-0.3464f)
 // #define a33 (1.0f)
+
+#define a11 (-1.9850f)
+#define a12 (-6.8451f)
+#define a13 (232.9928f)
+#define a21 (-0.0901f)
+#define a22 (0.4470f)
+#define a23 (-190.8998f)
+#define a31 (-0.0030f)
+#define a32 (-0.0636f)
+#define a33 (1.0f)
 
 #define getx(u, v) (a11 * (u) + a12 * (v) + a13)
 #define gety(u, v) (a21 * (u) + a22 * (v) + a23)
@@ -159,16 +159,22 @@ extern int CornersLeft_Point[2];
 extern int CornersRight_Point[2];
 extern int FarCornersLeft_Point[2];
 extern int FarCornersRight_Point[2];
+extern int ArcLeft_Point[2];
+extern int ArcRight_Point[2]; // 近角点坐标
 
 extern int NearIs_Arc0, NearIs_Arc1; // 是否为弧线
 extern int FarIs_Arc0, FarIs_Arc1;   // 是否为弧线
 
-extern int Far_ipts0_num;                // 存放边线像素点个数(左)
-extern int Far_ipts1_num;                // 存放边线像素点个数(右)
+extern int Far_ipts0_num; // 存放边线像素点个数(左)
+extern int Far_ipts1_num; // 存放边线像素点个数(右)
 
-extern uint8 mid_line_num;//定义中线数组个数
+
+
+
+
+extern uint8 mid_line_num; // 定义中线数组个数
 extern float Finnal_err;
-extern float err,last_err;
+extern float err, last_err;
 // 长直道
 extern int Is_straight0, Is_straight1;
 // 弯道
@@ -177,6 +183,7 @@ extern bool is_turn0, is_turn1;
 extern int Far_ipts0[POINTS_MAX_LEN][2]; // 存放边线数据（左）
 extern int Far_ipts1[POINTS_MAX_LEN][2]; // 存放边线数据（右）
 extern float Err[5];                     // 中线误差
+
 // 若考虑近点远点,可近似构造Stanley算法,避免撞路肩
 
 void Arc_Point_Get(int pts_in[][2], int pts_num, int pts_out[2], int *flag);
@@ -196,4 +203,6 @@ void Get_guaidian(int in_put_l[][2], int in_put_num_l);
 void NearCorners_Find_Left_Again(void);
 void FarCorners_Find_Left_Again(void);
 void FarCorners_Find_Left_New(void);
+void LongStarightLine_Rec(int pts_in[][2], int pts_num, int thres, int *flag);
+// uint8_t RoundaboutGetArc(int imageSide[][2], int status, int num, int *index);
 #endif
