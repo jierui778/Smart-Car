@@ -16,52 +16,54 @@ int Fix_Point3[2]={2,118};//左下角固定点
 int Fix_Point4[2]={80,2};//中上固定点
 void Circle_Check(void)
 {
-    // // if (circle_type == CIRCLE_NONE && Near_Lpt0_Found && Far_Lpt0_Found) // ?????????????????????+???
-    // // // ??????????????????????????????????????????????????????????
-    // // {
-    // //     circle_type = CIRCLE_LEFT_FOUND; // ????????????????
-    // //     circle_num++;
-    // // }
-    // // else if (circle_type == CIRCLE_NONE && Near_Lpt1_Found && Far_Lpt1_Found)
-    // // // ???????????????
-    // // {
-    // //     circle_type = CIRCLE_RIGHT_FOUND; // ??????????????
-    // //     circle_num++;
-    // // }
-    // // else
-    // // {
-    // //     circle_type = CIRCLE_NONE;
-    // // }
-    // /*2023/10/26*/
-    if(circle_type == CIRCLE_NONE && Near_Lpt0_Found && Far_Lpt0_Found && !Near_Lpt1_Found && !Far_Lpt1_Found)//左环岛，只有左边两个拐点能找到
+    if (circle_type == CIRCLE_NONE && Near_Lpt0_Found && Far_Lpt0_Found) // ?????????????????????+???
+    // ??????????????????????????????????????????????????????????
     {
-        circle_type = CIRCLE_LEFT_FOUND;
+        circle_type = CIRCLE_LEFT_FOUND; // ????????????????
         circle_num++;
+        ips200_show_int(20, 180, 6, 1);
     }
-    else if(circle_type == CIRCLE_LEFT_FOUND && !Near_Lpt0_Found && Far_Lpt0_Found && !Near_Lpt1_Found && !Far_Lpt1_Found)
+    else if (circle_type == CIRCLE_NONE && Near_Lpt1_Found && Far_Lpt1_Found)
+    // ???????????????
     {
-        circle_type = CIRCLE_LEFT_IN;
+        circle_type = CIRCLE_RIGHT_FOUND; // ??????????????
+        circle_num++;
+        ips200_show_int(20, 180, 66, 1);
     }
-    else if(circle_type == CIRCLE_LEFT_IN && track_type == TRACK_RIGHT)
-    {
-        circle_type = CIRCLE_LEFT_RUN;
-    }
+    // /*2023/10/26*/
+    // if(circle_type == CIRCLE_NONE && Near_Lpt0_Found && Far_Lpt0_Found && !Near_Lpt1_Found && !Far_Lpt1_Found)//左环岛，只有左边两个拐点能找到
+    // {
+    //     circle_type = CIRCLE_LEFT_FOUND;
+    //     circle_num++;
+    //     ips200_show_int(20, 180, 6, 1);
+    // }
+    // else if(circle_type == CIRCLE_LEFT_FOUND && !Near_Lpt0_Found && Far_Lpt0_Found && !Near_Lpt1_Found && !Far_Lpt1_Found)
+    // {
+    //     circle_type = CIRCLE_LEFT_IN;
+    //     ips200_show_int(20, 180, 66, 1);
+    // }
+    // else if(circle_type == CIRCLE_LEFT_IN && track_type == TRACK_RIGHT)
+    // {
+    //     circle_type = CIRCLE_LEFT_RUN;
+
+    // }
 }
 
 
 
 void Circle_Run(void)
 {
+    ips200_draw_line(160, 0, CornersLeft_Point[0], CornersLeft_Point[1], RGB565_BLUE);
     if (circle_type == CIRCLE_LEFT_FOUND)
     {
         track_type = TRACK_RIGHT;
-        Line_Add(&img_raw, CornersRight_Point, FarCornersRight_Point, 0);
+        Line_Add(&img_raw, CornersLeft_Point, ArcLeft_Point, 0);
         BorderLine_Find(); // 寻找边线
     }
     else if (circle_type == CIRCLE_RIGHT_FOUND)
     {
         track_type = TRACK_LEFT; // ?????????????????
-        Line_Add(&img_raw, CornersLeft_Point, FarCornersLeft_Point, 0);
+        Line_Add(&img_raw, CornersRight_Point, ArcRight_Point, 0);
         BorderLine_Find(); // 寻找边线
     }
 
