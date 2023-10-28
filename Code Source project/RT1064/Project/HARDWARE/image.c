@@ -507,8 +507,8 @@ void NearCorners_Find_Left_Again()
             {
                 Left_Eastest =ipts0[i][0];
                 Lpt0_id = i;
-                CornersLeft_Point[0] = ipts0[i][0];
-                CornersLeft_Point[1] = ipts0[i][1];
+                CornersLeft_Point[0] = ipts0[Lpt0_id][0];
+                CornersLeft_Point[1] = ipts0[Lpt0_id][1];
             }
 
         }
@@ -1262,7 +1262,7 @@ float run_left(void)
         mid_line_num = ipts0_num - Lpt0_id;
         for(uint8 i =0; i<mid_line_num; i++)
         {
-            mid_line[i][0] = ipts0[i+Lpt0_id][0] + 60;
+            mid_line[i][0] = ipts0[i+Lpt0_id][0] + 55;
             mid_line[i][1] = ipts0[i+Lpt0_id][1];
         }
     }
@@ -1378,7 +1378,7 @@ float Err_Handle(uint8 mode)
     int i,j=0;
  
         last_err = err;
-        for( int a =10; a < 22 ;a++)//常规误差计算
+        for( int a =10; a < 37 ;a++)//常规误差计算
         {	
             // if(mid_line[a][1] > 60 && mid_line[a][1] < 100)
             // {
@@ -1437,6 +1437,7 @@ float run_right(void)
             mid_line[i][1] = ipts0[i][1];
         }
     }
+
     /*显示函数，可以去掉*/
     // for (uint8 i = 0; i < mid_line_num; i++)
     // {
@@ -1445,7 +1446,7 @@ float run_right(void)
 
     err = Err_Handle(1);//选择模式3：中线斜率角度误差
 
-    return err;
+    return err *0.825;
 }
 
 /*直道运行函数*/
