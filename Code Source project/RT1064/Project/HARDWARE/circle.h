@@ -21,6 +21,8 @@ enum circle_type_e
     CIRCLE_NUM,
 };
 
+/*状态1到状态2:左边近拐点坐标小于90即可 (或记录上次的左下拐点的y坐标,然后判断两次y坐标相差是否超过10)
+状态2到状态3 : 左边近拐点坐标小于一个值就进入状态3*/
 extern enum circle_type_e circle_type; // 枚举类型全局定义
 extern int cross_state;
 // 进圆环必定丢线，考虑进圆环仅巡单边线
