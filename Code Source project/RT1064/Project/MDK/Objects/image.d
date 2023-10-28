@@ -111,6 +111,6 @@
   ..\..\libraries\components\sdmmc\common\fsl_sdmmc_spec.h \
   ..\..\libraries\components\sdmmc\sdmmc_config.h \
   ..\..\libraries\sdk\board\clock_config.h ..\HARDWARE\mymath.h \
-  ..\HARDWARE\control.h ..\HARDWARE\cross.h ..\HARDWARE\circle.h \
-  ..\HARDWARE\garage.h ..\HARDWARE\ramp.h \
+  ..\HARDWARE\control.h ..\HARDWARE\encoder.h ..\HARDWARE\cross.h \
+  ..\HARDWARE\circle.h ..\HARDWARE\garage.h ..\HARDWARE\ramp.h \
   C:\Program\ Files\Keil_v5\ARM\ARMCLANG\Bin\..\include\math.h

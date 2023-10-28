@@ -1,6 +1,7 @@
 #include "image.h"
 #include "mymath.h"
 #include "control.h"
+#include "encoder.h"
 #include "stdlib.h"
 #include "cross.h"
 #include "circle.h"
@@ -126,7 +127,7 @@ void test(void) // 测试函数
     if (FarBorderLine_Enable) // 开启
     {
         FarBorderline_Find(); // 寻找远边线
-        if (1)  // 如果左边线有角点
+        if (1)                // 如果左边线有角点
         {
             FarCorners_Find_Left(Far_ipts0, Far_ipts0_num, FarCornersLeft_Point, &Far_Lpt0_Found);
         }
@@ -173,16 +174,27 @@ void test(void) // 测试函数
     // ips200_show_int(160, 0, State, 3);
     // ips200_show_int(160, 20, ipts1_num, 3);
 
+    // if (1)
+    // {
+    //     Cross_Check();
+    // }
+    // if (cross_type != CROSS_NONE)
+    // {
+    //     Cross_Run();
+    //     // ips200_draw_line(0,0,120,160,RGB565_BLUE);
+    // }
+
     if (1)
     {
-        Cross_Check();
+        Garage_Check();
     }
     if (cross_type != CROSS_NONE)
     {
-        Cross_Run();
+        Garage_Run();
         // ips200_draw_line(0,0,120,160,RGB565_BLUE);
     }
-
+    // ips200_show_int(20, 160, Encoder_L_Dis, 5);
+    // ips200_show_int(20, 180, Encoder_R_Dis, 5);
     // Track_Check();
     // Track_Run();
     // Finnal_err = Err_Handle(1);
@@ -228,14 +240,14 @@ void test(void) // 测试函数
     // {
     //     ips200_draw_line(0, 0, ipts0[i][0] + 5, ipts0[i][1], RGB565_BLUE);
     // }
-    for (int i = 0; i < Far_ipts0_num; i++)
-    {
-        ips200_draw_line(0, 0, Far_ipts0[i][0], Far_ipts0[i][1], RGB565_BLUE);
-    }
-    for (int i = 0; i < Far_ipts1_num; i++)
-    {
-        ips200_draw_line(160, 0, Far_ipts1[i][0], Far_ipts1[i][1], RGB565_RED);
-    }
+    // for (int i = 0; i < Far_ipts0_num; i++)
+    // {
+    //     ips200_draw_line(0, 0, Far_ipts0[i][0], Far_ipts0[i][1], RGB565_BLUE);
+    // }
+    // for (int i = 0; i < Far_ipts1_num; i++)
+    // {
+    //     ips200_draw_line(160, 0, Far_ipts1[i][0], Far_ipts1[i][1], RGB565_RED);
+    // }
     // for (int i = 0; i < ipts0_num; i++)
     // {
     //     ips200_draw_line(0,0,ipts0[i][0] , ipts0[i][1], RGB565_BLUE);
@@ -281,7 +293,7 @@ void FarCorners_Find_Left(int pts_in[][2], int pts_num, int pts_out[2], int *fla
             pts_out[0] = pts_in[Far_Lpt0_id][0];
             pts_out[1] = pts_in[Far_Lpt0_id][1]; // 找到拐点,传出拐点坐标
 
-            *flag = 1;                 // 拐点标志位置为一
+            *flag = 1; // 拐点标志位置为一
             // 标志位为1
             break;
         }
@@ -292,6 +304,7 @@ void FarCorners_Find_Left(int pts_in[][2], int pts_num, int pts_out[2], int *fla
             // pts_out[1] = 0;
         }
     }
+    ips200_draw_line(0, 0, pts_out[0], pts_out[1], RGB565_RED);
 }
 
 /**
@@ -345,12 +358,12 @@ void FarBorderline_Find(void)
     uint8 uthres = 1;
     if (loseline1) // 近处丢线,采用静态起始点
     {
-        CornersRight_Point[0] = 158;
+        CornersRight_Point[0] = 153;
         CornersRight_Point[1] = 100;
     }
     if (loseline0)
     {
-        CornersLeft_Point[0] = 1;
+        CornersLeft_Point[0] = 6;
         CornersLeft_Point[1] = 100;
     }
     // ips200_draw_line(0, 0, CornersLeft_Point[0], CornersLeft_Point[1], RGB565_RED);
@@ -359,8 +372,10 @@ void FarBorderline_Find(void)
     if (1)
     {
 
-        x0_first = CornersLeft_Point[0] + 10;
+        x0_first = (CornersLeft_Point[0] - 10) > 11 ? (CornersLeft_Point[0] - 10) : 11;
         y0_first = CornersLeft_Point[1] - 10;
+        /**        x0_first = CornersLeft_Point[0] + 10;
+        y0_first = CornersLeft_Point[1] - 10;*/
 
         Far_ipts0_num = sizeof(Far_ipts0) / sizeof(Far_ipts0[0]); // 求数组的长度
         // 扫底下五行，寻找跳变点
@@ -388,7 +403,7 @@ void FarBorderline_Find(void)
 
         // 标记种子起始点(后续元素处理要用到)
         // ips200_show_int(50, 200, 666, 2);
-        x1_first = CornersRight_Point[0] - 10;
+        x1_first = (CornersRight_Point[0] + 10) < 148 ? (CornersRight_Point[0] + 10) : 148;
         y1_first = CornersRight_Point[1] - 10;
         ;
 
