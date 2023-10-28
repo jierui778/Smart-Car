@@ -14,7 +14,7 @@ void Cross_Check(void) // 得考虑斜入十字的情况
 {
     // 双边确定十字
     //  bool Xfound = Lpt0_found && Lpt1_found;
-    if (cross_type == CROSS_NONE && touch_boundary0 && Near_Lpt0_Found && Far_Lpt0_Found && !Near_Lpt1_Found) // 左边双角点,右边近角点丢失,斜入左十字,进入十字模式
+    if (cross_type == CROSS_NONE && touch_boundary0 && Near_Lpt0_Found && Far_Lpt0_Found && !Near_Lpt1_Found && loseline1) // 左边双角点,右边近角点丢失,斜入左十字,进入十字模式
     {
         cross_type = CROSS_HALF_LEFT_FOUND;
         cross_num++; // 记录圆环个数

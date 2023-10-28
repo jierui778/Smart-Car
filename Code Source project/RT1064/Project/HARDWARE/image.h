@@ -191,5 +191,9 @@ void track_rightline(int pts_in[][2], int num, int pts_out[][2], int approx_num,
 //void Line_Add(image_t *img, int pts0_in[2], int pts1_in[2], int8 value);
 float run_straight(void);
 float LineRession(int pts_in[][2], int num);
-
+void Coordinate_transformation_left(int pt0_in[][2], int in_num, int pt0_out[][2]);
+void Get_guaidian(int in_put_l[][2], int in_put_num_l);
+void NearCorners_Find_Left_Again(void);
+void FarCorners_Find_Left_Again(void);
+void FarCorners_Find_Left_New(void);
 #endif
