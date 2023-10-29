@@ -16,6 +16,8 @@ int Fin_Point2[2] = {2,10};//?????????
 int Fix_Point3[2]={1,100};//?????????
 int Fix_Point4[2]={80,10};//????????
 int cross_state=0;
+int ll_flag=0,l_flag=0,flag=0;
+
 void Circle_Check(void)
 {
     // if (circle_type == CIRCLE_NONE && Near_Lpt0_Found && Far_Lpt0_Found) // ?????????????????????+???
@@ -35,7 +37,8 @@ void Circle_Check(void)
     //     circle_type = CIRCLE_NONE;
     // }
     /*2023/10/26*/
-    
+    ll_flag=l_flag;
+    l_flag=flag;
     FarBorderLine_Enable = 1;
     NearBorderLine_Enable = 1;
     NearCorners_Find_Left(ipts0,ipts0_num,CornersLeft_Point,&Near_Lpt0_Found);
@@ -43,14 +46,10 @@ void Circle_Check(void)
 
     FarCorners_Find_Left(Far_ipts0,Far_ipts0_num,FarCornersLeft_Point,&Far_Lpt0_Found);
     FarCorners_Find_Left_Again();
-    if(circle_type == CIRCLE_NONE && Near_Lpt0_Found && !Near_Lpt1_Found && !Far_Lpt1_Found && Far_Lpt0_Found 
-        && (ipts1[ipts1_num-1][1] < 40) && loseline1 == 0 ) 
+    if((circle_type == CIRCLE_NONE && Near_Lpt0_Found && !Near_Lpt1_Found && !Far_Lpt1_Found && Far_Lpt0_Found
+        && (ipts1[ipts1_num-1][1] < 40) ) )
     {
-
-        circle_type = CIRCLE_LEFT_FOUND;
-        cross_state = 1;
-        circle_num++;
-        
+        flag=CIRCLE_LEFT_FOUND;
     }
     // else if(circle_type == CIRCLE_LEFT_FOUND && !Near_Lpt0_Found&& !Near_Lpt1_Found && !Far_Lpt1_Found && Far_Lpt0_Found && (!loseline0 && !loseline1) 
     //  && ipts0[Lpt0_id][1] > 80 
@@ -60,17 +59,15 @@ void Circle_Check(void)
     //     cross_state = 2;
     // }
     // if(circle_type == CIRCLE_LEFT_IN1   && ((ipts0[Lpt0_id][1] > 47 && ipts0[Lpt0_id][1] < 60)||ipts0[Lpt0_id][0]< 20))
-    if(circle_type == CIRCLE_LEFT_FOUND  && (((CornersLeft_Point[1] > 55 ) && (CornersLeft_Point[1] < 60)) )
+    if(circle_type == CIRCLE_LEFT_FOUND  && (((ArcLeft_Point[1] > 50 ) && (ArcLeft_Point[1] < 60)) )
     )
     {
-        circle_type = CIRCLE_LEFT_IN;
-        cross_state = 3;
+        flag = CIRCLE_LEFT_IN;
     }
-    // else if(circle_type == CIRCLE_LEFT_IN  && (loseline0 ==1 || (ipts1_num > 80)) && Far_Lpt0_Found && !Near_Lpt1_Found && !Far_Lpt1_Found)
-    // {
-    //     circle_type = CIRCLE_LEFT_RUN;
-    //     cross_state = 4;
-    // }
+    else if(circle_type == CIRCLE_LEFT_IN  && (loseline0 ==1 && loseline1 == 0) && (ipts1[0][0] - ipts1[ipts1_num - 1][0]) > (IMAGE_WIDTH/2) )
+    {
+        flag = CIRCLE_LEFT_RUN;
+    }
     // else if (circle_type  == CIRCLE_LEFT_RUN && loseline0 == 1 && Near_Lpt1_Found == 1 && !Near_Lpt0_Found)
     // {
     //     circle_type = CIRCLE_LEFT_OUT;
@@ -80,6 +77,30 @@ void Circle_Check(void)
     //     cross_state = 5;
     //     circle_type = CIRCLE_NONE;
     // }
+    if(ll_flag==l_flag  && l_flag==flag &&flag!=circle_type)
+    {
+        circle_type=flag;
+    }
+    if( circle_type == CIRCLE_LEFT_FOUND) 
+    {
+        cross_state = 1;
+        circle_num++;
+    }
+    else if(circle_type == CIRCLE_LEFT_IN)
+    {
+        cross_state = 3;
+        circle_num++;
+    }
+    else if(circle_type == CIRCLE_LEFT_RUN)
+    {
+        cross_state = 4;
+        circle_num++;
+    }
+    else if(circle_type == CIRCLE_NONE)
+    {
+        cross_state = 5;
+    }
+        
 }
 
 void Circle_Run(void)
@@ -134,9 +155,8 @@ void Circle_Run(void)
             Line_Add(&img_raw,CornersLeft_Point,FarCornersLeft_Point,0);//画出直线
             BorderLine_Find();//找近线，要巡直道
             // ips200_draw_line(CornersLeft_Point[0],CornersLeft_Point[1],FarCornersLeft_Point[0],FarCornersLeft_Point[1],RGB565_RED);
-            Arc_Point_Get(ipts0, ipts0_num,CornersLeft_Point,&Near_Lpt0_Found);
+            Arc_Point_Get(ipts0, ipts0_num,ArcLeft_Point,&NearIs_Arc0);//左近弧线是否找到
             FarCorners_Find_Left_Again();
-            BorderLine_Find();//???????
             break;
        }
     //    case CIRCLE_LEFT_IN1:
@@ -165,14 +185,14 @@ void Circle_Run(void)
     //        // BorderLine_Find();//???????????????????????????????track_check??????????track_check???????????????????????
     //        break;
     //    }
-    //    case CIRCLE_LEFT_RUN:
-    //    {
-    //        // Line_Add(&img_raw,Fix_Point,FarCornersLeft_Point,0);//
-    //        BorderLine_Find();//???????
-    //        run_left();
+       case CIRCLE_LEFT_RUN:
+       {
            
-    //        break;//?????????????
-    //    }
+           BorderLine_Find();//???????
+           run_left();
+           
+           break;//?????????????
+       }
        // case CIRCLE_LEFT_OUT://?????????????????????????????????????????
        // {
        //     Line_Add(&img_raw,CornersLeft_Point,Fin_Point2,0);//?????????????????????

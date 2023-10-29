@@ -3,7 +3,7 @@
 #define _SERVO_H_
 
 #define SERVO_ANGLE_MAX 30 // 防止前轮转动角度过大卡死车轮，限制舵机转动角度
-#define SERVO_CH (PWM1_MODULE0_CHA_D12)
+#define SERVO_CH (PWM4_MODULE2_CHA_C30)
 #define SERVO_FRE 200 // 舵机频率:50Hz
 #define ERROR (-14)   // 机械零点值误差，视具体调节修改
 

@@ -174,7 +174,8 @@ extern int FarIs_Arc0, FarIs_Arc1;   // 是否为弧线
 extern int Far_ipts0_num; // 存放边线像素点个数(左)
 extern int Far_ipts1_num; // 存放边线像素点个数(右)
 
-
+extern int ArcLeft_Point[2] ;
+extern int ArcRight_Point[2] ; // 近角点坐标
 
 
 
