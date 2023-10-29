@@ -11,7 +11,7 @@ float sPidInfo[3][5] = { // IncrPID{Kp,Ki,Kd,MaxOutput}
 
     {0, 0, 0, 0,0},
     
-    {0.65,0,0.1,0,14.5}};
+    {0.7,0,0.0,0,14.5}};
 
 	/*--p过荡 0.7   初始为0.5*/
 sPosiPID_Info ServoInfo = {0};

@@ -210,5 +210,6 @@ void NearCorners_Find_Left_Again(void);
 void FarCorners_Find_Left_Again(void);
 void FarCorners_Find_Left_New(void);
 void LongStarightLine_Rec(int pts_in[][2], int pts_num, int thres, int *flag);
+void Arc_Point_Get(int pts_in[][2], int pts_num, int pts_out[2], int *flag);
 // uint8_t RoundaboutGetArc(int imageSide[][2], int status, int num, int *index);
 #endif
