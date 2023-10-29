@@ -18,6 +18,14 @@ int Fix_Point4[2]={80,10};//????????
 int cross_state=0;
 int ll_flag=0,l_flag=0,flag=0;
 
+/*2023/10/29
+目前遇到的问题：1. 进入环岛状态判断是否要取右边线？ 极限状况下右边线可能会丢（迷宫法的起始点最多能扫50行）
+2. 补线后巡单边线，然后直接将右边线左移的时候，会有一段直线出现在下面（干扰直线）
+3. 进入环岛后，原来的补的直线会干扰；同时迷宫法的限制行数不能太高，否则生长点会重合
+4. 在左入环岛的状态时，补完线，如果左边丢线或者个数比较少，就巡右线（会出现2的问题）；如果左边没丢线，就巡双边线
+5. 在起始状态时左下拐点（L）和左上拐点（圆弧）能找到，但是在左下拐点为圆弧拐点，左上拐点为倒L角点的时候，这个时候可能拐点的判断会出现问题
+——除非要将不同情况下的找拐点函数分开，不然很难处理。（目前没有分开）
+*/
 void Circle_Check(void)
 {
     // if (circle_type == CIRCLE_NONE && Near_Lpt0_Found && Far_Lpt0_Found) // ?????????????????????+???
@@ -38,18 +46,22 @@ void Circle_Check(void)
     // }
     /*2023/10/26*/
     ll_flag=l_flag;
-    l_flag=flag;
+    l_flag=flag;//fjw加的，三个状态判断，提高稳定性,每次更新状态会把这次状态赋给上一次状态
     FarBorderLine_Enable = 1;
-    NearBorderLine_Enable = 1;
+    NearBorderLine_Enable = 1;//开使能，不然远线扫不到
     NearCorners_Find_Left(ipts0,ipts0_num,CornersLeft_Point,&Near_Lpt0_Found);
-    NearCorners_Find_Left_Again();
+    NearCorners_Find_Left_Again();//找近拐点，Again是强加的判断，求x坐标最大值（其实这个函数没问题，在第一个L和圆弧拐点都能找）
 
     FarCorners_Find_Left(Far_ipts0,Far_ipts0_num,FarCornersLeft_Point,&Far_Lpt0_Found);
-    FarCorners_Find_Left_Again();
+    FarCorners_Find_Left_Again();//远拐点判断，主要是判断倒L拐点的
+
+    /*这里左边拐点因为会有三种：正L，圆弧，倒L，所以这个判断有点难搞（问题5）*/
+
     if((circle_type == CIRCLE_NONE && Near_Lpt0_Found && !Near_Lpt1_Found && !Far_Lpt1_Found && Far_Lpt0_Found
         && (ipts1[ipts1_num-1][1] < 40) ) )
+        /*非环岛状态 + 左下，上拐点找到 + 右边两个拐点没找到 + 右直线最后一个点y坐标在图像上半*/
     {
-        flag=CIRCLE_LEFT_FOUND;
+        flag=CIRCLE_LEFT_FOUND;//检验三次再确定，这是第一次
     }
     // else if(circle_type == CIRCLE_LEFT_FOUND && !Near_Lpt0_Found&& !Near_Lpt1_Found && !Far_Lpt1_Found && Far_Lpt0_Found && (!loseline0 && !loseline1) 
     //  && ipts0[Lpt0_id][1] > 80 
