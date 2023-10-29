@@ -220,8 +220,10 @@ void test(void) // 测试函数
 
     for (uint8 i = 0; i < mid_line_num; i++)
     {
-
-        ips200_draw_point(mid_line[i][0], mid_line[i][1], RGB565_RED);
+        if(mid_line[i][0] > 2 && mid_line[i][0] < 158 && mid_line[i][1] > 2 && mid_line[i][1] < 118)
+        {
+            ips200_draw_point(mid_line[i][0], mid_line[i][1], RGB565_RED);
+        }
         // ips200_draw_line(160,0,mid_line[i][0],mid_line[i][1],RGB565_BLUE);
     }
     // ips200_show_uint(0,120,mid_line_num,3);
@@ -1056,7 +1058,7 @@ void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x
         int frontleft_value = AT(img, x + dir_frontleft[dir][0], y + dir_frontleft[dir][1]); // 左前方像素点灰度值 （dir=0左下；dir=1 右下；dir=2 右上；dir=3 左上 ）
         //=======添加部分=======（限制条件）
         /*  当扫点的列坐标到左黑框边界且行坐标小于20    列坐标到右边的黑框边界  行坐标为1   行坐标为88的同时步数已经大于19*/
-        if ((x == 2 && y < img->height - 70) || x == img->width - 2 || y == 2 || (y == 10 && step > 19)) // 30修改后能扫线
+        if ((x == 2 && y < img->height - 60) || x == img->width - 2 || y == 2 || (y == 10 && step > 19)) // 30修改后能扫线
         {
             if (x == 2 /*|| x== img->width - 2*/) // 限制迷宫巡线的左边界
                 touch_boundary0 = 1;              // 左边界是因为到最左边才停下来的，触碰到最左边，可能是环岛，十字等，
@@ -1131,7 +1133,7 @@ void Right_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int 
         int front_value = AT(img, x + dir_front[dir][0], y + dir_front[dir][1]);
         int frontright_value = AT(img, x + dir_frontright[dir][0], y + dir_frontright[dir][1]);
         //=======添加部分=======
-        if ((x == img->width - 2 && y < img->height - 70) || x == 1 || y == 1 || (y == 10 && step > 19)) // 丢线标志，否则由于sobel特殊性会一直往上巡线，直到边线个数达到最大为止
+        if ((x == img->width - 2 && y < img->height - 60) || x == 1 || y == 1 || (y == 10 && step > 19)) // 丢线标志，否则由于sobel特殊性会一直往上巡线，直到边线个数达到最大为止
         {
             if (x == img->width - 2 /*|| x==1*/) // 限制迷宫巡线的右边界
             {
@@ -1244,14 +1246,25 @@ float run_left(void)
     }
 
     //入左环岛左圆弧中线偏移
+    // if(circle_type == CIRCLE_LEFT_IN )
+    // {
+    //     mid_line_num = ipts0_num - Lpt0_id;
+    //     for(uint8 i =0; i<mid_line_num; i++)
+    //     {
+    //         mid_line[i][0] = ipts0[i+Lpt0_id][0] + 35;
+    //         mid_line[i][1] = ipts0[i+Lpt0_id][1];
+    //     }
+
+    // }
     if(circle_type == CIRCLE_LEFT_IN )
     {
-        mid_line_num = ipts0_num - Lpt0_id;
+        mid_line_num = ipts1_num ;
         for(uint8 i =0; i<mid_line_num; i++)
         {
-            mid_line[i][0] = ipts0[i+Lpt0_id][0] + 35;
-            mid_line[i][1] = ipts0[i+Lpt0_id][1];
+            mid_line[i][0] = ipts1[i][0] - 67;
+            mid_line[i][1] = ipts1[i][1];
         }
+        
     }
 
     //出左环岛右拐点边线偏移
@@ -1390,7 +1403,7 @@ float Err_Handle(uint8 mode)
     int i,j=0;
 
         last_err = err;
-        for( int a =10; a < 22 ;a++)//常规误差计算
+        for( int a =15; a < 43 ;a++)//常规误差计算
         {
             // if(mid_line[a][1] > 60 && mid_line[a][1] < 100)
             // {
