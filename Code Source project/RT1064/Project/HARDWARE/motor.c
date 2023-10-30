@@ -1,4 +1,5 @@
 #include "motor.h"
+#include "control.h"
 // DRV驱动方案
 // PWM频率一般选择13-17kHZ，这里我们选着10kHZ
 uint32 speed=1000;
@@ -15,26 +16,34 @@ void Motor_Init(void)
     pwm_init(MOTOR_PWMR, 10000, 0);
     pwm_init(MOTOR_PWML, 10000, 0);
 
-    pwm_set_duty(MOTOR_PWML, 996);
-    pwm_set_duty(MOTOR_PWMR, 996
-	); // 两电机先不动
+    pwm_set_duty(MOTOR_PWML, 0);
+    pwm_set_duty(MOTOR_PWMR, 0); // 两电机先不动
+
+    for(uint8 i =0;i<2;i++)
+    {
+        Motor_Info[i].TargetSpeed = 0;
+        Motor_Info[i].Speed = 0;
+    }
 }
+
+
+
 
 /**
  * @brief 设置左电机的速度
  *
  * @param Speed 速度值，范围-1000~1000
  */
-void Motor_SetPwmR(int16 Speed)
+void Motor_SetPwmL(int16 Speed)
 {
     if (Speed > 0)
     {
-        gpio_set_level(MOTOR_DIRL, 1);
+        gpio_set_level(MOTOR_DIRL, 0);
         pwm_set_duty(MOTOR_PWML, Speed); //
     }
     else
     {
-        gpio_set_level(MOTOR_DIRL, 0);
+        gpio_set_level(MOTOR_DIRL, 1);
         pwm_set_duty(MOTOR_PWML, -Speed);
     }
 }
@@ -43,7 +52,7 @@ void Motor_SetPwmR(int16 Speed)
  *
  * @param Speed 速度值，范围-1000~1000
  */
-void Motor_SetPwmL(int16 Speed)
+void Motor_SetPwmR(int16 Speed)
 {
     if (Speed > 0)
     {

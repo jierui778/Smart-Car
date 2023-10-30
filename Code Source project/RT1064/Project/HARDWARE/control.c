@@ -18,6 +18,10 @@ void Control_Init()
         Motor_Init();
 }
 
+sMotor_Info Motor_Info[2]={0};
+sServo_Info ServoInfo = {0};//舵机驱动结构体
+
+
 // /**
 //  * @brief 根据摄像头给的中线误差值进行转向，调节角度
 //  * @param current_err 与中线的误差值
@@ -48,6 +52,21 @@ void Speed_Control(float left_speed, float right_speed)
 
         //    Motor_SetPwmL(MINMAX(IncrementPID(Deviation_L, SpeedParam), -PWM_MAX, PWM_MAX));  // 将累加增量进行限幅输出
         //    Motor_SetPwmR(MINMAX(IncrementPID2(Deviation_R, SpeedParam), -PWM_MAX, PWM_MAX)); // 将累加增量进行限幅输出
+}
+
+
+
+//在电机pid之前进行一下阿克曼运算就行
+void ackermann(float err, float v,sMotor_Info *Motor_Info_L,sMotor_Info *Motor_Info_R)
+{
+    // 差速计算
+    float R = wheelbase / (2 * (1 - (track * track) / (4 * wheelbase * wheelbase))); // 转弯半径
+    float delta = (track / 2) - (length * err) / 2;                                  // 左右轮距离车辆中心的水平偏移量
+
+    // 漂移调整
+    float drift_offset = drift_factor * v * v / R; // 根据速度和转弯半径计算漂移偏移量
+    Motor_Info_L->TargetSpeed = v * (1 - delta / R - drift_offset) * k;
+    Motor_Info_R->TargetSpeed = v * (1 + delta / R + drift_offset) * k; 
 }
 
 /**

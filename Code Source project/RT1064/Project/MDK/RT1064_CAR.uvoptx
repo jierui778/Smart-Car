@@ -137,7 +137,7 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>4</LineNumber>
+          <LineNumber>23</LineNumber>
           <EnabledFlag>1</EnabledFlag>
           <Address>0</Address>
           <ByteObject>0</ByteObject>
@@ -146,7 +146,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>..\HARDWARE\pid.c</Filename>
+          <Filename>..\HARDWARE\encoder.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
