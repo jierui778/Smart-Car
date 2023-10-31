@@ -1,6 +1,14 @@
 #include "schedule.h"
 #include "encoder.h"
+<<<<<<< HEAD
 
+=======
+#include "image.h"
+#include "control.h"
+#include "motor.h"
+#include "pid.h"
+#include "servo.h"
+>>>>>>> 02e42dc0749423afe2fd0acff66ab4075d3fb4c5
 #define TASK_LIST_END \
     {                 \
         NULL, 0, 0, 0 \
@@ -9,8 +17,8 @@
 // 任务函数
 static void Schedule1(void) // task1:更新编码器数据//周期为10ms
 {
-    gpio_toggle_level(B9);
-    Encoder_Update(&Encoder_L_Data, &Encoder_R_Data);
+
+    test();
 }
 
 static void Schedule2(void) // task2:
@@ -29,7 +37,7 @@ static void Schedule3(void) // task3
  */
 static Task_t Task_List[] =
     {
-        {Schedule1, 10, 0, 0}, // 任务1，周期为10ms
+        {Schedule1, 1, 0, 0}, // 任务1，周期为10ms
         {Schedule2, 0, 0, 0},
         {Schedule3, 0, 0, 0},
         // 创建
@@ -103,5 +111,20 @@ void Schedule_Run(void)
 void pit_handler(void)
 {
     Schedule_Tick();
+<<<<<<< HEAD
     // gpio_toggle_level(B9);//test
+=======
+    gpio_toggle_level(B9); // test
+	Encoder_Update(&Motor_Info[0].Speed, &Motor_Info[1].Speed, &Encoder_L_Dis, &Encoder_R_Dis);
+    for(uint8 i=0;i<2;i++)
+    {
+        IncrPID(&Motor_PIDInfo[i],&Motor_Info[i]);
+    }
+	
+	
+
+    
+	
+	
+>>>>>>> 02e42dc0749423afe2fd0acff66ab4075d3fb4c5
 }

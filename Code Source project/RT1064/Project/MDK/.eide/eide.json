@@ -123,28 +123,16 @@
         "name": "hardware",
         "files": [
           {
-            "path": "../HARDWARE/buzzer.c"
+            "path": "../HARDWARE/servo.c"
           },
           {
-            "path": "../HARDWARE/buzzer.h"
+            "path": "../HARDWARE/servo.h"
           },
           {
-            "path": "../HARDWARE/camera.c"
+            "path": "../HARDWARE/motor.c"
           },
           {
-            "path": "../HARDWARE/camera.h"
-          },
-          {
-            "path": "../HARDWARE/control.c"
-          },
-          {
-            "path": "../HARDWARE/control.h"
-          },
-          {
-            "path": "../HARDWARE/display.c"
-          },
-          {
-            "path": "../HARDWARE/display.h"
+            "path": "../HARDWARE/motor.h"
           },
           {
             "path": "../HARDWARE/encoder.c"
@@ -153,7 +141,10 @@
             "path": "../HARDWARE/encoder.h"
           },
           {
-            "path": "../HARDWARE/filter.c"
+            "path": "../HARDWARE/camera.h"
+          },
+          {
+            "path": "../HARDWARE/camera.c"
           },
           {
             "path": "../HARDWARE/image.c"
@@ -162,10 +153,22 @@
             "path": "../HARDWARE/image.h"
           },
           {
-            "path": "../HARDWARE/motor.c"
+            "path": "../HARDWARE/buzzer.h"
           },
           {
-            "path": "../HARDWARE/motor.h"
+            "path": "../HARDWARE/buzzer.c"
+          },
+          {
+            "path": "../HARDWARE/schedule.c"
+          },
+          {
+            "path": "../HARDWARE/schedule.h"
+          },
+          {
+            "path": "../HARDWARE/display.h"
+          },
+          {
+            "path": "../HARDWARE/display.c"
           },
           {
             "path": "../HARDWARE/mymath.c"
@@ -180,16 +183,52 @@
             "path": "../HARDWARE/pid.h"
           },
           {
-            "path": "../HARDWARE/schedule.c"
+            "path": "../HARDWARE/control.c"
           },
           {
-            "path": "../HARDWARE/schedule.h"
+            "path": "../HARDWARE/control.h"
           },
           {
-            "path": "../HARDWARE/servo.c"
+            "path": "../HARDWARE/filter.c"
           },
           {
-            "path": "../HARDWARE/servo.h"
+            "path": "../HARDWARE/filter.h"
+          },
+          {
+            "path": "../HARDWARE/key.c"
+          },
+          {
+            "path": "../HARDWARE/key.h"
+          },
+          {
+            "path": "../HARDWARE/circle.c"
+          },
+          {
+            "path": "../HARDWARE/circle.h"
+          },
+          {
+            "path": "../HARDWARE/cross.c"
+          },
+          {
+            "path": "../HARDWARE/cross.h"
+          },
+          {
+            "path": "../HARDWARE/garage.c"
+          },
+          {
+            "path": "../HARDWARE/garage.h"
+          }
+        ],
+        "folders": []
+      },
+      {
+        "name": "rtt",
+        "files": [
+          {
+            "path": "../RTT/SEGGER_RTT.c"
+          },
+          {
+            "path": "../RTT/SEGGER_RTT_printf.c"
           }
         ],
         "folders": []
@@ -882,9 +921,6 @@
         "name": "zf-driver",
         "files": [
           {
-            "path": "../../libraries/zf_driver/zf_driver_adc.c"
-          },
-          {
             "path": "../../libraries/zf_driver/zf_driver_csi.c"
           },
           {
@@ -910,6 +946,9 @@
           },
           {
             "path": "../../libraries/zf_driver/zf_driver_pit.c"
+          },
+          {
+            "path": "../../libraries/zf_driver/zf_driver_adc.c"
           },
           {
             "path": "../../libraries/zf_driver/zf_driver_pwm.c"
@@ -1066,19 +1105,26 @@
         },
         "options": "null"
       },
-      "uploader": "JLink",
+      "uploader": "OpenOCD",
       "uploadConfig": {
         "bin": "",
-        "baseAddr": "",
-        "cpuInfo": {
-          "vendor": "null",
-          "cpuName": "null"
-        },
-        "proType": 1,
-        "speed": 8000,
-        "otherCmds": ""
+        "target": "esp32",
+        "interface": "cmsis-dap",
+        "baseAddr": "0x08000000"
       },
-      "uploadConfigMap": {},
+      "uploadConfigMap": {
+        "JLink": {
+          "bin": "",
+          "baseAddr": "",
+          "cpuInfo": {
+            "vendor": "null",
+            "cpuName": "null"
+          },
+          "proType": 1,
+          "speed": 8000,
+          "otherCmds": ""
+        }
+      },
       "custom_dep": {
         "name": "default",
         "incList": [
@@ -1113,6 +1159,7 @@
           "../../libraries/zf_device",
           "../USER/inc",
           "../HARDWARE",
+          "../RTT",
           "RTE/_RT1064_CAR"
         ],
         "libList": [],

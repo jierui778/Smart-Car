@@ -7,4 +7,8 @@
 void QuickSort(int *arr, int low, int high);//快速排序
 float Fsqrt(float x);//浮点数开方
 uint8 Atan2(float y, float x);
+int my_abs(int value);
+int16 limit_a_b(int16 x, int a, int b);
+
+int clip(int x, int low, int up);
 #endif

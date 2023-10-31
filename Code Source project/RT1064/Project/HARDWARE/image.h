@@ -8,101 +8,23 @@
 
 #define WHITE 255
 #define BLACK 0
-#define IMAGE_WIDTH 160           // 用于处理的图像高度
-#define IMAGE_HEIGHT 120          //用于处理的图像宽度\
+#define IMAGE_WIDTH 160  // 用于处理的图像高度
+#define IMAGE_HEIGHT 120 // 用于处理的图像宽度
+#define MID_LINE 80      // 中线为x=80
 
+#define POINTS_MAX_LEN (120)      // 边线点最多的情况——>num
+#define POINTS_MIN_LEN (40)       // 边线点最少的情况——>num
 #define PRIMEVAL_HEIGHT MT9V03X_H // 原始图像高度
 #define PRIMEVAL_WIDTH MT9V03X_W  // 原始图像宽度
 
-#define THRESHOLD_MAX 255 * 6 // 滤波阈值
-#define THRESHOLD_MIN 255 * 3
+#define L_CROSS 80 // 十字模式中存储左边线坐标的个数为80
 
-#define LINE_K 0.5                                 // 斜率，判断是否为直道
-extern uint8 Image_Use[IMAGE_HEIGHT][IMAGE_WIDTH]; // 全局声明用于处理的图像数组
+#define Sobel_Gx(addr, y, x) (addr[UP][RR] + 2 * addr[y][RR] + addr[DN][RR] - (addr[UP][LL] + 2 * addr[y][LL] + addr[DN][LL]))
+#define Sobel_Gy(addr, y, x) (addr[UP][LL] + 2 * addr[UP][x] + addr[UP][RR] - (addr[DN][LL] + 2 * addr[DN][x] + addr[DN][RR]))
+#define Sobel_G(addr, y, x) (abs(Sobel_Gx(addr, y, x)) + abs(Sobel_Gy(addr, y, x)))
+// 转向矩阵
 
-/*图像处理*/
-void Image_Compress();                                                                                                       // 对原始图像进行压缩
-uint8 OSTU_GetThreshold(uint8 *image, uint16 Width, uint16 Height);                                                          // 优化大津法获取阈值
-void Image_Sobel(uint8 Image_in[IMAGE_HEIGHT][IMAGE_WIDTH], uint8_t Image_out[IMAGE_HEIGHT][IMAGE_WIDTH], uint16 Threshold); // 全局sobel方案
-void Image_Binarization(unsigned char threshold, uint8 (*Image_Use)[IMAGE_WIDTH]);                                           // 根据阈值对图像进行二值化
-void Image_DrawRectangle(void);                                                                                              // 画黑框
-void Image_Get_neighborhoods(uint8 (*Image_Use)[IMAGE_WIDTH]);                                                               // 八邻域巡线
-void Image_Filter(void);                                                                                                     // 腐蚀滤波函数（简单的早点过滤）
-uint8 Image_Get_RightPoint(uint8 start_row);                                                                                 // 求左边界起始点坐标函数
-uint8 Image_Get_LeftPoint(uint8 start_row);                                                                                  // 求右边界起始点坐标函数
-void Image_blur_points_Left(int num, int kernel);                                                                            // 三角滤波左边线
-void Image_blur_points_Right(int num, int kernel);                                                                           // 三角滤波右边线
-
-/*辅助计算*/
-float Image_ab_value(float a, float b);                                        // 求浮点型的绝对值
-float Image_Getk(int16 derta_column, int16 derta_row);                         // 简单计算直线斜率
-float Image_Getb(int16 example_column, int16 example_row, float k);            // 简单计算截距
-int abs_int(int a, int b);                                                     // 求两整型绝对值
-int min(int a, int b);                                                         // 求两整型最小值
-int Image_LeftGrowDirection(uint8 end, uint8 Direction);                       // 计算左边线中生长某方向的总个数
-int Image_RightGrowDirection(uint8 end, uint8 Direction);                      // 计算右边线中生长某方向的总个数
-uint8 Image_Scan_Row(uint8 (*Image_Use)[IMAGE_WIDTH], uint8 target_row);       // 扫某行的黑白跳变点（斑马线判断）
-uint8 Image_Scan_Column(uint8 (*Image_Use)[IMAGE_WIDTH], uint8 target_column); // 扫某列的黑白跳变点（斑马线判断）
-void Image_pointsleft(uint8 x1, uint8 y1, uint8 x2, uint8 y2);                 // 两点坐标求斜率和截距
-void Image_pointsright(uint8 x1, uint8 y1, uint8 x2, uint8 y2);                // 两点坐标求斜率和截距（存的数组不一样）
-float Imgae_SlopeLeft(uint8 begin, uint8 end);                                 // 最小二乘法求左边线斜率
-void Image_CountLeftKB_L(uint8 start, uint8 end);
-float mySqrt(float x); // 计算一个浮点数的平方根
-
-/*元素*/
-void Image_FillCross(uint8 (*Image_Use)[IMAGE_WIDTH]); // 十字
-uint8 Image_Stretch_Left(void);                        // 左直道元素判断
-uint8 Image_Stretch_Right(void);                       // 右直道元素判断
-void Image_Ramp(void);                                 // 坡道判断
-void Image_LeftRound(uint8 (*Image_Use)[IMAGE_WIDTH]); // 左环岛判断补线
-
-/*运行*/
-void Image_Run(void); // 图像处理主函数
-
-extern uint8 Image_Use[IMAGE_HEIGHT][IMAGE_WIDTH];
-extern uint8 Image_Use_Robert[IMAGE_HEIGHT][IMAGE_WIDTH]; // 全局声明用于处理的图像数组
-void compressimage();
-// void halve_image(unsigned char *p_in, unsigned char *p_out, unsigned char row, unsigned char col);
-// void CannyEdgeTest(uint8 org[IMAGE_HEIGHT][IMAGE_WIDTH], uint8 lowThr); // CANNY边缘检测代码，目前不准备使用
-
-typedef struct img
-{
-    uint8_t *data;
-    uint32_t width;
-    uint32_t height;
-    uint32_t step; // 走过路径的长度
-} image_t;
-
-enum track_type_e
-{
-    TRACK_LEFT,
-    TRACK_RIGHT,
-};
-
-/*这个得放在车库的.c现在还没建成*/
-
-enum garage_type_e
-{
-    GARAGE_NONE = 0, // 非车库模式
-    GARAGE_OUT_LEFT,
-    GARAGE_OUT_RIGHT, // 出库，陀螺仪转过45°，即出库完毕
-    GARAGE_FOUND_LEFT,
-    GARAGE_FOUND_RIGHT, // 发现车库，即斑马线+单侧L角点(未使用)
-    GARAGE_IN_LEFT,
-    GARAGE_IN_RIGHT, // 进库，发现车库后判断第几次，从而决定是否进库
-    GARAGE_GO_LEFT,
-    GARAGE_GO_RIGHT, // 发出进库指令打角
-    GARAGE_PASS_LEFT,
-    GARAGE_PASS_RIGHT, // 不进库，发现车库后判断第几次，从而决定是否进库
-    GARAGE_STOP,       // 进库完毕，停车
-    GARAGE_NUM,
-};
-extern enum garage_type_e garage_type;
-
-#define LLL 60
-
-extern int16_t garage_cnt;
-
+#define AT AT_IMAGE
 #define AT_IMAGE(img, x, y) ((img)->data[(y) * (img)->step + (x)])                                          // 访问图像像素 二维数组转换一维数组
 #define AT_IMAGE_CLIP(img, x, y) AT_IMAGE(img, clip(x, 0, (img)->width - 1), clip(y, 0, (img)->height - 1)) // 防止访问超出边界
 
@@ -114,21 +36,52 @@ extern int16_t garage_cnt;
     {                                                                              \
         .data = &AT_IMAGE(img, x1, y1), .width = w, .height = h, .step = img.width \
     }
+extern int Shift;
+typedef struct img
+{
+    uint8_t *data;
+    uint32_t width;
+    uint32_t height;
+    uint32_t step; // 走过路径的长度
+} image_t;
 extern image_t img_raw;
+
+enum track_type_e
+{
+    TRACK_LEFT,
+    TRACK_RIGHT,
+    TRACK_BOTH,
+};
+extern enum track_type_e track_type; // 当前巡线模式
+/*这个得放在车库的.c现在还没建成*/
+extern uint8 Image_Use[IMAGE_HEIGHT][IMAGE_WIDTH];        // 全局声明原图像数组
+extern uint8 Image_Use_Robert[IMAGE_HEIGHT][IMAGE_WIDTH]; // 全局声明用于处理的图像数组
+/*图像处理*/
+void Image_Compress();                                                                                                       // 对原始图像进行压缩
+uint8 OSTU_GetThreshold(uint8 *image, uint16 Width, uint16 Height);                                                          // 优化大津法获取阈值
+void Image_Sobel(uint8 Image_in[IMAGE_HEIGHT][IMAGE_WIDTH], uint8_t Image_out[IMAGE_HEIGHT][IMAGE_WIDTH], uint16 Threshold); // 全局sobel方案
+void Image_Binarization(unsigned char threshold, uint8 (*Image_Use)[IMAGE_WIDTH]);                                           // 全局二值化方案
+
 void Left_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x, int y, int pts[][2], int *num);
 void Right_Adaptive_Threshold(image_t *img, int block_size, int clip_value, int x, int y, int pts[][2], int *num);
-void Find_Borderline(void);
-void draw_line(image_t *img, int pt0[2], int pt1[2], uint8_t value);                                          // 两点画线
-void draw_line2(float pt0[2], float pt1[2], float pts_out[][2], int *num, float dist);                        // 逆透视等距采样
-void SplicingArray(float pt0[][2], int num1, float pt1[][2], int num2, float pt_out[][2], int *num, uint8 x); // 数组拼接
+void FarBorderline_Find(void);
+void Center_edge(void);
+void Cross_Drawline(int in_put_l[][2], int in_put_num_l, int in_put_r[][2], int in_put_r_num);
+void Cross_Drawline_Found_Left(void);
+void Line_Add(image_t *img, int pts0_in[2], int pts1_in[2], int8 value);
+void Track_Run(void);
+void Track_Check(void);
+float Err_Handle(uint8 mode);
+float run_straight(void);
+float run_right(void);
+float run_left(void);
 void test(void);
-void blur_points(float pts_in[][2], int num, float pts_out[][2], int kernel);
-void Pespective(int pts_in[][2], int int_num, float pts_out[][2]);
-void Get_Midline(int pts_l[][2], int pts_l_num, int pts_r[][2], int pts_r_num);
-float Get_err1(int pts_in[][2], int num);
-float LineRession(int pts_in[][2], int num);
-void Get_Midline2(int pts_l[][2], int pts_l_num, int pts_r[][2], int pts_r_num);
+float Line_Shifting(void);
+void FarCorners_Find_Left_Again(void);
+void NearCorners_Find_Left_Again(void);
+#define POINTS_MAX_LEN (120) // 边线点最多的情况——>num
 
+<<<<<<< HEAD
 // W矩阵参数（原图转化成逆透视后图像的参数）
 // 60*80
 // #define a11 (-4.3801f)
@@ -184,10 +137,57 @@ void Get_Midline2(int pts_l[][2], int pts_l_num, int pts_r[][2], int pts_r_num);
 #define a11 (-2.2450f)
 #define a12 (-8.5371f)
 #define a13 (252.9928f)
+=======
+// 左右边丢线
+extern uint8 loseline0;
+extern uint8 loseline1;
+
+extern int NearBorderLine_Enable;
+extern int FarBorderLine_Enable; // 开启远近线的标志位
+
+extern int Far_Arc0_Found, Far_Arc1_Found;
+extern int Near_Arc0_Found, Near_Arc1_Found;
+
+extern int Far_Lpt0_Found, Far_Lpt1_Found;
+extern int Near_Lpt0_Found, Near_Lpt1_Found;
+
+extern int x0_first, y0_first, x1_first, y1_first;
+
+extern int begin_x0, begin_y0; // 找线偏移点
+extern int begin_x1, begin_y1; // 找线偏移点
+
+extern uint8 Image_Use[120][160];
+extern uint8 Image_Use_Robert[120][160];
+extern uint8 touch_boundary0;    // 左边线走到图像边界
+extern uint8 touch_boundary1;    // 右边线走到图像边界
+extern uint8 touch_boundary_up0; // 左边线走到图像左边界
+extern uint8 touch_boundary_up1; // 右边线走到图像右边界
+
+extern int Last_Lpt0_id, Last_Lpt1_id; // 上一次的角点id
+extern int Last_Far_Lpt0_id, Last_Far_Lpt1_id;
+extern float xielv_left_y_to_end, xielv_right_y_to_end; // 在逆透视后得坐标系建得斜率
+
+extern int Last_CornersLeft_Point[2] ;
+extern int Last_FarCornersLeft_Point[2] ;
+// #define a11 (-5.5988f)
+// #define a12 (-27.9734f)
+// #define a13 (709.0200f)
+// #define a21 (0.1837f)
+// #define a22 (0.7491f)
+// #define a23 (-648.4869f)
+// #define a31 (0.0194f)
+// #define a32 (-0.3464f)
+// #define a33 (1.0f)
+
+#define a11 (-1.9850f)
+#define a12 (-6.8451f)
+#define a13 (232.9928f)
+>>>>>>> 02e42dc0749423afe2fd0acff66ab4075d3fb4c5
 #define a21 (-0.0901f)
 #define a22 (0.4470f)
 #define a23 (-190.8998f)
 #define a31 (-0.0030f)
+<<<<<<< HEAD
 #define a32 (-0.0846f)
 #define a33 (1.0f)//世界坐标偏移矩阵
 
@@ -202,6 +202,10 @@ void Get_Midline2(int pts_l[][2], int pts_l_num, int pts_r[][2], int pts_r_num);
 //#define a32 (-0.0846f)
 //#define a33 (1.0f)
 
+=======
+#define a32 (-0.0636f)
+#define a33 (1.0f)
+>>>>>>> 02e42dc0749423afe2fd0acff66ab4075d3fb4c5
 
 #define getx(u, v) (a11 * (u) + a12 * (v) + a13)
 #define gety(u, v) (a21 * (u) + a22 * (v) + a23)
@@ -209,56 +213,94 @@ void Get_Midline2(int pts_l[][2], int pts_l_num, int pts_r[][2], int pts_r_num);
 
 // D矩阵参数
 /*这些宏定义都是给60*80的矩阵*/
-#define b11 (-0.1238f)
-#define b12 (-0.0969f)
-#define b13 (-1.0252f)
+#define b11 (-0.4928f)
+#define b12 (-0.4038f)
+#define b13 (47.5991f)
 
-#define b21 (0.0000f)
+#define b21 (0.0208f)
 
-#define b22 (-0.0097f)
+#define b22 (-0.0466f)
 
-#define b23 (-4.2726f)
+#define b23 (-14.1659f)
 
-#define b31 (-0.0000f)
-#define b32 (-0.0023f)
-#define b33 (-0.0271f)
+<<<<<<< HEAD
+=======
+#define b31 (0.0003f)
+#define b32 (-0.0052f)
+#define b33 (-0.0556f)
 
+>>>>>>> 02e42dc0749423afe2fd0acff66ab4075d3fb4c5
 #define getx_b(u, v) (b11 * (u) + b12 * (v) + b13)
 #define gety_b(u, v) (b21 * (u) + b22 * (v) + b23)
 #define getw_b(u, v) (b31 * (u) + b32 * (v) + b33)
 
+<<<<<<< HEAD
 void ImagePerspective_Init(void);
 
 void resample_points(float pts_in[][2], int num1, float pts_out[][2], int *num2, float dist);
+=======
+// 原图左右边线
+extern int ipts0[POINTS_MAX_LEN][2];
+extern int ipts1[POINTS_MAX_LEN][2];
+extern int ipts0_num, ipts1_num;
 
-void local_angle_points(float pts_in[][2], int num, float angle_out[], int dist);
-void nms_angle(float angle_in[], int num, float angle_out[], int kernel);
+extern int Lpt0_id, Lpt1_id;         // 近线L角点id
+extern int Far_Lpt0_id, Far_Lpt1_id; // 远线L角点id
+
+extern int CornersLeft_Point[2];
+extern int CornersRight_Point[2];
+extern int FarCornersLeft_Point[2];
+extern int FarCornersRight_Point[2];
+extern int ArcLeft_Point[2];
+extern int ArcRight_Point[2]; // 近角点坐标
+
+extern int NearIs_Arc0, NearIs_Arc1; // 是否为弧线
+extern int FarIs_Arc0, FarIs_Arc1;   // 是否为弧线
+
+extern int Far_ipts0_num; // 存放边线像素点个数(左)
+extern int Far_ipts1_num; // 存放边线像素点个数(右)
+
+<<<<<<< HEAD
+=======
+extern int ArcLeft_Point[2] ;
+extern int ArcRight_Point[2] ; // 近角点坐标
+
+
+
+>>>>>>> 8ab96619b90a6a4e165264cd20fc1800b4fad805
+extern uint8 mid_line_num; // 定义中线数组个数
+extern float Finnal_err;
+extern float err, last_err;
+// 长直道
+extern int Is_straight0, Is_straight1;
+// 弯道
+extern bool is_turn0, is_turn1;
+
+extern int Far_ipts0[POINTS_MAX_LEN][2]; // 存放边线数据（左）
+extern int Far_ipts1[POINTS_MAX_LEN][2]; // 存放边线数据（右）
+extern float Err[5];                     // 中线误差
+
+// 若考虑近点远点,可近似构造Stanley算法,避免撞路肩
+>>>>>>> 02e42dc0749423afe2fd0acff66ab4075d3fb4c5
+
+void Arc_Point_Get(int pts_in[][2], int pts_num, int pts_out[2]); 
+void NearCorners_Find_Left(int pts_in[][2], int pts_num, int pts_out[2], int *flag);
+void NearCorners_Find_Right(int pts_in[][2], int pts_num, int pts_out[2], int *flag);
+void LongLine_Rec(int pts_in[][2], int pts_num, int thres, int *flag);
+void FarCorners_Find_Left(int pts_in[][2], int pts_num, int pts_out[2], int *flag);
+void FarCorners_Find_Right(int pts_in[][2], int pts_num, int pts_out[2], int *flag);
+extern void BorderLine_Find(void);
+void track_leftline(int pts_in[][2], int num, int pts_out[][2], int approx_num, float dist);
+void track_rightline(int pts_in[][2], int num, int pts_out[][2], int approx_num, float dist);
+// void Line_Add(image_t *img, int pts0_in[2], int pts1_in[2], int8 value);
+float run_straight(void);
+float LineRession(int pts_in[][2], int num);
+void Coordinate_transformation_left(int pt0_in[][2], int in_num, int pt0_out[][2]);
+void Get_guaidian(int in_put_l[][2], int in_put_num_l);
+void NearCorners_Find_Left_Again(void);
+void FarCorners_Find_Left_Again(void);
+void FarCorners_Find_Left_New(void);
+void LongStarightLine_Rec(int pts_in[][2], int pts_num, int thres, int *flag);
+void Arc_Point_Get(int pts_in[][2], int pts_num, int pts_out[2], int *flag);
+// uint8_t RoundaboutGetArc(int imageSide[][2], int status, int num, int *index);
 #endif
-
-/*
-学到的思路：
-
-十字：
-1. 十字处理中，如何判断为十字状态？（只要有拐点，且两个拐点的行坐标相差不大即为十字
-同时设置标志位far_Lpt0_found，便于判断）
-2. 十字处理中，如何补线？（未进十字时，在找到下拐点的时候，再往前找2个拐点，取斜率补线即可）
-（若已经进入十字，则在找到下拐点的时候，可以取上拐点往后的2个拐点进行斜率补线（或者找下拐点进行补线））
-3. 十字处理的时候设置一个状态机：未进十字（检测左右拐点且行坐标相差不大）—（左右拐点坐标不断减小最终为0）—进十字（出现两个上下拐点）
-4. ***通过编码器测距求出跑1m后判断十字结束，直接退出十字状态
-5.前面几个点的生长方向为4，就判断为第二状态
-
-车库：
-1. 扫行，看黑点有多少个（或黑白跳变点）sobel的话有120个黑点
-2. 转弯时通过偏航角的角度变化来判断出库
-
-新思路：
-1. 在十字中，如何找到上拐点？
-——for循环嵌套遍历，求出每一点与左下角（120,0）的直线的斜率，当斜率最大时：便是上拐点
-注：在未进十字时，上拐点和下拐点的坐标是一样的，当上拐点和下拐点的行坐标相差较大时，就说明已经处在十字的中央
-
-明天要干的：
-1. 通过斜率最大法测出上拐点
-2. 十字不同状态的补线
-3. 判断十字的不同状态
-4. 弯道函数判断
-*/

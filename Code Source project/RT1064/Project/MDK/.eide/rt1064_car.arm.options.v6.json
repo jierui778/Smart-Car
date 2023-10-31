@@ -17,7 +17,8 @@
         "warnings": "ac5-like-warnings"
     },
     "asm-compiler": {
-        "$use": "asm-auto"
+        "$use": "asm-auto",
+        "no-warnings": true
     },
     "linker": {
         "output-format": "elf",

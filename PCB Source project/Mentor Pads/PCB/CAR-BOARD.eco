@@ -141,6 +141,7 @@ U6 U7
 *END*
 *PADS-ECO-V10.0-MILS*
 
+<<<<<<< HEAD
 *REMARK* -- CAR-BOARD.pcb -- Fri Oct 13 18:30:12 2023
 
 *END*
@@ -154,4 +155,12 @@ C28 C15
 C26 C16
 C16 C26
 C15 C28
+=======
+*REMARK* -- CAR-BOARD.pcb -- Fri Oct 20 11:54:32 2023
+
+
+*NET*
+*SIGNAL* 5V-OUT 30
+C11.1 R10.2
+>>>>>>> 02e42dc0749423afe2fd0acff66ab4075d3fb4c5
 *END*

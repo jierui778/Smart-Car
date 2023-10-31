@@ -350,7 +350,7 @@
             <thumb>0</thumb>
             <SplitLS>0</SplitLS>
             <SwStkChk>0</SwStkChk>
-            <NoWarn>0</NoWarn>
+            <NoWarn>1</NoWarn>
             <uSurpInc>0</uSurpInc>
             <useXO>0</useXO>
             <ClangAsOpt>1</ClangAsOpt>
@@ -528,6 +528,56 @@
               <FileName>filter.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\HARDWARE\filter.h</FilePath>
+            </File>
+            <File>
+              <FileName>key.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\key.c</FilePath>
+            </File>
+            <File>
+              <FileName>key.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\HARDWARE\key.h</FilePath>
+            </File>
+            <File>
+              <FileName>circle.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\circle.c</FilePath>
+            </File>
+            <File>
+              <FileName>circle.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\HARDWARE\circle.h</FilePath>
+            </File>
+            <File>
+              <FileName>cross.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\cross.c</FilePath>
+            </File>
+            <File>
+              <FileName>cross.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\HARDWARE\cross.h</FilePath>
+            </File>
+            <File>
+              <FileName>garage.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\garage.c</FilePath>
+            </File>
+            <File>
+              <FileName>garage.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\HARDWARE\garage.h</FilePath>
+            </File>
+            <File>
+              <FileName>ramp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\ramp.c</FilePath>
+            </File>
+            <File>
+              <FileName>ramp.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\HARDWARE\ramp.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -837,11 +887,6 @@
           <GroupName>zf-driver</GroupName>
           <Files>
             <File>
-              <FileName>zf_driver_adc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\libraries\zf_driver\zf_driver_adc.c</FilePath>
-            </File>
-            <File>
               <FileName>zf_driver_csi.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\libraries\zf_driver\zf_driver_csi.c</FilePath>
@@ -885,6 +930,11 @@
               <FileName>zf_driver_pit.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\libraries\zf_driver\zf_driver_pit.c</FilePath>
+            </File>
+            <File>
+              <FileName>zf_driver_adc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\libraries\zf_driver\zf_driver_adc.c</FilePath>
             </File>
             <File>
               <FileName>zf_driver_pwm.c</FileName>

@@ -1,7 +1,5 @@
 #include "camera.h"
 
-
-
 /**
  * @brief 摄像头初始化
  *

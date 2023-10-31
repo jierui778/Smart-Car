@@ -1,0 +1,7 @@
+Change Component Footprint: Designator=D1 Old Footprint=SOD-323 New Footprint=SOD-123
+Change Component Footprint: Designator=D2 Old Footprint=SOD-323 New Footprint=SOD-123
+Change Component Footprint: Designator=D3 Old Footprint=SOD-323 New Footprint=SOD-123
+Change Component Footprint: Designator=D4 Old Footprint=SOD-323 New Footprint=SOD-123
+Change Component Footprint: Designator=D5 Old Footprint=SOD-323 New Footprint=SOD-123
+Added Member To Class: ClassName=智能车驱动板HIP4082 Member=Component U2 HIP4082IBZT
+Added Member To Class: ClassName=智能车驱动板HIP4082 Member=Component U3 SN74HC125PWR

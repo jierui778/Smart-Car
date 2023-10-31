@@ -89,13 +89,72 @@ uint8 Atan2(float y, float x)
     return alpha; // 方向
 } // end of function Atan2
 
+/**
+//  * @brief 计算一个整数的绝对值
+//  *
+//  * @param value 需要计算绝对值的整数
+//  * @return int 返回value的绝对值
+//  */
+int my_abs(int value)
+{
+    if (value >= 0)
+        return value;
+    else
+        return -value;
+}
 
+/**
+ * @brief 限制一个整数的范围在 [a, b] 之间
+ *
+ * @param x 待限制的整数
+ * @param a 范围下限
+ * @param b 范围上限
+ * @return int16 限制后的整数
+ */
+int16 limit_a_b(int16 x, int a, int b)
+{
+    if (x < a)
+        x = a;
+    if (x > b)
+        x = b;
+    return x;
+}
 
+/**
+ * @brief 比较两个整数的大小，返回其中较小的一个
+ *
+ * @param a 整数a
+ * @param b 整数b
+ * @return int 返回a和b中较小的一个
+ */
+int min(int a, int b)
+{
+    return a < b ? a : b;
+}
 
+/**
+ * @brief 计算两个整数的绝对值之差
+ *
+ * @param a 整数a
+ * @param b 整数b
+ * @return int 返回a和b的绝对值之差
+ */
+int abs_int(int a, int b)
+{
+    int diff = a - b;
+    if (diff < 0)
+    {
+        return -diff;
+    }
+    else
+    {
+        return diff;
+    }
+}
 
-
-
-
-
-
-
+// 限幅函数
+int clip(int x, int low, int up)
+{
+    return x > up ? up : x < low ? low
+                                 : x;
+}

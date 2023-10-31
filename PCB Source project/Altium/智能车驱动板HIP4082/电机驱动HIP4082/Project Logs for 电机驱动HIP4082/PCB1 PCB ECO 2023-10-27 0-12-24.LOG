@@ -1,0 +1,348 @@
+Added Component: Designator=C?(C0603_L)
+Add component (AddParameter): Name = "BOM名称"; Value = "无极性贴片电容"; VariantName = "[No Variations]"
+Added Component: Designator=C?(C0603_L)
+Add component (AddParameter): Name = "BOM名称"; Value = "无极性贴片电容"; VariantName = "[No Variations]"
+Added Component: Designator=C?(C0603_L)
+Add component (AddParameter): Name = "BOM名称"; Value = "无极性贴片电容"; VariantName = "[No Variations]"
+Added Component: Designator=C?(C0603_L)
+Add component (AddParameter): Name = "BOM名称"; Value = "无极性贴片电容"; VariantName = "[No Variations]"
+Added Component: Designator=C?(C0603_L)
+Add component (AddParameter): Name = "BOM名称"; Value = "无极性贴片电容"; VariantName = "[No Variations]"
+Added Component: Designator=C?(C0603_L)
+Add component (AddParameter): Name = "BOM名称"; Value = "无极性贴片电容"; VariantName = "[No Variations]"
+Added Component: Designator=C?(C0603_L)
+Add component (AddParameter): Name = "BOM名称"; Value = "无极性贴片电容"; VariantName = "[No Variations]"
+Added Component: Designator=C?(C0603_L)
+Add component (AddParameter): Name = "BOM名称"; Value = "无极性贴片电容"; VariantName = "[No Variations]"
+Added Component: Designator=C?(C0603_L)
+Add component (AddParameter): Name = "BOM名称"; Value = "无极性贴片电容"; VariantName = "[No Variations]"
+Added Component: Designator=C?(C0603_L)
+Add component (AddParameter): Name = "BOM名称"; Value = "无极性贴片电容"; VariantName = "[No Variations]"
+Added Component: Designator=D?(LED-0603_R)
+Added Component: Designator=D?(SOD-323)
+Add component (AddParameter): Name = "BOM名称"; Value = "肖特基二极管"; VariantName = "[No Variations]"
+Added Component: Designator=D?(SOD-323)
+Add component (AddParameter): Name = "BOM名称"; Value = "肖特基二极管"; VariantName = "[No Variations]"
+Added Component: Designator=D?(LED-0603_R)
+Added Component: Designator=D?(SOD-323)
+Add component (AddParameter): Name = "BOM名称"; Value = "肖特基二极管"; VariantName = "[No Variations]"
+Added Component: Designator=D?(SOD-323)
+Add component (AddParameter): Name = "BOM名称"; Value = "肖特基二极管"; VariantName = "[No Variations]"
+Added Component: Designator=D?(SOD-323)
+Add component (AddParameter): Name = "BOM名称"; Value = "肖特基二极管"; VariantName = "[No Variations]"
+Added Component: Designator=E1(CT-2.0*5*8-R)
+Add component (AddParameter): Name = "BOM名称"; Value = "直插固态电容"; VariantName = "[No Variations]"
+Added Component: Designator=IC?(SOT23-6N)
+Add component (AddParameter): Name = "BOM名称"; Value = "可调升压芯片"; VariantName = "[No Variations]"
+Added Component: Designator=J1(XT30-WI)
+Add component (AddParameter): Name = "Arrow Part Number"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Arrow Price/Stock"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Datasheet Link"; Value = "https://www.tme.eu/sl/Document/ce4077e36b79046da520ca73227e15de/XT30PW%20SPEC.pdf"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Geometry.Height"; Value = "5mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer_Name"; Value = "Amass"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer_Part_Number"; Value = "XT30PW-M"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mouser Part Number"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mouser Price/Stock"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=J2(XT30-WI)
+Add component (AddParameter): Name = "Arrow Part Number"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Arrow Price/Stock"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Datasheet Link"; Value = "https://www.tme.eu/sl/Document/ce4077e36b79046da520ca73227e15de/XT30PW%20SPEC.pdf"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Geometry.Height"; Value = "5mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer_Name"; Value = "Amass"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer_Part_Number"; Value = "XT30PW-M"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mouser Part Number"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mouser Price/Stock"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=J3(CZ-5.08-L-Z-2P)
+Add component (AddParameter): Name = "Arrow Part Number"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Arrow Price/Stock"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Datasheet Link"; Value = "https://www.tme.eu/sl/Document/ce4077e36b79046da520ca73227e15de/XT30PW%20SPEC.pdf"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Geometry.Height"; Value = "5mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer_Name"; Value = "Amass"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer_Part_Number"; Value = "XT30PW-M"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mouser Part Number"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mouser Price/Stock"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=L?(SLO2520)
+Add component (AddParameter): Name = "DCR"; Value = ".5m"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Imax"; Value = "50mA"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Price(RMB)"; Value = "0.000"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Published"; Value = "8-Jun-2000"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Publisher"; Value = "Altium Limited"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Revision"; Value = "July-2002: Re-released for DXP Platform."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "4.7uH"; VariantName = "[No Variations]"
+Added Component: Designator=Q5(DFN5x6)
+Added Component: Designator=Q6(DFN5x6)
+Added Component: Designator=Q7(DFN5x6)
+Added Component: Designator=Q8(DFN5x6)
+Added Component: Designator=Q?(DFN5x6)
+Added Component: Designator=Q?(DFN5x6)
+Added Component: Designator=Q?(DFN5x6)
+Added Component: Designator=Q?(DFN5x6)
+Added Component: Designator=R4(R0603_L)
+Add component (AddParameter): Name = "BOM名称"; Value = "贴片电阻"; VariantName = "[No Variations]"
+Added Component: Designator=R5(R0603_L)
+Add component (AddParameter): Name = "BOM名称"; Value = "贴片电阻"; VariantName = "[No Variations]"
+Added Component: Designator=R6(R0603_L)
+Add component (AddParameter): Name = "BOM名称"; Value = "贴片电阻"; VariantName = "[No Variations]"
+Added Component: Designator=R7(R0603_L)
+Add component (AddParameter): Name = "BOM名称"; Value = "贴片电阻"; VariantName = "[No Variations]"
+Added Component: Designator=R?(R0603_L)
+Add component (AddParameter): Name = "BOM名称"; Value = "贴片电阻"; VariantName = "[No Variations]"
+Added Component: Designator=R?(R0603_L)
+Add component (AddParameter): Name = "BOM名称"; Value = "贴片电阻"; VariantName = "[No Variations]"
+Added Component: Designator=R?(R0603_L)
+Add component (AddParameter): Name = "BOM名称"; Value = "贴片电阻"; VariantName = "[No Variations]"
+Added Component: Designator=R?(R0603_L)
+Add component (AddParameter): Name = "BOM名称"; Value = "贴片电阻"; VariantName = "[No Variations]"
+Added Component: Designator=R?(R0603_L)
+Add component (AddParameter): Name = "BOM名称"; Value = "贴片电阻"; VariantName = "[No Variations]"
+Added Component: Designator=R?(R0603_L)
+Add component (AddParameter): Name = "BOM名称"; Value = "贴片电阻"; VariantName = "[No Variations]"
+Added Component: Designator=R?(R0603_L)
+Add component (AddParameter): Name = "BOM名称"; Value = "贴片电阻"; VariantName = "[No Variations]"
+Added Component: Designator=R?(R0603_L)
+Add component (AddParameter): Name = "BOM名称"; Value = "贴片电阻"; VariantName = "[No Variations]"
+Added Component: Designator=R?(R0603_L)
+Add component (AddParameter): Name = "BOM名称"; Value = "贴片电阻"; VariantName = "[No Variations]"
+Added Component: Designator=R?(R0603_L)
+Add component (AddParameter): Name = "BOM名称"; Value = "贴片电阻"; VariantName = "[No Variations]"
+Added Component: Designator=R?(R0603_L)
+Add component (AddParameter): Name = "BOM名称"; Value = "贴片电阻"; VariantName = "[No Variations]"
+Added Component: Designator=R?(R0603_L)
+Add component (AddParameter): Name = "BOM名称"; Value = "贴片电阻"; VariantName = "[No Variations]"
+Added Component: Designator=R?(R0603_L)
+Add component (AddParameter): Name = "BOM名称"; Value = "贴片电阻"; VariantName = "[No Variations]"
+Added Component: Designator=R?(R0603_L)
+Add component (AddParameter): Name = "BOM名称"; Value = "贴片电阻"; VariantName = "[No Variations]"
+Added Component: Designator=S1(MSK-12C01-07)
+Add component (AddParameter): Name = "BOM名称"; Value = "波动开关"; VariantName = "[No Variations]"
+Added Component: Designator=U2(TSSOP14)
+Added Component: Designator=U?(SOP16_M)
+Added Component: Designator=U?(SOP16_M)
+Added Component: Designator=XH1(XH2.54-6P-WI)
+Added Pin To Net: NetName=DIS Pin=D?-2
+Added Pin To Net: NetName=DIS Pin=S1-2
+Added Pin To Net: NetName=DIS Pin=U?-8
+Added Pin To Net: NetName=DIS Pin=U?-8
+Added Net: Name=DIS
+Added Pin To Net: NetName=L-A Pin=C?-1
+Added Pin To Net: NetName=L-A Pin=Q?-1
+Added Pin To Net: NetName=L-A Pin=Q?-1
+Added Pin To Net: NetName=L-A Pin=Q?-1
+Added Pin To Net: NetName=L-A Pin=Q?-1
+Added Pin To Net: NetName=L-A Pin=Q?-1
+Added Pin To Net: NetName=L-A Pin=Q?-1
+Added Pin To Net: NetName=L-A Pin=Q?-3
+Added Pin To Net: NetName=L-A Pin=Q?-3
+Added Pin To Net: NetName=L-A Pin=Q?-3
+Added Pin To Net: NetName=L-A Pin=U?-15
+Added Net: Name=L-A
+Added Pin To Net: NetName=L-B Pin=C?-1
+Added Pin To Net: NetName=L-B Pin=Q?-1
+Added Pin To Net: NetName=L-B Pin=Q?-1
+Added Pin To Net: NetName=L-B Pin=Q?-1
+Added Pin To Net: NetName=L-B Pin=Q?-1
+Added Pin To Net: NetName=L-B Pin=Q?-1
+Added Pin To Net: NetName=L-B Pin=Q?-1
+Added Pin To Net: NetName=L-B Pin=Q?-3
+Added Pin To Net: NetName=L-B Pin=Q?-3
+Added Pin To Net: NetName=L-B Pin=Q?-3
+Added Pin To Net: NetName=L-B Pin=U?-11
+Added Net: Name=L-B
+Added Pin To Net: NetName=L  A Pin=J1-1
+Added Net: Name=L  A
+Added Pin To Net: NetName=L  B Pin=J1-2
+Added Net: Name=L  B
+Added Pin To Net: NetName=NetC?_1 Pin=C?-1
+Added Pin To Net: NetName=NetC?_1 Pin=IC?-5
+Added Net: Name=NetC?_1
+Added Pin To Net: NetName=NetC?_2 Pin=C?-2
+Added Pin To Net: NetName=NetC?_2 Pin=D?-2
+Added Pin To Net: NetName=NetC?_2 Pin=U?-1
+Added Net: Name=NetC?_2
+Add Net: Net with name "NetC?_2" already exists
+Add Net: Net with name "NetC?_2" already exists
+Add Net: Net with name "NetC?_2" already exists
+Add Net: Net with name "NetC?_2" already exists
+Added Pin To Net: NetName=NetD?_1 Pin=D?-1
+Added Pin To Net: NetName=NetD?_1 Pin=IC?-1
+Added Net: Name=NetD?_1
+Add Net: Net with name "NetD?_1" already exists
+Add Net: Net with name "NetD?_1" already exists
+Added Pin To Net: NetName=NetIC?_3 Pin=IC?-3
+Added Pin To Net: NetName=NetIC?_3 Pin=R?-1
+Added Pin To Net: NetName=NetIC?_3 Pin=R?-2
+Added Net: Name=NetIC?_3
+Added Pin To Net: NetName=NetQ5_2 Pin=Q5-2
+Added Pin To Net: NetName=NetQ5_2 Pin=R?-1
+Added Net: Name=NetQ5_2
+Added Pin To Net: NetName=NetQ6_2 Pin=Q6-2
+Added Pin To Net: NetName=NetQ6_2 Pin=R?-2
+Added Net: Name=NetQ6_2
+Added Pin To Net: NetName=NetQ7_2 Pin=Q7-2
+Added Pin To Net: NetName=NetQ7_2 Pin=R?-1
+Added Net: Name=NetQ7_2
+Added Pin To Net: NetName=NetQ8_2 Pin=Q8-2
+Added Pin To Net: NetName=NetQ8_2 Pin=R?-2
+Added Net: Name=NetQ8_2
+Added Pin To Net: NetName=NetQ?_2 Pin=Q?-2
+Added Pin To Net: NetName=NetQ?_2 Pin=R?-2
+Added Net: Name=NetQ?_2
+Add Net: Net with name "NetQ?_2" already exists
+Add Net: Net with name "NetQ?_2" already exists
+Add Net: Net with name "NetQ?_2" already exists
+Added Pin To Net: NetName=NetR?_1 Pin=R?-1
+Added Pin To Net: NetName=NetR?_1 Pin=U?-16
+Added Net: Name=NetR?_1
+Add Net: Net with name "NetR?_1" already exists
+Add Net: Net with name "NetR?_1" already exists
+Add Net: Net with name "NetR?_1" already exists
+Added Pin To Net: NetName=NetR?_2 Pin=R?-2
+Added Pin To Net: NetName=NetR?_2 Pin=U?-13
+Added Net: Name=NetR?_2
+Add Net: Net with name "NetR?_2" already exists
+Add Net: Net with name "NetR?_2" already exists
+Add Net: Net with name "NetR?_2" already exists
+Added Pin To Net: NetName=PWM-L1A Pin=U2-3
+Added Pin To Net: NetName=PWM-L1A Pin=U?-3
+Added Net: Name=PWM-L1A
+Added Pin To Net: NetName=PWM-L1 Pin=R4-1
+Added Pin To Net: NetName=PWM-L1 Pin=U2-2
+Added Pin To Net: NetName=PWM-L1 Pin=XH1-1
+Added Net: Name=PWM-L1
+Added Pin To Net: NetName=PWM-L2A Pin=C?-1
+Added Pin To Net: NetName=PWM-L2A Pin=C?-1
+Added Pin To Net: NetName=PWM-L2A Pin=C?-1
+Added Pin To Net: NetName=PWM-L2A Pin=C?-1
+Added Pin To Net: NetName=PWM-L2A Pin=C?-1
+Added Pin To Net: NetName=PWM-L2A Pin=C?-2
+Added Pin To Net: NetName=PWM-L2A Pin=C?-2
+Added Pin To Net: NetName=PWM-L2A Pin=C?-2
+Added Pin To Net: NetName=PWM-L2A Pin=D?-2
+Added Pin To Net: NetName=PWM-L2A Pin=E1-2
+Added Pin To Net: NetName=PWM-L2A Pin=IC?-2
+Added Pin To Net: NetName=PWM-L2A Pin=IC?-4
+Added Pin To Net: NetName=PWM-L2A Pin=J3-2
+Added Pin To Net: NetName=PWM-L2A Pin=Q7-3
+Added Pin To Net: NetName=PWM-L2A Pin=Q7-3
+Added Pin To Net: NetName=PWM-L2A Pin=Q7-3
+Added Pin To Net: NetName=PWM-L2A Pin=Q8-3
+Added Pin To Net: NetName=PWM-L2A Pin=Q8-3
+Added Pin To Net: NetName=PWM-L2A Pin=Q8-3
+Added Pin To Net: NetName=PWM-L2A Pin=Q?-3
+Added Pin To Net: NetName=PWM-L2A Pin=Q?-3
+Added Pin To Net: NetName=PWM-L2A Pin=Q?-3
+Added Pin To Net: NetName=PWM-L2A Pin=Q?-3
+Added Pin To Net: NetName=PWM-L2A Pin=Q?-3
+Added Pin To Net: NetName=PWM-L2A Pin=Q?-3
+Added Pin To Net: NetName=PWM-L2A Pin=R4-2
+Added Pin To Net: NetName=PWM-L2A Pin=R5-1
+Added Pin To Net: NetName=PWM-L2A Pin=R6-2
+Added Pin To Net: NetName=PWM-L2A Pin=R7-1
+Added Pin To Net: NetName=PWM-L2A Pin=R?-1
+Added Pin To Net: NetName=PWM-L2A Pin=R?-1
+Added Pin To Net: NetName=PWM-L2A Pin=R?-1
+Added Pin To Net: NetName=PWM-L2A Pin=R?-1
+Added Pin To Net: NetName=PWM-L2A Pin=R?-1
+Added Pin To Net: NetName=PWM-L2A Pin=S1-1
+Added Pin To Net: NetName=PWM-L2A Pin=S1-3
+Added Pin To Net: NetName=PWM-L2A Pin=U2-1
+Added Pin To Net: NetName=PWM-L2A Pin=U2-4
+Added Pin To Net: NetName=PWM-L2A Pin=U2-6
+Added Pin To Net: NetName=PWM-L2A Pin=U2-7
+Added Pin To Net: NetName=PWM-L2A Pin=U2-10
+Added Pin To Net: NetName=PWM-L2A Pin=U2-13
+Added Pin To Net: NetName=PWM-L2A Pin=U2-14
+Added Pin To Net: NetName=PWM-L2A Pin=U?-4
+Added Pin To Net: NetName=PWM-L2A Pin=U?-6
+Added Pin To Net: NetName=PWM-L2A Pin=U?-6
+Added Pin To Net: NetName=PWM-L2A Pin=XH1-3
+Added Pin To Net: NetName=PWM-L2A Pin=XH1-4
+Added Net: Name=PWM-L2A
+Added Pin To Net: NetName=PWM-L2 Pin=R6-1
+Added Pin To Net: NetName=PWM-L2 Pin=U2-5
+Added Pin To Net: NetName=PWM-L2 Pin=XH1-2
+Added Net: Name=PWM-L2
+Added Pin To Net: NetName=PWM-R1A Pin=U2-8
+Added Pin To Net: NetName=PWM-R1A Pin=U?-3
+Added Net: Name=PWM-R1A
+Added Pin To Net: NetName=PWM-R1 Pin=R7-2
+Added Pin To Net: NetName=PWM-R1 Pin=U2-9
+Added Pin To Net: NetName=PWM-R1 Pin=XH1-5
+Added Net: Name=PWM-R1
+Added Pin To Net: NetName=PWM-R2A Pin=U2-11
+Added Pin To Net: NetName=PWM-R2A Pin=U?-4
+Added Net: Name=PWM-R2A
+Added Pin To Net: NetName=PWM-R2 Pin=R5-2
+Added Pin To Net: NetName=PWM-R2 Pin=U2-12
+Added Pin To Net: NetName=PWM-R2 Pin=XH1-6
+Added Net: Name=PWM-R2
+Added Pin To Net: NetName=R  A Pin=C?-1
+Added Pin To Net: NetName=R  A Pin=J2-1
+Added Pin To Net: NetName=R  A Pin=Q6-3
+Added Pin To Net: NetName=R  A Pin=Q6-3
+Added Pin To Net: NetName=R  A Pin=Q6-3
+Added Pin To Net: NetName=R  A Pin=Q8-1
+Added Pin To Net: NetName=R  A Pin=Q8-1
+Added Pin To Net: NetName=R  A Pin=Q8-1
+Added Pin To Net: NetName=R  A Pin=Q8-1
+Added Pin To Net: NetName=R  A Pin=Q8-1
+Added Pin To Net: NetName=R  A Pin=Q8-1
+Added Pin To Net: NetName=R  A Pin=U?-15
+Added Net: Name=R  A
+Added Pin To Net: NetName=R  B Pin=C?-1
+Added Pin To Net: NetName=R  B Pin=J2-2
+Added Pin To Net: NetName=R  B Pin=Q5-3
+Added Pin To Net: NetName=R  B Pin=Q5-3
+Added Pin To Net: NetName=R  B Pin=Q5-3
+Added Pin To Net: NetName=R  B Pin=Q7-1
+Added Pin To Net: NetName=R  B Pin=Q7-1
+Added Pin To Net: NetName=R  B Pin=Q7-1
+Added Pin To Net: NetName=R  B Pin=Q7-1
+Added Pin To Net: NetName=R  B Pin=Q7-1
+Added Pin To Net: NetName=R  B Pin=Q7-1
+Added Pin To Net: NetName=R  B Pin=U?-11
+Added Net: Name=R  B
+Added Pin To Net: NetName=VCC Pin=C?-2
+Added Pin To Net: NetName=VCC Pin=C?-2
+Added Pin To Net: NetName=VCC Pin=D?-1
+Added Pin To Net: NetName=VCC Pin=D?-1
+Added Pin To Net: NetName=VCC Pin=D?-1
+Added Pin To Net: NetName=VCC Pin=D?-1
+Added Pin To Net: NetName=VCC Pin=E1-1
+Added Pin To Net: NetName=VCC Pin=J3-1
+Added Pin To Net: NetName=VCC Pin=Q5-1
+Added Pin To Net: NetName=VCC Pin=Q5-1
+Added Pin To Net: NetName=VCC Pin=Q5-1
+Added Pin To Net: NetName=VCC Pin=Q5-1
+Added Pin To Net: NetName=VCC Pin=Q5-1
+Added Pin To Net: NetName=VCC Pin=Q5-1
+Added Pin To Net: NetName=VCC Pin=Q6-1
+Added Pin To Net: NetName=VCC Pin=Q6-1
+Added Pin To Net: NetName=VCC Pin=Q6-1
+Added Pin To Net: NetName=VCC Pin=Q6-1
+Added Pin To Net: NetName=VCC Pin=Q6-1
+Added Pin To Net: NetName=VCC Pin=Q6-1
+Added Pin To Net: NetName=VCC Pin=Q?-1
+Added Pin To Net: NetName=VCC Pin=Q?-1
+Added Pin To Net: NetName=VCC Pin=Q?-1
+Added Pin To Net: NetName=VCC Pin=Q?-1
+Added Pin To Net: NetName=VCC Pin=Q?-1
+Added Pin To Net: NetName=VCC Pin=Q?-1
+Added Pin To Net: NetName=VCC Pin=Q?-1
+Added Pin To Net: NetName=VCC Pin=Q?-1
+Added Pin To Net: NetName=VCC Pin=Q?-1
+Added Pin To Net: NetName=VCC Pin=Q?-1
+Added Pin To Net: NetName=VCC Pin=Q?-1
+Added Pin To Net: NetName=VCC Pin=Q?-1
+Added Pin To Net: NetName=VCC Pin=R?-2
+Added Pin To Net: NetName=VCC Pin=R?-2
+Added Pin To Net: NetName=VCC Pin=U?-2
+Added Pin To Net: NetName=VCC Pin=U?-2
+Added Pin To Net: NetName=VCC Pin=U?-7
+Added Pin To Net: NetName=VCC Pin=U?-7
+Added Pin To Net: NetName=VCC Pin=U?-10
+Added Pin To Net: NetName=VCC Pin=U?-10
+Added Pin To Net: NetName=VCC Pin=U?-12
+Added Pin To Net: NetName=VCC Pin=U?-12
+Added Net: Name=VCC
+Added Class: Name=智能车驱动板HIP4082

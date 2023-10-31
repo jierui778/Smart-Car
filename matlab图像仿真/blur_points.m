@@ -4,6 +4,12 @@ half = (kernel - 1)/2;
 for i = 1:num
     pts_out(i,1) = 0;
     pts_out(i,2) = 0;
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> 02e42dc0749423afe2fd0acff66ab4075d3fb4c5
     for j = -half:half
         pts_out(i,1) = pts_out(i,1) + pts_in(clip(i+j,1,num),1)*(half + 1 - abs(j));
         pts_out(i,2) = pts_out(i,2) + pts_in(clip(i+j,1,num),2)*(half + 1 - abs(j));

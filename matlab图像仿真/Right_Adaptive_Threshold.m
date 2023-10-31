@@ -28,17 +28,28 @@ dir_frontright = [ 1,-1;
 
 while (step < 121 ...
         && 0 < x2 ...
+<<<<<<< HEAD
         && x2 < w - 1 ...
         && 0 < y2 ...
         && y2 < h - 1 ...
+=======
+        && x2 < w - half ...
+        && 0 < y2 ...
+        && y2 < h - half-1 ...
+>>>>>>> 02e42dc0749423afe2fd0acff66ab4075d3fb4c5
         && turn < 4)
     local_thres = 1;
     current_value = input_data(y2,x2);
     Dir = dir + 1;
     front_value = input_data(y2 + dir_front(Dir,2),x2 + dir_front(Dir,1));
     frontright_value = input_data(y2 + dir_frontright(Dir,2),x2 + dir_frontright(Dir,1));
+<<<<<<< HEAD
     if ((x2==w-2 && y2 < h -20) || x2==1 || y2==1)
         if x2==1
+=======
+    if ((x2==w-2 && y2 < h -40) || x2==half-1 || y2==2)
+        if x2==w-2
+>>>>>>> 02e42dc0749423afe2fd0acff66ab4075d3fb4c5
             touch_boundary1 =1;
             break;
         end
@@ -49,10 +60,19 @@ while (step < 121 ...
     elseif frontright_value < local_thres
         x2 = x2 + dir_front(Dir,1);
         y2 = y2 + dir_front(Dir,2);
+<<<<<<< HEAD
+=======
+
+        if(x2<157)%防止迷宫沿图像边框爬，造成干扰
+>>>>>>> 02e42dc0749423afe2fd0acff66ab4075d3fb4c5
         pts(step,1) = x2;
         pts(step,2) = y2;
         step = step +1;
         turn = 0;
+<<<<<<< HEAD
+=======
+        end
+>>>>>>> 02e42dc0749423afe2fd0acff66ab4075d3fb4c5
     else
         x2 = x2 + dir_frontright(Dir,1);
         y2 = y2 + dir_frontright(Dir,2);
