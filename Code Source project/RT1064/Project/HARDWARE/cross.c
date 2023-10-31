@@ -37,11 +37,13 @@ void Cross_Check(void) // 得考虑斜入十字的情况
     // Line_Add(&img_raw, CornersLeft_Point, FarCornersLeft_Point, 0);
     // Line_Add(&img_raw, CornersRight_Point, FarCornersRight_Point, 0);
     // BorderLine_Find(); // 寻找边线
-    Center_edge();
     if(a == 3)
     {
         Finnal_err = run_straight();
     }
+    Center_edge();//从中间向左右两边扫线
+
+    Finnal_err = Err_Handle(1); // 求出最终误差，选择模式3——返回角度偏差
 }
 
 int count = 0;
@@ -106,6 +108,7 @@ void Cross_Run(void)
     }
 
     Center_edge();
+    Finnal_err = Err_Handle(1);
     if(a == 13)
     {
         Finnal_err = run_straight();

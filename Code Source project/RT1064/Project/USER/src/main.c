@@ -26,38 +26,39 @@ int main(void)
     //    //  tft180_show_string(0, 0, "mt9v03x init.");
 
     Camera_Init();
-    //    //  Servo_Init();
+    Servo_Init();
     pit_ms_init(PIT_CH0, 200);
     interrupt_set_priority(PIT_IRQn, 0);
     PID_Init();
 	
     Servo_Init(); // 舵机初始化
+	    Motor_Info[0].TargetSpeed = 3400;
+	    Motor_Info[1].TargetSpeed = 3400;
 
     while (1)
     {
-        Motor_Info[0].TargetSpeed = 1000;
-	    Motor_Info[1].TargetSpeed = 1000;
+    
 
-//        test();
-//        Servo_SetAngle(Servo_PIDInfo.Output);
+        test();
+        PosiPID(&Servo_PIDInfo, &Finnal_err);
+        Servo_SetAngle(Servo_PIDInfo.Output);
 		
 		Motor_SetPwmL(Motor_PIDInfo[0].Output);
 		Motor_SetPwmR(Motor_PIDInfo[1].Output);
-//		pwm_set_duty(MOTOR_PWML, Motor_PIDInfo[1].Output);
-//		pwm_set_duty(MOTOR_PWMR, Motor_PIDInfo[0].Output); // 两电机先不动
 //        int Midline;
 //        //		Servo_PidSetSpeed()
 //        if (Finnal_err > -40 && Finnal_err < 40)
 //        {
 //            
-//            ips200_show_float(80, 120, Servo_PIDInfo.Output, 3, 3);
+           ips200_show_float(80, 120, Servo_PIDInfo.Output, 3, 3);
 //        }
 
 		ips200_displayimage03x(*Image_Use_Robert, 160, 120);
 		ips200_show_int(0,140,Motor_Info[0].Speed,5);
         ips200_show_int(0,160,Motor_PIDInfo[0].Err,5);
         ips200_show_int(0,180,Motor_PIDInfo[0].Output,5);
-
+		
+		
         ips200_show_int(60,140,Motor_Info[1].Speed,5);
         ips200_show_int(60,160,Motor_PIDInfo[1].Err,5);
         ips200_show_int(60,180,Motor_PIDInfo[1].Output,5);

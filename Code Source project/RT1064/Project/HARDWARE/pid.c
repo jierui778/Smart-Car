@@ -9,11 +9,11 @@
 #include "motor.h"
 #include "control.h"
 float sPidInfo[3][5] = { // IncrPID{Kp,Ki,Kd,MaxOutput}
-	{0, 0.1, 0, 3000, 0},
+	{0.14, 0.12, 0, 3000, 0},
 
-    {0, 0.1, 0, 3000, 0},
+    {0.14, 0.12, 0, 3000, 0},
     
-    {0.95,0,0.0,0,14.8}};
+    {1.0,0.02,0,0,14.8}};
 
 	/*--p过荡 0.7   初始为0.5*/
 sPosiPID_Info  Servo_PIDInfo={0};

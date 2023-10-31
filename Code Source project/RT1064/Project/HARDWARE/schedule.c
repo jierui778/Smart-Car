@@ -103,13 +103,13 @@ void pit_handler(void)
 {
     Schedule_Tick();
     gpio_toggle_level(B9); // test
-    Encoder_Update(&Motor_Info[0].Speed, &Motor_Info[1].Speed, &Encoder_L_Dis, &Encoder_R_Dis);
+	Encoder_Update(&Motor_Info[0].Speed, &Motor_Info[1].Speed, &Encoder_L_Dis, &Encoder_R_Dis);
     for(uint8 i=0;i<2;i++)
     {
         IncrPID(&Motor_PIDInfo[i],&Motor_Info[i]);
     }
 	
-	PosiPID(&Servo_PIDInfo, &Finnal_err);
+	
 
     
 	
