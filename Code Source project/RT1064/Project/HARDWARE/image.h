@@ -86,6 +86,9 @@ extern uint8 loseline1;
 extern int NearBorderLine_Enable;
 extern int FarBorderLine_Enable; // 开启远近线的标志位
 
+extern int Far_Arc0_Found, Far_Arc1_Found;
+extern int Near_Arc0_Found, Near_Arc1_Found;
+
 extern int Far_Lpt0_Found, Far_Lpt1_Found;
 extern int Near_Lpt0_Found, Near_Lpt1_Found;
 
@@ -168,10 +171,6 @@ extern int FarIs_Arc0, FarIs_Arc1;   // 是否为弧线
 extern int Far_ipts0_num; // 存放边线像素点个数(左)
 extern int Far_ipts1_num; // 存放边线像素点个数(右)
 
-
-
-
-
 extern uint8 mid_line_num; // 定义中线数组个数
 extern float Finnal_err;
 extern float err, last_err;
@@ -186,7 +185,7 @@ extern float Err[5];                     // 中线误差
 
 // 若考虑近点远点,可近似构造Stanley算法,避免撞路肩
 
-void Arc_Point_Get(int pts_in[][2], int pts_num, int pts_out[2], int *flag);
+void Arc_Point_Get(int pts_in[][2], int pts_num, int pts_out[2]); 
 void NearCorners_Find_Left(int pts_in[][2], int pts_num, int pts_out[2], int *flag);
 void NearCorners_Find_Right(int pts_in[][2], int pts_num, int pts_out[2], int *flag);
 void LongLine_Rec(int pts_in[][2], int pts_num, int thres, int *flag);
@@ -195,7 +194,7 @@ void FarCorners_Find_Right(int pts_in[][2], int pts_num, int pts_out[2], int *fl
 extern void BorderLine_Find(void);
 void track_leftline(int pts_in[][2], int num, int pts_out[][2], int approx_num, float dist);
 void track_rightline(int pts_in[][2], int num, int pts_out[][2], int approx_num, float dist);
-//void Line_Add(image_t *img, int pts0_in[2], int pts1_in[2], int8 value);
+// void Line_Add(image_t *img, int pts0_in[2], int pts1_in[2], int8 value);
 float run_straight(void);
 float LineRession(int pts_in[][2], int num);
 void Coordinate_transformation_left(int pt0_in[][2], int in_num, int pt0_out[][2]);

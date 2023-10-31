@@ -58,12 +58,12 @@ void Garage_Out(void)
 {
     if (garage_type == GARAGE_OUT_LEFT && Near_Lpt0_Found && Near_Lpt1_Found && touch_boundary0 && touch_boundary1)
     {
-        garage_type == GARAGE_OUTTING_LEFT;
+        garage_type = GARAGE_OUTTING_LEFT;
         Encoder_Int_Enable();
     }
     else if (garage_type == GARAGE_OUT_RIGHT && Near_Lpt0_Found && Near_Lpt1_Found && touch_boundary0 && touch_boundary1)
     {
-        garage_type == GARAGE_OUTTING_RIGHT;
+        garage_type = GARAGE_OUTTING_RIGHT;
         Encoder_Int_Enable();
     }
     if ((Encoder_L_Dis + Encoder_R_Dis) / 2 > GARAGE_DIS)
