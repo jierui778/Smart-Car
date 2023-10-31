@@ -17,10 +17,11 @@ void Cross_Check(void) // 得考虑斜入十字的情况
     if (cross_type == CROSS_NONE && touch_boundary0 && Near_Lpt0_Found && Far_Lpt0_Found && !Near_Lpt1_Found && loseline1) // 左边双角点,右边近角点丢失,斜入左十字,进入十字模式
     {
         cross_type = CROSS_HALF_LEFT_FOUND;
+        
         cross_num++; // 记录圆环个数
         a = 1;
     }
-    else if (cross_type == CROSS_NONE && touch_boundary1 && Near_Lpt1_Found && Far_Lpt1_Found && !Near_Lpt0_Found) // 右边双角点,左边近角点丢失,斜入右十字,进入十字模式
+    else if (cross_type == CROSS_NONE && touch_boundary1 && Near_Lpt1_Found && Far_Lpt1_Found && !Near_Lpt0_Found && loseline0) // 右边双角点,左边近角点丢失,斜入右十字,进入十字模式
     {
         cross_type = CROSS_HALF_RIGHT_FOUND;
         cross_num++; // 记录圆环个数
@@ -36,11 +37,13 @@ void Cross_Check(void) // 得考虑斜入十字的情况
     // Line_Add(&img_raw, CornersLeft_Point, FarCornersLeft_Point, 0);
     // Line_Add(&img_raw, CornersRight_Point, FarCornersRight_Point, 0);
     // BorderLine_Find(); // 寻找边线
-    Center_edge();
     if(a == 3)
     {
         Finnal_err = run_straight();
     }
+    Center_edge();//从中间向左右两边扫线
+
+    Finnal_err = Err_Handle(1); // 求出最终误差，选择模式3——返回角度偏差
 }
 
 int count = 0;
@@ -105,6 +108,7 @@ void Cross_Run(void)
     }
 
     Center_edge();
+    Finnal_err = Err_Handle(1);
     if(a == 13)
     {
         Finnal_err = run_straight();

@@ -15,7 +15,7 @@ extern int32 Encoder_L_Dis, Encoder_R_Dis;                                      
 extern int8 DisCnt_Flag;                                                             // 是否开启距离计数标志位
 #define Car_RoundCount 2300                                                          // 小车转一圈，对应计数器的计数值（得手动测）
 extern void Encoder_Init(void);                                                      // 初始化编码器
-void Encoder_Update(int32 *Data_L, int32 *Data_R, int32 *Data_L_D, int32 *Data_R_D); // 更新编码器计数值和积分距离
+void Encoder_Update(float *Data_L, float *Data_R, int32 *Data_L_D, int32 *Data_R_D); // 更新编码器计数值和积分距离
 extern void Encoder_Int_Enable(void);                                                // 开启编码器积分
 extern void Encoder_Int_Clear(void);                                                 // 清除编码器积分
 // void pit_handler (void);

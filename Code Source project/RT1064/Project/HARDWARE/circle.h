@@ -10,6 +10,7 @@ enum circle_type_e
     CIRCLE_LEFT_FOUND,
     CIRCLE_RIGHT_FOUND, // 左右圆环开始,即单侧发现L角点，另一侧为长直道
     CIRCLE_RIGHT_IN,
+    CIRCLE_RIGHT_IN1,
     CIRCLE_LEFT_IN, // 进圆环
     // CIRCLE_LEFT_IN1,
     CIRCLE_LEFT_RUN,

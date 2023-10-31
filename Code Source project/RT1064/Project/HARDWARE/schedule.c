@@ -1,7 +1,10 @@
 #include "schedule.h"
 #include "encoder.h"
 #include "image.h"
-
+#include "control.h"
+#include "motor.h"
+#include "pid.h"
+#include "servo.h"
 #define TASK_LIST_END \
     {                 \
         NULL, 0, 0, 0 \
@@ -100,7 +103,17 @@ void pit_handler(void)
 {
     Schedule_Tick();
     gpio_toggle_level(B9); // test
-    Encoder_Update(&Encoder_L_Data, &Encoder_R_Data, &Encoder_L_Dis, &Encoder_R_Dis);
+	Encoder_Update(&Motor_Info[0].Speed, &Motor_Info[1].Speed, &Encoder_L_Dis, &Encoder_R_Dis);
+    for(uint8 i=0;i<2;i++)
+    {
+        IncrPID(&Motor_PIDInfo[i],&Motor_Info[i]);
+    }
+	
+	
+
+    
+	
+	
 }
 // //void pit_handler(void)
 // //{

@@ -77,6 +77,8 @@ float run_right(void);
 float run_left(void);
 void test(void);
 float Line_Shifting(void);
+void FarCorners_Find_Left_Again(void);
+void NearCorners_Find_Left_Again(void);
 #define POINTS_MAX_LEN (120) // 边线点最多的情况——>num
 
 // 左右边丢线
@@ -104,8 +106,12 @@ extern uint8 touch_boundary1;    // 右边线走到图像边界
 extern uint8 touch_boundary_up0; // 左边线走到图像左边界
 extern uint8 touch_boundary_up1; // 右边线走到图像右边界
 
+extern int Last_Lpt0_id, Last_Lpt1_id; // 上一次的角点id
+extern int Last_Far_Lpt0_id, Last_Far_Lpt1_id;
 extern float xielv_left_y_to_end, xielv_right_y_to_end; // 在逆透视后得坐标系建得斜率
 
+extern int Last_CornersLeft_Point[2] ;
+extern int Last_FarCornersLeft_Point[2] ;
 // #define a11 (-5.5988f)
 // #define a12 (-27.9734f)
 // #define a13 (709.0200f)
@@ -171,6 +177,14 @@ extern int FarIs_Arc0, FarIs_Arc1;   // 是否为弧线
 extern int Far_ipts0_num; // 存放边线像素点个数(左)
 extern int Far_ipts1_num; // 存放边线像素点个数(右)
 
+<<<<<<< HEAD
+=======
+extern int ArcLeft_Point[2] ;
+extern int ArcRight_Point[2] ; // 近角点坐标
+
+
+
+>>>>>>> 8ab96619b90a6a4e165264cd20fc1800b4fad805
 extern uint8 mid_line_num; // 定义中线数组个数
 extern float Finnal_err;
 extern float err, last_err;
@@ -203,5 +217,6 @@ void NearCorners_Find_Left_Again(void);
 void FarCorners_Find_Left_Again(void);
 void FarCorners_Find_Left_New(void);
 void LongStarightLine_Rec(int pts_in[][2], int pts_num, int thres, int *flag);
+void Arc_Point_Get(int pts_in[][2], int pts_num, int pts_out[2], int *flag);
 // uint8_t RoundaboutGetArc(int imageSide[][2], int status, int num, int *index);
 #endif

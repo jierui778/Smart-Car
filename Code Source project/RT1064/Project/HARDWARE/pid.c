@@ -6,19 +6,24 @@
 #include "pid.h"
 #include "math.h"
 #include "servo.h"
+#include "motor.h"
+#include "control.h"
 float sPidInfo[3][5] = { // IncrPID{Kp,Ki,Kd,MaxOutput}
-	{0.0, 0, 0, 0, 0},
+	{0.14, 0.12, 0, 3000, 0},
 
-    {0, 0, 0, 0,0},
+    {0.14, 0.12, 0, 3000, 0},
     
-    {0.65,0,0.1,0,14.5}};
+    {1.0,0.02,0,0,14.8}};
 
 	/*--p过荡 0.7   初始为0.5*/
-sPosiPID_Info ServoInfo = {0};
+sPosiPID_Info  Servo_PIDInfo={0};
+sIncrPID_Info  Motor_PIDInfo[2] = {0};
 // float PidInfo[2][4] = { // IncrPID{Kp,Ki,Kd,MaxOutput}
 //     {0, 0, 0, 0},
 
 //     {0, 0, 0, 0}};
+
+
 /**
  * @brief PID限幅函数
  *
@@ -45,15 +50,26 @@ float PIDInfo_Limit(float Value, float MaxValue)
  */
 void PID_Init(void)
 {
+	for(uint8 i=0;i<2;i++)
+	{
+		Motor_PIDInfo[i].Kp=sPidInfo[i][0];
+		Motor_PIDInfo[i].Ki=sPidInfo[i][1];
+		Motor_PIDInfo[i].Kd=sPidInfo[i][2];
+		Motor_PIDInfo[i].MaxOutput=sPidInfo[i][3];
+		Motor_PIDInfo[i].Err=0;
+		Motor_PIDInfo[i].LastErr=0;
+		Motor_PIDInfo[i].Output=0;
+	}
 
-    ServoInfo.Kp = sPidInfo[2][0];
-    ServoInfo.Ki = sPidInfo[2][1];
-    ServoInfo.Kd = sPidInfo[2][2];
-    ServoInfo.MaxOutput = sPidInfo[2][4];
-    ServoInfo.Err = 0;
-    ServoInfo.LastErr = 0;
-    ServoInfo.Integral_Err = 0;
-    ServoInfo.Output = 0;
+    Servo_PIDInfo.Kp = sPidInfo[2][0];
+    Servo_PIDInfo.Ki = sPidInfo[2][1];
+    Servo_PIDInfo.Kd = sPidInfo[2][2];
+	Servo_PIDInfo.MaxIntegral_Err=sPidInfo[2][3];
+    Servo_PIDInfo.MaxOutput = sPidInfo[2][4];
+    Servo_PIDInfo.Err = 0;
+    Servo_PIDInfo.LastErr = 0;
+    Servo_PIDInfo.Integral_Err = 0;
+    Servo_PIDInfo.Output = 0;
 
 }
 /**
@@ -90,6 +106,13 @@ void PosiPID(sPosiPID_Info *PosiPID, float *test)
 	// 限制PID输出
 	PosiPID->Output = PIDInfo_Limit(PosiPID->Output, PosiPID->MaxOutput);
 }
+
+
+
+
+/*------------下面的都没有用，不用动----------------*/
+
+
 
 tPid pidMotorLeftSpeed;	 // 左电机的闭环PID
 tPid pidMotorRightSpeed; // 右电机的闭环PID
