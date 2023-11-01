@@ -1,8 +1,0 @@
-Removed Pin From Net: NetName=PWM-L1 Pin=XH1-1
-Removed Pin From Net: NetName=PWM-L2 Pin=XH1-2
-Removed Pin From Net: NetName=PWM-R1 Pin=XH1-5
-Removed Pin From Net: NetName=PWM-R2 Pin=XH1-6
-Added Pin To Net: NetName=PWM-R2 Pin=XH1-1
-Added Pin To Net: NetName=PWM-R1 Pin=XH1-2
-Added Pin To Net: NetName=PWM-L2 Pin=XH1-5
-Added Pin To Net: NetName=PWM-L1 Pin=XH1-6
